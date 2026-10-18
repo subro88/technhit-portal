@@ -1,0 +1,111 @@
+---
+title: "10+2 Calculus: A Visual Field Guide to Continuous Change"
+date: "2026-10-18"
+category: "stem-10-plus-2"
+status: "Published"
+youtubeId: "WUvTyaaNjfo"
+summary: "Visual field guide to differential calculus, Riemann accumulation, epsilon-delta limit neighborhoods, and real-time interactive tangent line simulations for Senior Secondary STEM students."
+---
+
+# Calculus: A Visual Field Guide to Continuous Change
+
+Welcome to the **TechNHIT Visual Field Guide**. In modern engineering—whether modeling thermal throttling on multi-socket Xeon servers, training sparse mixture-of-experts transformer weights, or calculating aerospace trajectory vectors—calculus provides the universal mathematical dialect of continuous transformation.
+
+<CalculusFieldGuideHero />
+
+---
+
+## § 01 / DERIVATIVES — The Slope of an Instant
+
+For a continuous real-valued function $f(x)$, the derivative $f'(x)$ at any given point is the exact slope of the tangent line that kisses the curve. Formally, it represents the limit of the secant difference quotient as the increment step $h$ shrinks to zero:
+
+<MathFormulaBlock formula="f'(x) = \lim_{h \to 0} \frac{f(x + h) - f(x)}{h}" label="First Principle Definition of Derivative" />
+
+Drag the orange node along the curve below to observe the tangent line pivoting in real time. On the lower oscilloscope plot, notice how the slope value is mapped into the derivative function $f'(x)$:
+
+<DerivativePlotter />
+
+### Rigorous Algebraic Derivation: The Sine Derivative
+
+To verify why the rate of change of $\sin(x)$ generates the orthogonal wave $\cos(x)$, step through the first-principles trigonometric proof below:
+
+<ProofStepThrough title="First Principles Proof: The Derivative of sin(x) is cos(x)" />
+
+---
+
+## § 02 / INTEGRALS — Accumulation Rectified
+
+While differentiation determines the instantaneous rate of change, integration operates as its exact mathematical inverse: accumulating uncountably many infinitesimal slices into a finite, closed-form area beneath the curve.
+
+<MathFormulaBlock formula="\int_{a}^{b} f(x)\,dx = \lim_{n \to \infty} \sum_{i=1}^{n} f(x_i^*)\,\Delta x" label="Definite Integral as Limit of Riemann Sums" />
+
+Use the partition slider below to adjust the number of slices $n \in [1, 80]$. Observe how quickly the discrete sum converges to the exact analytical value $17.280$ calculated via the Fundamental Theorem of Calculus:
+
+<RiemannSumVisualizer />
+
+<MathFormulaBlock formula="\int_{a}^{b} f'(x)\,dx = f(b) - f(a)" label="Fundamental Theorem of Calculus" />
+
+---
+
+## § 03 / LIMITS — The Epsilon-Delta Contract
+
+Every theorem in differential and integral calculus rests upon the bedrock of Cauchy and Weierstrass's rigorous epsilon-delta limit definition. A limit is a binding contractual promise: for any arbitrary output tolerance band $\varepsilon > 0$ demanded, there exists an input neighborhood $\delta > 0$ that keeps the function strictly bounded within that tolerance.
+
+<MathFormulaBlock formula="\forall \varepsilon > 0,\ \exists \delta > 0 : 0 < |x - a| < \delta \implies |f(x) - L| < \varepsilon" label="Weierstrass Epsilon-Delta Limit Definition" />
+
+Drag the green tolerance slider $\varepsilon$ below. Notice how the orange input window $\delta$ automatically calculates the maximal safe neighborhood for $f(x) = x^2$ approaching $x = 2$:
+
+<EpsilonDeltaExplorer />
+
+---
+
+## § 04 / APPLIED PRACTICE & WORKED EXAMPLES
+
+Test your physical and mathematical intuition with these classical applied engineering problems. Reveal hints sequentially only when needed:
+
+<WorkedExampleCard
+  tag="Related Rates · Kinematics"
+  categoryType="deriv"
+  title="A 10 ft Ladder Sliding Down an Industrial Wall"
+  problemStatement="A 10 ft rigid ladder leans against a vertical server rack wall. The base is pulled away from the wall at a constant speed of 2 ft/s. When the base is 6 ft from the wall, determine the instantaneous velocity at which the top of the ladder is sliding down."
+  hints={[
+    "Let x represent the horizontal base distance and y represent vertical rack height. By Pythagorean theorem: x² + y² = 100.",
+    "Differentiate both sides implicitly with respect to time t: 2x(dx/dt) + 2y(dy/dt) = 0.",
+    "At x = 6 ft, compute y: y = √(100 - 36) = 8 ft. Plug in the known values dx/dt = +2 ft/s and solve for dy/dt."
+  ]}
+  answer="dy/dt = -(6/8)(2) = -1.5 ft/s. The top of the ladder descends at 1.5 ft/s."
+/>
+
+<WorkedExampleCard
+  tag="Optimization · CAD Design"
+  categoryType="integ"
+  title="Minimum Surface Area Cylindrical Cooling Chamber"
+  problemStatement="Design a closed cylindrical cooling chamber to house 355 cm³ of cryogenic dielectric coolant. Determine the optimal radius r that minimizes the total surface area S (top, bottom, and curved wall)."
+  hints={[
+    "Write volume and surface equations: V = πr²h = 355, Surface S = 2πr² + 2πrh.",
+    "Express height h in terms of radius r: h = 355 / (πr²). Substitute into S: S(r) = 2πr² + 710/r.",
+    "Differentiate with respect to r and equate to zero: dS/dr = 4πr - 710/r² = 0 ⟹ r³ = 710 / (4π)."
+  ]}
+  answer="r ≈ 3.84 cm, h ≈ 7.67 cm (optimal cylinder has height equal to diameter: h = 2r)."
+/>
+
+<WorkedExampleCard
+  tag="Indeterminate Limits · L'Hôpital"
+  categoryType="lim"
+  title="Evaluation of Indeterminate Form 0/0"
+  problemStatement="Evaluate the classical indeterminate limit lim_(x→0) (eˣ - 1 - x) / x². Direct algebraic substitution yields the undefined form 0/0."
+  hints={[
+    "Direct substitution yields (e⁰ - 1 - 0) / 0² = 0/0. Apply L'Hôpital's rule by differentiating numerator and denominator separately.",
+    "Numerator derivative: eˣ - 1. Denominator derivative: 2x. Evaluating at x = 0 still gives 0/0.",
+    "Apply L'Hôpital's rule a second time: (eˣ - 1)' = eˣ, (2x)' = 2. Now substitute x = 0."
+  ]}
+  answer="Limit = e⁰ / 2 = 1/2."
+/>
+
+---
+
+### Symbolic Verification via SymPy
+
+You can programmatically verify all symbolic derivations using Python:
+
+<TerminalBlock command="python3 -c 'import sympy as sp; x = sp.Symbol(\"x\"); print(\"Derivative:\", sp.diff(sp.sin(x)*sp.exp(x), x)); print(\"Limit:\", sp.limit((sp.exp(x) - 1 - x)/x**2, x, 0))'" title="SymPy Computer Algebra System" os="Python 3" />

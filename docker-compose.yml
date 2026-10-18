@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  technhit-portal:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: technhit-portal:production
+    container_name: technhit_app
+    restart: unless-stopped
+    ports:
+      # Bind to localhost to enforce traffic routing through Nginx SSL reverse proxy
+      - "127.0.0.1:3000:3000"
+    environment:
+      - NODE_ENV=production
+      - AUTH_SECRET=${AUTH_SECRET}
+      - AUTH_GITHUB_ID=${AUTH_GITHUB_ID}
+      - AUTH_GITHUB_SECRET=${AUTH_GITHUB_SECRET}
+      - ADMIN_EMAILS=${ADMIN_EMAILS}
+      - ADMIN_FALLBACK_PASSWORD=${ADMIN_FALLBACK_PASSWORD}
+      - GITHUB_PERSONAL_ACCESS_TOKEN=${GITHUB_PERSONAL_ACCESS_TOKEN}
+      - GITHUB_OWNER=${GITHUB_OWNER}
+      - GITHUB_REPO=${GITHUB_REPO}
+      - GITHUB_BRANCH=${GITHUB_BRANCH:-main}
+      - YOUTUBE_API_KEY=${YOUTUBE_API_KEY}
+      - YOUTUBE_CHANNEL_HANDLE=${YOUTUBE_CHANNEL_HANDLE:-@TechBlogTutorial}
+      - NEXT_PUBLIC_SITE_URL=${NEXT_PUBLIC_SITE_URL:-https://technhit.in}
+    volumes:
+      - ./content:/app/content
+      - ./public/uploads:/app/public/uploads
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://127.0.0.1:3000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+    networks:
+      - technhit_net
+
+networks:
+  technhit_net:
+    driver: bridge

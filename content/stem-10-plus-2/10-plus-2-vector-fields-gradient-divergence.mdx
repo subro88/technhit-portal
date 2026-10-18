@@ -1,0 +1,38 @@
+---
+title: "10+2 Vector Algebra: Dot, Cross Products & Gradient Fields"
+date: "2026-10-18"
+category: "stem-10-plus-2"
+status: "Published"
+youtubeId: "WUvTyaaNjfo"
+summary: "Visual guide to vectors in 3D Euclidean space, dot and cross products, directional derivatives, and magnetic flux for 10+2 students."
+---
+
+# 10+2 Vector Algebra: Dot, Cross Products & Gradient Fields
+
+Vectors are mathematical entities possessing both magnitude and direction. In engineering physics and 3D computer graphics, vectors form the foundation of force analysis, ray tracing, and spatial transformations.
+
+### 1. The Dot Product (Scalar Product)
+
+The scalar product between two vectors $\vec{a}$ and $\vec{b}$ measures projection and alignment:
+
+<MathFormulaBlock formula="\vec{a} \cdot \vec{b} = |\vec{a}| |\vec{b}| \cos(\theta) = a_x b_x + a_y b_y + a_z b_z" label="Dot Product Formula" />
+
+<InfoBox title="Orthogonality Condition" type="tip">
+Two non-zero vectors are perpendicular if and only if their dot product equals zero ($\vec{a} \cdot \vec{b} = 0$). This property is used constantly in game engine lighting shaders to calculate Lambertian diffuse reflection.
+</InfoBox>
+
+### 2. The Cross Product (Vector Product)
+
+The vector product creates a vector perpendicular to both input vectors following the right-hand rule:
+
+<MathFormulaBlock formula="\vec{a} \times \vec{b} = \begin{vmatrix} \hat{i} & \hat{j} & \hat{k} \\ a_x & a_y & a_z \\ b_x & b_y & b_z \end{vmatrix} = (a_y b_z - a_z b_y)\hat{i} - (a_x b_z - a_z b_x)\hat{j} + (a_x b_y - a_y b_x)\hat{k}" label="Cross Product Determinant" />
+
+### 3. Interactive Vector Field Simulation
+
+Explore dynamic vector fields, vortex curls, and field divergence in the TechNHIT Visual Lab:
+
+<ArchitectureDiagram title="Vector Field Curl & Divergence in 2D Space" />
+
+### 4. Vector Calculations in NumPy
+
+<TerminalBlock command="python3 -c 'import numpy as np; a = np.array([1, 2, 3]); b = np.array([4, 5, 6]); print(\"Dot:\", np.dot(a, b), \"Cross:\", np.cross(a, b))'" title="NumPy Vector Verification" os="Python 3" />

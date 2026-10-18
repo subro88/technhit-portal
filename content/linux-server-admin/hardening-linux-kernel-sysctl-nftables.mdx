@@ -1,0 +1,41 @@
+---
+title: "Hardening Linux Kernel with sysctl & nftables Firewall rules"
+date: "2026-10-17"
+category: "linux-server-admin"
+status: "Published"
+youtubeId: "3fumBcKC6RE"
+summary: "Kernel-level TCP stack hardening and modern packet filtering replacing legacy iptables."
+---
+
+# Hardening Linux Server Kernels with sysctl & nftables
+
+Enterprise Linux servers exposed to the open internet require defense-in-depth at the kernel TCP/IP layer. This guide details our production hardening configurations used across the **TechNHIT** cluster infrastructure.
+
+<InfoBox title="Production Prerequisite" type="warning">
+Before reloading sysctl configurations on remote servers, ensure you possess out-of-band console access (IPMI / iDRAC) in the event of an interface packet drop misconfiguration.
+</InfoBox>
+
+### 1. TCP/IP Stack Hardening via sysctl
+
+Create `/etc/sysctl.d/99-security-hardened.conf` and apply strict parameters to mitigate SYN flood attacks, disable IP forwarding, and prevent ICMP redirect poisoning:
+
+<ConfigDiff filename="/etc/sysctl.d/99-security-hardened.conf" diffText="+net.ipv4.tcp_syncookies = 1
++net.ipv4.conf.all.rp_filter = 1
++net.ipv4.conf.default.rp_filter = 1
++net.ipv4.conf.all.accept_source_route = 0
++net.ipv4.icmp_echo_ignore_broadcasts = 1
++net.ipv4.conf.all.log_martians = 1" />
+
+Apply the kernel parameters immediately without rebooting:
+
+<TerminalBlock command="sysctl -p /etc/sysctl.d/99-security-hardened.conf" title="Apply Sysctl Configuration" os="Debian 12 / Ubuntu 24.04" />
+
+### 2. High-Performance nftables Firewall Ingress Filter
+
+Replace legacy `iptables` with `nftables` atomic table evaluation:
+
+<TerminalBlock command="nft list ruleset > /etc/nftables.conf.bak && systemctl enable --now nftables" title="Enable nftables Service" os="Linux" />
+
+Verify that martian packets and drop counts are recorded in the system journal:
+
+<TerminalBlock command="journalctl -k -g 'martian' --no-pager -n 20" title="Inspect Kernel Log for Martians" os="Linux" />

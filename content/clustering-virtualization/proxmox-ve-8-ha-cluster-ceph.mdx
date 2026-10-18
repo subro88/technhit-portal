@@ -1,0 +1,38 @@
+---
+title: "High Availability Proxmox VE 8 Cluster with Ceph Storage"
+date: "2026-10-10"
+category: "clustering-virtualization"
+status: "Published"
+youtubeId: "eBGIQ7ZuuiU"
+summary: "Step-by-step configuration of a 3-node enterprise hypervisor cluster with shared Ceph block storage and redundant Corosync."
+---
+
+# High Availability Proxmox VE 8 Cluster with Ceph Storage
+
+Building a quorum-backed 3-node virtualization cluster allows virtual machine live migration without 1 millisecond of packet loss or downtime.
+
+<InfoBox title="Quorum Safety Guideline" type="note">
+Never build a two-node cluster without a low-cost QDevice Raspberry Pi witness to avoid split-brain failure scenarios.
+</InfoBox>
+
+### 1. Initialize Corosync Cluster Link
+
+Run the initialization sequence on node 1 with dedicated 10GbE corosync ring links:
+
+<TerminalBlock command="pvecm create technhit-cluster --link0 10.10.10.1" title="Corosync Cluster Initialization" os="Proxmox 8.2" />
+
+### 2. Multi-Node Corosync & Ceph Network Architecture
+
+Below is our redundant network map:
+
+<ArchitectureDiagram type="network" title="3-Node Corosync & Ceph Storage Topology" />
+
+### 3. Join Subsequent Hypervisor Nodes
+
+On nodes 2 and 3, join the cluster:
+
+<TerminalBlock command="pvecm add 10.10.10.1 --link0 10.10.10.2" title="Join Cluster" os="Proxmox 8.2" />
+
+Verify that quorum is active across all voting nodes:
+
+<TerminalBlock command="pvecm status" title="Verify Quorum Status" os="Proxmox 8.2" />

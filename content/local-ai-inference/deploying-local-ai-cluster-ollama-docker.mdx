@@ -1,0 +1,57 @@
+---
+title: "Deploying Local AI Cluster with Ollama & Docker GPU Passthrough"
+date: "2026-10-14"
+category: "local-ai-inference"
+status: "Published"
+youtubeId: "dQw4w9WgXcQ"
+summary: "High-performance inference clustering with NVIDIA GPU pass-through on Ubuntu 24.04 LTS."
+---
+
+# Deploying Local AI Cluster with Ollama & Docker GPU Passthrough
+
+In this companion guide to our **@TechBlogTutorial** video, we construct a scalable compute cluster for hosting LLMs (Llama 3, DeepSeek, Mistral) completely offline.
+
+<InfoBox title="Hardware Requisite" type="note">
+Ensure NVIDIA CUDA drivers (v550+) and the NVIDIA Container Toolkit are installed prior to starting the Docker swarm.
+</InfoBox>
+
+### 1. Verify NVIDIA GPU Container Runtime
+
+Execute telemetry verification to confirm container GPU access:
+
+<TerminalBlock command="docker run --rm --gpus all nvidia/cuda:12.4.0-base-ubuntu22.04 nvidia-smi" title="NVIDIA Core Driver Verification" os="Ubuntu 24.04" />
+
+### 2. Multi-Node Cluster Architecture
+
+Below is our primary reverse proxy routing architecture diagram:
+
+<ArchitectureDiagram type="cluster" title="Inference Routing Mesh" />
+
+### 3. Deploying Ollama Service Stack
+
+Run the containerized inference cluster daemon with automated restart policies:
+
+<TerminalBlock command="docker compose -f docker-compose.ai.yml up -d --scale worker=2" title="Cluster Startup" os="Debian/Ubuntu" />
+
+\`\`\`yaml
+# docker-compose.ai.yml
+version: '3.8'
+services:
+  ollama-primary:
+    image: ollama/ollama:latest
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: all
+              capabilities: [gpu]
+    ports:
+      - "11434:11434"
+    volumes:
+      - /mnt/fast-nvme/models:/root/.ollama
+\`\`\`
+
+Now test prompt generation via curl:
+
+<TerminalBlock command="curl http://192.168.1.120:11434/api/generate -d '{\"model\": \"llama3\", \"prompt\": \"Explain ZFS RAIDZ2 in 2 lines\"}'" title="Local Inference Test" os="bash" />
