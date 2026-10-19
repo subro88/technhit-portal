@@ -4,9 +4,9 @@ slug: "creating-container-in-proxmox-virtual-environment"
 date: "2020-10-18"
 category: "clustering-virtualization"
 status: "Published"
-summary: "rnContainers are a lightweight alternative to fully virtualized machines (VMs). They use the kernel of the host system that they run on, instead of emulating a full operating system (OS). This mean..."
+summary: "Containers are a lightweight alternative to fully virtualized machines (VMs). They use the kernel of the host system that they run on, instead of emulating a full operating system (OS). This means ..."
 tags: ["systems-engineering"]
-wordCount: 556
+wordCount: 580
 readTime: 3
 ---
 
@@ -24,62 +24,118 @@ readTime: 3
 
 ---
 
-rnContainers are a lightweight alternative to fully virtualized machines (VMs). They use the kernel of the host system that they run on, instead of emulating a full operating system (OS). This means that containers can access resources on the host system directly.
+Containers are a lightweight alternative to fully virtualized machines (VMs). They use the kernel of the host system that they run on, instead of emulating a full operating system (OS). This means that containers can access resources on the host system directly.
 
-rnrnrnThe runtime costs for containers are low, usually negligible. However, there are some drawbacks that need be considered:
+The runtime costs for containers are low, usually negligible. However, there are some drawbacks that need be considered:
 
-rnrnrn
-rn- rnOnly Linux distributions can be run in Proxmox Containers. It is not possible to run other operating systems like, for example, FreeBSD or Microsoft Windows inside a container.
+- 
 
-rn
-rn- rnFor security reasons, access to host resources needs to be restricted. Therefore, containers run in their own separate namespaces. Additionally, some syscalls (userspace requests to the Linux kernel) are not allowed within containers.
+Only Linux distributions can be run in Proxmox Containers. It is not possible to run other operating systems like, for example, FreeBSD or Microsoft Windows inside a container.
 
-rn
-rn
-rn## PROXMOX Containers Template Download Link:
+- 
 
-rn[http://download.proxmox.com/images/system/](http://download.proxmox.com/images/system/)
+For security reasons, access to host resources needs to be restricted. Therefore, containers run in their own separate namespaces. Additionally, some syscalls (userspace requests to the Linux kernel) are not allowed within containers.
 
-rnrn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph --><!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rn## **Creating Container In PROXMOX Virtual Environment**
+## PROXMOX Containers Template Download Link:
 
-rnAt the top Header section, there are two buttons one is "Create CT" for creating LXC container from container template and another is "Create VM" for creating a Virtual machine from ISO file. So, let's go and create an LXC container, here you can see the wizard follow the steps to create containers.
+[http://download.proxmox.com/images/system/](http://download.proxmox.com/images/system/)
 
-rn[![Container ](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-12-.png)](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-12-.png)
+<!-- /wp:paragraph -->
 
-rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph --><!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rnIn general section put the hostname and password for the root user. If you want password-less login then you can load the ssh key here. Click on next.
+<!-- wp:paragraph --><!-- /wp:paragraph -->
 
-rn[![Screenshot from 13-](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-13-.png)](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-13-.png)
+<!-- wp:paragraph -->
 
-rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rnNow you have to select the template from the Template dropdown list. You can see all your loaded templates. Click on next.
+## **Creating Container In PROXMOX Virtual Environment**
 
-rn[![Screenshot from 15-](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-15-.png)](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-15-.png)
+At the top Header section, there are two buttons one is "Create CT" for creating LXC container from container template and another is "Create VM" for creating a Virtual machine from ISO file. So, let's go and create an LXC container, here you can see the wizard follow the steps to create containers.
 
-rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rnNow you need to allocate the disk space for your container and then click on next.
+[![Container ](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-12-.png)](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-12-.png)
 
-rn[![Screenshot from 3-](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-16-.png)](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-16-.png)
+<!-- /wp:paragraph -->
 
-rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rnNow you have to allocate the CPU core as per your operation need. And click on next.
+<!-- wp:paragraph --><!-- /wp:paragraph -->
 
-rn[![Screenshot from 3-](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-17-.png)](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-17-.png)
+<!-- wp:paragraph -->
 
-rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rnAfter that, you need to allocate RAM and SWAP memory as per requirement and then click on next.
+In general section put the hostname and password for the root user. If you want password-less login then you can load the ssh key here. Click on next.
 
-rn[![Screenshot from 3-](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-18-.png)](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-18-.png)
+[![Screenshot from 13-](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-13-.png)](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-13-.png)
 
-rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rnNow at this point, you need to config your network for the container. Select NIC and set an IP for your container. And then click on next.
+<!-- /wp:paragraph -->
 
-rn[![Screenshot from 3-](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-19-.png)](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-19-.png)
+<!-- wp:paragraph -->
 
-rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rnAt this stage you need to set the DNS resolver, I am using google public DNS server. After that click on next.
+Now you have to select the template from the Template dropdown list. You can see all your loaded templates. Click on next.
 
-rn[![Screenshot from 3-](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-20-.png)](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-20-.png)
+[![Screenshot from 15-](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-15-.png)](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-15-.png)
 
-rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rnAnd finally, click on the finish button to deploy the container.
+<!-- /wp:paragraph -->
 
-rn[![Screenshot from 3-](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-21-.png)](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-21-.png)
+<!-- wp:paragraph -->
 
-rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rnClick on the start button to start your container. Go to the console and log into your container. You can increase or decrease resources like HDD, RAM, CPU at any point of time. You can edit your network config under the network section. And similarly, DNS and other resources.
+Now you need to allocate the disk space for your container and then click on next.
 
-rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph --><!-- /wp:paragraph -->rnrn<!-- wp:paragraph --><!-- /wp:paragraph -->rnrn<!-- wp:paragraph --><!-- /wp:paragraph -->rnrn<!-- wp:paragraph --><!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rnIn the snapshot section, you can able to take a snap of your container at any point of time. It’s a very important and useful tool that gives you the ability to rollback among different states. Especially When you doing an experiment with your container.
+[![Screenshot from 3-](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-16-.png)](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-16-.png)
 
-rnHope this article helpful to you. Leave comments if you have any questions.
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+
+Now you have to allocate the CPU core as per your operation need. And click on next.
+
+[![Screenshot from 3-](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-17-.png)](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-17-.png)
+
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+
+After that, you need to allocate RAM and SWAP memory as per requirement and then click on next.
+
+[![Screenshot from 3-](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-18-.png)](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-18-.png)
+
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+
+Now at this point, you need to config your network for the container. Select NIC and set an IP for your container. And then click on next.
+
+[![Screenshot from 3-](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-19-.png)](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-19-.png)
+
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+
+At this stage you need to set the DNS resolver, I am using google public DNS server. After that click on next.
+
+[![Screenshot from 3-](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-20-.png)](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-20-.png)
+
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+
+And finally, click on the finish button to deploy the container.
+
+[![Screenshot from 3-](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-21-.png)](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-21-.png)
+
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+
+Click on the start button to start your container. Go to the console and log into your container. You can increase or decrease resources like HDD, RAM, CPU at any point of time. You can edit your network config under the network section. And similarly, DNS and other resources.
+
+<!-- /wp:paragraph -->
+
+<!-- wp:paragraph --><!-- /wp:paragraph -->
+
+<!-- wp:paragraph --><!-- /wp:paragraph -->
+
+<!-- wp:paragraph --><!-- /wp:paragraph -->
+
+<!-- wp:paragraph --><!-- /wp:paragraph -->
+
+<!-- wp:paragraph -->
+
+In the snapshot section, you can able to take a snap of your container at any point of time. It's a very important and useful tool that gives you the ability to rollback among different states. Especially When you doing an experiment with your container.
+
+Hope this article helpful to you. Leave comments if you have any questions.

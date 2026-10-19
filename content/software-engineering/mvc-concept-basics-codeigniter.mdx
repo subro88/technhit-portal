@@ -6,7 +6,7 @@ category: "software-engineering"
 status: "Published"
 summary: "Although you have heard this term MVC mentioned in the previous article. MVC is an approach to separating your applications into three segments: Models, Views, and Controllers."
 tags: ["PHP", "CodeIgniter"]
-wordCount: 981
+wordCount: 984
 readTime: 5
 ---
 
@@ -26,74 +26,216 @@ readTime: 5
 
 Although you have heard this term MVC mentioned in the previous article. MVC is an approach to separating your applications into three segments: Models, Views, and Controllers.
 
-rnThe **Model** represents any type of data that your application may use. Some examples of data that your application might use would be: a database, RSS Feeds, API calls, and any other action that involves retrieving, returning, updating, and removing data.
+The **Model** represents any type of data that your application may use. Some examples of data that your application might use would be: a database, RSS Feeds, API calls, and any other action that involves retrieving, returning, updating, and removing data.
 
-rn**Views** are the information that is being presented on the screen to users through their web browsers. These are usually HTML files, sometimes containing PHP code that builds the template for the website. In CodeIgniter however, views can be page segments, partial templates, or any other type of page or template.
+**Views** are the information that is being presented on the screen to users through their web browsers. These are usually HTML files, sometimes containing PHP code that builds the template for the website. In CodeIgniter however, views can be page segments, partial templates, or any other type of page or template.
 
-rnFinally, **Controllers** are the business logic of your application. They serve as an intermediary between Models and Views. The Controller will respond to HTTP requests and generate web pages.
+Finally, **Controllers** are the business logic of your application. They serve as an intermediary between Models and Views. The Controller will respond to HTTP requests and generate web pages.
 
-rnrn<blockquote>rnIn CodeIgniter, Models are not mandatory for database operation. You can do the same inside controller. For small snippets of database operation, you can ignore models for unnecessary complexity. But it is best to practice for you to use models. If your are using a model function multiple times through various controller and you need to change the function, you only need to edit it in one place rather than in all of the controllers.
+<blockquote>
 
-rn</blockquote>rn[![MVC](https://www.technhit.in/wp-content/uploads/2017/01/MVC-LAYOUT.png)](https://www.technhit.in/wp-content/uploads/2017/01/MVC-LAYOUT.png) Diagram of MVCrn## Creating a Controller:
+In CodeIgniter, Models are not mandatory for database operation. You can do the same inside controller. For small snippets of database operation, you can ignore models for unnecessary complexity. But it is best to practice for you to use models. If your are using a model function multiple times through various controller and you need to change the function, you only need to edit it in one place rather than in all of the controllers.
 
-rnControllers are the core of your application because they determine how HTTP requests should be handled. Let's dive right in and create a simple Hello World controller. Create a file called Helloworld.php in system/application/controllers/.
+</blockquote>
+[![MVC](https://www.technhit.in/wp-content/uploads/2017/01/MVC-LAYOUT.png)](https://www.technhit.in/wp-content/uploads/2017/01/MVC-LAYOUT.png) Diagram of MVC
 
-rnrn```
-<?phprn  class Helloworld extends Controller{rn     rn      function index(){rn         echo("Hello, World!");rn      }rn      rn      function hellofunction(){rn         echo("Hello This is function under Hellowworld Class");rn      }rn    rn      function display($name){rn           echo 'Hi'. $name ;rn      }rn  }rn?>
-```rn### Explanation of above Code:
+## Creating a Controller:
 
-rnFirstly, you can see that the controller is a class that extends the base Controller class. The next thing to note is that there is a function with the name index. This is the default function and will be called when another function has not been called. To see this being run, simply navigate to the URL http://yourwebsite.ext/index.php/**helloworld**/ and you should see the words Hello, World! on the screen. After that you will see another function named hellofunction()  is method under Helloworld class, you can call this method followed by / (slash) after controller name (http://yourwebsite.ext/index.php/helloworld/**hellofunction**) The browser will display "Hello This is function under Helloworld Class".
+Controllers are the core of your application because they determine how HTTP requests should be handled. Let's dive right in and create a simple Hello World controller. Create a file called Helloworld.php in system/application/controllers/.
 
-rnAnd finally a method "display()" called with argument $name. Argument pass through URI segment followed by slash after method  i.e (http://yourwebsite.ext/index.php/helloworld/display/**bivas**) here bivas is the argument and after calling this method the browser will display "Hi Bivas".
+```bash
+<?php
+  class Helloworld extends Controller{
+     
+      function index(){
+         echo("Hello, World!");
+      }
+      
+      function hellofunction(){
+         echo("Hello This is function under Hellowworld Class");
+      }
+    
+      function display($name){
+           echo 'Hi'. $name ;
+      }
+  }
+?>
 
-rnrn### Notes:
+```
 
-rn<blockquote>rnAll Controller class names should start with an uppercase letter, and the rest of the name should be lowercase. Controllers should always extend the base class so that you can use all of CodeIgniter's syntax and have access to all CI resources. Not only the class name the controller file name should start with the uppercase letter.
+### Explanation of above Code:
 
-rn</blockquote>rn## **Views:**
+Firstly, you can see that the controller is a class that extends the base Controller class. The next thing to note is that there is a function with the name index. This is the default function and will be called when another function has not been called. To see this being run, simply navigate to the URL http://yourwebsite.ext/index.php/**helloworld**/ and you should see the words Hello, World! on the screen. After that you will see another function named hellofunction()  is method under Helloworld class, you can call this method followed by / (slash) after controller name (http://yourwebsite.ext/index.php/helloworld/**hellofunction**) The browser will display "Hello This is function under Helloworld Class".
 
-rnViews are the simple or complex HTML templates, which can be called by the controller. The controller can call multiple views like header, footer, sidebar etc. for the web page. The view cannot be called directly. Let us create a simple view. Create a new file under **application/views** with named “**example****.php**” and copy the below given code in that file.
+And finally a method "display()" called with argument $name. Argument pass through URI segment followed by slash after method  i.e (http://yourwebsite.ext/index.php/helloworld/display/**bivas**) here bivas is the argument and after calling this method the browser will display "Hi Bivas".
 
-rnrn```
-<!DOCTYPE html> rn<html lang = "en"> rnrn   <head> rn      <meta charset = "utf-8"> rn      <title>My CodeIgnier View</title> rnrn      <!-- Your Style and Js Script goes through here -->rn   </head>rn rn   <body> rn      CodeIgniter View Example rn   </body>rn rn</html>
-```rnYou can call the above view from the controller, the syntax of loading a view is:rn```
- $this->load->view("example"); //This is for default locationrn                               // in view directoryrnrn$this->load->view("you_directory_name/example") // For specified directory rn                                                //under view directory
-```rn###  Let's see how to call the view from the controller:
+### Notes:
 
-rn```
- <?phprn  class Helloworld extends Controller{rn     rn      function index(){rn         $this->load->view("example");rn      }rn      rn      rn  }rn?>
-```rn## **Models:**
+<blockquote>
 
-rnNow that you know what a Model is and what it's used for, we can take a look at how to construct a Model. Models are stored in system/application/models/. The class of your model should have the first letter capitalised and the rest of the name lowercase, and also extend the base class of Model. The class should also have a constructor that calls upon the base class constructor, as seen in the next code example.
+All Controller class names should start with an uppercase letter, and the rest of the name should be lowercase. Controllers should always extend the base class so that you can use all of CodeIgniter's syntax and have access to all CI resources. Not only the class name the controller file name should start with the uppercase letter.
 
-rnrn### Creating Model Class
+</blockquote>
 
-rn```
- <?phprn     class Mymodel extends Model{rn        rn        function user(){rn            $data=array('name'=> "bivas",rn                        'Age'=>21,rn                        'email'=>"abc@abc.com"rn                        );rn            return $data;rn        }rn     }rn?>
-```rn###  Loading a Model
+## **Views:**
 
-rnA model is loaded from Controller functions. Loading a model takes just one line of code.rn```
- $this->load->model('model_name');
-```rn In this instance, you should replace model_name with the name of your model. If your model is located in a sub-folder, you would load the model as follows:
+Views are the simple or complex HTML templates, which can be called by the controller. The controller can call multiple views like header, footer, sidebar etc. for the web page. The view cannot be called directly. Let us create a simple view. Create a new file under **application/views** with named "**example****.php**" and copy the below given code in that file.
 
-rnrn```
- $this->load->model('sub_folder/model_name');
-```rnOnce loaded, you access your model functions by using the global object with the same name as your model name.rn```
- $this->model_name->function_name();
-```rnYou can assign a new name for your Model object by passing it to the second parameter of the loading function.rn```
- $this->load->model('model_name', 'different_name');
-```rnNow you would call your model functions as follows:rn```
- $this->different_name->function_name();
-```rn**Here's an example of a controller calling a model and serving a view.**rn```
- <?phprn class Helloworld extends Controller{rn    function index(){rn         $this->load->model('mymodel');rn         $user = $this->mymodel->user();rn         $this->load->view('example', $user);rn    }rn }rn?>
-```rnNow modify your example view file to show user data:rn```
- <!DOCTYPE html> rn<html lang = "en"> rnrn   <head> rn      <meta charset = "utf-8"> rn      <title>View for user</title> rnrn      <!-- Your Style and Js Script goes through here -->rn   </head>rn rn   <body> rn      CodeIgniter user View Example rn       User name: <?=$user?> 
+```bash
+<!DOCTYPE html> 
+<html lang = "en"> 
 
-rn       User age: <?=$age?> 
+   <head> 
+      <meta charset = "utf-8"> 
+      <title>My CodeIgnier View</title> 
 
-rn       User email: <?=$email?> 
+      <!-- Your Style and Js Script goes through here -->
+   </head>
+ 
+   <body> 
+      CodeIgniter View Example 
+   </body>
+ 
+</html>
 
-rn   </body>rn rn</html>
-```rn rnThanks for reading this tutorial. Hope this is helpful for you. If you have any query, please leave a reply.
+```
 
-rn[<>](https://www.technhit.in/codeigniter-basic-configuration-using-auto-load/)
+You can call the above view from the controller, the syntax of loading a view is:
+
+```bash
+ $this->load->view("example"); //This is for default location
+                               // in view directory
+
+$this->load->view("you_directory_name/example") // For specified directory 
+                                                //under view directory
+
+```
+
+###  Let's see how to call the view from the controller:
+
+```bash
+ <?php
+  class Helloworld extends Controller{
+     
+      function index(){
+         $this->load->view("example");
+      }
+      
+      
+  }
+?>
+
+```
+
+## **Models:**
+
+Now that you know what a Model is and what it's used for, we can take a look at how to construct a Model. Models are stored in system/application/models/. The class of your model should have the first letter capitalised and the rest of the name lowercase, and also extend the base class of Model. The class should also have a constructor that calls upon the base class constructor, as seen in the next code example.
+
+### Creating Model Class
+
+```bash
+ <?php
+     class Mymodel extends Model{
+        
+        function user(){
+            $data=array('name'=> "bivas",
+                        'Age'=>21,
+                        'email'=>"abc@abc.com"
+                        );
+            return $data;
+        }
+     }
+?>
+
+```
+
+###  Loading a Model
+
+A model is loaded from Controller functions. Loading a model takes just one line of code.
+
+```bash
+ $this->load->model('model_name');
+
+```
+
+ In this instance, you should replace model_name with the name of your model. If your model is located in a sub-folder, you would load the model as follows:
+
+```bash
+ $this->load->model('sub_folder/model_name');
+
+```
+
+Once loaded, you access your model functions by using the global object with the same name as your model name.
+
+```bash
+ $this->model_name->function_name();
+
+```
+
+You can assign a new name for your Model object by passing it to the second parameter of the loading function.
+
+```bash
+ $this->load->model('model_name', 'different_name');
+
+```
+
+Now you would call your model functions as follows:
+
+```bash
+ $this->different_name->function_name();
+
+```
+
+**Here's an example of a controller calling a model and serving a view.**
+
+```bash
+ <?php
+ class Helloworld extends Controller{
+    function index(){
+         $this->load->model('mymodel');
+         $user = $this->mymodel->user();
+         $this->load->view('example', $user);
+    }
+ }
+?>
+
+```
+
+Now modify your example view file to show user data:
+
+```bash
+ <!DOCTYPE html> 
+<html lang = "en"> 
+
+   <head> 
+      <meta charset = "utf-8"> 
+      <title>View for user</title> 
+
+      <!-- Your Style and Js Script goes through here -->
+   </head>
+ 
+   <body> 
+      CodeIgniter user View Example 
+      
+
+ User name: <?=$user?> 
+
+      
+
+ User age: <?=$age?> 
+
+      
+
+ User email: <?=$email?> 
+
+   </body>
+ 
+</html>
+
+```
+
+Thanks for reading this tutorial. Hope this is helpful for you. If you have any query, please leave a reply.
+
+[<
+
+>](https://www.technhit.in/codeigniter-basic-configuration-using-auto-load/)

@@ -4,9 +4,9 @@ slug: "c-program-print-integer"
 date: "2016-05-23"
 category: "stem-10-plus-2"
 status: "Published"
-summary: "Let's talk about integers. Whole numbers less than zero are called negative **integers**. The **integer** zero is neither positive nor negative and has no sign. Two **integers** are opposites if th..."
+summary: "Let's talk about integers. Whole numbers less than zero are called negative **integers**. The **integer** zero is neither positive nor negative and has no sign. Two **integers** are opposites if th..."
 tags: ["print integer", "c programing", "Unsigned integer", "Positive integer", "negative integer", "data type"]
-wordCount: 368
+wordCount: 379
 readTime: 2
 ---
 
@@ -28,25 +28,83 @@ readTime: 2
 
 ---
 
-Let's talk about integers. Whole numbers less than zero are called negative **integers**. The **integer** zero is neither positive nor negative and has no sign. Two **integers** are opposites if they are each the same distance away from zero but on opposite sides of the number line. Positive **integers** can be written with or without a sign. Besides that, an integer without any sign is called **Unsigned integer.**
+Let's talk about integers. Whole numbers less than zero are called negative **integers**. The **integer** zero is neither positive nor negative and has no sign. Two **integers** are opposites if they are each the same distance away from zero but on opposite sides of the number line. Positive **integers** can be written with or without a sign. Besides that, an integer without any sign is called **Unsigned integer.**
 
-rnThe `int` data type is signed and has a minimum range of at least -32767 through 32767 inclusive. The actual values are given in `limits.h` as `INT_MIN` and `INT_MAX` respectively.rnrnAn `unsigned int` has a minimal range of 0 through 65535 inclusive with the actual maximum value being `UINT_MAX` from that same header file.rn# C program print integer
+The `int` data type is signed and has a minimum range of at least -32767 through 32767 inclusive. The actual values are given in `limits.h` as `INT_MIN` and `INT_MAX` respectively.
 
-rnThis is a simple c program that takes value from the user and then prints it. Here input is done using scanf() function and print using stranded printf() function. <stdio.h> header file has the definition of scanf and printf function.rnrnrnrn<article id="node-206" class="node node-page node-full clearfix">rnrnrnrnrn## C programming code
+An `unsigned int` has a minimal range of 0 through 65535 inclusive with the actual maximum value being `UINT_MAX` from that same header file.
 
-rnrnrn```c
-rn#include &lt;stdio.h&gt;rn rnint main()rn{rn  int a;rn rn  printf("Enter an integer value
-");rn  scanf("%d", &amp;a);rn rn  printf("Integer that you have entered is %d
-", a);rn  getch();rn  return 0;rn}rn
-```rnrnrn rnrnOutput of program:rn```
-Enter an integer value 10rnInteger that you have entered is 10rnpress any key to continue.rnrnlooks like thatrn
-```rn[![Print integer](http://technhit.in/wp-content/uploads/2016/05/int-output.jpg)](http://technhit.in/wp-content/uploads/2016/05/int-output.jpg)rnIn C language we have the data type for different types of data, for integer data it is int, for character data char, for floating point data it's float and so on. For large integers, you can use long or long long data type. To store integers which are greater than 2^18-1 which is the range of long long data type you may use strings. In the below code we store an integer in a string and then display it.
+# C program print integer
 
-rnrn## C program to store integer in a string
+This is a simple c program that takes value from the user and then prints it. Here input is done using scanf() function and print using stranded printf() function. <stdio.h> header file has the definition of scanf and printf function.
 
-rnrnrn```c
-rn#include &lt;stdio.h&gt;rn rnint main () rn{rn   char n[1000];rn rn   printf("Input an integer
-");rn   scanf("%s", n);rn rn   printf("%s", n);rn   getch();rn rn   return 0;rn}rn
-```rnrnrnOutput of program:rnrn```
-Input an integerrn13246523123156432123154131212341564313219rn13246523123156432123154131212341564313219
-```rnrnAn advantage of using string is that we can store very very large integers. C programming language does not have a built-in type to handle large numbers.rnrnrnrnrnrn</article>rnrn
+<article id="node-206" class="node node-page node-full clearfix">
+
+## C programming code
+
+```c
+
+#include &lt;stdio.h&gt;
+ 
+int main()
+{
+  int a;
+ 
+  printf("Enter an integer value\n");
+  scanf("%d", &amp;a);
+ 
+  printf("Integer that you have entered is %d\n", a);
+  getch();
+  return 0;
+}
+
+```
+
+Output of program:
+
+```c
+Enter an integer value 10
+Integer that you have entered is 10
+press any key to continue.
+
+looks like that
+
+```
+
+[![Print integer](http://technhit.in/wp-content/uploads/2016/05/int-output.jpg)](http://technhit.in/wp-content/uploads/2016/05/int-output.jpg)
+
+In C language we have the data type for different types of data, for integer data it is int, for character data char, for floating point data it's float and so on. For large integers, you can use long or long long data type. To store integers which are greater than 2^18-1 which is the range of long long data type you may use strings. In the below code we store an integer in a string and then display it.
+
+## C program to store integer in a string
+
+```c
+
+#include &lt;stdio.h&gt;
+ 
+int main () 
+{
+   char n[1000];
+ 
+   printf("Input an integer\n");
+   scanf("%s", n);
+ 
+   printf("%s", n);
+   getch();
+ 
+   return 0;
+}
+
+```
+
+Output of program:
+
+```c
+Input an integer
+13246523123156432123154131212341564313219
+13246523123156432123154131212341564313219
+
+```
+
+An advantage of using string is that we can store very very large integers. C programming language does not have a built-in type to handle large numbers.
+
+</article>

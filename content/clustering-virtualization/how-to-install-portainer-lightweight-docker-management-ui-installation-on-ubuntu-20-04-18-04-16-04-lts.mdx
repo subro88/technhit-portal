@@ -6,7 +6,7 @@ category: "clustering-virtualization"
 status: "Published"
 summary: "Portainer is a universal container management tool. It works with Kubernetes, Docker, Docker Swarm, and Azure ACI. It allows you to manage containers without needing to know platform-specific code...."
 tags: ["systems-engineering"]
-wordCount: 680
+wordCount: 699
 readTime: 4
 ---
 
@@ -26,98 +26,140 @@ readTime: 4
 
 Portainer is a universal container management tool. It works with Kubernetes, Docker, Docker Swarm, and Azure ACI. It allows you to manage containers without needing to know platform-specific code. It has a robust web UI
 
-rnIf you’re looking for an open-source and simple to use Docker management. Portainer is a great place to start. Portainer Community Edition is a completely free, powerful, open-source management toolset that allows you to easily build, manage, and maintain Docker environments. It supports Windows, Linux, and Mac OS.
+If you're looking for an open-source and simple to use Docker management. Portainer is a great place to start. Portainer Community Edition is a completely free, powerful, open-source management toolset that allows you to easily build, manage, and maintain Docker environments. It supports Windows, Linux, and Mac OS.
 
-rnrn## Step 1. Install Docker
+## Step 1. Install Docker
 
-rnIf you always want to automatically get the latest version of Docker on Ubuntu, you must add its official repository to the Ubuntu system. To do that, run the commands below to install prerequisite packages:
+If you always want to automatically get the latest version of Docker on Ubuntu, you must add its official repository to the Ubuntu system. To do that, run the commands below to install prerequisite packages:
 
-rnrn### Step1.1- Update your Package List and install prerequisite packages
+### Step1.1- Update your Package List and install prerequisite packages
 
-rn```
-sudo apt updaternsudo apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
-```rn### Step 1.2- Add Docker GPG Key
+```bash
+sudo apt update
+sudo apt-get install apt-transport-https ca-certificates curl gnupg-agent software-properties-common
 
-rnNext, run the commands below to download and install Docker’s official GPG key. The key is used to validate packages installed from Docker’s repository making sure they’re trusted.
+```
 
-rnrn```
+### Step 1.2- Add Docker GPG Key
+
+Next, run the commands below to download and install Docker's official GPG key. The key is used to validate packages installed from Docker's repository making sure they're trusted.
+
+```bash
 curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
-```rnNow that the official GPG key is installed,
 
-rnrn### Step 1.3- Add Docker Repository
+```
 
-rnrun the commands below to add its stable repository to Ubuntu. To add the nightly or test repository, add the word nightly or test (or both) after the word stable in the commands below.
+Now that the official GPG key is installed,
 
-rnrn```
+### Step 1.3- Add Docker Repository
+
+run the commands below to add its stable repository to Ubuntu. To add the nightly or test repository, add the word nightly or test (or both) after the word stable in the commands below.
+
+```bash
 sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu $(lsb_release -cs) stable"
-```rnAfter this command, Docker’s official repository should be installed on Ubuntu.
 
-rnrn### Step 1.4- Install Docker Latest Version
+```
 
-rnRun the commands below. The command below will always install the highest possible version:
+After this command, Docker's official repository should be installed on Ubuntu.
 
-rnrn```
+### Step 1.4- Install Docker Latest Version
+
+Run the commands below. The command below will always install the highest possible version:
+
+```bash
 sudo apt-get install docker-ce docker-ce-cli containerd.io
-```rnThis will install Docker software on Ubuntu.
 
-rn[![portainer](https://www.technhit.in/wp-content/uploads/2021/06/portainer1.png)](https://www.technhit.in/wp-content/uploads/2021/06/portainer1.png)rn## Step 2. Add user Account to Docker Group
+```
 
-rnAdd your account, for most cases it will be ubuntu, to Docker group and restart:
+This will install Docker software on Ubuntu.
 
-rnrn```
+[![portainer](https://www.technhit.in/wp-content/uploads/2021/06/portainer1.png)](https://www.technhit.in/wp-content/uploads/2021/06/portainer1.png)
+
+## Step 2. Add user Account to Docker Group
+
+Add your account, for most cases it will be ubuntu, to Docker group and restart:
+
+```bash
 sudo usermod -aG docker $USER
-```rnReboot your instance:
 
-rnrn```
+```
+
+Reboot your instance:
+
+```bash
 sudo reboot
-```rn## Step 3. Install Docker Compose
 
-rnOn Ubuntu Linux, you can download the Docker Compose binary from the [Compose repository release page on GitHub](https://github.com/docker/compose/releases). To install it, run the commands below to download version 1.26.0. As of this writing, this was the current version.
+```
 
-rnrn```
+## Step 3. Install Docker Compose
+
+On Ubuntu Linux, you can download the Docker Compose binary from the [Compose repository release page on GitHub](https://github.com/docker/compose/releases). To install it, run the commands below to download version 1.26.0. As of this writing, this was the current version.
+
+```bash
 sudo curl -L "https://github.com/docker/compose/releases/download/1.26.0/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-```rn[![portainer2](https://www.technhit.in/wp-content/uploads/2021/06/portainer2.png)](https://www.technhit.in/wp-content/uploads/2021/06/portainer2.png)
 
-rnAfter downloading it, run the commands below to apply executable permissions to the binary file and create a symbolic link to /usr/binary
+```
 
-rnrn```
-sudo chmod +x /usr/local/bin/docker-composernsudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
-```rnNow, Docker Compose should work. To test it, we will run the command below:
+[![portainer2](https://www.technhit.in/wp-content/uploads/2021/06/portainer2.png)](https://www.technhit.in/wp-content/uploads/2021/06/portainer2.png)
 
-rnrn```
+After downloading it, run the commands below to apply executable permissions to the binary file and create a symbolic link to /usr/binary
+
+```bash
+sudo chmod +x /usr/local/bin/docker-compose
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+
+```
+
+Now, Docker Compose should work. To test it, we will run the command below:
+
+```bash
 docker-compose --version
-```rnYou should see similar output as below:
 
-rn[![portainer3](https://www.technhit.in/wp-content/uploads/2021/06/portainer3.png)](https://www.technhit.in/wp-content/uploads/2021/06/portainer3.png)rn## Step 4: Setup Portainer
+```
 
-rnNow that Docker and Docker Composer are installed, follow the steps below to get Portainer setup. You can use the Docker command to deploy the Portainer Server
+You should see similar output as below:
 
-rnTo get the server installed, run the commands below.
+[![portainer3](https://www.technhit.in/wp-content/uploads/2021/06/portainer3.png)](https://www.technhit.in/wp-content/uploads/2021/06/portainer3.png)
 
-rnrn```
-cd ~/rndocker volume create portainer_datarndocker run -d -p 8000:8000 -p 9000:9000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer
-```rnYou’ll just need to access port 9000 of the Docker engine where Portainer is running using your browser.
+## Step 4: Setup Portainer
 
-rnNote: the -v /var/run/docker.sock:/var/run/docker.sock option can be used in Linux environments only.
+Now that Docker and Docker Composer are installed, follow the steps below to get Portainer setup. You can use the Docker command to deploy the Portainer Server
 
-rnAfter a successful pull, you should get a similar message as below:
+To get the server installed, run the commands below.
 
-rn[![portainer4](https://www.technhit.in/wp-content/uploads/2021/06/portainer4.png)](https://www.technhit.in/wp-content/uploads/2021/06/portainer4.png)
+```bash
+cd ~/
+docker volume create portainer_data
+docker run -d -p 8000:8000 -p 9000:9000 --name=portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer
 
-rnAt this point, all you need to do is access the Portainer portal to manage Docker. Open your web browser and browse to the server’s hostname or IP address followed by port #9000
+```
 
-rnhttp://localhost:9000 or http://<Your IP>:9000rnYou should get a Portainer login page to create an admin password.
+You'll just need to access port 9000 of the Docker engine where Portainer is running using your browser.
 
-rn[![portainer5](https://www.technhit.in/wp-content/uploads/2021/06/portainer5.png)](https://www.technhit.in/wp-content/uploads/2021/06/portainer5.png)
+Note: the -v /var/run/docker.sock:/var/run/docker.sock option can be used in Linux environments only.
 
-rnSubmit a new password.
+After a successful pull, you should get a similar message as below:
 
-rnNow you see some options to choose the environment you want to manage.
+[![portainer4](https://www.technhit.in/wp-content/uploads/2021/06/portainer4.png)](https://www.technhit.in/wp-content/uploads/2021/06/portainer4.png)
 
-rn[![portainer6](https://www.technhit.in/wp-content/uploads/2021/06/portainer6.png)](https://www.technhit.in/wp-content/uploads/2021/06/portainer6.png)
+At this point, all you need to do is access the Portainer portal to manage Docker. Open your web browser and browse to the server's hostname or IP address followed by port #9000
 
-rnSince we installed Docker on the same machine, select to connect and manage Docker locally.
+http://localhost:9000 or http://<Your IP>:9000
+You should get a Portainer login page to create an admin password.
 
-rn[![portainer7](https://www.technhit.in/wp-content/uploads/2021/06/portainer7.bmp)](https://www.technhit.in/wp-content/uploads/2021/06/portainer7.bmp)rnYou’ll be directed to the Portainer dashboard where you can start managing Docker. Browse around and begin setting up your environment. If you had Docker installed on a remote computer, you’ll have to install the Portainer agent on the server.
+[![portainer5](https://www.technhit.in/wp-content/uploads/2021/06/portainer5.png)](https://www.technhit.in/wp-content/uploads/2021/06/portainer5.png)
 
-rnConclusion:rnWell, At the end we learned how to install Portainer Docker manager on Ubuntu 20.04 | 18.04 | 16.04.
+Submit a new password.
+
+Now you see some options to choose the environment you want to manage.
+
+[![portainer6](https://www.technhit.in/wp-content/uploads/2021/06/portainer6.png)](https://www.technhit.in/wp-content/uploads/2021/06/portainer6.png)
+
+Since we installed Docker on the same machine, select to connect and manage Docker locally.
+
+[![portainer7](https://www.technhit.in/wp-content/uploads/2021/06/portainer7.bmp)](https://www.technhit.in/wp-content/uploads/2021/06/portainer7.bmp)
+
+You'll be directed to the Portainer dashboard where you can start managing Docker. Browse around and begin setting up your environment. If you had Docker installed on a remote computer, you'll have to install the Portainer agent on the server.
+
+Conclusion:
+Well, At the end we learned how to install Portainer Docker manager on Ubuntu 20.04 | 18.04 | 16.04.

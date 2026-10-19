@@ -6,7 +6,7 @@ category: "stem-10-plus-2"
 status: "Published"
 summary: "C program to perform basic arithmetic operations which are an addition, subtraction, multiplication, and division of two numbers. Numbers are assumed to be integers and will be entered by the user."
 tags: ["C / C++", "Basic Arithmetic", "multiply", "subtract", "typecasting", "Addition", "Division", "circumference of circle", "Area of Circle", "centigrade to Fahrenheit:"]
-wordCount: 547
+wordCount: 553
 readTime: 3
 ---
 
@@ -30,49 +30,147 @@ readTime: 3
 
 C program to perform basic arithmetic operations which are an addition, subtraction, multiplication, and division of two numbers. Numbers are assumed to be integers and will be entered by the user.
 
-rnrnrnrn<article id="node-218" class="node node-page node-full clearfix">rnrnrnrnrn## C programming code to perform basic arithmetic:
+<article id="node-218" class="node node-page node-full clearfix">
 
-rnIn this program calculate all basic arithmetic operation based on user's input values and display the result of those operations as output.rnrnrn```c
-rn#include <stdio.h>rnint main()rn{rn   int a, b, add, subtract, multiply;rn   float divide;                     //**divide variable declare as float because rn                                     //* the result may come in fraction.rn   printf("Enter two integers
-");rn   scanf("%d%d", &a, &b);rn   add = a + b;rn   subtract = a - b;rn   multiply = a * b;rn   divide = a / (float)b;   //typecastingrn   printf("Sum = %d
-",add);rn   printf("Difference = %d
-",subtract);rn   printf("Multiplication = %d
-",multiply);rn   printf("Division = %.2f
-",divide);rn   return 0;rn}rn
-```rnrnrnOutput of program:rnIn C language when we divide two integers, we get integer result for example 5/2 evaluates to 2. As a general rule integer/integer = integer and float/integer = float or integer/float = float. So we convert denominator to float in our program, you may also write float in the numerator. This explicit conversion is known as typecasting.
+## C programming code to perform basic arithmetic:
 
-rn**C program that takes two number from the user then performs basic arithmetic as user's choice.**rnIn this program, we use conditional if function to perform basic arithmetic as user's choice. After putting two values the user can choose one of four basic arithmetic operators to perform the operation.
+In this program calculate all basic arithmetic operation based on user's input values and display the result of those operations as output.
 
-rnrnrnrnrn```c
-rn#include <stdio.h>rnint main()rn{rn   int a, b, add, subtract, multiply;rn   float divide;                     //**divide variable declare as float because rn   char c;                                  //* the result may come in fraction.rn   printf("Enter two integers
-");rn   scanf("%d%d", &a, &b);rn   printf("Enter your Choice (+,-,*,/) :");rn   c=getch();rn   if (c=='+')rn   {rn       add = a + b;rn       printf("Sum = %d
-",add);rn   }elseif(c=='-')rn   {rn       subtract = a - b;rn       printf("Difference = %d
-",subtract);rn   }elseif(c=='*')rn   {rn       multiply = a * b;rn       printf("Multiplication = %d
-",multiply);rn   }elseif(c=='/')rn   {rn       divide = a / (float)b;   //typecastingrn       printf("Division = %.2f
-",divide);rn   }rn   getch();rn   return 0;rn}rn
-```rnrnoutput:rnrn[![basic arithmetic](http://technhit.in/wp-content/uploads/2016/06/basic-arith.jpg)](http://technhit.in/wp-content/uploads/2016/06/basic-arith.jpg)rnrnrn## C Program to find area and circumference of circle:
+```c
 
-rnIn this program, we have to calculate the area and circumference of the circle. We have following 2 formulas for finding circumference and area of the circle. Area of Circle = PI * R * R and Circumference of Circle = 2 * PI * R
+#include <stdio.h>
+int main()
+{
+   int a, b, add, subtract, multiply;
+   float divide;                     //**divide variable declare as float because 
+                                     //* the result may come in fraction.
+   printf("Enter two integers\n");
+   scanf("%d%d", &a, &b);
+   add = a + b;
+   subtract = a - b;
+   multiply = a * b;
+   divide = a / (float)b;   //typecasting
+   printf("Sum = %d\n",add);
+   printf("Difference = %d\n",subtract);
+   printf("Multiplication = %d\n",multiply);
+   printf("Division = %.2f\n",divide);
+   return 0;
+}
 
-rnrn```
- #include<stdio.h>rnrnint main() {rnrn int rad;rn float PI = 3.14, area, ci;rn clrscr();rnrn printf("
-Enter radius of circle: ");rn scanf("%d", &rad);rnrn area = PI * rad * rad;rn printf("
-Area of circle : %f ", area);rnrn ci = 2 * PI * rad;rn printf("
-Circumference : %f ", ci);rn getch();rnrn return (0);rn}
-```rnOutput:rnrn[![area of circle](https://www.technhit.in/wp-content/uploads/2016/06/area-of-circle.png)](https://www.technhit.in/wp-content/uploads/2016/06/area-of-circle.png)rn## Program to convert temperature from degree centigrade to Fahrenheit:
+```
 
-rnWe know that the temperature *T* in degrees Fahrenheit (°F) is equal to the temperature *T* in degrees Celsius (°C) times 9/5 plus 32:
+Output of program:
 
-rn*T*<sub>(°F)</sub> = *T*<sub>(°C)</sub> × 9/5 + 32
+In C language when we divide two integers, we get integer result for example 5/2 evaluates to 2. As a general rule integer/integer = integer and float/integer = float or integer/float = float. So we convert denominator to float in our program, you may also write float in the numerator. This explicit conversion is known as typecasting.
 
-rnorrn*T*<sub>(°F)</sub> = *T*<sub>(°C)</sub> × 1.8 + 32
+**C program that takes two number from the user then performs basic arithmetic as user's choice.**
 
-rnrn```
-#include<stdio.h>rn rnint main() {rn float celsius, fahrenheit;rn clrscr();rnrn printf("
-Enter temp in Celsius : ");rn scanf("%f", &celsius);rnrn fahrenheit = (1.8 * celsius) + 32;rn printf("
-Temperature in Fahrenheit : %f ", fahrenheit);rn getch();rnrn return (0);rn}
-```rnOutput: As we know that in -40° both Centigrade and Fahrenheit are equal.rnrn[![centigrade to Fahrenheit](https://www.technhit.in/wp-content/uploads/2016/06/centigrade-to-Fahrenheit.png)](https://www.technhit.in/wp-content/uploads/2016/06/centigrade-to-Fahrenheit.png)rnrnrnrn## 
+In this program, we use conditional if function to perform basic arithmetic as user's choice. After putting two values the user can choose one of four basic arithmetic operators to perform the operation.
 
-rn
+```c
 
-rnrnrn</article>rnrn
+#include <stdio.h>
+int main()
+{
+   int a, b, add, subtract, multiply;
+   float divide;                     //**divide variable declare as float because 
+   char c;                                  //* the result may come in fraction.
+   printf("Enter two integers\n");
+   scanf("%d%d", &a, &b);
+   printf("Enter your Choice (+,-,*,/) :");
+   c=getch();
+   if (c=='+')
+   {
+       add = a + b;
+       printf("Sum = %d\n",add);
+   }elseif(c=='-')
+   {
+       subtract = a - b;
+       printf("Difference = %d\n",subtract);
+   }elseif(c=='*')
+   {
+       multiply = a * b;
+       printf("Multiplication = %d\n",multiply);
+   }elseif(c=='/')
+   {
+       divide = a / (float)b;   //typecasting
+       printf("Division = %.2f\n",divide);
+   }
+   getch();
+   return 0;
+}
+
+```
+
+output:
+
+[![basic arithmetic](http://technhit.in/wp-content/uploads/2016/06/basic-arith.jpg)](http://technhit.in/wp-content/uploads/2016/06/basic-arith.jpg)
+
+## C Program to find area and circumference of circle:
+
+In this program, we have to calculate the area and circumference of the circle. We have following 2 formulas for finding circumference and area of the circle. Area of Circle = PI * R * R and Circumference of Circle = 2 * PI * R
+
+```c
+ #include<stdio.h>
+
+int main() {
+
+ int rad;
+ float PI = 3.14, area, ci;
+ clrscr();
+
+ printf("\nEnter radius of circle: ");
+ scanf("%d", &rad);
+
+ area = PI * rad * rad;
+ printf("\nArea of circle : %f ", area);
+
+ ci = 2 * PI * rad;
+ printf("\nCircumference : %f ", ci);
+ getch();
+
+ return (0);
+}
+
+```
+
+Output:
+
+[![area of circle](https://www.technhit.in/wp-content/uploads/2016/06/area-of-circle.png)](https://www.technhit.in/wp-content/uploads/2016/06/area-of-circle.png)
+
+## Program to convert temperature from degree centigrade to Fahrenheit:
+
+We know that the temperature *T* in degrees Fahrenheit (°F) is equal to the temperature *T* in degrees Celsius (°C) times 9/5 plus 32:
+
+*T*<sub>(°F)</sub> = *T*<sub>(°C)</sub> × 9/5 + 32
+
+or
+
+*T*<sub>(°F)</sub> = *T*<sub>(°C)</sub> × 1.8 + 32
+
+```c
+#include<stdio.h>
+ 
+int main() {
+ float celsius, fahrenheit;
+ clrscr();
+
+ printf("\nEnter temp in Celsius : ");
+ scanf("%f", &celsius);
+
+ fahrenheit = (1.8 * celsius) + 32;
+ printf("\nTemperature in Fahrenheit : %f ", fahrenheit);
+ getch();
+
+ return (0);
+}
+
+```
+
+Output: As we know that in -40° both Centigrade and Fahrenheit are equal.
+
+[![centigrade to Fahrenheit](https://www.technhit.in/wp-content/uploads/2016/06/centigrade-to-Fahrenheit.png)](https://www.technhit.in/wp-content/uploads/2016/06/centigrade-to-Fahrenheit.png)
+
+## 
+
+</article>

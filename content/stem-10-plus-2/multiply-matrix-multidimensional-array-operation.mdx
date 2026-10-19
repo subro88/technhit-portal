@@ -4,9 +4,9 @@ slug: "multiply-matrix-multidimensional-array-operation"
 date: "2016-10-23"
 category: "stem-10-plus-2"
 status: "Published"
-summary: "[We have seen our previous post how to declare multidimensional arrays](https://www.technhit.in/using-arrays-c-language-example/). Here we play with multidimensional arrays  like Sum of Matrix, Mul..."
+summary: "We have seen our previous post how to declare multidimensional arrays. Here we play with multidimensional arrays  like Sum of Matrix, Multiply of Matrix etc. We have already programmed sum and aver..."
 tags: ["C / C++", "multiply", "c array"]
-wordCount: 511
+wordCount: 512
 readTime: 3
 ---
 
@@ -28,35 +28,163 @@ readTime: 3
 
 ---
 
-[We have seen our previous post how to declare multidimensional arrays](https://www.technhit.in/using-arrays-c-language-example/). Here we play with multidimensional arrays  like Sum of Matrix, Multiply of Matrix etc. [We have already programmed sum and average of single dimension array in ](https://www.technhit.in/c-program-sum-average-array/)ours previous post. As we discuss earlier, more than 3 dimension arrays are difficult to imagine as well as implementation and execution. That's why we first use two dimension array as for example.
+[We have seen our previous post how to declare multidimensional arrays](https://www.technhit.in/using-arrays-c-language-example/). Here we play with multidimensional arrays  like Sum of Matrix, Multiply of Matrix etc. [We have already programmed sum and average of single dimension array in ](https://www.technhit.in/c-program-sum-average-array/)ours previous post. As we discuss earlier, more than 3 dimension arrays are difficult to imagine as well as implementation and execution. That's why we first use two dimension array as for example.
 
-rnrn## C Program to store values into two-dimensional array:
+## C Program to store values into two-dimensional array:
 
-rn```
- // C program to store marks of 3 year Semester and display it.rn#include <stdio.h>rnrnrnrnint main()rn{rn int YEAR = 3;rn int SEM = 2;rn int marks[3][2];rn int i,j;rn clrscr();rn for (i = 0; i < YEAR; ++i) {rn    for(j = 0; j < SEM; ++j) {rn      printf("Year %d, Semester %d: ", i+1, j+1);rn      scanf("%d", &marks[i][j]);rn    }rn }rnrn printf("
-Displaying values: 
+```c
+ // C program to store marks of 3 year Semester and display it.
+#include <stdio.h>
 
-");rn for ( i = 0; i < YEAR; ++i) {rn    for( j = 0; j < SEM; ++j)rn    {rn       printf(" You have enter %d Year, %d Semester marks = %d
-", i+1, j+1, marks[i][j]);rn    }rn }rn getch();rn return 0;rn}
-```rnOutput:rnrn[![Multiply Matrix](https://www.technhit.in/wp-content/uploads/2016/10/storing-value.png)](https://www.technhit.in/wp-content/uploads/2016/10/storing-value.png)rn## C Program to Calculate sum of 2x2 Matrix:
+int main()
+{
+ int YEAR = 3;
+ int SEM = 2;
+ int marks[3][2];
+ int i,j;
+ clrscr();
+ for (i = 0; i < YEAR; ++i) {
+    for(j = 0; j < SEM; ++j) {
+      printf("Year %d, Semester %d: ", i+1, j+1);
+      scanf("%d", &marks[i][j]);
+    }
+ }
 
-rn```
-#include <stdio.h>rnint main()rn{rn    float a[2][2], b[2][2], c[2][2];rn    int i, j;rnrn    // Storing Values into matrix a using nested for looprn    clrscr();rn    printf("Enter elements of 1st matrix
-");rn    for(i=0; i<2; ++i)rn       for(j=0; j<2; ++j)rn       {rn          printf("Enter a%d%d: ", i+1, j+1);rn          scanf("%f", &a[i][j]);rn       }rnrn    // Storing Values into matrix b using nested for looprn    printf("Enter elements of 2nd matrix
-");rn    for(i=0; i<2; ++i)rn       for(j=0; j<2; ++j)rn       {rn          printf("Enter b%d%d: ", i+1, j+1);rn          scanf("%f", &b[i][j]);rn       }rnrn    // adding corresponding elements of two arrays into third array crn    for(i=0; i<2; ++i)rn       for(j=0; j<2; ++j)rn       {rn          c[i][j] = a[i][j] + b[i][j]; rn       }rnrn    // Displaying the sumrn    printf("
-Sum Of Matrix:
-");rnrn    for(i=0; i<2; ++i)rn       for(j=0; j<2; ++j)rn       {rn          printf("%.1f  ", c[i][j]); rn rn          if(j==1) rn          printf("
-");rn       }rngetch();rn    return 0;rn}
-```rnOutput:rnrn[![sum](https://www.technhit.in/wp-content/uploads/2016/10/sum.png)](https://www.technhit.in/wp-content/uploads/2016/10/sum.png)rn## C Program to Calculate Multiplay of 2x2 Matrix:
+ printf("\nDisplaying values: \n\n");
+ for ( i = 0; i < YEAR; ++i) {
+    for( j = 0; j < SEM; ++j)
+    {
+       printf(" You have enter %d Year, %d Semester marks = %d\n", i+1, j+1, marks[i][j]);
+    }
+ }
+ getch();
+ return 0;
+}
 
-rnAn *n* x *m* matrix **A** and *m* x *p* matrix **B** can be multiplied together giving a *n* x *p* matrix **C**. It is important that the first matrix (**A**) has the same number of columns as the second (**B**) has rows.rnrn[To know more details click here](http://l4labs.soton.ac.uk/tutorials/maths/matrices.htm)rn```
- #include <stdio.h>rnrnint main()rn{rn int a[2][2], b[2][2], result[2][2], i, j, k;rnrn rn // Storing elements of first matrix.rn printf("
-Enter elements of matrix 1:
-");rn for(i=0; i<2; ++i)rn for(j=0; j<2; ++j)rn {rn printf("Enter elements a%d%d: ",i+1, j+1);rn scanf("%d", &a[i][j]);rn }rnrn // Storing elements of second matrix.rn printf("
-Enter elements of matrix 2:
-");rn for(i=0; i<2; ++i)rn for(j=0; j<2; ++j)rn {rn printf("Enter elements b%d%d: ",i+1, j+1);rn scanf("%d",&b[i][j]);rn }rnrn // Initializing all elements of result matrix to 0rn for(i=0; i<2; ++i)rn for(j=0; j<2; ++j)rn {rn result[i][j] = 0;rn }rnrn // Multiplying matrices a and b andrn // storing result in result matrixrn for(i=0; i<2; ++i)rn for(j=0; j<2; ++j)rn for(k=0; k<2; ++k)rn {rn result[i][j]+=a[i][k]*b[k][j];rn }rnrn // Displaying the resultrn printf("
-Output Matrix:
-");rn for(i=0; i<2; ++i)rn for(j=0; j<2; ++j)rn {rn printf("%d ", result[i][j]);rn if(j == 2-1)rn printf("
+```
 
-");rn }rn return 0;rn}
-```rnOutput:rnrn[![multiply](https://www.technhit.in/wp-content/uploads/2016/10/multiply.png)](https://www.technhit.in/wp-content/uploads/2016/10/multiply.png)
+Output:
+
+[![Multiply Matrix](https://www.technhit.in/wp-content/uploads/2016/10/storing-value.png)](https://www.technhit.in/wp-content/uploads/2016/10/storing-value.png)
+
+## C Program to Calculate sum of 2x2 Matrix:
+
+```c
+#include <stdio.h>
+int main()
+{
+    float a[2][2], b[2][2], c[2][2];
+    int i, j;
+
+    // Storing Values into matrix a using nested for loop
+    clrscr();
+    printf("Enter elements of 1st matrix\n");
+    for(i=0; i<2; ++i)
+       for(j=0; j<2; ++j)
+       {
+          printf("Enter a%d%d: ", i+1, j+1);
+          scanf("%f", &a[i][j]);
+       }
+
+    // Storing Values into matrix b using nested for loop
+    printf("Enter elements of 2nd matrix\n");
+    for(i=0; i<2; ++i)
+       for(j=0; j<2; ++j)
+       {
+          printf("Enter b%d%d: ", i+1, j+1);
+          scanf("%f", &b[i][j]);
+       }
+
+    // adding corresponding elements of two arrays into third array c
+    for(i=0; i<2; ++i)
+       for(j=0; j<2; ++j)
+       {
+          c[i][j] = a[i][j] + b[i][j]; 
+       }
+
+    // Displaying the sum
+    printf("\nSum Of Matrix:\n");
+
+    for(i=0; i<2; ++i)
+       for(j=0; j<2; ++j)
+       {
+          printf("%.1f\t", c[i][j]); 
+ 
+          if(j==1) 
+          printf("\n");
+       }
+getch();
+    return 0;
+}
+
+```
+
+Output:
+
+[![sum](https://www.technhit.in/wp-content/uploads/2016/10/sum.png)](https://www.technhit.in/wp-content/uploads/2016/10/sum.png)
+
+## C Program to Calculate Multiplay of 2x2 Matrix:
+
+An *n* x *m* matrix **A** and *m* x *p* matrix **B** can be multiplied together giving a *n* x *p* matrix **C**. It is important that the first matrix (**A**) has the same number of columns as the second (**B**) has rows.
+
+[To know more details click here](http://l4labs.soton.ac.uk/tutorials/maths/matrices.htm)
+
+```c
+ #include <stdio.h>
+
+int main()
+{
+ int a[2][2], b[2][2], result[2][2], i, j, k;
+
+ 
+ // Storing elements of first matrix.
+ printf("\nEnter elements of matrix 1:\n");
+ for(i=0; i<2; ++i)
+ for(j=0; j<2; ++j)
+ {
+ printf("Enter elements a%d%d: ",i+1, j+1);
+ scanf("%d", &a[i][j]);
+ }
+
+ // Storing elements of second matrix.
+ printf("\nEnter elements of matrix 2:\n");
+ for(i=0; i<2; ++i)
+ for(j=0; j<2; ++j)
+ {
+ printf("Enter elements b%d%d: ",i+1, j+1);
+ scanf("%d",&b[i][j]);
+ }
+
+ // Initializing all elements of result matrix to 0
+ for(i=0; i<2; ++i)
+ for(j=0; j<2; ++j)
+ {
+ result[i][j] = 0;
+ }
+
+ // Multiplying matrices a and b and
+ // storing result in result matrix
+ for(i=0; i<2; ++i)
+ for(j=0; j<2; ++j)
+ for(k=0; k<2; ++k)
+ {
+ result[i][j]+=a[i][k]*b[k][j];
+ }
+
+ // Displaying the result
+ printf("\nOutput Matrix:\n");
+ for(i=0; i<2; ++i)
+ for(j=0; j<2; ++j)
+ {
+ printf("%d ", result[i][j]);
+ if(j == 2-1)
+ printf("\n\n");
+ }
+ return 0;
+}
+
+```
+
+Output:
+
+[![multiply](https://www.technhit.in/wp-content/uploads/2016/10/multiply.png)](https://www.technhit.in/wp-content/uploads/2016/10/multiply.png)

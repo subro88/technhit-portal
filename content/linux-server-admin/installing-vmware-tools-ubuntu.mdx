@@ -4,9 +4,10 @@ slug: "installing-vmware-tools-ubuntu"
 date: "2016-10-01"
 category: "linux-server-admin"
 status: "Published"
-summary: "**VMWare tools** is a set of driver and utilities that enhance the performance of a guest system. And make the smooth interaction between a host system and the guest system. For example, the guest ..."
+summary: "**VMWare tools** is a set of driver and utilities that enhance the performance of a guest system. And make the smooth interaction between a host system and the guest system. For example, the guest ..."
 tags: ["How to", "Ubuntu", "Linux"]
-wordCount: 323
+youtubeId: "fSOvnlEowLA"
+wordCount: 334
 readTime: 2
 ---
 
@@ -24,22 +25,69 @@ readTime: 2
 
 ---
 
-**VMWare tools** is a set of driver and utilities that enhance the performance of a guest system. And make the smooth interaction between a host system and the guest system. For example, the guest automatically adjusts screen resolution, coping file and text from host to guest and its vice versa moreover it enhance following utilities.rn
-rn 	- It improves graphics performance and Windows Aero on operating systems that support Aero.
-rn 	- The Unity feature, which enables an application in a virtual machine to appear on the host desktop like any other application window.
-rn 	- Shared folders between host and guest file systems.
-rn 	- Improved mouse performance.
-rn 	- Synchronization of the clock in the virtual machine with the clock on the host or client desktop.
-rn 	- Scripting that helps automate guest operating system operations.
-rn
-rnThough It's not mandatory to install this tools on your VM guest. A VM guest can run without this. But installing this tools you can take advantage of above benefits.rn## Install VMware Tools on Ubuntu 16.04.1 LTS
+**VMWare tools** is a set of driver and utilities that enhance the performance of a guest system. And make the smooth interaction between a host system and the guest system. For example, the guest automatically adjusts screen resolution, coping file and text from host to guest and its vice versa moreover it enhance following utilities.
 
-rn**See on Youtube:**rnrn[embedyt] http://www.youtube.com/watch?v=fSOvnlEowLA[/embedyt]rnrnAfter installing your ubuntu guest on VMware you need to update all system package after that proceed for install VM tools. To get update your system package opens a terminal then type the following command.rn```
- sudo apt-get update
-```rnGo to VM Menu on VMware host -> Click on Install VMware Toolsrnrn[![install vm tools ubuntu](https://www.technhit.in/wp-content/uploads/2016/10/install-vm-tools-ubuntu1.png)](https://www.technhit.in/wp-content/uploads/2016/10/install-vm-tools-ubuntu1.png)rnrnAfter Click on Install VM Tools, you will see that VM tools mounted on ubuntu CD-ROMrnrn[![install-vm-tools-ubunu2](https://www.technhit.in/wp-content/uploads/2016/10/install-vm-tools-ubunu2.png)](https://www.technhit.in/wp-content/uploads/2016/10/install-vm-tools-ubunu2.png)rnrnAfter Opening CD-ROM you will see the VMware tools package ter.gz filernrnCopy and extract gz file as your desire location. In my case, I use Download directory.rn```
-sudo cp /media/technhit/VMware tools/VMwareTools-9.6.1-1378637.tar.gz /Downloadsrncd /Downloadsrnsudo tar -xvzf VMwareTools-9.6.1-1378637.tar.gz
-```rnAfter that enter newly extract directory **vmware-tools-distrib**rn```
-  cd /Downloads/vmware-tools-distrib
-```rn[![Installing VMware Tools on Ubuntu](https://www.technhit.in/wp-content/uploads/2016/10/install-vm-tools-ubunu3.png)](https://www.technhit.in/wp-content/uploads/2016/10/install-vm-tools-ubunu3.png)rnrnNow begin the install processrn```
+ 	
+- It improves graphics performance and Windows Aero on operating systems that support Aero.
+ 	
+- The Unity feature, which enables an application in a virtual machine to appear on the host desktop like any other application window.
+ 	
+- Shared folders between host and guest file systems.
+ 	
+- Improved mouse performance.
+ 	
+- Synchronization of the clock in the virtual machine with the clock on the host or client desktop.
+ 	
+- Scripting that helps automate guest operating system operations.
+
+Though It's not mandatory to install this tools on your VM guest. A VM guest can run without this. But installing this tools you can take advantage of above benefits.
+
+## Install VMware Tools on Ubuntu 16.04.1 LTS
+
+**See on Youtube:**
+
+After installing your ubuntu guest on VMware you need to update all system package after that proceed for install VM tools. To get update your system package opens a terminal then type the following command.
+
+```bash
+ sudo apt-get update
+
+```
+
+Go to VM Menu on VMware host -> Click on Install VMware Tools
+
+[![install vm tools ubuntu](https://www.technhit.in/wp-content/uploads/2016/10/install-vm-tools-ubuntu1.png)](https://www.technhit.in/wp-content/uploads/2016/10/install-vm-tools-ubuntu1.png)
+
+After Click on Install VM Tools, you will see that VM tools mounted on ubuntu CD-ROM
+
+[![install-vm-tools-ubunu2](https://www.technhit.in/wp-content/uploads/2016/10/install-vm-tools-ubunu2.png)](https://www.technhit.in/wp-content/uploads/2016/10/install-vm-tools-ubunu2.png)
+
+After Opening CD-ROM you will see the VMware tools package ter.gz file
+
+Copy and extract gz file as your desire location. In my case, I use Download directory.
+
+```bash
+sudo cp /media/technhit/VMware tools/VMwareTools-9.6.1-1378637.tar.gz /Downloads
+cd /Downloads
+sudo tar -xvzf VMwareTools-9.6.1-1378637.tar.gz
+
+```
+
+After that enter newly extract directory **vmware-tools-distrib**
+
+```bash
+  cd /Downloads/vmware-tools-distrib
+
+```
+
+[![Installing VMware Tools on Ubuntu](https://www.technhit.in/wp-content/uploads/2016/10/install-vm-tools-ubunu3.png)](https://www.technhit.in/wp-content/uploads/2016/10/install-vm-tools-ubunu3.png)
+
+Now begin the install process
+
+```bash
 sudo vmware-install.pl
-```rn[![install-vm-tools-ubunu4](https://www.technhit.in/wp-content/uploads/2016/10/install-vm-tools-ubunu4.png)](https://www.technhit.in/wp-content/uploads/2016/10/install-vm-tools-ubunu4.png)rnrnFollow the on-screen directions accepting all the default responses which asking during installations. Eventually, Reboot the guest os and enjoy!rnrn
+
+```
+
+[![install-vm-tools-ubunu4](https://www.technhit.in/wp-content/uploads/2016/10/install-vm-tools-ubunu4.png)](https://www.technhit.in/wp-content/uploads/2016/10/install-vm-tools-ubunu4.png)
+
+Follow the on-screen directions accepting all the default responses which asking during installations. Eventually, Reboot the guest os and enjoy!

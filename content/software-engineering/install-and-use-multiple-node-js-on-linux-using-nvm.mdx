@@ -6,7 +6,7 @@ category: "software-engineering"
 status: "Published"
 summary: "So the question is how to install and use multiple Node.js versions on a Linux machine. Here, we use the Node Version Manager (NVM) tool for the installation of Node.js."
 tags: ["systems-engineering"]
-wordCount: 668
+wordCount: 695
 readTime: 4
 ---
 
@@ -26,80 +26,149 @@ readTime: 4
 
 So the question is how to install and use multiple Node.js versions on a Linux machine. Here, we use the Node Version Manager (NVM) tool for the installation of Node.js.
 
-rnrn## What is nvm?
+## What is nvm?
 
-rn[nvm](https://github.com/creationix/nvm) stands for Node Version Manager. As the name suggests, it helps you manage and switch between different Node versions. It provides a command-line interface where you can install different versions with a single command, set a default, switch between them.
+[nvm](https://github.com/creationix/nvm) stands for Node Version Manager. As the name suggests, it helps you manage and switch between different Node versions. It provides a command-line interface where you can install different versions with a single command, set a default, switch between them.
 
-rnrn## NVM Installation
+## NVM Installation
 
-rnNVM install and Manage Node.js version in the user’s home directory. So you don’t need any root-level privileges. Simply login as a non-root user and follow tutorial.
+NVM install and Manage Node.js version in the user's home directory. So you don't need any root-level privileges. Simply login as a non-root user and follow tutorial.
 
-rnBelow find the Bash Script provided by NVM Team on the Linux system. You can simply execute this script on your machine to install NVM.
+Below find the Bash Script provided by NVM Team on the Linux system. You can simply execute this script on your machine to install NVM.
 
-rnrn```
+```bash
 curl https://raw.githubusercontent.com/creationix/nvm/master/install.sh | bash
-```rnThe installer makes an entry to the user’s default profile file. You need to reload the user’s environment using one of these commands. It will set the required environment variables to use nvm on the system.
 
-rnrn```
-source ~/.profile ## Debian based systems rnsource ~/.bashrc  ## CentOS/RHEL systems 
-```rn## Search Available Node.js Version’s
+```
 
-rnAt this point, you have installed nvm on your system for the current user. Now find out the available version of Node.js to install. Use ls-remote option to list versions.
+The installer makes an entry to the user's default profile file. You need to reload the user's environment using one of these commands. It will set the required environment variables to use nvm on the system.
 
-rnrn```
+```bash
+source ~/.profile 
+
+## Debian based systems 
+source ~/.bashrc  
+
+## CentOS/RHEL systems 
+
+```
+
+## Search Available Node.js Version's
+
+At this point, you have installed nvm on your system for the current user. Now find out the available version of Node.js to install. Use ls-remote option to list versions.
+
+```bash
 nvm ls-remote
-```rnYou will see a long list of available Node.js versions. You can install any of the listed Node.js versions.
 
-rnrn```
-...rn ...rn v12.12.0rn v12.13.0 (LTS: Erbium)rn-> v12.13.1 (Latest LTS: Erbium)rn v13.0.0rn v13.0.1rn v13.1.0rn v13.2.0
-```rn## Install Multiple Node.js Versions
+```
 
-rnNow install the node.js version you need to use for running node.js application. Below command will install node.js v12.13.1 the LTS release on your system.
+You will see a long list of available Node.js versions. You can install any of the listed Node.js versions.
 
-rnrn```
+```bash
+...
+ ...
+ v12.12.0
+ v12.13.0 (LTS: Erbium)
+-> v12.13.1 (Latest LTS: Erbium)
+ v13.0.0
+ v13.0.1
+ v13.1.0
+ v13.2.0
+
+```
+
+## Install Multiple Node.js Versions
+
+Now install the node.js version you need to use for running node.js application. Below command will install node.js v12.13.1 the LTS release on your system.
+
+```bash
 nvm install v12.13.1
-```rnYou can have also installed the latest version of Node.js.
 
-rnrn```
+```
+
+You can have also installed the latest version of Node.js.
+
+```bash
 nvm install v13.2.0
-```rnRepeat the above command with the different-2 node.js versions to install multiple versions of node.js on your system. For this tutorial, I have installed both of the above Node.js version and one more old LTS version below:
 
-rnrn```
+```
+
+Repeat the above command with the different-2 node.js versions to install multiple versions of node.js on your system. For this tutorial, I have installed both of the above Node.js version and one more old LTS version below:
+
+```bash
 nvm install v10.17.0
-```rnNow, I have installed 3 Node.js versions on my system.
 
-rnrn## Set Node.js Default Version
+```
 
-rnAs you have installed multiple node.js versions, You can select the specific version of node.js as default version used by system and load in the environment. Use below command to list currently installed version and default set version.
+Now, I have installed 3 Node.js versions on my system.
 
-rnrn```
-nvm listrnrn-> v10.17.0rn v12.13.1rn v13.2.0rn systemrndefault -> v12 (-> v12.13.1)rnnode -> stable (-> v13.2.0) (default)rnstable -> 13.2 (-> v13.2.0) (default)rniojs -> N/A (default)rnunstable -> N/A (default)rnlts/* -> lts/erbium (-> v12.13.1)rnlts/argon -> v4.9.1 (-> N/A)rnlts/boron -> v6.17.1 (-> N/A)rnlts/carbon -> v8.16.2 (-> N/A)rnlts/dubnium -> v10.17.0rnlts/erbium -> v12.13.1
-```rnYou can see that version 10.17.0 is set as the default Node.js version. Now, change the default Node.js version to 12.13.1.
+## Set Node.js Default Version
 
-rnrn```
-nvm use v12.13.1
-```rnNow verify the currently active version of Node.js. Using the same command you can switch to any Node.js version any time as per your requirements.
+As you have installed multiple node.js versions, You can select the specific version of node.js as default version used by system and load in the environment. Use below command to list currently installed version and default set version.
 
-rnrn```
-node --versionrnv12.13.1
-```rnBut still, there is a question. How can we run two or more applications with different Node.js versions at the same time? Not to worry, read the next step:
-
-rnrn## Running Application with Specific Version
-
-rnYou want to run multiple Node.js applications on your system and want to run each with a specific version of node.js. NVM provides you with an option to do this. You can use any installed node.js version for running a Node.js application. For example:
-
-rnrn```
-nvm run v10.17.0 app.js
-```rnThe app.js will run with Node.js version 10.17.0, It doesn’t matter what is the default version is set on your system.
-
-rnrn## Remove Unused Node.js Version
-
-rnThis command will provide a list of installed versions of node.js on your system.
-
-rnrn```
+```bash
 nvm list
-```rnNow remove any version installed on your system using the following command. The below command will remove Node.js version 10.16.3 from your system.
 
-rnrn```
+-> v10.17.0
+ v12.13.1
+ v13.2.0
+ system
+default -> v12 (-> v12.13.1)
+node -> stable (-> v13.2.0) (default)
+stable -> 13.2 (-> v13.2.0) (default)
+iojs -> N/A (default)
+unstable -> N/A (default)
+lts/* -> lts/erbium (-> v12.13.1)
+lts/argon -> v4.9.1 (-> N/A)
+lts/boron -> v6.17.1 (-> N/A)
+lts/carbon -> v8.16.2 (-> N/A)
+lts/dubnium -> v10.17.0
+lts/erbium -> v12.13.1
+
+```
+
+You can see that version 10.17.0 is set as the default Node.js version. Now, change the default Node.js version to 12.13.1.
+
+```bash
+nvm use v12.13.1
+
+```
+
+Now verify the currently active version of Node.js. Using the same command you can switch to any Node.js version any time as per your requirements.
+
+```bash
+node --version
+v12.13.1
+
+```
+
+But still, there is a question. How can we run two or more applications with different Node.js versions at the same time? Not to worry, read the next step:
+
+## Running Application with Specific Version
+
+You want to run multiple Node.js applications on your system and want to run each with a specific version of node.js. NVM provides you with an option to do this. You can use any installed node.js version for running a Node.js application. For example:
+
+```bash
+nvm run v10.17.0 app.js
+
+```
+
+The app.js will run with Node.js version 10.17.0, It doesn't matter what is the default version is set on your system.
+
+## Remove Unused Node.js Version
+
+This command will provide a list of installed versions of node.js on your system.
+
+```bash
+nvm list
+
+```
+
+Now remove any version installed on your system using the following command. The below command will remove Node.js version 10.16.3 from your system.
+
+```bash
 nvm uninstall v10.17.0
-```rnHope this article is helpful for those wants to manage multiple Node.js on the same Linux box.rn
+
+```
+
+Hope this article is helpful for those wants to manage multiple Node.js on the same Linux box.

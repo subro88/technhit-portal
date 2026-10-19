@@ -6,7 +6,8 @@ category: "linux-server-admin"
 status: "Published"
 summary: "In this tutorial, we are going to configure Apache virtual host on Ubuntu 20.04 LTS."
 tags: ["systems-engineering"]
-wordCount: 910
+youtubeId: "3dkFE3gmngM"
+wordCount: 921
 readTime: 5
 ---
 
@@ -26,128 +27,233 @@ readTime: 5
 
 In this tutorial, we are going to configure Apache virtual host on Ubuntu 20.04 LTS.
 
-rnrn## What is a virtual host? And its uses.
+## What is a virtual host? And its uses.
 
-rnWell, the term Virtual Host refers to the practice of running more than one web site such as company1.example.com and company2.example.com and so on within a single machine. Virtual hosts can be "IP-based", meaning that you have a different IP address for every web site, or "name-based", meaning that you have multiple names running on the same IP address.
+Well, the term Virtual Host refers to the practice of running more than one web site such as company1.example.com and company2.example.com and so on within a single machine. Virtual hosts can be "IP-based", meaning that you have a different IP address for every web site, or "name-based", meaning that you have multiple names running on the same IP address.
 
-rnSo, the fact is that they are running on the same physical server but it is not apparent to the end-user. Means Company1 does not have access to Company 2’s files and whatever inside going on. Thus, it secure and reliable.
+So, the fact is that they are running on the same physical server but it is not apparent to the end-user. Means Company1 does not have access to Company 2's files and whatever inside going on. Thus, it secure and reliable.
 
-rnIn the real world, we often called this method shared web hosting. The price for shared web hosting is much lesser than a dedicated web server because many customers can be hosted on a single server.
+In the real world, we often called this method shared web hosting. The price for shared web hosting is much lesser than a dedicated web server because many customers can be hosted on a single server.
 
-rn[embedyt] https://www.youtube.com/watch?v=3dkFE3gmngM[/embedyt]rn## Prerequisite:
+## Prerequisite:
 
-rnHere we used ubuntu 20.04 LTS for this experiment, It also applicable for 16.04 and higher versions.
+Here we used ubuntu 20.04 LTS for this experiment, It also applicable for 16.04 and higher versions.
 
-rnrn## Steps to configure Apache Virtual Host:
+## Steps to configure Apache Virtual Host:
 
-rn
-rn 	- **Open up your terminal and update the package list**
-rn 	- **Install Apache Server**
-rn 	- **Creating Virtual Host Users**
-rn 	- **Creating Index file**
-rn 	- **Configure Virtual Host Directives**
-rn 	- **Add Local DNS Resolver**
-rn 	- **Test Virtual Host **
-rn
-rn### Step-1) Update the package list
+ 	
+- **Open up your terminal and update the package list**
+ 	
+- **Install Apache Server**
+ 	
+- **Creating Virtual Host Users**
+ 	
+- **Creating Index file**
+ 	
+- **Configure Virtual Host Directives**
+ 	
+- **Add Local DNS Resolver**
+ 	
+- **Test Virtual Host **
 
-rnFirst thing is first, do update your package list. Go ahead and type
+### Step-1) Update the package list
 
-rnrn```
+First thing is first, do update your package list. Go ahead and type
+
+```bash
  sudo apt update
-```rn### Step-2) Install Apache HTTP Server
 
-rnAfter updating the package list, you need to be installed apache into your system.
+```
 
-rnrn```
+### Step-2) Install Apache HTTP Server
+
+After updating the package list, you need to be installed apache into your system.
+
+```bash
 sudo apt install apache2
-```rnAfter installing Apache, you could check it perfectly running or not by using the service command
 
-rnrn```
+```
+
+After installing Apache, you could check it perfectly running or not by using the service command
+
+```bash
  service apache2 status
-```rn### Step-3) Creating User for Virtual Host
 
-rn Now we are going to create two users for this experiment one is userA and other is userB. Let’s go and type
+```
 
-rnrn```
-sudo useradd -m userArnsudo useradd -m userB
-```rnHere the flag -m will Create the user's home directory if it does not exist. Now create a directory named public_html inside each user’s directory. Go ahead and type
+### Step-3) Creating User for Virtual Host
 
-rnrn```
-sudo mkdir /home/userA/public_htmlrnsudo mkdir /home/userB/public_html
-```rnNow we have a public_html directory under each user’s directory.
+ Now we are going to create two users for this experiment one is userA and other is userB. Let's go and type
 
-rnrn### Step-4) Creating Index File
+```bash
+sudo useradd -m userA
+sudo useradd -m userB
 
-rnNow you need to put some markup text inside public_html to identify your virtual host. So, we are gonna create an index.html file under public_html directory. Go ahead and type
+```
 
-rnrn```
+Here the flag -m will Create the user's home directory if it does not exist. Now create a directory named public_html inside each user's directory. Go ahead and type
+
+```bash
+sudo mkdir /home/userA/public_html
+sudo mkdir /home/userB/public_html
+
+```
+
+Now we have a public_html directory under each user's directory.
+
+### Step-4) Creating Index File
+
+Now you need to put some markup text inside public_html to identify your virtual host. So, we are gonna create an index.html file under public_html directory. Go ahead and type
+
+```bash
 sudo nano /home/userA/public_html/index.html
-```rnAnd put this markup text and save the file.
 
-rnrnrn```
-<html>rn   <head>rn      <title>Welcome to abc.com</title>rn   </head>rn   <body>rn      <h1>Hello! There welcome to abc.com page</h1>rn   </body>rn</html>
-```rnrnAnd similarly, do the same for user B.
+```
 
-rnrn```
+And put this markup text and save the file.
+
+```bash
+<html>
+   <head>
+      <title>Welcome to abc.com</title>
+   </head>
+   <body>
+      <h1>Hello! There welcome to abc.com page</h1>
+   </body>
+</html>
+
+```
+
+And similarly, do the same for user B.
+
+```bash
 sudo nano /home/userA/public_html/index.html
-```rn```
-<html>rn <head>rn <title>Welcome to xyz.com</title>rn </head>rn <body>rn <h1>Hello! There welcome to xyz.com page</h1>rn </body>rn</html>
-```rnNow each user had their index file ready to serve over apache.
 
-rnrn### Step-5) Creating Apache Virtual Host Config
+```bash
+<html>
+ <head>
+ <title>Welcome to xyz.com</title>
+ </head>
+ <body>
+ <h1>Hello! There welcome to xyz.com page</h1>
+ </body>
+</html>
 
-rnNow it’s time to create vhost config file for each user, go ahead and type
+```
 
-rnrn```
+Now each user had their index file ready to serve over apache.
+
+### Step-5) Creating Apache Virtual Host Config
+
+Now it's time to create vhost config file for each user, go ahead and type
+
+```bash
 sudo nano /etc/apache2/site-available/abc.com.conf.
-```rnSo, now you need to tell apache about your vhost and its configuration. Actually, these are called tags and directives.
 
-rnrnrn```
-<VirtualHost *:80>rn ServerAdmin abc@abc.comrn ServerName abc.comrn ServerAlias www.abc.comrn DocumentRoot /home/userA/public_html/rn<Directory /home/userA/public_html/>rn Options Indexes FollowSymLinksrn AllowOverride Nonern Require all grantedrn</Directory>rn ErrorLog ${APACHE_LOG_DIR}/error.logrn CustomLog ${APACHE_LOG_DIR}/access.log combinedrn</VirtualHost>
-```rnrnSo, roughly this is a standard Virtual Host structure which I made here, and my recommendation is first to understand your needs and then place the configuration. Do not blindly copy-paste from any tutorial in your production server. This can bring disaster at any time.
+```
 
-rn[Or you could learn more about directives and Virtual host examples at apache documentation just open up the documentation. ](https://httpd.apache.org/docs/2.4/vhosts/examples.html)
+So, now you need to tell apache about your vhost and its configuration. Actually, these are called tags and directives.
 
-rnNow we are going to create another Virtual host configuration for xyz.com
+```bash
+<VirtualHost *:80>
+ ServerAdmin abc@abc.com
+ ServerName abc.com
+ ServerAlias www.abc.com
+ DocumentRoot /home/userA/public_html/
+<Directory /home/userA/public_html/>
+ Options Indexes FollowSymLinks
+ AllowOverride None
+ Require all granted
+</Directory>
+ ErrorLog ${APACHE_LOG_DIR}/error.log
+ CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
 
-rnrn```
+```
+
+So, roughly this is a standard Virtual Host structure which I made here, and my recommendation is first to understand your needs and then place the configuration. Do not blindly copy-paste from any tutorial in your production server. This can bring disaster at any time.
+
+[Or you could learn more about directives and Virtual host examples at apache documentation just open up the documentation. ](https://httpd.apache.org/docs/2.4/vhosts/examples.html)
+
+Now we are going to create another Virtual host configuration for xyz.com
+
+```bash
 sudo nano /etc/apache2/site-available/xyz.com.conf.
-```rn```
-<VirtualHost *:80>rn ServerAdmin abc@abc.comrn ServerName abc.comrn ServerAlias www.abc.comrn DocumentRoot /home/userA/public_html/rn<Directory /home/userA/public_html/>rn Options Indexes FollowSymLinksrnAllowOverride NonernRequire all grantedrn</Directory>rn ErrorLog ${APACHE_LOG_DIR}/error.logrn CustomLog ${APACHE_LOG_DIR}/access.log combinedrn</VirtualHost>
-```rnSo, after all this stuff you need to enable your sites. Go ahead and type
 
-rnrn```
-sudo a2ensite abc.comrnsudo a2ensite xyz.com
-```rnAnd finally restart the apache, type
+```bash
+<VirtualHost *:80>
+ ServerAdmin abc@abc.com
+ ServerName abc.com
+ ServerAlias www.abc.com
+ DocumentRoot /home/userA/public_html/
+<Directory /home/userA/public_html/>
+ Options Indexes FollowSymLinks
+AllowOverride None
+Require all granted
+</Directory>
+ ErrorLog ${APACHE_LOG_DIR}/error.log
+ CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
 
-rnrn```
+```
+
+So, after all this stuff you need to enable your sites. Go ahead and type
+
+```bash
+sudo a2ensite abc.com
+sudo a2ensite xyz.com
+
+```
+
+And finally restart the apache, type
+
+```bash
 sudo systemctl restart apache2.
-```rn### Step-6) Add Local DNS Resolver
 
-rnNow, one last thing you needed is that a local DNS resolver as we are in a local environment, so, edit your hosts file using nano editor and add a local DNS record for each host. And if you are in a production environment then point your public IP to your DNS manager.
+```
 
-rnrn```
+### Step-6) Add Local DNS Resolver
+
+Now, one last thing you needed is that a local DNS resolver as we are in a local environment, so, edit your hosts file using nano editor and add a local DNS record for each host. And if you are in a production environment then point your public IP to your DNS manager.
+
+```bash
 sudo nano /etc/hosts
-```rnAnd add the following lines at the endrn```
-127.0.0.1   abc.comrn127.0.0.1   xyz.com
-```rn### Step-7) Test your Virtual Host
 
-rnFinally, test your settings, open up the web browser and open xyz.com and you could see the web page serving from xyz vhost.
+```
 
-rn[![Apache Virtual Host](https://www.technhit.in/wp-content/uploads/2021/02/img1.png)](https://www.technhit.in/wp-content/uploads/2021/02/img1.png)rnAlso, open another tab aside and type abc.com and this page serving form abc vhost.
+And add the following lines at the end
 
-rn[![apache vhost](https://www.technhit.in/wp-content/uploads/2021/02/img2.png)](https://www.technhit.in/wp-content/uploads/2021/02/img2.png)rn## You could follow 7 best practices for Apache security:
+```bash
+127.0.0.1   abc.com
+127.0.0.1   xyz.com
 
-rn
-rn 	- Keep your Apache updated with the latest releases and patches
-rn 	- Disable Directory Listing
-rn 	- Disable unnecessary modules
-rn 	- Turn off unnecessary services
-rn 	- Ensure that Apache server-info is disabled
-rn 	- Disable Trace HTTP Request
-rn 	- Distribute the ownership and don’t run Apache as ‘root’
-rn
-rnHope this tutorial helpful to you. Leave a comment if you have any questions. Also, click on subscribe button to encourage us and get the latest update. Thank you.
+```
 
-rn
+### Step-7) Test your Virtual Host
+
+Finally, test your settings, open up the web browser and open xyz.com and you could see the web page serving from xyz vhost.
+
+[![Apache Virtual Host](https://www.technhit.in/wp-content/uploads/2021/02/img1.png)](https://www.technhit.in/wp-content/uploads/2021/02/img1.png)
+
+Also, open another tab aside and type abc.com and this page serving form abc vhost.
+
+[![apache vhost](https://www.technhit.in/wp-content/uploads/2021/02/img2.png)](https://www.technhit.in/wp-content/uploads/2021/02/img2.png)
+
+## You could follow 7 best practices for Apache security:
+
+ 	
+- Keep your Apache updated with the latest releases and patches
+ 	
+- Disable Directory Listing
+ 	
+- Disable unnecessary modules
+ 	
+- Turn off unnecessary services
+ 	
+- Ensure that Apache server-info is disabled
+ 	
+- Disable Trace HTTP Request
+ 	
+- Distribute the ownership and don't run Apache as 'root'
+
+Hope this tutorial helpful to you. Leave a comment if you have any questions. Also, click on subscribe button to encourage us and get the latest update. Thank you.

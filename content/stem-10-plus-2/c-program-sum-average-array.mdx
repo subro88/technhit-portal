@@ -4,9 +4,9 @@ slug: "c-program-sum-average-array"
 date: "2016-08-28"
 category: "stem-10-plus-2"
 status: "Published"
-summary: "In the previous tutorial, we have  seen the array definition, declaration, initialization and access array values. Now we use the array to solve real-life math problems.rnC Program calculates the s..."
+summary: "In the previous tutorial, we have  seen the array definition, declaration, initialization and access array values. Now we use the array to solve real-life math problems."
 tags: ["systems-engineering"]
-wordCount: 501
+wordCount: 507
 readTime: 3
 ---
 
@@ -28,31 +28,126 @@ readTime: 3
 
 ---
 
-In the previous tutorial, we have  seen the array definition, declaration, initialization and access array values. Now we use the array to solve real-life math problems.rn## C Program calculates the sum & average of an array:
+In the previous tutorial, we have  seen the array definition, declaration, initialization and access array values. Now we use the array to solve real-life math problems.
 
-rnIn this program, you can able to calculate sum & average of an array. Including classified positive and negative sum.rn```
-#include <stdio.h>rnrnvoid main() rn{rn    int array[10];rn    int i, num, negative_sum = 0, positive_sum = 0;rn    float total = 0.0, average;rn    clrscr();rn    printf ("Enter the value of N 
-");rn    scanf("%d", &num);rn    printf("Enter %d numbers (-ve, +ve and zero) 
-", num);rn    for (i = 0; i < num; i++) rn    {rn         scanf("%d", &array[i]);           //Inseting value into arrayrn    }rn    printf("Input array elements 
-");rn    for (i = 0; i < num; i++)rn    {rn         printf("%+3d
-", array[i]);rn    }rnrn   /* Summation starts here*/rnrn    for (i = 0; i < num; i++) rn    {rn        if (array[i] < 0) rn        {rn            negative_sum = negative_sum + array[i];    // Calculate nevative sumrn        } rn        else if (array[i] > 0) rn        {rn            positive_sum = positive_sum + array[i];    // Calculate positive sumrn        } rn        rn        total = total + array[i] ;rn    }rn    average = total / num;rn    printf("
- Sum of all negative numbers = %d
-", negative_sum);rn    printf("Sum of all positive numbers = %d
-", positive_sum);rn    printf("
- Average of all input numbers = %.2f
-", average);rn    getch();rn}
-```rnOutput:rnrn[![sum avg array](https://www.technhit.in/wp-content/uploads/2016/08/sum-avg-array.png)](https://www.technhit.in/wp-content/uploads/2016/08/sum-avg-array.png)rn## C Program to Calculate the Sum of the Array Elements using Pointer:
+## C Program calculates the sum & average of an array:
 
-rnA pointer is an object, whose value refers to another value stored elsewhere in the computer memory using its memory address. in this program, we use a pointer *ptr (pointer is declared by using * sign) which store initial address of numArray[].
+In this program, you can able to calculate sum & average of an array. Including classified positive and negative sum.
 
-rnrn```
-#include<stdio.h>rn#include<conio.h>rnrnvoid main() rn{rn   int numArray[10];rn   int i, sum = 0;rn   int *ptr;rnrn   printf("
-Enter 10 elements : ");rnrn   for (i = 0; i < 10; i++)rn   scanf("%d", &numArray[i]);   //Accept the 10 elements from the user in the array.rnrn   ptr = numArray; // a=&a[0] We are storing the address of the array into the pointer.rnrn   for (i = 0; i < 10; i++)rn   {rn     sum = sum + *ptr;rn     ptr++;rn   }rnrn printf("The sum of array elements : %d", sum);rn}
-```rnOutput:rnrn[![sum avg array1](https://www.technhit.in/wp-content/uploads/2016/08/sum-avg-array1.png)](https://www.technhit.in/wp-content/uploads/2016/08/sum-avg-array1.png)rn## C Program to Calculate Sum of all Elements of an Array using Pointers as Arguments:
+```c
+#include <stdio.h>
 
-rnOne of the best things about pointers is that they allow functions to alter variables outside of their own scope. By passing a pointer to a function you can allow that function to read <i class="EMPHASIS">and write</i> to the data stored in that variable. In this program, we use a pointer (*ptr) to catch an array address which passes through a function argument (addnum()).
+void main() 
+{
+    int array[10];
+    int i, num, negative_sum = 0, positive_sum = 0;
+    float total = 0.0, average;
+    clrscr();
+    printf ("Enter the value of N \n");
+    scanf("%d", &num);
+    printf("Enter %d numbers (-ve, +ve and zero) \n", num);
+    for (i = 0; i < num; i++) 
+    {
+         scanf("%d", &array[i]);           //Inseting value into array
+    }
+    printf("Input array elements \n");
+    for (i = 0; i < num; i++)
+    {
+         printf("%+3d\n", array[i]);
+    }
 
-rnrn```
-#include <stdio.h>rnvoid main() {rn int array[5] = { 100, 300, 800, 400, 1000 } ;rnrn int sum;rn clrscr();rnrn int addnum(int *ptr);rnrn sum = addnum(array);rn printf("Sum of all array elements = %d
-", sum);rn getch();rn}rnint addnum(int *ptr) {rn int index, total = 0;rn for (index = 0; index < 5; index++) {rn total += *(ptr + index);rn }rn return(total);rn}
-```rnOutput:rnrn[![sum avg array2](https://www.technhit.in/wp-content/uploads/2016/08/sum-avg-array2.png)](https://www.technhit.in/wp-content/uploads/2016/08/sum-avg-array2.png)rnrn
+   /* Summation starts here*/
+
+    for (i = 0; i < num; i++) 
+    {
+        if (array[i] < 0) 
+        {
+            negative_sum = negative_sum + array[i];    // Calculate nevative sum
+        } 
+        else if (array[i] > 0) 
+        {
+            positive_sum = positive_sum + array[i];    // Calculate positive sum
+        } 
+        
+        total = total + array[i] ;
+    }
+    average = total / num;
+    printf("\n Sum of all negative numbers = %d\n", negative_sum);
+    printf("Sum of all positive numbers = %d\n", positive_sum);
+    printf("\n Average of all input numbers = %.2f\n", average);
+    getch();
+}
+
+```
+
+Output:
+
+[![sum avg array](https://www.technhit.in/wp-content/uploads/2016/08/sum-avg-array.png)](https://www.technhit.in/wp-content/uploads/2016/08/sum-avg-array.png)
+
+## C Program to Calculate the Sum of the Array Elements using Pointer:
+
+A pointer is an object, whose value refers to another value stored elsewhere in the computer memory using its memory address. in this program, we use a pointer *ptr (pointer is declared by using * sign) which store initial address of numArray[].
+
+```c
+#include<stdio.h>
+#include<conio.h>
+
+void main() 
+{
+   int numArray[10];
+   int i, sum = 0;
+   int *ptr;
+
+   printf("\nEnter 10 elements : ");
+
+   for (i = 0; i < 10; i++)
+   scanf("%d", &numArray[i]);   //Accept the 10 elements from the user in the array.
+
+   ptr = numArray; // a=&a[0] We are storing the address of the array into the pointer.
+
+   for (i = 0; i < 10; i++)
+   {
+     sum = sum + *ptr;
+     ptr++;
+   }
+
+ printf("The sum of array elements : %d", sum);
+}
+
+```
+
+Output:
+
+[![sum avg array1](https://www.technhit.in/wp-content/uploads/2016/08/sum-avg-array1.png)](https://www.technhit.in/wp-content/uploads/2016/08/sum-avg-array1.png)
+
+## C Program to Calculate Sum of all Elements of an Array using Pointers as Arguments:
+
+One of the best things about pointers is that they allow functions to alter variables outside of their own scope. By passing a pointer to a function you can allow that function to read <i class="EMPHASIS">and write</i> to the data stored in that variable. In this program, we use a pointer (*ptr) to catch an array address which passes through a function argument (addnum()).
+
+```c
+#include <stdio.h>
+void main() {
+ int array[5] = { 100, 300, 800, 400, 1000 } ;
+
+ int sum;
+ clrscr();
+
+ int addnum(int *ptr);
+
+ sum = addnum(array);
+ printf("Sum of all array elements = %d\n", sum);
+ getch();
+}
+int addnum(int *ptr) {
+ int index, total = 0;
+ for (index = 0; index < 5; index++) {
+ total += *(ptr + index);
+ }
+ return(total);
+}
+
+```
+
+Output:
+
+[![sum avg array2](https://www.technhit.in/wp-content/uploads/2016/08/sum-avg-array2.png)](https://www.technhit.in/wp-content/uploads/2016/08/sum-avg-array2.png)

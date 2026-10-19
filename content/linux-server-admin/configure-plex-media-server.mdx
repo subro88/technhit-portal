@@ -4,9 +4,10 @@ slug: "configure-plex-media-server"
 date: "2020-10-03"
 category: "linux-server-admin"
 status: "Published"
-summary: "Hi, Friends welcome to TechNHIT.  In this article, You will learn how to  Install and Configure Plex Media Server on Ubuntu 20.04"
+summary: "Hi, Friends welcome to TechNHIT.  In this article, You will learn how to  Install and Configure Plex Media Server on Ubuntu 20.04"
 tags: ["systems-engineering"]
-wordCount: 849
+youtubeId: "2hvs1R37Azk"
+wordCount: 871
 readTime: 5
 ---
 
@@ -24,108 +25,174 @@ readTime: 5
 
 ---
 
-# Hi, Friends welcome to TechNHIT.  In this article, You will learn how to  Install and Configure Plex Media Server on Ubuntu 20.04
+# Hi, Friends welcome to TechNHIT.  In this article, You will learn how to  Install and Configure Plex Media Server on Ubuntu 20.04
 
-rnrn**Plex** is a client-server media player system. Plex Media Server desktop application can able to run on Windows, macOS, and Linux. The server desktop application organizes your video, audio, and photo collections. Using Plex Media players you can access and stream your content collections. There are official clients available for mobile devices, smart TVs, and web apps.
+**Plex** is a client-server media player system. Plex Media Server desktop application can able to run on Windows, macOS, and Linux. The server desktop application organizes your video, audio, and photo collections. Using Plex Media players you can access and stream your content collections. There are official clients available for mobile devices, smart TVs, and web apps.
 
-rnPlex gives you one place to find and access all the media that matters to you, From personal media on your own server, to podcasts, web shows, and news, to streaming music, you can enjoy it all in one app, on any device.
+Plex gives you one place to find and access all the media that matters to you, From personal media on your own server, to podcasts, web shows, and news, to streaming music, you can enjoy it all in one app, on any device.
 
-rn***So, in order to install the Plex Server prerequisite you needed, and the environment I used here.***
+***So, in order to install the Plex Server prerequisite you needed, and the environment I used here.***
 
-rnrn
-rn 	- One Linux Box / VM / Container having Ubuntu 20.04LTS
-rn 	- (You can use Raspberry Pi as your home media server, It’s very cost-effective. just you need a pi and external hard disk where you can store your media.)
-rn
-rn## **Let’s go and logon to the system, and follow the steps. **
+ 	
+- One Linux Box / VM / Container having Ubuntu 20.04LTS
+ 	
+- (You can use Raspberry Pi as your home media server, It's very cost-effective. just you need a pi and external hard disk where you can store your media.)
 
-rn[embedyt] https://www.youtube.com/watch?v=2hvs1R37Azk[/embedyt]rn## Step-1) Downloading the Plex Media Server.
+## **Let's go and logon to the system, and follow the steps. **
 
-rnSo, let's open the terminal do update your package list using the apt update command.
+## Step-1) Downloading the Plex Media Server.
 
-rnrn```
+So, let's open the terminal do update your package list using the apt update command.
+
+```bash
 sudo apt update
-```rnAfter updating the package list open up a web browser and type [https://plex.tv](https://plex.tv) then scroll down below in get started section click on the get plex link. It will take you to the download page.
 
-rn[![Img1](https://www.technhit.in/wp-content/uploads/2020/10/plexTV.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTV.png)
+```
 
-rnYou have to click on the plex media server. And then you choose your platform as I am going to install the plex on my ubuntu server so I select Linux and then you have to choose a distribution. Just copy the link.
+After updating the package list open up a web browser and type [https://plex.tv](https://plex.tv) then scroll down below in get started section click on the get plex link. It will take you to the download page.
 
-rn[![Img2](https://www.technhit.in/wp-content/uploads/2020/10/plexTVdownload.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVdownload.png)rnGet back to your terminal and type the following command.
+[![Img1](https://www.technhit.in/wp-content/uploads/2020/10/plexTV.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTV.png)
 
-rnrn```
+You have to click on the plex media server. And then you choose your platform as I am going to install the plex on my ubuntu server so I select Linux and then you have to choose a distribution. Just copy the link.
+
+[![Img2](https://www.technhit.in/wp-content/uploads/2020/10/plexTVdownload.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVdownload.png)
+
+Get back to your terminal and type the following command.
+
+```bash
 wget https://downloads.plex.tv/plex-media-server-new/1.20.1.3252-a78fef9a9/debian/plexmediaserver_1.20.1.3252-a78fef9a9_amd64.deb
-```rn[![Img3](https://www.technhit.in/wp-content/uploads/2020/10/plexTVdownload1.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVdownload1.png)rn## Step-2) Installing the Plex Media Server.
 
-rnNow install the package using dpkg command.
+```
 
-rnrn```
-Sudo dpkg -I plexmediaserver_1.20.1.3252-xxxxxxx
-```rn[![Img3](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling1.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling1.png)rnHere you can see the plex media server is unpacking and installing into your system.
+[![Img3](https://www.technhit.in/wp-content/uploads/2020/10/plexTVdownload1.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVdownload1.png)
 
-rnAfter completing the installation, you can see the service status. Whether plex is running or not using
+## Step-2) Installing the Plex Media Server.
 
-rnrn```
+Now install the package using dpkg command.
+
+```bash
+Sudo dpkg -I plexmediaserver_1.20.1.3252-xxxxxxx
+
+```
+
+[![Img3](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling1.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling1.png)
+
+Here you can see the plex media server is unpacking and installing into your system.
+
+After completing the installation, you can see the service status. Whether plex is running or not using
+
+```bash
 systemctl status plexmediaserver.service
-```rn[![Img3](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling2.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling2.png)rnit's running and active.
 
-rnrn## Step-3) **Enabling Plex Repository**.
+```
 
-rnBy enabling the official Plex repo, you can update Plex on Ubuntu with apt package manager. The Plex deb package ships with a source list file. To see a list of files installed from a package, run dpkg with -L flag.
+[![Img3](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling2.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling2.png)
 
-rnrn```
+it's running and active.
+
+## Step-3) **Enabling Plex Repository**.
+
+By enabling the official Plex repo, you can update Plex on Ubuntu with apt package manager. The Plex deb package ships with a source list file. To see a list of files installed from a package, run dpkg with -L flag.
+
+```bash
 sudo dpkg -L plex media server
-```rnNow open the following source list file and uncomment the line to get updates from Plex.
 
-rnrn```
+```
+
+Now open the following source list file and uncomment the line to get updates from Plex.
+
+```bash
 sudo nano /etc/apt/sources.list.d/plexmediaserver.list
-```rn[![Img3](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling3.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling3.png)rnAlso, you need to add the plex public key.
 
-rnrn```
+```
+
+[![Img3](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling3.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling3.png)
+
+Also, you need to add the plex public key.
+
+```bash
 wget -q https://downloads.plex.tv/plex-keys/PlexSign.key -O - | sudo apt-key add -
-```rnNow you can able to update your plex package list type command:
 
-rnrn```
+```
+
+Now you can able to update your plex package list type command:
+
+```bash
  sudo apt update.
-```rnHere you can see plex repo has been added to your source list.
 
-rn[![Img3](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling4.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling4.png)rnNow you can view the plex server web access port by using netstat command.
+```
 
-rnrn```
+Here you can see plex repo has been added to your source list.
+
+[![Img3](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling4.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling4.png)
+
+Now you can view the plex server web access port by using netstat command.
+
+```bash
 sudo netstat -lnpt | grep Plex
-```rn[![Img3](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling5.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling5.png)rnHere you can see Plex server listening port 32400.
 
-rnrn## Step-4) Finally Configuring the Server through Web-based Management setup.
+```
 
-rnNow open up your browser and type localhost followed by 32400 port forward-slash web.
+[![Img3](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling5.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling5.png)
 
-rn[![Img3](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling6.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling6.png)rnIt will take you to the Plex web interface, which redirects you to https://app.plex.tv because you need to sign in with a plex.tv account.
+Here you can see Plex server listening port 32400.
 
-rn[![Img3](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling7.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling7.png)rnYou can choose any options listed here to login, or you may create a new account by clicking sign up.
+## Step-4) Finally Configuring the Server through Web-based Management setup.
 
-rnrn<blockquote>rnNote that if your Plex is installed on a remote Ubuntu 20.04 server, you need to set up a SSH tunnel by executing the following command on your local computer. Replace <REMOTE IP Address> with your IP address of the remote Ubuntu server.
+Now open up your browser and type localhost followed by 32400 port forward-slash web.
 
-rnrn```
+[![Img3](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling6.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling6.png)
+
+It will take you to the Plex web interface, which redirects you to https://app.plex.tv because you need to sign in with a plex.tv account.
+
+[![Img3](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling7.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling7.png)
+
+You can choose any options listed here to login, or you may create a new account by clicking sign up.
+
+<blockquote>
+
+Note that if your Plex is installed on a remote Ubuntu 20.04 server, you need to set up a SSH tunnel by executing the following command on your local computer. Replace <REMOTE IP Address> with your IP address of the remote Ubuntu server.
+
+```bash
 ssh <REMOTE IP ADDRESS> -L 8888:localhost:32400
-```rnThen you can access Plex web interface via the following URL.rn```
+
+```
+
+Then you can access Plex web interface via the following URL.
+
+```bash
 http://localhost:8888/web
-```rn</blockquote>rnAfter sign in it will take back you to your local server. For finalizing setup. Here you can see the mechanisms of the Plex server and how it works.
 
-rn[![Plex](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling8.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling8.png)rnHere you can see the server name by default it will your hostname. you may modify as per your suitable name.
+```
 
-rn[![Plex](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling9.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling9.png)rnAllow me to access my media outside my home. Let it by default to access your media outside the home directory.
+</blockquote>
 
-rnNow click on the Next button. And add your library directory.
+After sign in it will take back you to your local server. For finalizing setup. Here you can see the mechanisms of the Plex server and how it works.
 
-rn[![Plex](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling10.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling10.png)rn
+[![Plex](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling8.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling8.png)
 
-rn[![Plex](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling11.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling11.png)rnrn[![Plex](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling12.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling12.png)rnBrowse for your media folder, you can see the directory list here. I have copied some movies inside my plex home directory. And I am going to add this. And finally, click on the add library.
+Here you can see the server name by default it will your hostname. you may modify as per your suitable name.
 
-rn[![Plex](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling13.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling13.png)rn
+[![Plex](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling9.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling9.png)
 
-rnNow you are on the home screen. Click on more link to view your own server library. And here it is. I can access my server content. Plex automatically decorates your movie's thumbnail by its name. it’s very cool.
+Allow me to access my media outside my home. Let it by default to access your media outside the home directory.
 
-rn[![Plex Media Server](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling14.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling14.png)rnClick on the movie to start your show and enjoy it!!!! It's really very cool..
+Now click on the Next button. And add your library directory.
 
-rnHope this article helpful to you. Leave comments if you have any questions. Thank you.
+[![Plex](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling10.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling10.png)
 
-rn
+[![Plex](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling11.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling11.png)
+
+[![Plex](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling12.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling12.png)
+
+Browse for your media folder, you can see the directory list here. I have copied some movies inside my plex home directory. And I am going to add this. And finally, click on the add library.
+
+[![Plex](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling13.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling13.png)
+
+Now you are on the home screen. Click on more link to view your own server library. And here it is. I can access my server content. Plex automatically decorates your movie's thumbnail by its name. it's very cool.
+
+[![Plex Media Server](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling14.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling14.png)
+
+Click on the movie to start your show and enjoy it!!!! It's really very cool..
+
+Hope this article helpful to you. Leave comments if you have any questions. Thank you.

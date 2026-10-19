@@ -6,7 +6,7 @@ category: "software-engineering"
 status: "Published"
 summary: "In continuation of our CodeIgniter tutorials, the next step we are setting up some basic configuration. We can manage our CodeIgniter configuration from application/config directory. The config dir..."
 tags: ["CodeIgniter"]
-wordCount: 412
+wordCount: 409
 readTime: 2
 ---
 
@@ -26,59 +26,84 @@ readTime: 2
 
 In continuation of our CodeIgniter tutorials, the next step we are setting up some basic configuration. We can manage our CodeIgniter configuration from application/config directory. The config directory contains the group of files which handle your application configuration.
 
-rnrn## Using Auto load:
+## Using Auto load:
 
-rnThe file *atutoload.php* comes under *application/config* directory. And used for Auto Loading Resources globally throughout your application. In order to keep the framework as light-weight as possible, only the absolute minimal resources are loaded by default. You should load only those things that use over and over in your application. The “*Auto-load*” feature in CodeIgniter permits following things of your application to autoload:
+The file *atutoload.php* comes under *application/config* directory. And used for Auto Loading Resources globally throughout your application. In order to keep the framework as light-weight as possible, only the absolute minimal resources are loaded by default. You should load only those things that use over and over in your application. The "*Auto-load*" feature in CodeIgniter permits following things of your application to autoload:
 
-rnrn
-rn 	- **Packages**
-rn 	- **Libraries**
-rn 	- **Drivers**
-rn 	- **Helper files**
-rn 	- **Custom config files**
-rn 	- **Language files**
-rn 	- **Models**
-rn
-rn### **Packages −  **
+ 	
+- **Packages**
+ 	
+- **Libraries**
+ 	
+- **Drivers**
+ 	
+- **Helper files**
+ 	
+- **Custom config files**
+ 	
+- **Language files**
+ 	
+- **Models**
 
-rnUsing package we can load third party package from third party directory under application directory or a specific directory passing through an array().
+### **Packages −  **
 
-rnrn```
+Using package we can load third party package from third party directory under application directory or a specific directory passing through an array().
+
+```bash
 $autoload['packages'] = array(APPPATH.'third_party', '/usr/local/shared');
-```rn### **Libraries** −
 
-rnIt is a list of libraries that you can autoload passing through array list. For example following essential libraries like database, email, session, form_validation you can auto load.
+```
 
-rnrn```
+### **Libraries** −
+
+It is a list of libraries that you can autoload passing through array list. For example following essential libraries like database, email, session, form_validation you can auto load.
+
+```bash
 $autoload['libraries'] = array('database', 'form_validation', 'session','grocery_CRUD','parser');
-```rn### **Drivers** −
 
-rnThese classes are located in the system/libraries folder or in your application/libraries folder within their own subdirectory. They offer multiple interchangeable driver options.
+```
 
-rnrn```
+### **Drivers** −
+
+These classes are located in the system/libraries folder or in your application/libraries folder within their own subdirectory. They offer multiple interchangeable driver options.
+
+```bash
 $autoload['drivers'] = array('cache');
-```rn### **Helper files** −
 
-rnIt is a list of helper files, to be autoloaded. Provide a list of libraries in the array, as shown below, to be autoloaded by CodeIgniter. In the given example, we are autoloading URL and file helpers.
+```
 
-rnrn```
+### **Helper files** −
+
+It is a list of helper files, to be autoloaded. Provide a list of libraries in the array, as shown below, to be autoloaded by CodeIgniter. In the given example, we are autoloading URL and file helpers.
+
+```bash
 $autoload['helper'] = array('form','url', 'security');
-```rn### **Config files** −
 
-rnIt is used for custom config files. Otherwise, leave it blank. CodeIgniter automatically loads the primary config file (application/config/config.php), so you will only need to load a config file if you have created your own for the deferent environment. We will describe haw to configure multiple environments later on.
+```
 
-rnrn```
+### **Config files** −
+
+It is used for custom config files. Otherwise, leave it blank. CodeIgniter automatically loads the primary config file (application/config/config.php), so you will only need to load a config file if you have created your own for the deferent environment. We will describe haw to configure multiple environments later on.
+
+```bash
 $autoload['config'] = array();
-```rn### **Language files** −
 
-rnIf you find that you need a particular language globally throughout your application, you can tell CodeIgniter to *auto-load* it during system initialization. This is done by opening the application/config/autoload.php file and adding the language(s) to the autoload array.
+```
 
-rnrn```
+### **Language files** −
+
+If you find that you need a particular language globally throughout your application, you can tell CodeIgniter to *auto-load* it during system initialization. This is done by opening the application/config/autoload.php file and adding the language(s) to the autoload array.
+
+```bash
 $autoload['language'] = array('lang1', 'lang2');
-```rn### **Models** −
 
-rnUsing models you can load frequently used model,  For example, you have a user_model for frequent use than load model on *auto-load*.
+```
 
-rnrn```
+### **Models** −
+
+Using models you can load frequently used model,  For example, you have a user_model for frequent use than load model on *auto-load*.
+
+```bash
 $autoload['model'] = array('user_model');
-```rn
+
+```

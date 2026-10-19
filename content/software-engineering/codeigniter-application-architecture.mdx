@@ -6,7 +6,7 @@ category: "software-engineering"
 status: "Published"
 summary: "In the previous post, we know how to setup CodeIgniter on your local environment. To proceed with configuration it is very important to know Application Architecture. The CodeIgniter application Ar..."
 tags: ["PHP", "CodeIgniter"]
-wordCount: 843
+wordCount: 813
 readTime: 5
 ---
 
@@ -24,57 +24,90 @@ readTime: 5
 
 ---
 
-In the previous post, we know how to setup CodeIgniter on your local environment. To proceed with configuration it is very important to know Application Architecture. The CodeIgniter application Architecture looks like below:
+In the previous post, we know how to setup CodeIgniter on your local environment. To proceed with configuration it is very important to know Application Architecture. The CodeIgniter application Architecture looks like below:
 
-rn[![Application architecture ](https://www.technhit.in/wp-content/uploads/2017/01/application-architecher.png)](https://www.technhit.in/wp-content/uploads/2017/01/application-architecher.png)rn## **Elaboration of CodeIgniter Architecture:**
+[![Application architecture ](https://www.technhit.in/wp-content/uploads/2017/01/application-architecher.png)](https://www.technhit.in/wp-content/uploads/2017/01/application-architecher.png)
 
-rnAbove picture depicts that, the user interact with home/index page. An Index page consists of different directives of application.
+## **Elaboration of CodeIgniter Architecture:**
 
-rnrn
-rn 	- At next level Routeing will determine whether it is available in cache or not. if it available in the cache then immediately route to the cache and generate a quick view to the user. Otherwise, it passes for security check.
-rn 	- At next level, the security check will check submitted data from the user then controller loads model, library, helper, plugins and necessary requirement for the request made by the user.
-rn 	- After gathering all required information from model, library, plugins etc, it passes to the View.
-rn 	- Then view will render the page with given data and pass it for caching if the requested page not cached before. After caching it will store in the cache for quick response in future as well as generate a view to the user.
-rn
-rn## **Understanding with CodeIgniter File and Directory Structure:**
+Above picture depicts that, the user interact with home/index page. An Index page consists of different directives of application.
 
-rnThe following picture will depict the overall **CodeIgniter Directory Structure**rnrn[![Directory structure](https://www.technhit.in/wp-content/uploads/2017/01/dir.png)](https://www.technhit.in/wp-content/uploads/2017/01/dir.png)rnrn rnrnIn CodeIgniter application, basically there are three Directories those are:rn
-rn 	- Application Directory
-rn 	- System Directory
-rn 	- User_guide
-rn
-rnIn addition, few files are there with the application licence, readme etc. you can create and use assets directory to manage your assets like uploads, scripts etc.rn### **Elaboration of Files and its uses:**
+ 	
+- At next level Routeing will determine whether it is available in cache or not. if it available in the cache then immediately route to the cache and generate a quick view to the user. Otherwise, it passes for security check.
+ 	
+- At next level, the security check will check submitted data from the user then controller loads model, library, helper, plugins and necessary requirement for the request made by the user.
+ 	
+- After gathering all required information from model, library, plugins etc, it passes to the View.
+ 	
+- Then view will render the page with given data and pass it for caching if the requested page not cached before. After caching it will store in the cache for quick response in future as well as generate a view to the user.
 
-rn### **■ Application Directory**
+## **Understanding with CodeIgniter File and Directory Structure:**
 
-rnApplication Directory contains the entire code of your application which you are developing.  In this directory, we found some subdirectories that have several functionalities. The following subdirectories are explained here:
+The following picture will depict the overall **CodeIgniter Directory Structure**
 
-rnrn
-rn 	- **Cache**--- This directory is used to store cached page of your application. Cache is a technique to serve page content faster to the user.
-rn 	- **Config**--- The Config directory contains all configuration of your application. For example, **Config.php** contain the configuration of **Base URL, Index file, URI Protocol** etc. **Database.php** contains the configuration of the database like **database driver, database name, username, password** etc.
-rn 	- **Controller**--- This directory contains all controller of your application. All directives of your application ar controlled from here.
-rn 	- **Core**--- This directory contains all base classes of o your application.
-rn 	- **Helpers**--- In this directory you can set your helper classes for the application.
-rn 	- **Hooks**--- The Hooks feature provides a means to tap into and modify the inner workings of the framework without hacking the core files. For example, you might want to run a script right before your controllers get loaded, or right after, or you might want to trigger one of your own scripts in some other location.
-rn 	- **Language**--- This folder contains language related files.
-rn 	- **<b>Libraries** </strong>--- All system library are contained in the system directory. But you can define your own library in the libraries directory.
-rn 	- **Logs** --- This directory contains files related to the log of the system.
-rn 	- **Models** --- The database related task like query, update and feedbacks are operated from this directory.
-rn 	- **Third_party** --- In this directory, you can place any plugins, which will be used for your application.
-rn 	- **Views** --- All Application’s HTML templates files contain in this directory.
-rn
-rn### **■ System Directory**
+[![Directory structure](https://www.technhit.in/wp-content/uploads/2017/01/dir.png)](https://www.technhit.in/wp-content/uploads/2017/01/dir.png)
 
-rn System directory of CodeIgniter contains library, helper and core code which makes the development of your applications on this framework very easy. Do not change anythings in this directory. The subdirectories of system directory are explained below:
+ 
 
-rnrn
-rn 	- **Core** − This folder contains CodeIgniter’s core class. Do not modify anything here. All of your work will take place in the application folder. Even if your intent is to extend the CodeIgniter core, you have to do it with hooks, and hooks live in the application folder.
-rn 	- **Database** − The database folder contains core database drivers and other database utilities.
-rn 	- **Fonts** − The fonts folder contains font related information and utilities.
-rn 	- **Helpers** − The helpers folder contains standard CodeIgniter helpers (such as date, cookie, and URL helpers).
-rn 	- **Language** − The language folder contains language files. You can ignore it for now.
-rn 	- **Libraries** − The libraries folder contains standard CodeIgniter libraries (to help you with e-mail, calendars, file uploads, and more). You can create your own libraries or extend (and even replace) standard ones, but those will be saved in the **application/libraries** directory to keep them separate from the standard CodeIgniter libraries saved in this particular folder.
-rn
-rn### **■ User_guide**
+In CodeIgniter application, basically there are three Directories those are:
 
-rnThis is your user guide to CodeIgniter. It is basically, the offline version of user guide on CodeIgniter website. Using this, one can learn the functions of various libraries, helpers and classes. It is recommended to go through this user guide before building your first web app in CodeIgniter.
+ 	
+- Application Directory
+ 	
+- System Directory
+ 	
+- User_guide
+
+In addition, few files are there with the application licence, readme etc. you can create and use assets directory to manage your assets like uploads, scripts etc.
+
+### **Elaboration of Files and its uses:**
+
+### **■ Application Directory**
+
+Application Directory contains the entire code of your application which you are developing.  In this directory, we found some subdirectories that have several functionalities. The following subdirectories are explained here:
+
+ 	
+- **Cache**--- This directory is used to store cached page of your application. Cache is a technique to serve page content faster to the user.
+ 	
+- **Config**--- The Config directory contains all configuration of your application. For example, **Config.php** contain the configuration of **Base URL, Index file, URI Protocol** etc. **Database.php** contains the configuration of the database like **database driver, database name, username, password** etc.
+ 	
+- **Controller**--- This directory contains all controller of your application. All directives of your application ar controlled from here.
+ 	
+- **Core**--- This directory contains all base classes of o your application.
+ 	
+- **Helpers**--- In this directory you can set your helper classes for the application.
+ 	
+- **Hooks**--- The Hooks feature provides a means to tap into and modify the inner workings of the framework without hacking the core files. For example, you might want to run a script right before your controllers get loaded, or right after, or you might want to trigger one of your own scripts in some other location.
+ 	
+- **Language**--- This folder contains language related files.
+ 	
+- **<b>Libraries** </strong>--- All system library are contained in the system directory. But you can define your own library in the libraries directory.
+ 	
+- **Logs** --- This directory contains files related to the log of the system.
+ 	
+- **Models** --- The database related task like query, update and feedbacks are operated from this directory.
+ 	
+- **Third_party** --- In this directory, you can place any plugins, which will be used for your application.
+ 	
+- **Views** --- All Application's HTML templates files contain in this directory.
+
+### **■ System Directory**
+
+ System directory of CodeIgniter contains library, helper and core code which makes the development of your applications on this framework very easy. Do not change anythings in this directory. The subdirectories of system directory are explained below:
+
+ 	
+- **Core** − This folder contains CodeIgniter's core class. Do not modify anything here. All of your work will take place in the application folder. Even if your intent is to extend the CodeIgniter core, you have to do it with hooks, and hooks live in the application folder.
+ 	
+- **Database** − The database folder contains core database drivers and other database utilities.
+ 	
+- **Fonts** − The fonts folder contains font related information and utilities.
+ 	
+- **Helpers** − The helpers folder contains standard CodeIgniter helpers (such as date, cookie, and URL helpers).
+ 	
+- **Language** − The language folder contains language files. You can ignore it for now.
+ 	
+- **Libraries** − The libraries folder contains standard CodeIgniter libraries (to help you with e-mail, calendars, file uploads, and more). You can create your own libraries or extend (and even replace) standard ones, but those will be saved in the **application/libraries** directory to keep them separate from the standard CodeIgniter libraries saved in this particular folder.
+
+### **■ User_guide**
+
+This is your user guide to CodeIgniter. It is basically, the offline version of user guide on CodeIgniter website. Using this, one can learn the functions of various libraries, helpers and classes. It is recommended to go through this user guide before building your first web app in CodeIgniter.

@@ -4,10 +4,9 @@ slug: "sample-c-hello-world-program"
 date: "2016-05-11"
 category: "stem-10-plus-2"
 status: "Published"
-summary: "Sample C hello world program: A program that displays \"Hello World\" String on screen.This program I used, printf library function is used to display text on the screen, '
-' places the cursor at t..."
+summary: "Sample C hello world program: A program that displays \"Hello World\" String on screen.This program I used, printf library function is used to display text on the screen, '\n' places the cursor at ..."
 tags: ["systems-engineering"]
-wordCount: 382
+wordCount: 367
 readTime: 2
 ---
 
@@ -29,31 +28,83 @@ readTime: 2
 
 ---
 
-Sample C hello world program: A program that displays "Hello World" String on screen.This program I used, printf library function is used to display text on the screen, '
-' places the cursor at the beginning of next line, stdio.h header file contains a declaration of printf function. The code will work on all operating systems may be its Linux, Mac or any other and compilers.rnrn```c
- rn//C hello world example rn#include <stdio.>      //Header Section rnint main()               //Main Function, Actually only that section C / C++ compiler execute rn{                        //Body Starts here rn   printf("Hello world
-"); //printf function prints massage or variable value to out side world rn   return 0;            // This is return value of main function rn}                       //End of body or main function rnrn
-```rnrn rnrnAnother program that's print a variable valuernrn rnrn```c
- rn//C hello world example rn#include <stdio.h>           //Header Section rnint main()                   //Main Function, Actually only that section C / C++ compiler execute rn{                            //Body Starts here rn   int a=100;                //Declaration of variable named a that holds value 100rn   printf("The value of a is %d
-",a);  //printf function prints massage or vaiable value to out side world rn   return 0;                 // This is return value of main function rn}                            //End of body or main function rnrn
-```rnrn## **Steps for compile and run a program:**
+Sample C hello world program: A program that displays "Hello World" String on screen.This program I used, printf library function is used to display text on the screen, '\n' places the cursor at the beginning of next line, stdio.h header file contains a declaration of printf function. The code will work on all operating systems may be its Linux, Mac or any other and compilers.
 
-rn***For Compile:***rn
-rn 	- Click on Run Menu->
-rn 	- Then click on compile option ->
-rn
-rn***Shortcut of Compile is*** : Alt + F9 Keyrnrn[![Compile](http://technhit.in/wp-content/uploads/2016/05/Compile.jpg)](http://technhit.in/wp-content/uploads/2016/05/Compile.jpg)rnrn***For run a program:***rn
-rn 	- Click on Run Menu
-rn 	- Click on Run Option
-rn
-rn***Shortcut of Run program is*** : Ctrl + F9 Keyrnrn[![Run](http://technhit.in/wp-content/uploads/2016/05/Run.jpg)](http://technhit.in/wp-content/uploads/2016/05/Run.jpg)rnrn***If you want to make an[ executable file](https://en.wikipedia.org/wiki/Executable) (.exe) :***rn
-rn 	- At first, you have to compile the program (Alt+F9)
-rn 	- Click on Compile menu
-rn 	- Then click on make option
-rn
-rn***Shortcut for Make a program***: F9 Keyrnrn[![make](http://technhit.in/wp-content/uploads/2016/05/make.jpg)](http://technhit.in/wp-content/uploads/2016/05/make.jpg)rnrnMaking a program convert source code to an executable binary file, and it will be ready to execute on any computer. After making the program you can find the Exe file at desired location you have preset at "output location".rnrnTo Set, you desire location of the makefile.rn
-rn 	- Click on Option Menu ->
-rn 	- Click on Directory Option->
-rn 	- At output location set your output file path
-rn
-rn[![make location](http://technhit.in/wp-content/uploads/2016/05/make-location.jpg)](http://technhit.in/wp-content/uploads/2016/05/make-location.jpg)rnrn rnrn
+```c
+ 
+//C hello world example 
+#include <stdio.>      //Header Section 
+int main()               //Main Function, Actually only that section C / C++ compiler execute 
+{                        //Body Starts here 
+   printf("Hello world\n"); //printf function prints massage or variable value to out side world 
+   return 0;            // This is return value of main function 
+}                       //End of body or main function 
+
+```
+
+Another program that's print a variable value
+
+ 
+
+```c
+ 
+//C hello world example 
+#include <stdio.h>           //Header Section 
+int main()                   //Main Function, Actually only that section C / C++ compiler execute 
+{                            //Body Starts here 
+   int a=100;                //Declaration of variable named a that holds value 100
+   printf("The value of a is %d\n",a);  //printf function prints massage or vaiable value to out side world 
+   return 0;                 // This is return value of main function 
+}                            //End of body or main function 
+
+```
+
+## **Steps for compile and run a program:**
+
+***For Compile:***
+
+ 	
+- Click on Run Menu->
+ 	
+- Then click on compile option ->
+
+***Shortcut of Compile is*** : Alt + F9 Key
+
+[![Compile](http://technhit.in/wp-content/uploads/2016/05/Compile.jpg)](http://technhit.in/wp-content/uploads/2016/05/Compile.jpg)
+
+***For run a program:***
+
+ 	
+- Click on Run Menu
+ 	
+- Click on Run Option
+
+***Shortcut of Run program is*** : Ctrl + F9 Key
+
+[![Run](http://technhit.in/wp-content/uploads/2016/05/Run.jpg)](http://technhit.in/wp-content/uploads/2016/05/Run.jpg)
+
+***If you want to make an[ executable file](https://en.wikipedia.org/wiki/Executable) (.exe) :***
+
+ 	
+- At first, you have to compile the program (Alt+F9)
+ 	
+- Click on Compile menu
+ 	
+- Then click on make option
+
+***Shortcut for Make a program***: F9 Key
+
+[![make](http://technhit.in/wp-content/uploads/2016/05/make.jpg)](http://technhit.in/wp-content/uploads/2016/05/make.jpg)
+
+Making a program convert source code to an executable binary file, and it will be ready to execute on any computer. After making the program you can find the Exe file at desired location you have preset at "output location".
+
+To Set, you desire location of the makefile.
+
+ 	
+- Click on Option Menu ->
+ 	
+- Click on Directory Option->
+ 	
+- At output location set your output file path
+
+[![make location](http://technhit.in/wp-content/uploads/2016/05/make-location.jpg)](http://technhit.in/wp-content/uploads/2016/05/make-location.jpg)

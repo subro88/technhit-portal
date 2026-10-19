@@ -4,10 +4,10 @@ slug: "printf-functions-c"
 date: "2016-09-16"
 category: "stem-10-plus-2"
 status: "Published"
-summary: "In general, printf** **()** ** is a library function under C header file *stdio.h* and *conio.h* both. And generally, it is used for displaying an outcome of a program to outside world. **Printf()*..."
+summary: "In general, printf** **()** ** is a library function under C header file *stdio.h* and *conio.h* both. And generally, it is used for displaying an outcome of a program to outside world. **Printf()*..."
 tags: ["printf", "sprintf", "cprintf", "vprintf", "fprintf", "vsprintf"]
-wordCount: 2556
-readTime: 14
+wordCount: 2823
+readTime: 16
 ---
 
 ## Key Architecture Takeaways
@@ -28,276 +28,809 @@ readTime: 14
 
 ---
 
-In general, printf** **()** ** is a library function under C header file *stdio.h* and *conio.h* both. And generally, it is used for displaying an outcome of a program to outside world. **Printf()** function is often used to our program to do formatted output. All variants of printf function use same formatting techniques. There is a string that specifies the layouts of output is call format specifier. i.e. %s, %d, %f, %c, %x, %u etc.
+In general, printf** **()** ** is a library function under C header file *stdio.h* and *conio.h* both. And generally, it is used for displaying an outcome of a program to outside world. **Printf()** function is often used to our program to do formatted output. All variants of printf function use same formatting techniques. There is a string that specifies the layouts of output is call format specifier. i.e. %s, %d, %f, %c, %x, %u etc.
 
-rnThis function uses first format specifier for the first argument, second format specifier for the second argument and so on. There must be enough arguments for each format specifier otherwise, the result will be unpredictable due to less argument. And excess arguments are merely ignored. Format specifier determines how and what kind of data types will print to screen. There are various format specifiers you can use, these are:
+This function uses first format specifier for the first argument, second format specifier for the second argument and so on. There must be enough arguments for each format specifier otherwise, the result will be unpredictable due to less argument. And excess arguments are merely ignored. Format specifier determines how and what kind of data types will print to screen. There are various format specifiers you can use, these are:
 
-rnrn
-rn 	- *%c   ->char single character*
-rn 	- *%d (%i) ->int signed integer*
-rn 	- *%e (%E) ->float or double exponential format*
-rn 	- *%f ->float or double signed decimal*
-rn 	- *%g (%G) ->float or double use %f or %e as required*
-rn 	- *%o ->int unsigned octal value*
-rn 	- *%p ->pointer address stored in pointer*
-rn 	- *%s ->array of char sequence of characters*
-rn 	- *%u ->int unsigned decimal*
-rn 	- *%x (%X) ->int unsigned hex value*
-rn
-rnIn turbo C  there are seven variants of printf function to do the different specific job. These are:rn
-rn 	- printf*()   -> sends formatted output to a standard output device*
-rn 	- cprintf*() -> sends formatted output to a text window on the screen*
-rn 	- sprintf*() -> sends formatted output to a string (sends to an array in memory)*
-rn 	- fprintf*() -> sends formatted output to a File stream*
-rn 	- vprintf*() -> sends formatted output to stdin using an argument list*
-rn 	- vfprintf*()->sends formatted output to a File using an argument list*
-rn 	- vsprintf*()->sends formatted output to a string using an argument list*
-rn
-rn## Here prefix of printf f,s,v,c stands for:
+ 	
+- *%c   ->char single character*
+ 	
+- *%d (%i) ->int signed integer*
+ 	
+- *%e (%E) ->float or double exponential format*
+ 	
+- *%f ->float or double signed decimal*
+ 	
+- *%g (%G) ->float or double use %f or %e as required*
+ 	
+- *%o ->int unsigned octal value*
+ 	
+- *%p ->pointer address stored in pointer*
+ 	
+- *%s ->array of char sequence of characters*
+ 	
+- *%u ->int unsigned decimal*
+ 	
+- *%x (%X) ->int unsigned hex value*
 
-rn
-rn 	- *f -> means it takes a FILE* param to write to.*
-rn 	- *s -> means it writes to a string buffer.*
-rn 	- *v ->means it takes all the value args as a single vector (array).*
-rn 	- *c ->means it write to the console (Text window on the screen)*
-rn
-rn## Function and its argument table by turbo C
+In turbo C  there are seven variants of printf function to do the different specific job. These are:
 
-rn<table style="height: 634px;" width="588">rn<tbody>rn<tr>rn<td width="202">**Argument**</td>rn<td width="202">**Functions**</td>rn<td width="202">**What Argument Is/Does**</td>rn</tr>rn<tr>rn<td width="202">arglist</td>rn<td width="202">vprintf</td>rn<td width="202">Pointer to a list of arguments</td>rn</tr>rn<tr>rn<td width="202">argument</td>rn<td width="202">cprintf,rnrnfprintf,rnrnprintf,rnrnsprintf</td>rn<td width="202">One of a series of arguments to which the functions apply a format specifier contained in *format</td>rn</tr>rn<tr>rn<td width="202">buffer</td>rn<td width="202">sprintf,rnrnvsprintf</td>rn<td width="202">Buffer where function writes the string</td>rn</tr>rn<tr>rn<td width="202">format</td>rn<td width="202">(all) printf variant</td>rn<td width="202">Format string</td>rn</tr>rn<tr>rn<td width="202">stream</td>rn<td width="202">fprintf,rnrnvfprintf</td>rn<td width="202">Stream where the functions output the formatted data</td>rn</tr>rn</tbody>rn</table>rn rn## More details about specifier, flags, width, precision used with printf varrient:
+ 	
+- printf*()   -> sends formatted output to a standard output device*
+ 	
+- cprintf*() -> sends formatted output to a text window on the screen*
+ 	
+- sprintf*() -> sends formatted output to a string (sends to an array in memory)*
+ 	
+- fprintf*() -> sends formatted output to a File stream*
+ 	
+- vprintf*() -> sends formatted output to stdin using an argument list*
+ 	
+- vfprintf*()->sends formatted output to a File using an argument list*
+ 	
+- vsprintf*()->sends formatted output to a string using an argument list*
 
-rn<table class="boxed">rn<tbody>rn<tr>rn<th>rn#### specifier
+## Here prefix of printf f,s,v,c stands for:
 
-rn</th>rn<th>rn#### Output
+ 	
+- *f -> means it takes a FILE* param to write to.*
+ 	
+- *s -> means it writes to a string buffer.*
+ 	
+- *v ->means it takes all the value args as a single vector (array).*
+ 	
+- *c ->means it write to the console (Text window on the screen)*
 
-rn</th>rn<th>rn#### Example
+## Function and its argument table by turbo C
 
-rn</th>rn</tr>rn<tr>rn<td><tt>d</tt> *or* <tt>i</tt></td>rn<td>Signed decimal integer</td>rn<td><tt>392</tt></td>rn</tr>rn<tr>rn<td><tt>u</tt></td>rn<td>Unsigned decimal integer</td>rn<td><tt>7235</tt></td>rn</tr>rn<tr>rn<td><tt>o</tt></td>rn<td>Unsigned octal</td>rn<td><tt>610</tt></td>rn</tr>rn<tr>rn<td><tt>x</tt></td>rn<td>Unsigned hexadecimal integer</td>rn<td><tt>7fa</tt></td>rn</tr>rn<tr>rn<td><tt>X</tt></td>rn<td>Unsigned hexadecimal integer (uppercase)</td>rn<td><tt>7FA</tt></td>rn</tr>rn<tr>rn<td><tt>f</tt></td>rn<td>Decimal floating point, lowercase</td>rn<td><tt>392.65</tt></td>rn</tr>rn<tr class="cpp11">rn<td><tt>F</tt></td>rn<td>Decimal floating point, uppercase</td>rn<td><tt>392.65</tt></td>rn</tr>rn<tr>rn<td><tt>e</tt></td>rn<td>Scientific notation (mantissa/exponent), lowercase</td>rn<td><tt>3.9265e+2</tt></td>rn</tr>rn<tr>rn<td><tt>E</tt></td>rn<td>Scientific notation (mantissa/exponent), uppercase</td>rn<td><tt>3.9265E+2</tt></td>rn</tr>rn<tr>rn<td><tt>g</tt></td>rn<td>Use the shortest representation: <tt>%e</tt> or <tt>%f</tt></td>rn<td><tt>392.65</tt></td>rn</tr>rn<tr>rn<td><tt>G</tt></td>rn<td>Use the shortest representation: <tt>%E</tt> or <tt>%F</tt></td>rn<td><tt>392.65</tt></td>rn</tr>rn<tr class="cpp11">rn<td><tt>a</tt></td>rn<td>Hexadecimal floating point, lowercase</td>rn<td><tt>-0xc.90fep-2</tt></td>rn</tr>rn<tr class="cpp11">rn<td><tt>A</tt></td>rn<td>Hexadecimal floating point, uppercase</td>rn<td><tt>-0XC.90FEP-2</tt></td>rn</tr>rn<tr>rn<td><tt>c</tt></td>rn<td>Character</td>rn<td><tt>a</tt></td>rn</tr>rn<tr>rn<td><tt>s</tt></td>rn<td>String of characters</td>rn<td><tt>sample</tt></td>rn</tr>rn<tr>rn<td><tt>p</tt></td>rn<td>Pointer address</td>rn<td><tt>b8000000</tt></td>rn</tr>rn<tr>rn<td><tt>n</tt></td>rn<td>Nothing printed.rnThe corresponding argument must be a pointer to a <tt>signed int</tt>.rnThe number of characters written so far is stored in the pointed location.</td>rn<td></td>rn</tr>rn<tr>rn<td><tt>%</tt></td>rn<td>A <tt>%</tt> followed by another <tt>%</tt> character will write a single <tt>%</tt> to the stream.</td>rn<td><tt>%</tt></td>rn</tr>rn</tbody>rn</table>rnThe *format specifier* can also contain sub-specifiers: *flags*, *width*, *.precision* and *modifiers* (in that order), which are optional and follow these specifications:rn<table class="boxed">rn<tbody>rn<tr>rn<th>rn#### flags
+<table style="height: 634px;" width="588">
+<tbody>
+<tr>
+<td width="202">**Argument**</td>
+<td width="202">**Functions**</td>
+<td width="202">**What Argument Is/Does**</td>
+</tr>
+<tr>
+<td width="202">arglist</td>
+<td width="202">vprintf</td>
+<td width="202">Pointer to a list of arguments</td>
+</tr>
+<tr>
+<td width="202">argument</td>
+<td width="202">cprintf,
 
-rn</th>rn<th>rn#### description
+fprintf,
 
-rn</th>rn</tr>rn<tr>rn<td><tt>-</tt></td>rn<td>Left-justify within the given field width; Right justification is the default (see *width* sub-specifier).</td>rn</tr>rn<tr>rn<td><tt>+</tt></td>rn<td>Forces to preceded the result with a plus or minus sign (<tt>+</tt> or <tt>-</tt>) even for positive numbers. By default, only negative numbers are preceded with a <tt>-</tt> sign.</td>rn</tr>rn<tr>rn<td>*(space)*</td>rn<td>If no sign is going to be written, a blank space is inserted before the value.</td>rn</tr>rn<tr>rn<td><tt>#</tt></td>rn<td>Used with <tt>o</tt>, <tt>x</tt> or <tt>X</tt> specifiers the value is preceded with <tt>0</tt>, <tt>0x</tt> or <tt>0X</tt> respectively for values different than zero.rnUsed with <tt>a</tt>, <tt>A</tt>, <tt>e</tt>, <tt>E</tt>, <tt>f</tt>, <tt>F</tt>, <tt>g</tt> or <tt>G</tt> it forces the written output to contain a decimal point even if no more digits follow. By default, if no digits follow, no decimal point is written.</td>rn</tr>rn<tr>rn<td><tt>0</tt></td>rn<td>Left-pads the number with zeroes (<tt>0</tt>) instead of spaces when padding is specified.</td>rn</tr>rn</tbody>rn</table>rn rn<table class="boxed">rn<tbody>rn<tr>rn<th>rn#### width
+printf,
 
-rn</th>rn<th>rn#### description
+sprintf</td>
+<td width="202">One of a series of arguments to which the functions apply a format specifier contained in *format</td>
+</tr>
+<tr>
+<td width="202">buffer</td>
+<td width="202">sprintf,
 
-rn</th>rn</tr>rn<tr>rn<td>*(number)*</td>rn<td>The minimum number of characters to be printed. If the value to be printed is shorter than this number, the result is padded with blank spaces. The value is not truncated even if the result is larger.</td>rn</tr>rn<tr>rn<td><tt>*</tt></td>rn<td>The *width* is not specified in the *format* string, but as an additional integer, value argument preceding the argument that has to be formatted.</td>rn</tr>rn</tbody>rn</table>rn rn<table class="boxed">rn<tbody>rn<tr>rn<th>rn#### .precision
+vsprintf</td>
+<td width="202">Buffer where function writes the string</td>
+</tr>
+<tr>
+<td width="202">format</td>
+<td width="202">(all) printf variant</td>
+<td width="202">Format string</td>
+</tr>
+<tr>
+<td width="202">stream</td>
+<td width="202">fprintf,
 
-rn</th>rn<th>rn#### description
+vfprintf</td>
+<td width="202">Stream where the functions output the formatted data</td>
+</tr>
+</tbody>
+</table>
+ 
 
-rn</th>rn</tr>rn<tr>rn<td><tt>.</tt>*number*</td>rn<td>For integer specifiers (<tt>d</tt>, <tt>i</tt>, <tt>o</tt>, <tt>u</tt>, <tt>x</tt>, <tt>X</tt>): *precision* specifies the minimum number of digits to be written. If the value to be written is shorter than this number, the result is padded with leading zeros. The value is not truncated even if the result is longer. A *precision* of <tt>0</tt> means that no character is written for the value <tt>0</tt>.rnFor <tt>a</tt>, <tt>A</tt>, <tt>e</tt>, <tt>E</tt>, <tt>f</tt> and <tt>F</tt> specifiers: this is the number of digits to be printed **after** the decimal point (by default, this is 6).rnFor <tt>g</tt> and <tt>G</tt> specifiers: This is the maximum number of significant digits to be printed.rnFor <tt>s</tt>: this is the maximum number of characters to be printed. By default, all characters are printed until the ending null character is encountered.rnIf the period is specified without an explicit value for *precision*, <tt>0</tt> is assumed.</td>rn</tr>rn<tr>rn<td><tt>.*</tt></td>rn<td>The *precision* is not specified in the *format* string, but as an additional integer, value argument preceding the argument that has to be formatted.</td>rn</tr>rn</tbody>rn</table>rn## Now we move on each example of printf variant:
+## More details about specifier, flags, width, precision used with printf varrient:
 
-rn## printf**():**
+<table class="boxed">
+<tbody>
+<tr>
+<th>
 
-rnPrint formatted data to stdout device. It's writing the C string pointed by format to the standard output (stdout). If format includes format specifiers (subsequences beginning with %), the additional arguments following format are formatted and inserted in the resulting string replacing their respective specifiers.
+#### specifier
 
-rnrn### Prototype of printf:
+</th>
+<th>
 
-rn```
- int printf ( const char * format, ... );
-```rn### parameters:
+#### Output
 
-rn[*Format*](#jump1)
+</th>
+<th>
 
-rnFormat specifier prototype for printf function:
+#### Example
 
-rn*%[[flags](#jump2)][[width](#jump3)][.[precision](#jump4)][length][specifier](#jump1)*
+</th>
+</tr>
+<tr>
+<td><tt>d</tt> *or* <tt>i</tt></td>
+<td>Signed decimal integer</td>
+<td><tt>392</tt></td>
+</tr>
+<tr>
+<td><tt>u</tt></td>
+<td>Unsigned decimal integer</td>
+<td><tt>7235</tt></td>
+</tr>
+<tr>
+<td><tt>o</tt></td>
+<td>Unsigned octal</td>
+<td><tt>610</tt></td>
+</tr>
+<tr>
+<td><tt>x</tt></td>
+<td>Unsigned hexadecimal integer</td>
+<td><tt>7fa</tt></td>
+</tr>
+<tr>
+<td><tt>X</tt></td>
+<td>Unsigned hexadecimal integer (uppercase)</td>
+<td><tt>7FA</tt></td>
+</tr>
+<tr>
+<td><tt>f</tt></td>
+<td>Decimal floating point, lowercase</td>
+<td><tt>392.65</tt></td>
+</tr>
+<tr class="cpp11">
+<td><tt>F</tt></td>
+<td>Decimal floating point, uppercase</td>
+<td><tt>392.65</tt></td>
+</tr>
+<tr>
+<td><tt>e</tt></td>
+<td>Scientific notation (mantissa/exponent), lowercase</td>
+<td><tt>3.9265e+2</tt></td>
+</tr>
+<tr>
+<td><tt>E</tt></td>
+<td>Scientific notation (mantissa/exponent), uppercase</td>
+<td><tt>3.9265E+2</tt></td>
+</tr>
+<tr>
+<td><tt>g</tt></td>
+<td>Use the shortest representation: <tt>%e</tt> or <tt>%f</tt></td>
+<td><tt>392.65</tt></td>
+</tr>
+<tr>
+<td><tt>G</tt></td>
+<td>Use the shortest representation: <tt>%E</tt> or <tt>%F</tt></td>
+<td><tt>392.65</tt></td>
+</tr>
+<tr class="cpp11">
+<td><tt>a</tt></td>
+<td>Hexadecimal floating point, lowercase</td>
+<td><tt>-0xc.90fep-2</tt></td>
+</tr>
+<tr class="cpp11">
+<td><tt>A</tt></td>
+<td>Hexadecimal floating point, uppercase</td>
+<td><tt>-0XC.90FEP-2</tt></td>
+</tr>
+<tr>
+<td><tt>c</tt></td>
+<td>Character</td>
+<td><tt>a</tt></td>
+</tr>
+<tr>
+<td><tt>s</tt></td>
+<td>String of characters</td>
+<td><tt>sample</tt></td>
+</tr>
+<tr>
+<td><tt>p</tt></td>
+<td>Pointer address</td>
+<td><tt>b8000000</tt></td>
+</tr>
+<tr>
+<td><tt>n</tt></td>
+<td>Nothing printed.
+The corresponding argument must be a pointer to a <tt>signed int</tt>.
+The number of characters written so far is stored in the pointed location.</td>
+<td></td>
+</tr>
+<tr>
+<td><tt>%</tt></td>
+<td>A <tt>%</tt> followed by another <tt>%</tt> character will write a single <tt>%</tt> to the stream.</td>
+<td><tt>%</tt></td>
+</tr>
+</tbody>
+</table>
+The *format specifier* can also contain sub-specifiers: *flags*, *width*, *.precision* and *modifiers* (in that order), which are optional and follow these specifications:
+<table class="boxed">
+<tbody>
+<tr>
+<th>
 
-rnrn### Return Value:
+#### flags
 
-rnReturns number of written character if successful otherwise, return a negative value.
+</th>
+<th>
 
-rnrn### Program #1
+#### description
 
-rn```
-#include<stdio.h>rn#include<conio.h>rn rnvoid main()rn{rnrn   int total=1511;rnrn//%d is use here to accpt value of total of int type//rn   printf("The value of total is = %d",total);rnrn// Wait for a keypress //rn   getch();rn   rn}
-```rnOutputrn```
+</th>
+</tr>
+<tr>
+<td><tt>-</tt></td>
+<td>Left-justify within the given field width; Right justification is the default (see *width* sub-specifier).</td>
+</tr>
+<tr>
+<td><tt>+</tt></td>
+<td>Forces to preceded the result with a plus or minus sign (<tt>+</tt> or <tt>-</tt>) even for positive numbers. By default, only negative numbers are preceded with a <tt>-</tt> sign.</td>
+</tr>
+<tr>
+<td>*(space)*</td>
+<td>If no sign is going to be written, a blank space is inserted before the value.</td>
+</tr>
+<tr>
+<td><tt>#</tt></td>
+<td>Used with <tt>o</tt>, <tt>x</tt> or <tt>X</tt> specifiers the value is preceded with <tt>0</tt>, <tt>0x</tt> or <tt>0X</tt> respectively for values different than zero.
+Used with <tt>a</tt>, <tt>A</tt>, <tt>e</tt>, <tt>E</tt>, <tt>f</tt>, <tt>F</tt>, <tt>g</tt> or <tt>G</tt> it forces the written output to contain a decimal point even if no more digits follow. By default, if no digits follow, no decimal point is written.</td>
+</tr>
+<tr>
+<td><tt>0</tt></td>
+<td>Left-pads the number with zeroes (<tt>0</tt>) instead of spaces when padding is specified.</td>
+</tr>
+</tbody>
+</table>
+ 
+<table class="boxed">
+<tbody>
+<tr>
+<th>
+
+#### width
+
+</th>
+<th>
+
+#### description
+
+</th>
+</tr>
+<tr>
+<td>*(number)*</td>
+<td>The minimum number of characters to be printed. If the value to be printed is shorter than this number, the result is padded with blank spaces. The value is not truncated even if the result is larger.</td>
+</tr>
+<tr>
+<td><tt>*</tt></td>
+<td>The *width* is not specified in the *format* string, but as an additional integer, value argument preceding the argument that has to be formatted.</td>
+</tr>
+</tbody>
+</table>
+ 
+<table class="boxed">
+<tbody>
+<tr>
+<th>
+
+#### .precision
+
+</th>
+<th>
+
+#### description
+
+</th>
+</tr>
+<tr>
+<td><tt>.</tt>*number*</td>
+<td>For integer specifiers (<tt>d</tt>, <tt>i</tt>, <tt>o</tt>, <tt>u</tt>, <tt>x</tt>, <tt>X</tt>): *precision* specifies the minimum number of digits to be written. If the value to be written is shorter than this number, the result is padded with leading zeros. The value is not truncated even if the result is longer. A *precision* of <tt>0</tt> means that no character is written for the value <tt>0</tt>.
+For <tt>a</tt>, <tt>A</tt>, <tt>e</tt>, <tt>E</tt>, <tt>f</tt> and <tt>F</tt> specifiers: this is the number of digits to be printed **after** the decimal point (by default, this is 6).
+For <tt>g</tt> and <tt>G</tt> specifiers: This is the maximum number of significant digits to be printed.
+For <tt>s</tt>: this is the maximum number of characters to be printed. By default, all characters are printed until the ending null character is encountered.
+If the period is specified without an explicit value for *precision*, <tt>0</tt> is assumed.</td>
+</tr>
+<tr>
+<td><tt>.*</tt></td>
+<td>The *precision* is not specified in the *format* string, but as an additional integer, value argument preceding the argument that has to be formatted.</td>
+</tr>
+</tbody>
+</table>
+
+## Now we move on each example of printf variant:
+
+## printf**():**
+
+Print formatted data to stdout device. It's writing the C string pointed by format to the standard output (stdout). If format includes format specifiers (subsequences beginning with %), the additional arguments following format are formatted and inserted in the resulting string replacing their respective specifiers.
+
+### Prototype of printf:
+
+```c
+ int printf ( const char * format, ... );
+
+```
+
+### parameters:
+
+[*Format*](#jump1)
+
+Format specifier prototype for printf function:
+
+*%[[flags](#jump2)][[width](#jump3)][.[precision](#jump4)][length][specifier](#jump1)*
+
+### Return Value:
+
+Returns number of written character if successful otherwise, return a negative value.
+
+### Program #1
+
+```c
+#include<stdio.h>
+#include<conio.h>
+ 
+void main()
+{
+
+   int total=1511;
+
+//%d is use here to accpt value of total of int type//
+   printf("The value of total is = %d",total);
+
+// Wait for a keypress //
+   getch();
+   
+}
+
+```
+
+Output
+
+```c
 The value of total is = 1511
-```rn### program #2
 
-rn```
-#include<stdio.h>rn#include<conio.h>rn rnvoid main()rn{rnrn   int total1=1511,total2=235, total3=12;rnrn//%4d is use here to accpt value of all total variable //rn   printf("The value of total1 is = %d 
-",total1);rn   printf("The value of total2 is = %d 
-",total2);rn   printf("The value of total3 is = %d 
-",total3);rnrn// Wait for a keypress //rn   getch();rn   rn}
-```rnOutput:rn```
-The value of total is = 1511rnThe value of total is = 235rnThe value of total is = 12
-```rnHere we change the format specifier %d to %4d, as a result, you will see the alignment will change.rn### program #3
+```
 
-rn```
-#include<stdio.h>rn#include<conio.h>rn rnvoid main()rn{rnrn   int total1=1511,total2=235, total3=12;rnrn//%4d is use here to accpt value of all total variable with 4 digit alignment//rn   printf("The value of total1 is = %4d 
-",total1);rn   printf("The value of total2 is = %4d 
-",total2);rn   printf("The value of total3 is = %4d 
-",total3);rn   // Another formatrn   printf("The value of total1 is = %04d 
-",total1);rn   printf("The value of total2 is = %04d 
-",total2);rn   printf("The value of total3 is = %04d 
-",total3);rn// Wait for a keypress //rn   getch();rn   rn}
-```rnOutput:rn```
-The value of total is = 1511rnThe value of total is =  235rnThe value of total is =   12rnrn
-```rn```
-The value of total is = 1511rnThe value of total is = 0235rnThe value of total is = 0012
-```rnAs we discuss earlier format specifier should be same as the argument. In this program we have 3 format specifier in respect of 4 arguments as a result the last argument is ignored. See bellow program.
+### program #2
 
-rnrn### program #4
+```c
+#include<stdio.h>
+#include<conio.h>
+ 
+void main()
+{
 
-rn```
-#include<stdio.h>rn#include<conio.h>rn rnvoid main()rn{rnrn   int total1=1511,total2=235, total3=12 total4=25;rnrn//Specify exact number of format specifier in respect of argument//rn   printf("The value of total1 is = %d,
- total2 is =%d,
- total3 is =%d 
-",total1,total2,total3,total5);rn  rnrn// Wait for a keypress //rn   getch();rn   rn}
-```rnOutput:rn```
-The value of total is = 1511rnThe value of total is = 235rnThe value of total is = 12
-```rn## cprintf**():**
+   int total1=1511,total2=235, total3=12;
 
-rnUnlike printf function, cprintf take argument same as printf function. And applies to each of the format specifier contained in the format string, pointed to by format, and prints the formatted data directly to the current text window on the screen. The number of available format must match the number of arguments. Depending _directvideo of the global variable, the string is written either directly or through a BIOS call to screen memory. By using window framing and coloring you can make your program output more attractive user interface uusing cprintf.
+//%4d is use here to accpt value of all total variable //
+   printf("The value of total1 is = %d \n",total1);
+   printf("The value of total2 is = %d \n",total2);
+   printf("The value of total3 is = %d \n",total3);
 
-rnrn#### Prototype of cprintf:
+// Wait for a keypress //
+   getch();
+   
+}
 
-rn```
- int cprintf(const char *format[, argument, ...]);
-```rn### parameters:
+```
 
-rn[*Format*](#jump1)
+Output:
 
-rnFormat specifier prototype for cprintf function:
+```c
+The value of total is = 1511
+The value of total is = 235
+The value of total is = 12
 
-rn*%[[flags](#jump2)][[width](#jump3)][.[precision](#jump4)][length][specifier](#jump1)*
+```
 
-rnrn### Return Value:
+Here we change the format specifier %d to %4d, as a result, you will see the alignment will change.
 
-rnReturns number of written character if successful otherwise, return a negative value.
+### program #3
 
-rnrn### program #5
+```c
+#include<stdio.h>
+#include<conio.h>
+ 
+void main()
+{
 
-rn```
-#include <conio.h>rnrnint main(void)rn{rn /* clear the screen */rn clrscr();rnrn /* create a text window */rn window(10, 10, 80, 25);rnrn /* output some text in the window */rn cprintf("Hello TechNHIT
-");rnrn /* wait for a key */rn getch();rn return 0;rn}
-```rn### program #6
+   int total1=1511,total2=235, total3=12;
 
-rn```
-#include <conio.h>rnrnint main(void)rn{rnrn window(10,10,40,11);rnrn textcolor(RED);rnrn textbackground(WHITE);rnrn cprintf("This is a test Program
-");rnrn getch();rnrn return 0;rn}
-```rn### program #7
+//%4d is use here to accpt value of all total variable with 4 digit alignment//
+   printf("The value of total1 is = %4d \n",total1);
+   printf("The value of total2 is = %4d \n",total2);
+   printf("The value of total3 is = %4d \n",total3);
+   // Another format
+   printf("The value of total1 is = %04d \n",total1);
+   printf("The value of total2 is = %04d \n",total2);
+   printf("The value of total3 is = %04d \n",total3);
+// Wait for a keypress //
+   getch();
+   
+}
 
-rn```
-#include<stdio.h>rn#include<conio.h>rn rnmain()rn{rn   window(10,10,40,11);rnrn   textcolor(YELLOW+BLINK);rnrn   cprintf("Hello TechNhit");rn rn   getch();rn   return 0;rn}
-```rnOutput:rnrn[![printf](https://www.technhit.in/wp-content/uploads/2016/09/Cprintf1.gif)](https://www.technhit.in/wp-content/uploads/2016/09/Cprintf1.gif)rn## sprintf**():**
+```
 
-rnIt composes a string to an array(buffer) rather than print to screen or any stdout. It supports all format same as printf. A terminating null character is automatically appended after the content.
+Output:
 
-rnSometimes we need a complete string with a changeable section for example if you send a hello string to your individual user. It is more convenient way to write a pattern using user variable rather than write to individual one. Hence sprintf is the most selective function for this kind of job.
+```c
+The value of total is = 1511
+The value of total is =  235
+The value of total is =   12
 
-rnrn#### Prototype of sprintf:
+```c
+The value of total is = 1511
+The value of total is = 0235
+The value of total is = 0012
 
-rn```
-int sprintf ( char * str, const char * format, ... );
-```rn### parameters:
+```
 
-rn****str** ->Pointer to an array (buffer) where the resulting C-string is stored.rnThe buffer should be large enough to contain the resulting string.*
+As we discuss earlier format specifier should be same as the argument. In this program we have 3 format specifier in respect of 4 arguments as a result the last argument is ignored. See bellow program.
 
-rn[*Format*](#jump1)
+### program #4
 
-rnFormat specifier prototype for sprintf function:
+```c
+#include<stdio.h>
+#include<conio.h>
+ 
+void main()
+{
 
-rn*%[[flags](#jump2)][[width](#jump3)][.[precision](#jump4)][length][specifier](#jump1)*
+   int total1=1511,total2=235, total3=12 total4=25;
 
-rnrn### Return Value:
+//Specify exact number of format specifier in respect of argument//
+   printf("The value of total1 is = %d,\n total2 is =%d,\n total3 is =%d \n",total1,total2,total3,total5);
+  
 
-rnReturns number of written character if successful otherwise, return a negative value. Note that character counts do not include the additional null-character automatically appended at the end of the string.
+// Wait for a keypress //
+   getch();
+   
+}
 
-rnrn### program #8
+```
 
-rn```
-#include <stdio.h>rnint main(void)rn{rn char buffer[80];rn //here we declare some variable with valuern char user[10]={"Mondal"};rn clrscr();rn // sprintf dose not print to screen its sets formatted output to an arrayrn sprintf(buffer, "Hey Hello %s
-", user);rn // prints an array to screenrn puts(buffer);rn strcpy(user,"Paul");rn sprintf(buffer, "Hey Hello %s
-", user);rn puts(buffer);rn strcpy(user,"Bannerjee");rn sprintf(buffer, "Hey Hello %s
-", user);rn puts(buffer);rn getch();rn return 0;rn}
-```rnOutput:rnrn[![sprintf](https://www.technhit.in/wp-content/uploads/2016/09/Sprintf.png)](https://www.technhit.in/wp-content/uploads/2016/09/Sprintf.png)rnrn rn## fprintf**():**
+Output:
 
-rnThis function writes formatted data to a file stream. fprintf uses all format specifier as its argument, unlike printf function.
+```c
+The value of total is = 1511
+The value of total is = 235
+The value of total is = 12
 
-rnrn#### Prototype of fprintf:
+```
 
-rn```
-int fprintf ( FILE * stream, const char * format, ... );
-```rn### parameters:
+## cprintf**():**
 
-rn****stream** ->Pointer to a FILE object that identifies an output stream.*
+Unlike printf function, cprintf take argument same as printf function. And applies to each of the format specifier contained in the format string, pointed to by format, and prints the formatted data directly to the current text window on the screen. The number of available format must match the number of arguments. Depending _directvideo of the global variable, the string is written either directly or through a BIOS call to screen memory. By using window framing and coloring you can make your program output more attractive user interface uusing cprintf.
 
-rn[*Format*](#jump1)
+#### Prototype of cprintf:
 
-rnFormat specifier prototype for fprintf function:
+```c
+ int cprintf(const char *format[, argument, ...]);
 
-rn*%[[flags](#jump2)][[width](#jump3)][.[precision](#jump4)][length][specifier](#jump1)*
+```
 
-rnrn### Return Value:
+### parameters:
 
-rnReturns number of written character if successful otherwise, return a negative value.
+[*Format*](#jump1)
 
-rnrn### program #9
+Format specifier prototype for cprintf function:
 
-rn```
- rn#include <stdio.h>rnrnint main(void)rn{rn FILE *stream;rn int i = 100;rn char c = 'C';rn float f = 1.234;rnrn /* open a file for update w+ (Write Mode) */rn stream = fopen("DUMMY.FIL", "w+");rnrn /* write some data to the file */rn fprintf(stream, "%d %c %f", i, c, f);rnrn /* close the file */rn fclose(stream);rn return 0;rn}
-```rnIf you are working with the file then you have to need the fprintf function for file operation. On above program, a file stream opens dummy file as write mode then fprintf  writes variable values to file stream. If you haven't set any path for the file then it created in the present directory where the program runs from.
+*%[[flags](#jump2)][[width](#jump3)][.[precision](#jump4)][length][specifier](#jump1)*
 
-rnrn## vprintf**():**
+### Return Value:
 
-rnPrint formatted data from variable argument list to stdout. It writes the C string pointed by format to the standard output (stdout), replacing any format specifier in the same way as printf does, but using the elements in the variable argument list identified by arg instead of additional function arguments.
+Returns number of written character if successful otherwise, return a negative value.
 
-rnInternally, the function retrieves arguments from the list identified by arg as if va_arg was used on it, and thus the state of arg is likely altered by the call.
+### program #5
 
-rnIn any case, arg should have been initialized by va_start at some point before the call, and it is expected to be released by va_end at some point after the call.
+```c
+#include <conio.h>
 
-rnrn#### Prototype of vprintf:
+int main(void)
+{
+ /* clear the screen */
+ clrscr();
 
-rn```
-int vprintf ( const char * format, va_list arg );
-```rn### parameters:
+ /* create a text window */
+ window(10, 10, 80, 25);
 
-rn[*Format*](#jump1)
+ /* output some text in the window */
+ cprintf("Hello TechNHIT\r\n");
 
-rnFormat specifier prototype for vprintf function:
+ /* wait for a key */
+ getch();
+ return 0;
+}
 
-rn*%[[flags](#jump2)][[width](#jump3)][.[precision](#jump4)][length][specifier](#jump1)*
+```
 
-rn*arg ->** A value identifying a variable arguments list initialized with va_start.*rn*va_list is a special type defined in <cstdarg>.*
+### program #6
 
-rnrn### 
+```c
+#include <conio.h>
 
-rn### Return Value:
+int main(void)
+{
 
-rnAfter successful, it will return the total number of written character. And on failure, it returns a negative value.
+ window(10,10,40,11);
 
-rnrn```
- /* vprintf example */rn#include <stdio.h>rn#include <stdarg.h>rnrnvoid WriteFormattedOutput ( const char * format, ... )rn{rn va_list args;rn va_start (args, format);rn vprintf (format, args);rn va_end (args);rn}rnrnint main ()rn{rn WriteFormattedOutput ("Call with %d variable argument.
-",1);rn WriteFormattedOutput ("Call with %d variable %s.
-",2,"arguments");rnrn return 0;rn}
-```rnOutput:rnrnCall with 1 variable argument.rnCall with 2 variable arguments.rn## vsprintf**():**
+ textcolor(RED);
 
-rnWrite formatted data from variable argument list to a string. Composes a string with the same text that would be printed if the format was used on printf, but using the elements in the variable argument list identified by arg instead of additional function arguments and storing the resulting content as a C string in the buffer pointed by s.
+ textbackground(WHITE);
 
-rnInternally, the function retrieves arguments from the list identified by arg as if va_arg was used on it, and thus the state of arg is likely to be altered by the call.
+ cprintf("This is a test Program\r\n");
 
-rnIn any case, arg should have been initialized by va_start at some point before the call, and it is expected to be released by va_end at some point after the call.
+ getch();
 
-rnrn#### Prototype of vprintf:
+ return 0;
+}
 
-rn```
-int vsprintf (char * str, const char * format, va_list arg );
-```rn### parameters:
+```
 
-rn****str** ->Pointer to an array (buffer) where the resulting C-string is stored.rnThe buffer should be large enough to contain the resulting string.*
+### program #7
 
-rn[*Format*](#jump1)
+```c
+#include<stdio.h>
+#include<conio.h>
+ 
+main()
+{
+   window(10,10,40,11);
 
-rnFormat specifier prototype for vsprintf function:
+   textcolor(YELLOW+BLINK);
 
-rn*%[[flags](#jump2)][[width](#jump3)][.[precision](#jump4)][length][specifier](#jump1)*
+   cprintf("Hello TechNhit");
+ 
+   getch();
+   return 0;
+}
 
-rn*arg ->** A value identifying a variable arguments list initialized with va_start.*rn*va_list is a special type defined in <cstdarg>.*
+```
 
-rnrn### Return Value:
+Output:
 
-rnReturns number of written character if successful otherwise, return a negative value.
+[![printf](https://www.technhit.in/wp-content/uploads/2016/09/Cprintf1.gif)](https://www.technhit.in/wp-content/uploads/2016/09/Cprintf1.gif)
 
-rnrn```
- rn#include <stdio.h>rn#include <stdarg.h>rnrnvoid PrintFError ( const char * format, ... )rn{rn char buffer[256];rn va_list args;rn va_start (args, format);rn vsprintf (buffer,format, args);rn perror (buffer);rn va_end (args);rn}rnrnint main ()rn{rn FILE * pFile;rn char szFileName[]="myfile.txt";rnrn pFile = fopen (szFileName,"r");rn if (pFile == NULL)rn PrintFError ("Error opening '%s'",szFileName);rn elsern {rn rn fclose (pFile);rn }rn return 0;rn}
-```rnIn this example, if the file myfile.txt does not exist, prior is called to show an error message similar to:rnrnError opening file 'myfile.txt': No such file or directoryrnrn rnrn
+## sprintf**():**
+
+It composes a string to an array(buffer) rather than print to screen or any stdout. It supports all format same as printf. A terminating null character is automatically appended after the content.
+
+Sometimes we need a complete string with a changeable section for example if you send a hello string to your individual user. It is more convenient way to write a pattern using user variable rather than write to individual one. Hence sprintf is the most selective function for this kind of job.
+
+#### Prototype of sprintf:
+
+```c
+int sprintf ( char * str, const char * format, ... );
+
+```
+
+### parameters:
+
+****str** ->Pointer to an array (buffer) where the resulting C-string is stored.
+The buffer should be large enough to contain the resulting string.*
+
+[*Format*](#jump1)
+
+Format specifier prototype for sprintf function:
+
+*%[[flags](#jump2)][[width](#jump3)][.[precision](#jump4)][length][specifier](#jump1)*
+
+### Return Value:
+
+Returns number of written character if successful otherwise, return a negative value. Note that character counts do not include the additional null-character automatically appended at the end of the string.
+
+### program #8
+
+```c
+#include <stdio.h>
+int main(void)
+{
+ char buffer[80];
+ //here we declare some variable with value
+ char user[10]={"Mondal"};
+ clrscr();
+ // sprintf dose not print to screen its sets formatted output to an array
+ sprintf(buffer, "Hey Hello %s\n", user);
+ // prints an array to screen
+ puts(buffer);
+ strcpy(user,"Paul");
+ sprintf(buffer, "Hey Hello %s\n", user);
+ puts(buffer);
+ strcpy(user,"Bannerjee");
+ sprintf(buffer, "Hey Hello %s\n", user);
+ puts(buffer);
+ getch();
+ return 0;
+}
+
+```
+
+Output:
+
+[![sprintf](https://www.technhit.in/wp-content/uploads/2016/09/Sprintf.png)](https://www.technhit.in/wp-content/uploads/2016/09/Sprintf.png)
+
+ 
+
+## fprintf**():**
+
+This function writes formatted data to a file stream. fprintf uses all format specifier as its argument, unlike printf function.
+
+#### Prototype of fprintf:
+
+```c
+int fprintf ( FILE * stream, const char * format, ... );
+
+```
+
+### parameters:
+
+****stream** ->Pointer to a FILE object that identifies an output stream.*
+
+[*Format*](#jump1)
+
+Format specifier prototype for fprintf function:
+
+*%[[flags](#jump2)][[width](#jump3)][.[precision](#jump4)][length][specifier](#jump1)*
+
+### Return Value:
+
+Returns number of written character if successful otherwise, return a negative value.
+
+### program #9
+
+```c
+ 
+#include <stdio.h>
+
+int main(void)
+{
+ FILE *stream;
+ int i = 100;
+ char c = 'C';
+ float f = 1.234;
+
+ /* open a file for update w+ (Write Mode) */
+ stream = fopen("DUMMY.FIL", "w+");
+
+ /* write some data to the file */
+ fprintf(stream, "%d %c %f", i, c, f);
+
+ /* close the file */
+ fclose(stream);
+ return 0;
+}
+
+```
+
+If you are working with the file then you have to need the fprintf function for file operation. On above program, a file stream opens dummy file as write mode then fprintf  writes variable values to file stream. If you haven't set any path for the file then it created in the present directory where the program runs from.
+
+## vprintf**():**
+
+Print formatted data from variable argument list to stdout. It writes the C string pointed by format to the standard output (stdout), replacing any format specifier in the same way as printf does, but using the elements in the variable argument list identified by arg instead of additional function arguments.
+
+Internally, the function retrieves arguments from the list identified by arg as if va_arg was used on it, and thus the state of arg is likely altered by the call.
+
+In any case, arg should have been initialized by va_start at some point before the call, and it is expected to be released by va_end at some point after the call.
+
+#### Prototype of vprintf:
+
+```c
+int vprintf ( const char * format, va_list arg );
+
+```
+
+### parameters:
+
+[*Format*](#jump1)
+
+Format specifier prototype for vprintf function:
+
+*%[[flags](#jump2)][[width](#jump3)][.[precision](#jump4)][length][specifier](#jump1)*
+
+*arg ->** A value identifying a variable arguments list initialized with va_start.*
+*va_list is a special type defined in <cstdarg>.*
+
+### 
+
+#
+
+## Return Value:
+
+After successful, it will return the total number of written character. And on failure, it returns a negative value.
+
+```c
+ /* vprintf example */
+#include <stdio.h>
+#include <stdarg.h>
+
+void WriteFormattedOutput ( const char * format, ... )
+{
+ va_list args;
+ va_start (args, format);
+ vprintf (format, args);
+ va_end (args);
+}
+
+int main ()
+{
+ WriteFormattedOutput ("Call with %d variable argument.\n",1);
+ WriteFormattedOutput ("Call with %d variable %s.\n",2,"arguments");
+
+ return 0;
+}
+
+```
+
+Output:
+
+Call with 1 variable argument.
+Call with 2 variable arguments.
+
+## vsprintf**():**
+
+Write formatted data from variable argument list to a string. Composes a string with the same text that would be printed if the format was used on printf, but using the elements in the variable argument list identified by arg instead of additional function arguments and storing the resulting content as a C string in the buffer pointed by s.
+
+Internally, the function retrieves arguments from the list identified by arg as if va_arg was used on it, and thus the state of arg is likely to be altered by the call.
+
+In any case, arg should have been initialized by va_start at some point before the call, and it is expected to be released by va_end at some point after the call.
+
+#### Prototype of vprintf:
+
+```c
+int vsprintf (char * str, const char * format, va_list arg );
+
+```
+
+### parameters:
+
+****str** ->Pointer to an array (buffer) where the resulting C-string is stored.
+The buffer should be large enough to contain the resulting string.*
+
+[*Format*](#jump1)
+
+Format specifier prototype for vsprintf function:
+
+*%[[flags](#jump2)][[width](#jump3)][.[precision](#jump4)][length][specifier](#jump1)*
+
+*arg ->** A value identifying a variable arguments list initialized with va_start.*
+*va_list is a special type defined in <cstdarg>.*
+
+### Return Value:
+
+Returns number of written character if successful otherwise, return a negative value.
+
+```c
+ 
+#include <stdio.h>
+#include <stdarg.h>
+
+void PrintFError ( const char * format, ... )
+{
+ char buffer[256];
+ va_list args;
+ va_start (args, format);
+ vsprintf (buffer,format, args);
+ perror (buffer);
+ va_end (args);
+}
+
+int main ()
+{
+ FILE * pFile;
+ char szFileName[]="myfile.txt";
+
+ pFile = fopen (szFileName,"r");
+ if (pFile == NULL)
+ PrintFError ("Error opening '%s'",szFileName);
+ else
+ {
+ 
+ fclose (pFile);
+ }
+ return 0;
+}
+
+```
+
+In this example, if the file myfile.txt does not exist, prior is called to show an error message similar to:
+
+Error opening file 'myfile.txt': No such file or directory

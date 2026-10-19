@@ -6,7 +6,8 @@ category: "software-engineering"
 status: "Published"
 summary: "We all know that the Microsoft Office is one of the most popular Office Package because of its interface and user-friendly tools. Also, we all know that the MS Access is very popular and handy RDBM..."
 tags: ["How to", "MySQL", "MS Access", "Database"]
-wordCount: 397
+youtubeId: "js7U7esbrsY"
+wordCount: 422
 readTime: 2
 ---
 
@@ -26,42 +27,97 @@ readTime: 2
 
 We all know that the Microsoft Office is one of the most popular Office Package because of its interface and user-friendly tools. Also, we all know that the MS Access is very popular and handy RDBMS. Query designing and database management tools in access provide a very easy approach to users.
 
-rnYou can use Microsoft Access as a front end to MySQL by linking tables within your Microsoft Access database to tables that exist within your MySQL database. When a query is requested on a table within Access, ODBC is used to execute the queries on the MySQL database.rn## **See on YouTube:**
+You can use Microsoft Access as a front end to MySQL by linking tables within your Microsoft Access database to tables that exist within your MySQL database. When a query is requested on a table within Access, ODBC is used to execute the queries on the MySQL database.
 
-rn[embedyt] https://www.youtube.com/watch?v=js7U7esbrsY[/embedyt]rn## **Steps to connect a remote MySQL database using MS Access:**
+## **See on YouTube:**
 
-rnrn<hr />rnrn** Step 1: --Download MySQL Connector ODBC**rnrnClick on the following link to download MySQL Connector [https://dev.mysql.com/downloads/connector/odbc/](https://dev.mysql.com/downloads/connector/odbc/)rnrn[![Mysql connector odbc download page](https://www.technhit.in/wp-content/uploads/2017/07/Mysql-connector-odbc-download-page.png)](https://www.technhit.in/wp-content/uploads/2017/07/Mysql-connector-odbc-download-page.png)rnrn**Step 2: --Install MySQL Connector ODBC**rnrnTo install MySQL Connector ODBC follow the installation steps.rn1)Run Installer and Click on Next
+## **Steps to connect a remote MySQL database using MS Access:**
 
-rn[![Mysql-connector-odbc-install1.png](https://www.technhit.in/wp-content/uploads/2017/07/Mysql-connector-odbc-install1.png)](https://www.technhit.in/wp-content/uploads/2017/07/Mysql-connector-odbc-install1.png)rn2)Click On Accept and then next
+<hr />
 
-rn[![Mysql connector odbc install2](https://www.technhit.in/wp-content/uploads/2017/07/Mysql-connector-odbc-install2.png)](https://www.technhit.in/wp-content/uploads/2017/07/Mysql-connector-odbc-install2.png)rn3)Click on typical and then next
+** Step 1: --Download MySQL Connector ODBC**
 
-rn[![Mysql connector odbc install3](https://www.technhit.in/wp-content/uploads/2017/07/Mysql-connector-odbc-install3.png)](https://www.technhit.in/wp-content/uploads/2017/07/Mysql-connector-odbc-install3.png)rn4)Finally, click on Finish button.
+Click on the following link to download MySQL Connector [https://dev.mysql.com/downloads/connector/odbc/](https://dev.mysql.com/downloads/connector/odbc/)
 
-rn[![Mysql connector odbc install5](https://www.technhit.in/wp-content/uploads/2017/07/Mysql-connector-odbc-install5.png)](https://www.technhit.in/wp-content/uploads/2017/07/Mysql-connector-odbc-install5.png)rnrn**Step 3: --Setup ODBC Data Source**rnrn<hr />rn1)Click on start button and type at search bar "odbc"
+[![Mysql connector odbc download page](https://www.technhit.in/wp-content/uploads/2017/07/Mysql-connector-odbc-download-page.png)](https://www.technhit.in/wp-content/uploads/2017/07/Mysql-connector-odbc-download-page.png)
 
-rn[![odbc data source](https://www.technhit.in/wp-content/uploads/2017/07/odbc-data-source.png)](https://www.technhit.in/wp-content/uploads/2017/07/odbc-data-source.png)rn2) Under "User DSN" Click on Add button
+**Step 2: --Install MySQL Connector ODBC**
 
-rn[![odbc data source2](https://www.technhit.in/wp-content/uploads/2017/07/odbc-data-source2.png)](https://www.technhit.in/wp-content/uploads/2017/07/odbc-data-source2.png)rn3) Select MySQL ODBC 5.3 Unicode Driver and click on Finish button
+To install MySQL Connector ODBC follow the installation steps.
 
-rn[![odbc data source3](https://www.technhit.in/wp-content/uploads/2017/07/odbc-data-source3.png)](https://www.technhit.in/wp-content/uploads/2017/07/odbc-data-source3.png)rn4) Now fill your remote database information and credential.
+1)Run Installer and Click on Next
 
-rn[![odbc data source4](https://www.technhit.in/wp-content/uploads/2017/07/odbc-data-source4.png)](https://www.technhit.in/wp-content/uploads/2017/07/odbc-data-source4.png)rn5)After filling information of your remote database click on test button to check the connection.
+[![Mysql-connector-odbc-install1.png](https://www.technhit.in/wp-content/uploads/2017/07/Mysql-connector-odbc-install1.png)](https://www.technhit.in/wp-content/uploads/2017/07/Mysql-connector-odbc-install1.png)
 
-rnrn<blockquote>Note: Root user in MySQL blocked by default for remote access. if your are trying through root then you got an error "Access denied". Still want to login with root user then unblock root user then try.</blockquote>rn[![odbc data source5](https://www.technhit.in/wp-content/uploads/2017/07/odbc-data-source5.png)](https://www.technhit.in/wp-content/uploads/2017/07/odbc-data-source5.png)rn5) If your database connected successfully then select a database for operation.
+2)Click On Accept and then next
 
-rn[![odbc data source6](https://www.technhit.in/wp-content/uploads/2017/07/odbc-data-source6.png)](https://www.technhit.in/wp-content/uploads/2017/07/odbc-data-source6.png)rn6) Now finally click on ok button. after that, you see your remote source connection under user DSN.
+[![Mysql connector odbc install2](https://www.technhit.in/wp-content/uploads/2017/07/Mysql-connector-odbc-install2.png)](https://www.technhit.in/wp-content/uploads/2017/07/Mysql-connector-odbc-install2.png)
 
-rn[![odbc data source7](https://www.technhit.in/wp-content/uploads/2017/07/odbc-data-source7.png)](https://www.technhit.in/wp-content/uploads/2017/07/odbc-data-source7.png)rnrn**Step 3: --Link Database tables inside Access **rnrn<hr />rn1)Open Access and create a database.[![Create access database](https://www.technhit.in/wp-content/uploads/2017/07/1access-odbc5.png)](https://www.technhit.in/wp-content/uploads/2017/07/1access-odbc5.png)
+3)Click on typical and then next
 
-rn2)Click on ODBC Database under external data tab.
+[![Mysql connector odbc install3](https://www.technhit.in/wp-content/uploads/2017/07/Mysql-connector-odbc-install3.png)](https://www.technhit.in/wp-content/uploads/2017/07/Mysql-connector-odbc-install3.png)
 
-rn rnrn[![access odbc1](https://www.technhit.in/wp-content/uploads/2017/07/access-odbc1.png)](https://www.technhit.in/wp-content/uploads/2017/07/access-odbc1.png)rn2)Select link table then click on the ok button.
+4)Finally, click on Finish button.
 
-rn[![ODBC link table](https://www.technhit.in/wp-content/uploads/2017/07/access-odbc2png.png)](https://www.technhit.in/wp-content/uploads/2017/07/access-odbc2png.png)rn3)Select your remote database source under Machin Data Source.
+[![Mysql connector odbc install5](https://www.technhit.in/wp-content/uploads/2017/07/Mysql-connector-odbc-install5.png)](https://www.technhit.in/wp-content/uploads/2017/07/Mysql-connector-odbc-install5.png)
 
-rn[![Select data source](https://www.technhit.in/wp-content/uploads/2017/07/access-odbc3png.png)](https://www.technhit.in/wp-content/uploads/2017/07/access-odbc3png.png)rn4)Select Table which you want to link then click on ok button.
+**Step 3: --Setup ODBC Data Source**
 
-rn[![Seleect Table](https://www.technhit.in/wp-content/uploads/2017/07/access-odbc4.png)](https://www.technhit.in/wp-content/uploads/2017/07/access-odbc4.png)rn5)Now your remote table has been linked and ready to insert, delete and other operations.
+<hr />
 
-rn[![access odbc5](https://www.technhit.in/wp-content/uploads/2017/07/access-odbc5.png)](https://www.technhit.in/wp-content/uploads/2017/07/access-odbc5.png)
+1)Click on start button and type at search bar "odbc"
+
+[![odbc data source](https://www.technhit.in/wp-content/uploads/2017/07/odbc-data-source.png)](https://www.technhit.in/wp-content/uploads/2017/07/odbc-data-source.png)
+
+2) Under "User DSN" Click on Add button
+
+[![odbc data source2](https://www.technhit.in/wp-content/uploads/2017/07/odbc-data-source2.png)](https://www.technhit.in/wp-content/uploads/2017/07/odbc-data-source2.png)
+
+3) Select MySQL ODBC 5.3 Unicode Driver and click on Finish button
+
+[![odbc data source3](https://www.technhit.in/wp-content/uploads/2017/07/odbc-data-source3.png)](https://www.technhit.in/wp-content/uploads/2017/07/odbc-data-source3.png)
+
+4) Now fill your remote database information and credential.
+
+[![odbc data source4](https://www.technhit.in/wp-content/uploads/2017/07/odbc-data-source4.png)](https://www.technhit.in/wp-content/uploads/2017/07/odbc-data-source4.png)
+
+5)After filling information of your remote database click on test button to check the connection.
+
+<blockquote>Note: Root user in MySQL blocked by default for remote access. if your are trying through root then you got an error "Access denied". Still want to login with root user then unblock root user then try.</blockquote>
+[![odbc data source5](https://www.technhit.in/wp-content/uploads/2017/07/odbc-data-source5.png)](https://www.technhit.in/wp-content/uploads/2017/07/odbc-data-source5.png)
+
+5) If your database connected successfully then select a database for operation.
+
+[![odbc data source6](https://www.technhit.in/wp-content/uploads/2017/07/odbc-data-source6.png)](https://www.technhit.in/wp-content/uploads/2017/07/odbc-data-source6.png)
+
+6) Now finally click on ok button. after that, you see your remote source connection under user DSN.
+
+[![odbc data source7](https://www.technhit.in/wp-content/uploads/2017/07/odbc-data-source7.png)](https://www.technhit.in/wp-content/uploads/2017/07/odbc-data-source7.png)
+
+**Step 3: --Link Database tables inside Access **
+
+<hr />
+
+1)Open Access and create a database.[![Create access database](https://www.technhit.in/wp-content/uploads/2017/07/1access-odbc5.png)](https://www.technhit.in/wp-content/uploads/2017/07/1access-odbc5.png)
+
+2)Click on ODBC Database under external data tab.
+
+ 
+
+[![access odbc1](https://www.technhit.in/wp-content/uploads/2017/07/access-odbc1.png)](https://www.technhit.in/wp-content/uploads/2017/07/access-odbc1.png)
+
+2)Select link table then click on the ok button.
+
+[![ODBC link table](https://www.technhit.in/wp-content/uploads/2017/07/access-odbc2png.png)](https://www.technhit.in/wp-content/uploads/2017/07/access-odbc2png.png)
+
+3)Select your remote database source under Machin Data Source.
+
+[![Select data source](https://www.technhit.in/wp-content/uploads/2017/07/access-odbc3png.png)](https://www.technhit.in/wp-content/uploads/2017/07/access-odbc3png.png)
+
+4)Select Table which you want to link then click on ok button.
+
+[![Seleect Table](https://www.technhit.in/wp-content/uploads/2017/07/access-odbc4.png)](https://www.technhit.in/wp-content/uploads/2017/07/access-odbc4.png)
+
+5)Now your remote table has been linked and ready to insert, delete and other operations.
+
+[![access odbc5](https://www.technhit.in/wp-content/uploads/2017/07/access-odbc5.png)](https://www.technhit.in/wp-content/uploads/2017/07/access-odbc5.png)

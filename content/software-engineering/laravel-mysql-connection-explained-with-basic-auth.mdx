@@ -4,9 +4,10 @@ slug: "laravel-mysql-connection-explained-with-basic-auth"
 date: "2020-12-06"
 category: "software-engineering"
 status: "Published"
-summary: "Hi, Friends welcome to TechBlog. In this tutorial, we are going to config the MySQL Database connection with your Laravel Application. In continuation [Laravel tutorial](https://laravel.com/) Serie..."
+summary: "Hi, Friends welcome to TechBlog. In this tutorial, we are going to config the MySQL Database connection with your Laravel Application. In continuation Laravel tutorial Series we had installed Larav..."
 tags: ["systems-engineering"]
-wordCount: 746
+youtubeId: "OD_7y5rBB3c"
+wordCount: 752
 readTime: 4
 ---
 
@@ -26,88 +27,135 @@ readTime: 4
 
 Hi, Friends welcome to TechBlog. In this tutorial, we are going to config the MySQL Database connection with your Laravel Application. In continuation [Laravel tutorial](https://laravel.com/) Series we had [installed Laravel with an apache web server in the previous tutorial](https://www.technhit.in/setup-laravel-on-ubuntu-with-apache/).
 
-rnrn## Prerequisites you needed to build Database connectivity with laravel application:
+## Prerequisites you needed to build Database connectivity with laravel application:
 
-rn
-rn 	- *Ubuntu with LAMP/LNMP*
-rn 	- *Laravel 8.x*
-rn
-rn[embedyt] https://www.youtube.com/watch?v=OD_7y5rBB3c[/embedyt]rn## Major Steps of Laravel MySQL Connection:
+ 	
+- *Ubuntu with LAMP/LNMP*
+ 	
+- *Laravel 8.x*
 
-rn
-rn 	- ***Step1-Install MySQL server and PHP MySQL module.***
-rn 	- ***Step2-Creating User and Database for your application***
-rn 	- ***Step3-Making auth functionality.***
-rn 	- ***Step4-Config your application with database information and test the connection.***
-rn
-rn## *Step1-Install MySQL server and PHP MySQL module.*
+## Major Steps of Laravel MySQL Connection:
 
-rnYou need a MySQL server and php-mysql module. Go ahead and execute following command
+ 	
+- ***Step1-Install MySQL server and PHP MySQL module.***
+ 	
+- ***Step2-Creating User and Database for your application***
+ 	
+- ***Step3-Making auth functionality.***
+ 	
+- ***Step4-Config your application with database information and test the connection.***
 
-rnrn```
+## *Step1-Install MySQL server and PHP MySQL module.*
+
+You need a MySQL server and php-mysql module. Go ahead and execute following command
+
+```bash
  sudo apt install mysql-server, php-mysql
-```rnAfter installation completed check the mysql service running or not by using
 
-rnrn```
+```
+
+After installation completed check the mysql service running or not by using
+
+```bash
 service mysql status
-```rn[![Laravel MySQL](https://www.technhit.in/wp-content/uploads/2020/12/screen1.png)](https://www.technhit.in/wp-content/uploads/2020/12/screen1.png)rnYea it's running. If you found it's not running then start the service.
 
-rnrn```
+```
+
+[![Laravel MySQL](https://www.technhit.in/wp-content/uploads/2020/12/screen1.png)](https://www.technhit.in/wp-content/uploads/2020/12/screen1.png)
+
+Yea it's running. If you found it's not running then start the service.
+
+```bash
 sudo systemctl start mysql
-```rnNow run the MySQL secure installation script to improve the security of your database and remove unwanted database and users that comes with by default.
 
-rnrn```
+```
+
+Now run the MySQL secure installation script to improve the security of your database and remove unwanted database and users that comes with by default.
+
+```bash
 sudo mysql_secure_installation
-```rnHere I am going to choose the medium strength password and set the password. Then re-enter the password again. Accept it. And follow the question and answer it.
 
-rn[![Laravel MySQL Connection mysql_secure_installation](https://www.technhit.in/wp-content/uploads/2020/12/screen2.png)](https://www.technhit.in/wp-content/uploads/2020/12/screen2.png)rn## *Step2-Creating User and Database for your application.*
+```
 
-rnNow move into MySQL database and create a database for your application. and create a user for your application, use the following command.
+Here I am going to choose the medium strength password and set the password. Then re-enter the password again. Accept it. And follow the question and answer it.
 
-rnrn```
+[![Laravel MySQL Connection mysql_secure_installation](https://www.technhit.in/wp-content/uploads/2020/12/screen2.png)](https://www.technhit.in/wp-content/uploads/2020/12/screen2.png)
+
+## *Step2-Creating User and Database for your application.*
+
+Now move into MySQL database and create a database for your application. and create a user for your application, use the following command.
+
+```bash
 sudo mysql
-```rn```
-CREATE DATABASE techblog;rnCREATE USER 'techblog'@'localhost' IDENTIFIED BY 'Techblog@2020';rnGRANT ALL PRIVILEGES ON *.* TO 'techblog'@'localhost' ;rnFLUSH PRIVILEGES; rnEXIT;
-```rn[![create database](https://www.technhit.in/wp-content/uploads/2020/12/screen3.png)](https://www.technhit.in/wp-content/uploads/2020/12/screen3.png)And make sure to change** username password** as per yours. After that flush the privilege. Now exit from MySQL prompt by typing exit command.
 
-rnrn## *Step3-Making auth functionality.*
+```bash
+CREATE DATABASE techblog;
+CREATE USER 'techblog'@'localhost' IDENTIFIED BY 'Techblog@2020';
+GRANT ALL PRIVILEGES ON *.* TO 'techblog'@'localhost' ;
+FLUSH PRIVILEGES; 
+EXIT;
 
-rnMove to your application directory. Here we are going to create basic authentication functionality like login and register users to show database connectivity.For that we required UI library just type following command:
+```
 
-rnrn```
-cd /home/techblog/myapp1rncomposer require Laravel/ui
-```rn[![Laravel MySQL Connection composer ui](https://www.technhit.in/wp-content/uploads/2020/12/screen4.png)](https://www.technhit.in/wp-content/uploads/2020/12/screen4.png)Now install auth functionality to your application, here I am going to use vue js framework for front end. So you can choose angular, react also
+[![create database](https://www.technhit.in/wp-content/uploads/2020/12/screen3.png)](https://www.technhit.in/wp-content/uploads/2020/12/screen3.png)And make sure to change** username password** as per yours. After that flush the privilege. Now exit from MySQL prompt by typing exit command.
 
-rnrn```
+## *Step3-Making auth functionality.*
+
+Move to your application directory. Here we are going to create basic authentication functionality like login and register users to show database connectivity.For that we required UI library just type following command:
+
+```bash
+cd /home/techblog/myapp1
+composer require Laravel/ui
+
+```
+
+[![Laravel MySQL Connection composer ui](https://www.technhit.in/wp-content/uploads/2020/12/screen4.png)](https://www.technhit.in/wp-content/uploads/2020/12/screen4.png)Now install auth functionality to your application, here I am going to use vue js framework for front end. So you can choose angular, react also
+
+```bash
 php artisan ui vue --auth
-```rnYou can see that authentication scaffolding generated. Also, you need to run the npm install and run dev in order to make it fully functional with compiling all js and CSS files. Npm stands for Node package manager It puts modules in place so that node can find them, and manages dependency conflicts intelligently. If npm not installed in your system then first install npm:
 
-rnrn```
+```
+
+You can see that authentication scaffolding generated. Also, you need to run the npm install and run dev in order to make it fully functional with compiling all js and CSS files. Npm stands for Node package manager It puts modules in place so that node can find them, and manages dependency conflicts intelligently. If npm not installed in your system then first install npm:
+
+```bash
 sudo apt install npm
-```rnJust go ahead and type npm install. It will install all required dependency script automatically.
 
-rnrn```
+```
+
+Just go ahead and type npm install. It will install all required dependency script automatically.
+
+```bash
 npm install
-```rnAfter that use npm run dev command to compile all js and css file for your application.
 
-rnrn```
+```
+
+After that use npm run dev command to compile all js and css file for your application.
+
+```bash
 npm run dev
-```rn## *Step4-Config your application with database information and test the connection.*
 
-rnSo, in order to do this, open your application directory with any code editor. I am using Visual Studio Code to edit my application. You can check out this tutorial how to install Visual studio code on ubuntu here. Open your application directory inside the code editor. And then edit the “.env” file inside your application. Find the DB connection section. And put your database name, user name, and credentials. And then save the file.
+```
 
-rn[![laravel env file](https://www.technhit.in/wp-content/uploads/2020/12/screen5.png)](https://www.technhit.in/wp-content/uploads/2020/12/screen5.png)rnGet back to the terminal and try to migrate the tables which we created at the time of creating auth functionality. Migrate the tables to database using following command
+## *Step4-Config your application with database information and test the connection.*
 
-rnrn```
+So, in order to do this, open your application directory with any code editor. I am using Visual Studio Code to edit my application. You can check out this tutorial how to install Visual studio code on ubuntu here. Open your application directory inside the code editor. And then edit the ".env" file inside your application. Find the DB connection section. And put your database name, user name, and credentials. And then save the file.
+
+[![laravel env file](https://www.technhit.in/wp-content/uploads/2020/12/screen5.png)](https://www.technhit.in/wp-content/uploads/2020/12/screen5.png)
+
+Get back to the terminal and try to migrate the tables which we created at the time of creating auth functionality. Migrate the tables to database using following command
+
+```bash
 php artisan migrate
-```rn[![Laravel MySQL Connection](https://www.technhit.in/wp-content/uploads/2020/12/screen6.png)](https://www.technhit.in/wp-content/uploads/2020/12/screen6.png)You can see inside MySQL database just open MySQL prompt open up your database and then show tables. Here you can see the database schema successfully migrated.
 
-rnrn## *Test Laravel MySQL Connection*
+```
 
-rnNow you can see the reflection on your application. Get back to the browser reload the page and here it is, log in and register functionality added to your application. Well, now you can able register yourself inside your new application just fill this form and click on the register button.
+[![Laravel MySQL Connection](https://www.technhit.in/wp-content/uploads/2020/12/screen6.png)](https://www.technhit.in/wp-content/uploads/2020/12/screen6.png)You can see inside MySQL database just open MySQL prompt open up your database and then show tables. Here you can see the database schema successfully migrated.
 
-rn[![laravel register](https://www.technhit.in/wp-content/uploads/2020/12/screen7.png)](https://www.technhit.in/wp-content/uploads/2020/12/screen7.png)Also, you can see the routs directory open up web routs the auth routs registered automatedly.
+## *Test Laravel MySQL Connection*
 
-rn[![laravel Auh](https://www.technhit.in/wp-content/uploads/2020/12/screen8.png)](https://www.technhit.in/wp-content/uploads/2020/12/screen8.png)Hope this tutorial helpful to you. Leave a comment if you have any questions. Also, click on the subscribe button to encourage us and get the latest update. Thank you.
+Now you can see the reflection on your application. Get back to the browser reload the page and here it is, log in and register functionality added to your application. Well, now you can able register yourself inside your new application just fill this form and click on the register button.
 
-rn
+[![laravel register](https://www.technhit.in/wp-content/uploads/2020/12/screen7.png)](https://www.technhit.in/wp-content/uploads/2020/12/screen7.png)Also, you can see the routs directory open up web routs the auth routs registered automatedly.
+
+[![laravel Auh](https://www.technhit.in/wp-content/uploads/2020/12/screen8.png)](https://www.technhit.in/wp-content/uploads/2020/12/screen8.png)Hope this tutorial helpful to you. Leave a comment if you have any questions. Also, click on the subscribe button to encourage us and get the latest update. Thank you.

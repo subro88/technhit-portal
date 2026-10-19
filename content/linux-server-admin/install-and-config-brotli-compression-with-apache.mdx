@@ -4,9 +4,10 @@ slug: "install-and-config-brotli-compression-with-apache"
 date: "2021-08-09"
 category: "linux-server-admin"
 status: "Published"
-summary: "Today's world is growing very fast and everyone is in a hurry! According to a [Google](https://developers.google.com/web/fundamentals/performance/why-performance-matters/) study, 40% of people aban..."
+summary: "Today's world is growing very fast and everyone is in a hurry! According to a Google study, 40% of people abandon a website that takes more than 3 seconds to load and a 1-second delay in page respo..."
 tags: ["systems-engineering"]
-wordCount: 503
+youtubeId: "0ZjTC9wJ1RM"
+wordCount: 513
 readTime: 3
 ---
 
@@ -26,54 +27,100 @@ readTime: 3
 
 Today's world is growing very fast and everyone is in a hurry! According to a [Google](https://developers.google.com/web/fundamentals/performance/why-performance-matters/) study, 40% of people abandon a website that takes more than 3 seconds to load and a 1-second delay in page response can result in a 7% reduction in conversions. Yes, every second matters! hence Brotli comes into effect to speed up your website.
 
-rnJust like Gzip, Brotli is also a generic-purpose compression algorithm developed by Google. It compresses data using a combination of modern technologies and algorithms. It is similar in speed to deflate but provides higher compression. Brotli compression is supported by all the major browsers like Chrome, Firefox, Safari, Edge.
+Just like Gzip, Brotli is also a generic-purpose compression algorithm developed by Google. It compresses data using a combination of modern technologies and algorithms. It is similar in speed to deflate but provides higher compression. Brotli compression is supported by all the major browsers like Chrome, Firefox, Safari, Edge.
 
-rnIn this Article we are going to configure Brotli Compressor Mechanism with Apache Web Server.
+In this Article we are going to configure Brotli Compressor Mechanism with Apache Web Server.
 
-rnrn## See on Youtube:
+## See on Youtube:
 
-rn[embedyt] https://www.youtube.com/watch?v=0ZjTC9wJ1RM[/embedyt]rn## Prerequisites
+## Prerequisites
 
-rn
-rn 	- Need sudo  privileged account.
-rn 	- Assumed that you have Apache webserver running with a Virtual host which serving web content.
-rn
-rnWell, at this point we understand that Brotli can help you to speed up your heavy website, and save your bandwidth also. And eventually, it helps optimization on SEO ranking in the competition market.
+ 	
+- Need sudo  privileged account.
+ 	
+- Assumed that you have Apache webserver running with a Virtual host which serving web content.
 
-rnWe assume that you have an existing web server with Apache in order to do the experiment, and if you are in a production environment then I strongly recommend to make a backup your files before that. You can also check out this video how to setup Apache Vhost above here.
+Well, at this point we understand that Brotli can help you to speed up your heavy website, and save your bandwidth also. And eventually, it helps optimization on SEO ranking in the competition market.
 
-rnGo ahead and open terminal type :
+We assume that you have an existing web server with Apache in order to do the experiment, and if you are in a production environment then I strongly recommend to make a backup your files before that. You can also check out this video how to setup Apache Vhost above here.
 
-rnrn```
+Go ahead and open terminal type :
+
+```bash
 sudo apt install brotli 
-```rnSo, after install Brotli, enable the module in Apache.
 
-rnrn```
+```
+
+So, after install Brotli, enable the module in Apache.
+
+```bash
 sudo a2enmod brotli 
-```rnNow You need to restart Apache2 in order to make module effective.
 
-rnrn```
+```
+
+Now You need to restart Apache2 in order to make module effective.
+
+```bash
 sudo systemctl restart apache2 
-```rnNow, open up Apache Vhost config file. go ahead and type `nano /etc/apache2/site-available/<your config file>`.
 
-rnInside your config file place cursor after directory tag and put an If Module.
+```
 
-rnrn```
-<VirtualHost *:80>rn    ServerName myapp1.comrnrn    ServerAdmin admin@myapp1.comrn    DocumentRoot /var/www/html/wordpress/rnrn    <Directory /var/www/html/wordpress>rn        Options Indexes MultiViewsrn        AllowOverride Allrn        Require all grantedrn    </Directory>rn/////////////////////////////// Add this config to your Vhost file ////////////////////////////rn    <IfModule mod_brotli.c>rn        AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/xml text/css text/javascript application/javascriptrn    </IfModule>rn///////////////////////////////////////////////////////////////////////////////////////////////rnrn    ErrorLog ${APACHE_LOG_DIR}/error.logrn    CustomLog ${APACHE_LOG_DIR}/access.log combinedrn</VirtualHost>rn
-```rn rnInside If Module add output filter type Brotli Compress, and then put your file type you want to compress. So, here is put html, css, Js etc.
+Now, open up Apache Vhost config file. go ahead and type `nano /etc/apache2/site-available/<your config file>`.
 
-rnAfter that save the configuration and exit. And again, restart the Apache service in order to make effect in your website.
+Inside your config file place cursor after directory tag and put an If Module.
 
-rnrn```
+```bash
+<VirtualHost *:80>
+    ServerName myapp1.com
+
+    ServerAdmin admin@myapp1.com
+    DocumentRoot /var/www/html/wordpress/
+
+    <Directory /var/www/html/wordpress>
+        Options Indexes MultiViews
+        AllowOverride All
+        Require all granted
+    </Directory>
+/////////////////////////////// Add this config to your Vhost file ////////////////////////////
+    <IfModule mod_brotli.c>
+        AddOutputFilterByType BROTLI_COMPRESS text/html text/plain text/xml text/css text/javascript application/javascript
+    </IfModule>
+///////////////////////////////////////////////////////////////////////////////////////////////
+
+    ErrorLog ${APACHE_LOG_DIR}/error.log
+    CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+
+```
+
+Inside If Module add output filter type Brotli Compress, and then put your file type you want to compress. So, here is put html, css, Js etc.
+
+After that save the configuration and exit. And again, restart the Apache service in order to make effect in your website.
+
+```bash
 sudo systemctl restart apache2 
-```rnNow open up the browser and load the page in another tab, it will be bit faster than previous. You could check whether your Brotli Compressor work or not, using Curl command. So, open a local terminal and type the following command.
 
-rnrn```
+```
+
+Now open up the browser and load the page in another tab, it will be bit faster than previous. You could check whether your Brotli Compressor work or not, using Curl command. So, open a local terminal and type the following command.
+
+```bash
 curl -I -H 'Accept-Encoding: br' http://myapp1.com 
-```rnYou can see the output that content encoding Brotli is working fine for me.
 
-rnrn```
-HTTP/1.1 200 OKrnDate: Mon, 09 Aug 2021 06:50:56 GMTrnServer: Apache/2.4.41 (Ubuntu)rnLink: <http://myapp1.com/index.php?rest_route=/>; rel="https://api.w.org/"rnVary: Accept-EncodingrnContent-Encoding: brrnContent-Length: 1rnContent-Type: text/html; charset=UTF-8
-```rnSo, guys hope this article helpful to you, Thank you.
+```
 
-rn
+You can see the output that content encoding Brotli is working fine for me.
+
+```bash
+HTTP/1.1 200 OK
+Date: Mon, 09 Aug 2021 06:50:56 GMT
+Server: Apache/2.4.41 (Ubuntu)
+Link: <http://myapp1.com/index.php?rest_route=/>; rel="https://api.w.org/"
+Vary: Accept-Encoding
+Content-Encoding: br
+Content-Length: 1
+Content-Type: text/html; charset=UTF-8
+
+```
+
+So, guys hope this article helpful to you, Thank you.

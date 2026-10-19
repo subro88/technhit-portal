@@ -4,10 +4,10 @@ slug: "codeigniter-form-helper"
 date: "2017-06-11"
 category: "software-engineering"
 status: "Published"
-summary: "In this tutorial, we are discussing \"Form Helper\"  In CodeIgniter. We generally use a form to collect input from the user and store it either database or file. And uses this information as per ap..."
+summary: "In this tutorial, we are discussing \"Form Helper\"  In CodeIgniter. We generally use a form to collect input from the user and store it either database or file. And uses this information as per ap..."
 tags: ["CodeIgniter", "Form"]
-wordCount: 1872
-readTime: 10
+wordCount: 2020
+readTime: 11
 ---
 
 ## Key Architecture Takeaways
@@ -24,173 +24,562 @@ readTime: 10
 
 ---
 
-In this tutorial, we are discussing "Form Helper"  In CodeIgniter. We generally use a form to collect input from the user and store it either database or file. And uses this information as per application requirements. In CodeIgniter, The Form Helper file contains functions that assist us working with forms more effectively.rnrnBefore using the Form Helper, we need to load the helper So, let’s begin this tutorial by learning how to load a form helper library.rnrnWe can load the "Form Helper" using two methods:rn
-rn 	- Using Autoload Method
-rn 	- Using Load Method Manual
-rn
-rn## Load Form Helper [Using Autoload Method](https://www.technhit.in/codeigniter-basic-configuration-using-auto-load/):
+In this tutorial, we are discussing "Form Helper"  In CodeIgniter. We generally use a form to collect input from the user and store it either database or file. And uses this information as per application requirements. In CodeIgniter, The Form Helper file contains functions that assist us working with forms more effectively.
 
-rnOpen application/config/autoload.php and configure it as given belowrn```
- $autoload['helper'] = array('form');
-```rn## Load Form Helper Using Load Method:
+Before using the Form Helper, we need to load the helper So, let's begin this tutorial by learning how to load a form helper library.
 
-rnWe can load the "Form Helper" using load method at your controller as follows.rn```
+We can load the "Form Helper" using two methods:
+
+ 	
+- Using Autoload Method
+ 	
+- Using Load Method Manual
+
+## Load Form Helper [Using Autoload Method](https://www.technhit.in/codeigniter-basic-configuration-using-auto-load/):
+
+Open application/config/autoload.php and configure it as given below
+
+```bash
+ $autoload['helper'] = array('form');
+
+```
+
+## Load Form Helper Using Load Method:
+
+We can load the "Form Helper" using load method at your controller as follows.
+
+```bash
 $this->load->helper('form');
-```rn##  Syntax to define a form in Codeigniter:
 
-rn**<tt class="descname">form_open</tt><big>(</big>[*$action = ''*[, *$attributes = ''*[, *$hidden = array()*]]]<big>)</big>**rn<table class="docutils field-list" frame="void" rules="none"><colgroup> <col class="field-name" /> <col class="field-body" /></colgroup>rn<tbody valign="top">rn<tr class="field-odd field">rn<th class="field-name">Parameters:</th>rn<td class="field-body">rn
-rn 	- **$action** (*string*) – Form action/target URI string
-rn 	- **$attributes** (*array*) – HTML attributes
-rn 	- **$hidden** (*array*) – An array of hidden fields’ definitions
-rn
-rn</td>rn</tr>rn<tr class="field-even field">rn<th class="field-name">Returns:</th>rn<td class="field-body">rnAn HTML form opening tag
+```
 
-rn</td>rn</tr>rn<tr class="field-odd field">rn<th class="field-name">Return type:</th>rn<td class="field-body">rnstring
+##  Syntax to define a form in Codeigniter:
 
-rn</td>rn</tr>rn</tbody>rn</table>rnFor Example:rn```
-echo form_open('email/send', 'class="email" id="myform"');rnrn
-```rnThe above example creates following HTML Tag.rn```
- <form method="post" accept-charset="utf-8" action="http://example.com/index.php/email/send" class="email" id="mform">
-```rn## **Function with descritpion of Form Helper:**
+**<tt class="descname">form_open</tt><big>(</big>[*$action = ''*[, *$attributes = ''*[, *$hidden = array()*]]]<big>)</big>**
+<table class="docutils field-list" frame="void" rules="none"><colgroup> <col class="field-name" /> <col class="field-body" /></colgroup>
+<tbody valign="top">
+<tr class="field-odd field">
+<th class="field-name">Parameters:</th>
+<td class="field-body">
 
-rn
-rn 	- **form_open( );  //create an opening form tag **
-rn 	- **form_label( );  //create a label **
-rn 	- **form_input( );  //create input field such as text , email etc. **
-rn 	- **form_password( );  //create a password input field **
-rn 	- **form_hidden( );  //create hidden field **
-rn 	- **form_radio( );  //create radio button **
-rn 	- **form_dropdown( );  //create select field **
-rn 	- **form_checkbox( );  //create checkbox **
-rn 	- **form_textarea( );  //create textarea **
-rn 	- **form_fieldset( );  //create fieldset **
-rn 	- **form_upload( );  //to upload files **
-rn 	- **form_submit( );  //create submit button **
-rn 	- **form_reset( );  //create reset button **
-rn 	- **form_close( );  //create form closing tag **
-rn 	- **set_value( ) ;  //set default value for input tag **
-rn 	- **set_select( );  //set default value for select field **
-rn 	- **set_checkbox();  //set default value for checkbox **
-rn 	- **set_radio();  //set default value for radio button**
-rn
-rn### Form Label
+ 	
+- **$action** (*string*) - Form action/target URI string
+ 	
+- **$attributes** (*array*) - HTML attributes
+ 	
+- **$hidden** (*array*) - An array of hidden fields' definitions
 
-rn**form_label( )** function helps to generate a simple label.rnrnExample of form_label( ) function is given below :-rnrn```
+</td>
+</tr>
+<tr class="field-even field">
+<th class="field-name">Returns:</th>
+<td class="field-body">
+
+An HTML form opening tag
+
+</td>
+</tr>
+<tr class="field-odd field">
+<th class="field-name">Return type:</th>
+<td class="field-body">
+
+string
+
+</td>
+</tr>
+</tbody>
+</table>
+For Example:
+
+```bash
+echo form_open('email/send', 'class="email" id="myform"');
+
+```
+
+The above example creates following HTML Tag.
+
+```bash
+ <form method="post" accept-charset="utf-8" action="http://example.com/index.php/email/send" class="email" id="mform">
+
+```
+
+## **Function with descritpion of Form Helper:**
+
+ 	
+- **form_open( );  //create an opening form tag **
+ 	
+- **form_label( );  //create a label **
+ 	
+- **form_input( );  //create input field such as text , email etc. **
+ 	
+- **form_password( );  //create a password input field **
+ 	
+- **form_hidden( );  //create hidden field **
+ 	
+- **form_radio( );  //create radio button **
+ 	
+- **form_dropdown( );  //create select field **
+ 	
+- **form_checkbox( );  //create checkbox **
+ 	
+- **form_textarea( );  //create textarea **
+ 	
+- **form_fieldset( );  //create fieldset **
+ 	
+- **form_upload( );  //to upload files **
+ 	
+- **form_submit( );  //create submit button **
+ 	
+- **form_reset( );  //create reset button **
+ 	
+- **form_close( );  //create form closing tag **
+ 	
+- **set_value( ) ;  //set default value for input tag **
+ 	
+- **set_select( );  //set default value for select field **
+ 	
+- **set_checkbox();  //set default value for checkbox **
+ 	
+- **set_radio();  //set default value for radio button**
+
+### Form Label
+
+**form_label( )** function helps to generate a simple label.
+
+Example of form_label( ) function is given below :-
+
+```bash
 echo form_label('Employee Email-ID');
-```rnrnThe above code will produce the following HTML tag:-rnrn```
+
+```
+
+The above code will produce the following HTML tag:-
+
+```bash
 <label>Employee Email-ID</label>
-```rnrn rn### Form Input Text
 
-rn**form_input( )** function allow us to generate a standard text input field. We can pass the array containing indexes and values to create different input fields.rnrnText input field can be created by just passing a simple associative array to form_input( ). By default form_input( ) create a text input field.rnrnExample of text fields using form_input( ) function is given below:-rnrn```
- $data_name = array(rn'name' => 'emp_name',rn'id' => 'emp_name_id',rn'placeholder' => 'Please Enter Name'rn);rnecho form_input($data_name);
-```rnrnThe above code will produce the following HTML tag:-rnrn```
+```
+
+### Form Input Text
+
+**form_input( )** function allow us to generate a standard text input field. We can pass the array containing indexes and values to create different input fields.
+
+Text input field can be created by just passing a simple associative array to form_input( ). By default form_input( ) create a text input field.
+
+Example of text fields using form_input( ) function is given below:-
+
+```bash
+ $data_name = array(
+'name' => 'emp_name',
+'id' => 'emp_name_id',
+'placeholder' => 'Please Enter Name'
+);
+echo form_input($data_name);
+
+```
+
+The above code will produce the following HTML tag:-
+
+```bash
 <input type="text" name="emp_name" value="" id="emp_name_id" placeholder="Please Enter Name"  />
-```rnrnForm Input with Read-only permission:-rnrnAn input field can be created with **read-only **permission by passing ‘readonly’ as an index and value both in the associative array of form_input() function.rnrnAn example of input field with read-only permission is given below:-rnrn```
- $data_name = array(rn'name' => 'emp_name',rn'id' => 'emp_name_id',rn'value' => 'John'rn'readonly' => 'readonly'rn);rnecho form_input($data_name);
-```rnrnThe above code will produce the following HTML tag:-rnrn```
+
+```
+
+Form Input with Read-only permission:-
+
+An input field can be created with **read-only **permission by passing 'readonly' as an index and value both in the associative array of form_input() function.
+
+An example of input field with read-only permission is given below:-
+
+```bash
+ $data_name = array(
+'name' => 'emp_name',
+'id' => 'emp_name_id',
+'value' => 'John'
+'readonly' => 'readonly'
+);
+echo form_input($data_name);
+
+```
+
+The above code will produce the following HTML tag:-
+
+```bash
 <input type="text" name="emp_name" value="" id="emp_name_id" value="John" readonly="readonly" />
-```rnrn rn### Form Input Email
 
-rnEmail input field can be created by passing ‘type’ as index and ’email’ as a value in the array of form_input( ) function.rnrnAn example of email field using form_input( ) is given below:-rnrn```
-$data_email = array(rn'type' => 'email',rn'name' => 'emp_email',rn'id' => 'emp_email_id',rn'placeholder' => 'Please Enter Email'rn);rnecho form_input($data_email);
-```rnrnThe above code will produce the following HTML tag :-rnrn```
+```
+
+### Form Input Email
+
+Email input field can be created by passing 'type' as index and 'email' as a value in the array of form_input( ) function.
+
+An example of email field using form_input( ) is given below:-
+
+```bash
+$data_email = array(
+'type' => 'email',
+'name' => 'emp_email',
+'id' => 'emp_email_id',
+'placeholder' => 'Please Enter Email'
+);
+echo form_input($data_email);
+
+```
+
+The above code will produce the following HTML tag :-
+
+```bash
 <input type="email" name="emp_email" value="" id="emp_email_id" placeholder="Please Enter Email"  />
-```rnrn rn### Form Password
 
-rn**form_password( )** function can be used to create a password input field.All other functionality of this function is same as the form_input( ) function.rnrnExample of form_password( ) function is given below:-rnrn```
-$data_password = array(rn'name' => 'password',rn'id' => 'password_id',rn'placeholder' => 'Please Enter Password'rn);rnecho form_password($data_password);
-```rnrnThe above code will produce the following HTML tag:-rnrn```
+```
+
+### Form Password
+
+**form_password( )** function can be used to create a password input field.All other functionality of this function is same as the form_input( ) function.
+
+Example of form_password( ) function is given below:-
+
+```bash
+$data_password = array(
+'name' => 'password',
+'id' => 'password_id',
+'placeholder' => 'Please Enter Password'
+);
+echo form_password($data_password);
+
+```
+
+The above code will produce the following HTML tag:-
+
+```bash
 <input type="password" name="password" value="" id="password_id" placeholder="Please Enter Password"  />
-```rnrn rn### Form Input Hidden
 
-rn**form_hidden( ) **function** **is used to create a hidden field.We can create a single and multiple hidden fields both using this function.rnrnFor a single hidden field, we have to pass two values in which first value contains a name and second value contains a value for the hidden field.rnrnExample of single hidden field using form_hidden( ) function is given below :-rnrn```
+```
+
+### Form Input Hidden
+
+**form_hidden( ) **function** **is used to create a hidden field.We can create a single and multiple hidden fields both using this function.
+
+For a single hidden field, we have to pass two values in which first value contains a name and second value contains a value for the hidden field.
+
+Example of single hidden field using form_hidden( ) function is given below :-
+
+```bash
 form_hidden('employee_name', 'John');
-```rnrnThe above code will produce the following HTML tag:-rnrn```
+
+```
+
+The above code will produce the following HTML tag:-
+
+```bash
 <input type="hidden" name="employee_name" value="John" />
-```rnrnTo create multiple hidden fields we have to pass an associative array in which each index will act as name and their related value act as value for the hidden fields.rnrnAn example of multiple hidden fields using from_hidden( ) is given below:-rnrn```
-$data_hidden = array(rn'employee_name' => 'John',rn'employee_id' => '555'rn);rnecho form_hidden($data);
-```rnrnThe above code will produce the following HTML tag :-rnrn```
-<input type="hidden" name="employee_name" value="John" />rn<input type="hidden" name="employee_id" value="555" />
-```rnrn rn### Form Radio Button
 
-rn**form_radio( ) **function is used to create a radio button in a form in CodeIgniter. As we know that radio button is used for single selection so its name attribute must be same.rnrnExample of form_radio( ) function is given below :-rnrn```
-$data_radio1 = array(rn'name' => 'emp_marital_status',rn'value' => 'Unmarried',rn'checked' => TRUE,rn);rnrn$data_radio2 = array(rn'name' => 'emp_marital_status',rn'value' => 'Married',rn);rnecho form_radio($data_radio1);rnecho form_radio($data_radio2);
-```rnrnThe above code will produce the following HTML tag :-rnrn```
-<input type="radio" name="emp_marital_status" value="Unmarried" checked="checked"  />rn<input type="radio" name="emp_marital_status" value="Married"  />
-```rnrn rn### Form Dropdown
+```
 
-rn**form_dropdown( )** function is used to create standard dropdown field. It basically contains three parameters. First parameter contains the name of the dropdown field, second parameter contains associative arrays of options needed in dropdown and the third parameter contains the value wish to be selected.rnrnExample of form_dropdown( ) function is given below :-rnrn```
-$data_gender = array(rn'Male' => 'Male',rn'Female' => 'Female'rn);rnecho form_dropdown('select', $data_gender, 'Male');
-```rnrnThe above code will produce the following HTML tag :-rnrn```
-<select name="select">rn<option value="Male" selected="selected">Male</option>rn<option value="Female">Female</option>rn</select>
-```rnrnFor detailed information about form_dropdown( ) function  in codeigniter read our article  [CodeIgniter form dropdown](https://www.formget.com/codeigniter-form-dropdown/).rnrn rn### Form Checkbox
+To create multiple hidden fields we have to pass an associative array in which each index will act as name and their related value act as value for the hidden fields.
 
-rn**form_checkbox( ) **function is used to create a checkbox field in CodeIgniter. As we know that checkbox field is used for multiple values selection so its name must be an array and each checkbox contains array having same name.rnrnExample of form_checkbox( ) function is given below :-rnrn```
-$data_checkbox1 = array(rn'name' => 'qualification[]',rn'value' => 'Graduation'rn);rnrn$data_checkbox2 = array(rn'name' => 'qualification[]',rn'value' => 'Post Graduation'rn);rnrnecho form_checkbox($data_checkbox1);rnecho form_checkbox($data_checkbox2);
-```rnrnThe above code will produce the following HTML tag :-rnrn```
-<input type="checkbox" name="qualification[]" value="Graduation" />rn<input type="checkbox" name="qualification[]" value="Post Graduation" />
-```rnrn rn### Form Textarea
+An example of multiple hidden fields using from_hidden( ) is given below:-
 
-rn**form_textarea( ) **function is used to create a textarea field in CodeIgniter. To define the height and width of textarea we have to pass an associative array with index ‘rows’ and ‘cols’ with numeric value.rnrnExample of form_textarea( ) function is given below :-rnrn```
-$data_textarea = array(rn'name' => 'textarea',rn'rows' => 10,rn'cols' => 50rn);rnecho form_textarea($data_textarea);
-```rnrnThe above code will produce the following HTML tag :-rnrn```
+```bash
+$data_hidden = array(
+'employee_name' => 'John',
+'employee_id' => '555'
+);
+echo form_hidden($data);
+
+```
+
+The above code will produce the following HTML tag :-
+
+```bash
+<input type="hidden" name="employee_name" value="John" />
+<input type="hidden" name="employee_id" value="555" />
+
+```
+
+### Form Radio Button
+
+**form_radio( ) **function is used to create a radio button in a form in CodeIgniter. As we know that radio button is used for single selection so its name attribute must be same.
+
+Example of form_radio( ) function is given below :-
+
+```bash
+$data_radio1 = array(
+'name' => 'emp_marital_status',
+'value' => 'Unmarried',
+'checked' => TRUE,
+);
+
+$data_radio2 = array(
+'name' => 'emp_marital_status',
+'value' => 'Married',
+);
+echo form_radio($data_radio1);
+echo form_radio($data_radio2);
+
+```
+
+The above code will produce the following HTML tag :-
+
+```bash
+<input type="radio" name="emp_marital_status" value="Unmarried" checked="checked"  />
+<input type="radio" name="emp_marital_status" value="Married"  />
+
+```
+
+### Form Dropdown
+
+**form_dropdown( )** function is used to create standard dropdown field. It basically contains three parameters. First parameter contains the name of the dropdown field, second parameter contains associative arrays of options needed in dropdown and the third parameter contains the value wish to be selected.
+
+Example of form_dropdown( ) function is given below :-
+
+```bash
+$data_gender = array(
+'Male' => 'Male',
+'Female' => 'Female'
+);
+echo form_dropdown('select', $data_gender, 'Male');
+
+```
+
+The above code will produce the following HTML tag :-
+
+```bash
+<select name="select">
+<option value="Male" selected="selected">Male</option>
+<option value="Female">Female</option>
+</select>
+
+```
+
+For detailed information about form_dropdown( ) function  in codeigniter read our article  [CodeIgniter form dropdown](https://www.formget.com/codeigniter-form-dropdown/).
+
+ 
+
+### Form Checkbox
+
+**form_checkbox( ) **function is used to create a checkbox field in CodeIgniter. As we know that checkbox field is used for multiple values selection so its name must be an array and each checkbox contains array having same name.
+
+Example of form_checkbox( ) function is given below :-
+
+```bash
+$data_checkbox1 = array(
+'name' => 'qualification[]',
+'value' => 'Graduation'
+);
+
+$data_checkbox2 = array(
+'name' => 'qualification[]',
+'value' => 'Post Graduation'
+);
+
+echo form_checkbox($data_checkbox1);
+echo form_checkbox($data_checkbox2);
+
+```
+
+The above code will produce the following HTML tag :-
+
+```bash
+<input type="checkbox" name="qualification[]" value="Graduation" />
+<input type="checkbox" name="qualification[]" value="Post Graduation" />
+
+```
+
+### Form Textarea
+
+**form_textarea( ) **function is used to create a textarea field in CodeIgniter. To define the height and width of textarea we have to pass an associative array with index 'rows' and 'cols' with numeric value.
+
+Example of form_textarea( ) function is given below :-
+
+```bash
+$data_textarea = array(
+'name' => 'textarea',
+'rows' => 10,
+'cols' => 50
+);
+echo form_textarea($data_textarea);
+
+```
+
+The above code will produce the following HTML tag :-
+
+```bash
 <textarea name="textarea" cols="50" rows="10" ></textarea>
-```rnrn rn### From Fieldset
 
-rn**form_fieldset( ) **function is used to create a fieldset in CodeIgniter. Remember to use **form_fieldset_close( ) **function to close fielset tag.rnrnExample of form_fieldset( ) function is given below :-rnrn```
-$data_fieldset = array(rn'id' => 'employee_info',rn'class' => 'employee_detail'rn);rnecho form_fieldset('Personal Detail', $data_fieldset);rnecho "<p>Write your details here</p>";rnecho form_fieldset_close();
-```rnrnThe above code will produce the following HTML tag :-rnrn```
-<fieldset id="employee_info" class="employee_detail">rn<legend>Personal Detail</legend>rn<p>Write your details here</p>rn</fieldset>
-```rnrn rn### File Upload
+```
 
-rn**form_upload( )** function is used to create a upload field. For this, we have to only pass an associative array with index ‘type’ and value ‘file’. Other functionality is same as form_input() function.rnrnExample of form_upload( ) function is given below :-rnrn```
-$data_upload = array(rn'type' => 'file',rn'name' => 'file_upload'rn);rnecho form_upload($data_upload);
-```rnrnThe above code will produce the following HTML tag :-rnrn```
+### From Fieldset
+
+**form_fieldset( ) **function is used to create a fieldset in CodeIgniter. Remember to use **form_fieldset_close( ) **function to close fielset tag.
+
+Example of form_fieldset( ) function is given below :-
+
+```bash
+$data_fieldset = array(
+'id' => 'employee_info',
+'class' => 'employee_detail'
+);
+echo form_fieldset('Personal Detail', $data_fieldset);
+echo "<p>Write your details here</p>";
+echo form_fieldset_close();
+
+```
+
+The above code will produce the following HTML tag :-
+
+```bash
+<fieldset id="employee_info" class="employee_detail">
+<legend>Personal Detail</legend>
+<p>Write your details here</p>
+</fieldset>
+
+```
+
+### File Upload
+
+**form_upload( )** function is used to create a upload field. For this, we have to only pass an associative array with index 'type' and value 'file'. Other functionality is same as form_input() function.
+
+Example of form_upload( ) function is given below :-
+
+```bash
+$data_upload = array(
+'type' => 'file',
+'name' => 'file_upload'
+);
+echo form_upload($data_upload);
+
+```
+
+The above code will produce the following HTML tag :-
+
+```bash
 <input type="file" name="file_upload" value="" />
-```rnrn rn### Form Submit
 
-rn**form_submit( )** function is used to create a submit button in CodeIgniter.rnrnExample of form_submit( ) function is given below :-rnrn```
+```
+
+### Form Submit
+
+**form_submit( )** function is used to create a submit button in CodeIgniter.
+
+Example of form_submit( ) function is given below :-
+
+```bash
 <?php echo form_submit('submit', 'Submit'); ?>
-```rnrnThe above code will produce the following HTML tag :-rnrn```
+
+```
+
+The above code will produce the following HTML tag :-
+
+```bash
 <input type="submit" name="submit" value="Submit"  />
-```rnrn rn### Form Reset
 
-rn**form_reset( )** function is used to create a reset button in CodeIgniter.rnrnExample of form_reset( ) function is given below :-rnrn```
+```
+
+### Form Reset
+
+**form_reset( )** function is used to create a reset button in CodeIgniter.
+
+Example of form_reset( ) function is given below :-
+
+```bash
 <?php echo form_reset('reset', 'Reset'); ?>
-```rnrnThe above code will produce the following HTML tag :rnrn```
-<input type="reset" name="reset" value="Reset" />
-```rnrn rn### Form Close
 
-rn**form_close( )** function is used to create closing form tag.rnrnExample of form_close( ) function is given below :-rnrn```
+```
+
+The above code will produce the following HTML tag :
+
+```bash
+<input type="reset" name="reset" value="Reset" />
+
+```
+
+### Form Close
+
+**form_close( )** function is used to create closing form tag.
+
+Example of form_close( ) function is given below :-
+
+```bash
 <?php echo form_close( ); ?>
-```rnrnThe above code will produce the following HTML tag:rnrn```
+
+```
+
+The above code will produce the following HTML tag:
+
+```bash
 </form>
-```rnrnLet’s have a look at some other functions which are used to set values in different tags.rn
-rn 	- **set_value( ) **function helps to set  default value for a input text field. The first parameter should be a name of an input field and the second parameter will be a value you want as a default value.
-rn
-rnExample :-rnrn```
+
+```
+
+Let's have a look at some other functions which are used to set values in different tags.
+
+ 	
+- **set_value( ) **function helps to set  default value for a input text field. The first parameter should be a name of an input field and the second parameter will be a value you want as a default value.
+
+Example :-
+
+```bash
 <input type="text" name="country" value="<?php echo set_value('country', 'India'); ?>"  />
-```rnrn
-rn 	- **set_select( ) **function help you to create a select field and also allow you to set a default value for the select field. The first parameter contains the name of the select field, the second parameter contains values for each item and third parameter allow us to set default item.
-rn
-rnExample :-rnrn```
- <select name="experience">rn<option value="fresher" <?php echo set_select('experience', 'fresher', TRUE); ?> >fresher</option>rn<option value="1-5 years" <?php echo set_select('experience', '1-5 years'); ?> >1-5 years</option>rn<option value="above 5 years" <?php echo set_select('experience', 'above 5 years'); ?> >above 5 years</option>rn</select>
-```rnrn
-rn 	- **set_checkbox( ) **function help you to create a checkbox and also allowed you to set a default value. The first parameter contains the name of the checkbox, second parameter contain its values and third parameter allow us to set a default value.
-rn
-rnExample :-rnrn```
-<input type="checkbox" name="Graduate" value="Graduate" <?php echo set_checkbox('quralification', 'Graduate', TRUE); ?> />rn<input type="checkbox" name="Post_Graduate" value="Post_Graduate" <?php echo set_checkbox('qualification', 'Post_Graduate'); ?> />
-```rnrn
-rn 	- **set_radio( ) **function help you to create radio buttons and also allowed you to set a default value. The first parameter contains the name of a radio button, second parameter contain its values and third parameter allow us to set a default value.
-rn
-rnExample :-rnrn```
-<input type="radio" name="gender" value="Male" <?php echo set_radio('gender', 'Male', TRUE); ?> />rn<input type="radio" name="gender" value="Female" <?php echo set_radio('gender', 'Female'); ?> />
-```rnrnNow, let’s use the above-mentioned functions and create a form which will help you to understand the functionality of each function more clearly.rnrn rnrnBefore we start coding, we have to make following changes in the configuration files of CodeIgniter.rn
-rn 	- Open ‘application/config/config.php file’ and set base URL as given below :-rnrn```
+
+```
+
+- **set_select( ) **function help you to create a select field and also allow you to set a default value for the select field. The first parameter contains the name of the select field, the second parameter contains values for each item and third parameter allow us to set default item.
+
+Example :-
+
+```bash
+ <select name="experience">
+<option value="fresher" <?php echo set_select('experience', 'fresher', TRUE); ?> >fresher</option>
+<option value="1-5 years" <?php echo set_select('experience', '1-5 years'); ?> >1-5 years</option>
+<option value="above 5 years" <?php echo set_select('experience', 'above 5 years'); ?> >above 5 years</option>
+</select>
+
+```
+
+- **set_checkbox( ) **function help you to create a checkbox and also allowed you to set a default value. The first parameter contains the name of the checkbox, second parameter contain its values and third parameter allow us to set a default value.
+
+Example :-
+
+```bash
+<input type="checkbox" name="Graduate" value="Graduate" <?php echo set_checkbox('quralification', 'Graduate', TRUE); ?> />
+<input type="checkbox" name="Post_Graduate" value="Post_Graduate" <?php echo set_checkbox('qualification', 'Post_Graduate'); ?> />
+
+```
+
+- **set_radio( ) **function help you to create radio buttons and also allowed you to set a default value. The first parameter contains the name of a radio button, second parameter contain its values and third parameter allow us to set a default value.
+
+Example :-
+
+```bash
+<input type="radio" name="gender" value="Male" <?php echo set_radio('gender', 'Male', TRUE); ?> />
+<input type="radio" name="gender" value="Female" <?php echo set_radio('gender', 'Female'); ?> />
+
+```
+
+Now, let's use the above-mentioned functions and create a form which will help you to understand the functionality of each function more clearly.
+
+ 
+
+Before we start coding, we have to make following changes in the configuration files of CodeIgniter.
+
+ 	
+- Open 'application/config/config.php file' and set base URL as given below :-
+
+```bash
 $config['base_url'] = 'http://localhost/form_helper/';
-```rn
-rn 	- Now  open ‘application/config/autoload.php’ file and load form helper library as given belowrnrn```
+
+```
+
+- Now  open 'application/config/autoload.php' file and load form helper library as given below
+
+```bash
 $autoload['helper'] = array('url','file','form');
-```rn
-rn
-rnNow make a file name **form.php **in ‘application/controller’ folder of CodeIgniter and write the codes given below inside form.php:-rnrn rnrn<hr />
+
+```
+
+Now make a file name **form.php **in 'application/controller' folder of CodeIgniter and write the codes given below inside form.php:-
+
+ 
+
+<hr />

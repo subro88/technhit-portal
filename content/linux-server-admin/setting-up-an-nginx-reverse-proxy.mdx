@@ -6,8 +6,9 @@ category: "linux-server-admin"
 status: "Published"
 summary: "**What Is a Reverse Proxy?**"
 tags: ["systems-engineering"]
-wordCount: 1146
-readTime: 6
+youtubeId: "yiO7dm4cIMw"
+wordCount: 1177
+readTime: 7
 ---
 
 ## Key Architecture Takeaways
@@ -24,78 +25,266 @@ readTime: 6
 
 ---
 
-## **What Is a Reverse Proxy?**
+#
 
-rnA reverse proxy is an intermediary proxy service which takes a client request, passes it on to one or more servers, and subsequently delivers the server’s response to the client. A common reverse proxy configuring is to put **Nginx in front of an Apache webserver**. Using this method will allow both web servers to work together enabling each to do what they do bestrn## What is Nginx?
+# **What Is a Reverse Proxy?**
 
-rn**NGINX** is open source software for web serving, reverse proxying, caching, load balancing, media streaming, and more. It started out as a web server designed for maximum performance and stability. In addition to its HTTP server capabilities, NGINX can also function as a proxy server for email (IMAP, POP3, and SMTP) and a reverse proxy and load balancer for HTTP, TCP, and UDP servers.rn## **Benefits of an Nginx Reverse Proxy**
+A reverse proxy is an intermediary proxy service which takes a client request, passes it on to one or more servers, and subsequently delivers the server's response to the client. A common reverse proxy configuring is to put **Nginx in front of an Apache webserver**. Using this method will allow both web servers to work together enabling each to do what they do best
 
-rnThere are a few benefits to setting up an Nginx reverse proxy. Although not required in all cases, it can be beneficial depending upon your particular scenario/setup. The following outlines a few benefits implementing a reverse proxy.rn
-rn 	- **Better Performance** -[![](https://www.technhit.in/wp-content/uploads/2019/09/Slide1.png)](https://www.technhit.in/wp-content/uploads/2019/09/Slide1.png)rn
-rn 	<li>Nginx has been known to perform better in delivering static content over Apache. Therefore with an Nginx reverse proxy, all client requests can be handled by Nginx while all requests for dynamic content can be passed on to the backend Apache server. This helps improve performance
-rn
-rn</li>rn 	- **Load Balancing** -[![](https://www.technhit.in/wp-content/uploads/2019/09/Slide2.png)](https://www.technhit.in/wp-content/uploads/2019/09/Slide2.png)rn
-rn 	<li>A reverse proxy can perform load balancing which helps distribute client requests evenly across backend servers. It helps to avoid the scenario where a particular server becomes overloaded due to a sudden spike in requests. Load balancing also improves redundancy as if one server goes down, the reverse proxy will simply reroute requests to a different server. Read our complete article to learn more about [load balancing](https://www.keycdn.com/support/load-balancing).
-rn
-rn</li>rn 	- **Increased Security** -[![](https://www.technhit.in/wp-content/uploads/2019/09/Slide3.png)](https://www.technhit.in/wp-content/uploads/2019/09/Slide3.png)rn
-rn 	<li>A reverse proxy also acts as a line of defence for your backend servers. Configuring a reverse proxy ensures that the identity of your backend servers remains unknown. This can help in protecting your servers from attacks such as DDoS for example.
-rn
-rn</li>rn 	- **Easy Logging and Auditing** -[![](https://www.technhit.in/wp-content/uploads/2019/09/Slide4.png)](https://www.technhit.in/wp-content/uploads/2019/09/Slide4.png)rn
-rn 	<li>Since there is only one single point of access when a reverse proxy is implemented, this makes logging and auditing much simpler. Using this method, you can easily monitor what goes in and out through the reverse proxy.
-rn
-rn</li>rn
-rn## Environment Setup & Preliminary Note
+## What is Nginx?
 
-rnIn this tutorial, I used the IP address ***10.0.50.57** as the host system*. These settings might differ for you, so you have to replace them where appropriate. I'm using ***Ubuntu 18.04*** Lts for the entire setup.rnrn rn## #Step 1: Install Apache
+**NGINX** is open source software for web serving, reverse proxying, caching, load balancing, media streaming, and more. It started out as a web server designed for maximum performance and stability. In addition to its HTTP server capabilities, NGINX can also function as a proxy server for email (IMAP, POP3, and SMTP) and a reverse proxy and load balancer for HTTP, TCP, and UDP servers.
 
-rnApache is available within Ubuntu’s default software repositories, so we will install it using conventional package management tools.rnrnWe will begin by updating the local package index to reflect the latest upstream changes. Afterwards, we can install the apache2 package:rn```
+## **Benefits of an Nginx Reverse Proxy**
+
+There are a few benefits to setting up an Nginx reverse proxy. Although not required in all cases, it can be beneficial depending upon your particular scenario/setup. The following outlines a few benefits implementing a reverse proxy.
+
+ 	
+- **Better Performance** -[![](https://www.technhit.in/wp-content/uploads/2019/09/Slide1.png)](https://www.technhit.in/wp-content/uploads/2019/09/Slide1.png)
+
+ 	<li>Nginx has been known to perform better in delivering static content over Apache. Therefore with an Nginx reverse proxy, all client requests can be handled by Nginx while all requests for dynamic content can be passed on to the backend Apache server. This helps improve performance
+
+</li>
+ 	
+- **Load Balancing** -[![](https://www.technhit.in/wp-content/uploads/2019/09/Slide2.png)](https://www.technhit.in/wp-content/uploads/2019/09/Slide2.png)
+
+ 	<li>A reverse proxy can perform load balancing which helps distribute client requests evenly across backend servers. It helps to avoid the scenario where a particular server becomes overloaded due to a sudden spike in requests. Load balancing also improves redundancy as if one server goes down, the reverse proxy will simply reroute requests to a different server. Read our complete article to learn more about [load balancing](https://www.keycdn.com/support/load-balancing).
+
+</li>
+ 	
+- **Increased Security** -[![](https://www.technhit.in/wp-content/uploads/2019/09/Slide3.png)](https://www.technhit.in/wp-content/uploads/2019/09/Slide3.png)
+
+ 	<li>A reverse proxy also acts as a line of defence for your backend servers. Configuring a reverse proxy ensures that the identity of your backend servers remains unknown. This can help in protecting your servers from attacks such as DDoS for example.
+
+</li>
+ 	
+- **Easy Logging and Auditing** -[![](https://www.technhit.in/wp-content/uploads/2019/09/Slide4.png)](https://www.technhit.in/wp-content/uploads/2019/09/Slide4.png)
+
+ 	<li>Since there is only one single point of access when a reverse proxy is implemented, this makes logging and auditing much simpler. Using this method, you can easily monitor what goes in and out through the reverse proxy.
+
+</li>
+
+## Environment Setup & Preliminary Note
+
+In this tutorial, I used the IP address ***10.0.50.57** as the host system*. These settings might differ for you, so you have to replace them where appropriate. I'm using ***Ubuntu 18.04*** Lts for the entire setup.
+
+ 
+
+## #Step 1: Install Apache
+
+Apache is available within Ubuntu's default software repositories, so we will install it using conventional package management tools.
+
+We will begin by updating the local package index to reflect the latest upstream changes. Afterwards, we can install the apache2 package:
+
+```bash
 sudo apt update
-```rn[![](https://www.technhit.in/wp-content/uploads/2019/09/apt-update.png)](https://www.technhit.in/wp-content/uploads/2019/09/apt-update.png)rn```
+
+```
+
+[![](https://www.technhit.in/wp-content/uploads/2019/09/apt-update.png)](https://www.technhit.in/wp-content/uploads/2019/09/apt-update.png)
+
+```bash
 sudo apt install apache2
-```rn[![](https://www.technhit.in/wp-content/uploads/2019/09/install-apache-2.png)](https://www.technhit.in/wp-content/uploads/2019/09/install-apache-2.png)rnrnAfter confirming the installation, apt will install Apache and all required dependencies.rnrn[![](https://www.technhit.in/wp-content/uploads/2019/09/install-apache-2-page.png)](https://www.technhit.in/wp-content/uploads/2019/09/install-apache-2-page.png)rnrnIf all are ok then go to web browser and type your host IP (In My Case 10.0.50.57) it will serve default Apache server page like above image.rn## #Step 2: Configuring Apache
 
-rnThe first thing we have to do is configure our Apache vhost to listen on *localhost* (*127.0.0.1*) on an unused port other than *80* (e.g. *8080*). Open */etc/apache2/ports.conf*...rn```
+```
+
+[![](https://www.technhit.in/wp-content/uploads/2019/09/install-apache-2.png)](https://www.technhit.in/wp-content/uploads/2019/09/install-apache-2.png)
+
+After confirming the installation, apt will install Apache and all required dependencies.
+
+[![](https://www.technhit.in/wp-content/uploads/2019/09/install-apache-2-page.png)](https://www.technhit.in/wp-content/uploads/2019/09/install-apache-2-page.png)
+
+If all are ok then go to web browser and type your host IP (In My Case 10.0.50.57) it will serve default Apache server page like above image.
+
+## #Step 2: Configuring Apache
+
+The first thing we have to do is configure our Apache vhost to listen on *localhost* (*127.0.0.1*) on an unused port other than *80* (e.g. *8080*). Open */etc/apache2/ports.conf*...
+
+```bash
 sudo nano /etc/apache2/ports.conf
-```rn... and modify the *NameVirtualHost* and *Listen* lines for port *80* to use port *8080*:rn```
-# If you just change the port or add more ports here, you will likely alsorn # have to change the VirtualHost statement inrn # /etc/apache2/sites-enabled/000-default.confrn rn Listen 8080rn rn <IfModule ssl_module>rn  Listen 443rn </IfModule>rn rn <IfModule mod_gnutls.c>rn  Listen 443rn </IfModule>
-```rnNext open the vhost configuration file (e.g. */etc/apache2/sites-available/000-default.conf*)...rn```
+
+```
+
+... and modify the *NameVirtualHost* and *Listen* lines for port *80* to use port *8080*:
+
+```bash
+
+# If you just change the port or add more ports here, you will likely also
+ 
+
+# have to change the VirtualHost statement in
+ 
+
+# /etc/apache2/sites-enabled/000-default.conf
+ 
+ Listen 8080
+ 
+ <IfModule ssl_module>
+  Listen 443
+ </IfModule>
+ 
+ <IfModule mod_gnutls.c>
+  Listen 443
+ </IfModule>
+
+```
+
+Next open the vhost configuration file (e.g. */etc/apache2/sites-available/000-default.conf*)...
+
+```bash
 nano /etc/apache2/sites-available/000-default.conf
-```rn... and change the *<VirtualHost>* line to use the IP address *127.0.0.1* and the port *8080*:rn```
+
+```
+
+... and change the *<VirtualHost>* line to use the IP address *127.0.0.1* and the port *8080*:
+
+```bash
 <VirtualHost 127.0.0.1:8080>[...]
-```rnWe will configure Nginx as a transparent proxy, i.e., it will pass on the original user's IP address in a field called *X-Forwarded-For* to the backend Apache. Of course, the backend Apache should log the original user's IP address in their access logs instead of the IP address of Nginx (*127.0.0.1*). There are two ways to achieve this:rnrn1) We can modify the *LogFormat* line in */etc/apache2/apache2.conf* and replace *%h* with *%{X-Forwarded-For}i*:rn```
+
+```
+
+We will configure Nginx as a transparent proxy, i.e., it will pass on the original user's IP address in a field called *X-Forwarded-For* to the backend Apache. Of course, the backend Apache should log the original user's IP address in their access logs instead of the IP address of Nginx (*127.0.0.1*). There are two ways to achieve this:
+
+1) We can modify the *LogFormat* line in */etc/apache2/apache2.conf* and replace *%h* with *%{X-Forwarded-For}i*:
+
+```bash
 sudo nano /etc/apache2/apache2.conf
-```rn```
-[...]#LogFormat "%h %l %u %t "%r" %>s %O "%{Referer}i" "%{User-Agent}i"" combinedLogFormat "%{X-Forwarded-For}i %l %u %t "%r" %>s %b "%{Referer}i" "%{User-Agent}i"" combined[...]
-```rn2) On Debian/Ubuntu, we can install the Apache module *libapache2-mod-rpaf* which takes care of logging the correct IP address:rn```
+
+```bash
+[...]#LogFormat "%h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"" combinedLogFormat "%{X-Forwarded-For}i %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined[...]
+
+```
+
+2) On Debian/Ubuntu, we can install the Apache module *libapache2-mod-rpaf* which takes care of logging the correct IP address:
+
+```bash
 sudo apt install libapache2-mod-rpaf
-```rnAfter all these changes, restart Apache:rn```
+
+```
+
+After all these changes, restart Apache:
+
+```bash
 sudo service apache2 restart
-```rn rn## #Step 3: Configuring Nginx
 
-rnIf Nginx isn't already installed, install it as follows:rn```
+```
+
+## #Step 3: Configuring Nginx
+
+If Nginx isn't already installed, install it as follows:
+
+```bash
 sudo apt install nginx
-```rnCreate its system startup links and make sure it is started:rn```
-sudo systemctl enable nginx.servicernsudo service nginx restart
-```rnIt should now be listening on port *80*.rnrnSome standard proxy parameters are in the file */etc/nginx/proxy_params*:rn```
+
+```
+
+Create its system startup links and make sure it is started:
+
+```bash
+sudo systemctl enable nginx.service
+sudo service nginx restart
+
+```
+
+It should now be listening on port *80*.
+
+Some standard proxy parameters are in the file */etc/nginx/proxy_params*:
+
+```bash
 sudo nano /etc/nginx/proxy_params
-```rn```
-proxy_set_header Host $http_host;rn proxy_set_header X-Real-IP $remote_addr;rn proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;rn proxy_set_header X-Forwarded-Proto $scheme;
-```rnAs we will include that file later on in the proxy part of our nginx vhost for *example.com*, you might want to add further proxy directives to that file if you like, e.g. as follows:rn```
- proxy_set_header Host $http_host;rn proxy_set_header X-Real-IP $remote_addr;rn proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;rn proxy_set_header X-Forwarded-Proto $scheme; rn rn client_max_body_size 100M;rn client_body_buffer_size 1m;rn proxy_intercept_errors on;rn proxy_buffering on;rn proxy_buffer_size 128k;rn proxy_buffers 256 16k;rn proxy_busy_buffers_size 256k;rn proxy_temp_file_write_size 256k;rn proxy_max_temp_file_size 0;rn proxy_read_timeout 300;
-```rnNow modify the *default* vhost for Nginx - make sure it uses the same document root as the Apache vhost for *example.com* (e.g. */var/www/html*) so that Nginx can deliver static files directly without passing the request to Apache:rn```
+
+```bash
+proxy_set_header Host $http_host;
+ proxy_set_header X-Real-IP $remote_addr;
+ proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+ proxy_set_header X-Forwarded-Proto $scheme;
+
+```
+
+As we will include that file later on in the proxy part of our nginx vhost for *example.com*, you might want to add further proxy directives to that file if you like, e.g. as follows:
+
+```bash
+ proxy_set_header Host $http_host;
+ proxy_set_header X-Real-IP $remote_addr;
+ proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+ proxy_set_header X-Forwarded-Proto $scheme; 
+ 
+ client_max_body_size 100M;
+ client_body_buffer_size 1m;
+ proxy_intercept_errors on;
+ proxy_buffering on;
+ proxy_buffer_size 128k;
+ proxy_buffers 256 16k;
+ proxy_busy_buffers_size 256k;
+ proxy_temp_file_write_size 256k;
+ proxy_max_temp_file_size 0;
+ proxy_read_timeout 300;
+
+```
+
+Now modify the *default* vhost for Nginx - make sure it uses the same document root as the Apache vhost for *example.com* (e.g. */var/www/html*) so that Nginx can deliver static files directly without passing the request to Apache:
+
+```bash
 sudo nano /etc/nginx/sites-available/default
-```rn```
-server {rn      listen 80 default_server;rn      listen [::]:80 default_server;rn rn      root /var/www/html;rn rn      # Add index.php to the list if you are using PHPrn      index index.html index.htm index.nginx-debian.html;rn rn      server_name _;rn rn      location / {rn        proxy_pass http://localhost:8080;rn        include /etc/nginx/proxy_params;rn      }rn }
-```rnThis is a very simple configuration which would proxy all requests to Apache.rnrnReload Nginx for the changes to take effect:rn```
+
+```bash
+server {
+      listen 80 default_server;
+      listen [::]:80 default_server;
+ 
+      root /var/www/html;
+ 
+      
+
+# Add index.php to the list if you are using PHP
+      index index.html index.htm index.nginx-debian.html;
+ 
+      server_name _;
+ 
+      location / {
+        proxy_pass http://localhost:8080;
+        include /etc/nginx/proxy_params;
+      }
+ }
+
+```
+
+This is a very simple configuration which would proxy all requests to Apache.
+
+Reload Nginx for the changes to take effect:
+
+```bash
 sudo service nginx reload
-```rnFinally, we will test the Nginx configuration and restart Nginx:rn```
-sudo nginx -trnsudo systemctl restart nginx
-```rnYou can now type the server hostname or the IP *10.0.50.57* into your browser, and you should see the apache default web site, but this time delivered through Nginx.rnrn[![](https://www.technhit.in/wp-content/uploads/2019/09/install-nginx-serve-page.png)](https://www.technhit.in/wp-content/uploads/2019/09/install-nginx-serve-page.png)rnrnThe same default apache server page loads but this time through Nginx.rnrnAlso, you can test it with curl:rn```
+
+```
+
+Finally, we will test the Nginx configuration and restart Nginx:
+
+```bash
+sudo nginx -t
+sudo systemctl restart nginx
+
+```
+
+You can now type the server hostname or the IP *10.0.50.57* into your browser, and you should see the apache default web site, but this time delivered through Nginx.
+
+[![](https://www.technhit.in/wp-content/uploads/2019/09/install-nginx-serve-page.png)](https://www.technhit.in/wp-content/uploads/2019/09/install-nginx-serve-page.png)
+
+The same default apache server page loads but this time through Nginx.
+
+Also, you can test it with curl:
+
+```bash
 curl -I 10.0.50.57
-```rn[![](https://www.technhit.in/wp-content/uploads/2019/09/install-nginx-serve-page-cli.png)](https://www.technhit.in/wp-content/uploads/2019/09/install-nginx-serve-page-cli.png)rn## #Video Demonstration
 
-rn[embedyt] https://www.youtube.com/watch?v=yiO7dm4cIMw[/embedyt]rn## #Conclusion
+```
 
-rnNginx is fast and popular web server with low memory usage that can act as web server and reverse proxy for HTTP and HTTPS protocol. Nginx reverse proxy for apache is a setup that uses Nginx as front end, and apache as back end.rn```
+[![](https://www.technhit.in/wp-content/uploads/2019/09/install-nginx-serve-page-cli.png)](https://www.technhit.in/wp-content/uploads/2019/09/install-nginx-serve-page-cli.png)
 
-```rn
+## #Video Demonstration
+
+## #Conclusion
+
+Nginx is fast and popular web server with low memory usage that can act as web server and reverse proxy for HTTP and HTTPS protocol. Nginx reverse proxy for apache is a setup that uses Nginx as front end, and apache as back end.
+
+```

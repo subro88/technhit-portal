@@ -6,7 +6,7 @@ category: "software-engineering"
 status: "Published"
 summary: "Route configuration generally used for remapping URL string. Typically there is a one-to-one relationship between an URL string and its corresponding controller class/method. The segments in a URI ..."
 tags: ["CodeIgniter"]
-wordCount: 385
+wordCount: 389
 readTime: 2
 ---
 
@@ -26,35 +26,73 @@ readTime: 2
 
 Route configuration generally used for remapping URL string. Typically there is a one-to-one relationship between an URL string and its corresponding controller class/method. The segments in a URI normally follow this pattern:
 
-rnrnrn```
+```bash
 example.com/class/function/id/
-```rnrnIn some instances, however, you may want to remap this relationship so that a different class/method can be called instead of the one corresponding to the URL.
 
-rnrnrnFor example, you have a class for displaying users profile having the class name "user" and function "base_info()"  with user id as following:rn```
+```
+
+In some instances, however, you may want to remap this relationship so that a different class/method can be called instead of the one corresponding to the URL.
+
+For example, you have a class for displaying users profile having the class name "user" and function "base_info()"  with user id as following:
+
+```bash
 example.com/user/base_info
-```rnNow you want to remap the URL like this:rn```
+
+```
+
+Now you want to remap the URL like this:
+
+```bash
 example.com/profile/id
-```rn## Setting your own route configuration rules using following steps:
 
-rnrn
-rn 	- **Go to your application directory then open routes.php file under config directory( *application /config / routes.php )*.**
-rn 	- **At end of file find` $route` array**
-rn 	- **Specify your own routeing criteria (*$route['profile/:num']='user/base_info'**;*)**
-rn
-rn<blockquote>rn Note : Routes can either be specified using wildcards or Regular Expressions.
+```
 
-rn</blockquote>rn## Wildcards
+## Setting your own route configuration rules using following steps:
 
-rnA typical wildcard route might look something like this:
+ 	
+- **Go to your application directory then open routes.php file under config directory( *application /config / routes.php )*.**
+ 	
+- **At end of file find` $route` array**
+ 	
+- **Specify your own routeing criteria (*$route['profile/:num']='user/base_info'**;*)**
 
-rn$route['profile/:num']='user/base_info';rnIn a route, the array key contains the URI to be matched, while the array value contains the destination it should be re-routed to. In the above example, if the literal word “profile” is found in the first segment of the URL, and a number is found in the second segment, the “user” class and the “base_info” method are instead used.
+<blockquote>
 
-rnYou can match literal values or you can use two wildcard types these are:
+ Note : Routes can either be specified using wildcards or Regular Expressions.
 
-rnrn
-rn 	- **(:num)** will match a segment containing only numbers.
-rn 	- **(:any)** will match a segment containing any character (except for ‘/’, which is the segment delimiter).
-rn
-rn## There are three reserved routes:
+</blockquote>
 
-rn**1) $route['default_controller'] = 'welcome';**rnrnThis route indicates which controller class should be loaded if the URI contains no data. In the above example, the "welcome" class would be loaded.rnrn**2) $route['404_override'] = 'errors/page_missing';**rnrnThis route will tell the Router which controller/method to use if those provided in the URL cannot be matched to a valid route.rnrn** 3)$route['translate_uri_dashes'] = FALSE;**rnrnThis is not exactly a route but allows you to automatically route controller and method names that contain dashes. '-' isn't a valid class or method name character, so it requires translation. When you set this option to TRUE, it will replace ALL dashes in the controller and method URI segments.rnrnrn rnrn[<>
+## Wildcards
+
+A typical wildcard route might look something like this:
+
+$route['profile/:num']='user/base_info';
+
+In a route, the array key contains the URI to be matched, while the array value contains the destination it should be re-routed to. In the above example, if the literal word "profile" is found in the first segment of the URL, and a number is found in the second segment, the "user" class and the "base_info" method are instead used.
+
+You can match literal values or you can use two wildcard types these are:
+
+ 	
+- **(:num)** will match a segment containing only numbers.
+ 	
+- **(:any)** will match a segment containing any character (except for '/', which is the segment delimiter).
+
+## There are three reserved routes:
+
+**1) $route['default_controller'] = 'welcome';**
+
+This route indicates which controller class should be loaded if the URI contains no data. In the above example, the "welcome" class would be loaded.
+
+**2) $route['404_override'] = 'errors/page_missing';**
+
+This route will tell the Router which controller/method to use if those provided in the URL cannot be matched to a valid route.
+
+** 3)$route['translate_uri_dashes'] = FALSE;**
+
+This is not exactly a route but allows you to automatically route controller and method names that contain dashes. '-' isn't a valid class or method name character, so it requires translation. When you set this option to TRUE, it will replace ALL dashes in the controller and method URI segments.
+
+ 
+
+[<
+
+>

@@ -4,9 +4,9 @@ slug: "nested-loop-example-c-language"
 date: "2016-08-15"
 category: "stem-10-plus-2"
 status: "Published"
-summary: "When loop inside a loop is called nested loop. Working procedure of nested loop is that the first pass of the outer loop triggers the inner loop, which executes to completion. Then the second pass ..."
+summary: "When loop inside a loop is called nested loop. Working procedure of nested loop is that the first pass of the outer loop triggers the inner loop, which executes to completion. Then the second pass ..."
 tags: ["Conio.h", "for loop", "print pattern", "pyramid of stars", "pyramid", "kbhit", "delay", "dos.h"]
-wordCount: 1284
+wordCount: 1292
 readTime: 7
 ---
 
@@ -28,105 +28,531 @@ readTime: 7
 
 ---
 
-When loop inside a loop is called nested loop. Working procedure of nested loop is that the first pass of the outer loop triggers the inner loop, which executes to completion. Then the second pass of the outer loop triggers the inner loop again. This repeats until the outer loop finishes.
+When loop inside a loop is called nested loop. Working procedure of nested loop is that the first pass of the outer loop triggers the inner loop, which executes to completion. Then the second pass of the outer loop triggers the inner loop again. This repeats until the outer loop finishes.
 
-rnrn## Syntax of nested loop (for, while and do-while):
+## Syntax of nested loop (for, while and do-while):
 
-rn**The syntax of a nested for loop: is as follows :**rn```
- for ( start; condition; increment or decrement ) rn { rn     for ( start; condition; increment or decrement ) rn     { rn          Block of statement(s); rn     } rn     Block of statement(s); rn }
-```rn**The syntax of a nested while loop  is as follows :**rn```
-while(condition)rn{  rn     while(condition)   rn     {  rn           Block of statement(s);  rn     }  rn     Block of statement(s);  rn}
-```rn rnrnThe syntax of a **nested do-while loop**  is as follows :rn```
-do rn{  rn    Block of statement(s); rn    do rn    { rn         Block of statement(s); rn    }rn    while( condition ); rn}while( condition );
-```rn## 
+**The syntax of a nested for loop: is as follows :**
 
-rn## Nested Loop Example Program:
+```c
+ for ( start; condition; increment or decrement ) 
+ { 
+     for ( start; condition; increment or decrement ) 
+     { 
+          Block of statement(s); 
+     } 
+     Block of statement(s); 
+ }
 
-rn
-rn 	- **C Program to print various pattern using * and space and number:**
-rn
-rnHere we describe how to create various patterns using c programming. Most of these c programs involve usage of nested loops number, star (*) and space. A pattern of numbers, star or characters is a way of arranging these in some logical manner or they may form a sequence. Some of these patterns are triangles which have special importance in mathematics. Some patterns are symmetrical while other are not. Please see the complete page and look at comments for many different patterns.
+```
 
-rnrn## Print Pattern Program #1
+**The syntax of a nested while loop  is as follows :**
 
-rn```
- 1rn 22rn 333rn 444rn 55555
-```rn```
- #include<stdio.h>rnvoid main()rn{rn   int i,j,term;rn   clrscr();rn   printf("Enter the number of row you want to see");rn   scanf("%d",&term);rn   for (i = 1 ; i <= term ; i++)rn   {rn       for(j = 1 ; j <= i ; j++)rn       {rn           printf("%d",i);rn       }rn       printf("
-");rn   }rn   getch();rn  rn   rn}
-```rn**Output #1:**rnrn[![nested pattern1](http://technhit.in/wp-content/uploads/2016/08/nested-pattern1.png)](http://technhit.in/wp-content/uploads/2016/08/nested-pattern1.png)rn## Print Pattern Progam #2
+```c
+while(condition)
+{  
+     while(condition)   
+     {  
+           Block of statement(s);  
+     }  
+     Block of statement(s);  
+}
 
-rn```
- 1rn 12rn 123rn 1234rn 12345
-```rn```
-  #include<stdio.h>rnvoid main()rn{rn   int i,j,term;rn   clrscr();rn   printf("Enter the number of row you want to see");rn   scanf("%d",&term);rn   for (i = 1 ; i <= term ; i++)rn   {rn       for(j = 1 ; j <= i ; j++)rn       {rn           printf("%d",j);rn       }rn       printf("
-");rn   }rn   getch();rn  rn   rn}
-```rn**Output #2:**rnrn[![Pattern2](http://technhit.in/wp-content/uploads/2016/08/nested-pattern2.png)](http://technhit.in/wp-content/uploads/2016/08/nested-pattern2.png)rn## Print Pattern Program #3
+```
 
-rn```
- 12345rn 1234rn 123rn 12rn 1
-```rn```
-  #include<stdio.h>rnvoid main()rn{rn   int i,j,term;rn   clrscr();rn   printf("Enter the number of row you want to see");rn   scanf("%d",&term);rn   for (i = term ; i >= 1 ; i--)rn   {rn       for(j = 1 ; j <= i ; j++)rn       {rn           printf("%d",j);rn       }rn       printf("
-");rn   }rn   getch();rn  rn   rn}
-```rn**Output #3:**rnrn[![Pattern3](http://technhit.in/wp-content/uploads/2016/08/nested-pattern3.png)](http://technhit.in/wp-content/uploads/2016/08/nested-pattern3.png)rn## Print Pattern Program #4
+The syntax of a **nested do-while loop**  is as follows :
 
-rn```
-55555rn4444rn333rn22rn1
-```rn```
-  #include<stdio.h>rnvoid main()rn{rn   int i,j,term;rn   clrscr();rn   printf("Enter the number of row you want to see");rn   scanf("%d",&term);rn   for (i = term ; i >= 1 ; i--)rn   {rn       for(j = 1 ; j <= i ; j++)rn       {rn           printf("%d",i);rn       }rn       printf("
-");rn   }rn   getch();rn  rn   rn}
-```rn**Output #4:**rnrn[![Pattern4](http://technhit.in/wp-content/uploads/2016/08/nested-pattern4.png)](http://technhit.in/wp-content/uploads/2016/08/nested-pattern4.png)rn## Print Pattern Program #5
+```c
+do 
+{  
+    Block of statement(s); 
+    do 
+    { 
+         Block of statement(s); 
+    }
+    while( condition ); 
+}while( condition );
 
-rn```
-        1rn       232rn      34543rn     4567654rn    567898765
-```rn```
- #include<stdio.h>rn rnvoid main()rn{rn      int n, j, i, num = 1, space;rn      clrscr();rnrn      printf("Enter the number of rows in pyramid of stars you want to see ");rn rn      scanf("%d",&n);rn rn      space = n - 1;rn rn      for ( i = 1 ; i <= n ; i++ )rn      {rn          num = i;rn rn          for ( j = 1 ; j <= space ; j++ )rn              printf(" ");rn rn          space--;rn rn          for ( j = 1 ; j <= i ; j++ )rn          {rn              printf("%d", num);rn              num++;rn          }rn          num--;rn          num--;rn          for ( j = 1 ; j < i ; j++)rn          {rn              printf("%d", num);rn              num--;rn          }rn          printf("
-");rn rn      }rn      getch();rn      rn}
-```rn**Output #5:**rnrn[![Pattern5](http://technhit.in/wp-content/uploads/2016/08/nested-pattern5.png)](http://technhit.in/wp-content/uploads/2016/08/nested-pattern5.png)rn## Print Pattern Program #6
+```
 
-rn```
-* * * * *rn  * * * *rn    * * *rn      * *rn        *
-```rn```
- #include <stdio.h>rnvoid main() {rn int n,i,j,k,samp=1;rn clrscr();rn printf("Enter the number of rows in pyramid of stars you want to see ");rn scanf("%d",&n);rn for (i=n; i>=1; i--) rn {rn    for (k=samp; k>=0; k--) rn    {rn       printf(" "); // Put only 1 spacern    }rn    for (j=i; j>=1; j--) rn    {rn       printf("*");rn    }rn    samp = samp + 1;rn    printf("
-");rn }rn getch();rn}
-```rn**Output #6:**rnrn[![pattern6](http://technhit.in/wp-content/uploads/2016/08/nested-pattern6.png)](http://technhit.in/wp-content/uploads/2016/08/nested-pattern6.png)rn## Print Pattern Program #7
+## 
 
-rn```
-* * * * *rn* * * *rn* * *rn* *rn*
-```rn```
-#include <stdio.h>rnvoid main() {rn int n,i,j;rn clrscr();rn printf("Enter the number of rows in pyramid of stars you want to see ");rn scanf("%d",&n);rn for (i=n; i>=1; i--) rn {rn    for (j=1; j<=i; j++) rn    {rn        printf(" * ");rn    }rn    printf("
-");rn }rn getch();rn}
-```rn**Output #7:**rnrn[![Pattern7](http://technhit.in/wp-content/uploads/2016/08/nested-pattern7.png)](http://technhit.in/wp-content/uploads/2016/08/nested-pattern7.png)rn## Print Pattern Program #8
+#
 
-rn```
-    *rn   ***rn  *****rn *******rn*********
-```rn```
-#include <stdio.h>rn rnvoid main()rn{rn   int row, c, n, temp;rn   clrscr();rn rn   printf("Enter the number of rows in pyramid of stars you want to see ");rn   scanf("%d",&n);rn rn   temp = n;rn rn   for ( row = 1 ; row <= n ; row++ )rn   {rn      for ( c = 1 ; c < temp ; c++ )rn         printf(" ");rn rn      temp--;rn rn      for ( c = 1 ; c <= 2*row - 1 ; c++ )rn         printf("*");rn rn      printf("
-");rn   }rn   getch();rn rn   rn}
-```rn** Output #8:**rnrn[![Pattern8](http://technhit.in/wp-content/uploads/2016/08/nested-pattern8.png)](http://technhit.in/wp-content/uploads/2016/08/nested-pattern8.png)rn## Print Pattern Program #9
+# Nested Loop Example Program:
 
-rn```
-         *rn       * *rn     * * *rn   * * * *rn * * * * *rn   * * * *rn     * * *rn       * *rn         *
-```rn```
- #include <stdio.h>rn#include <conio.h>rnvoid main() {rn int n,i,j,k,samp=1;rn  clrscr();rn  printf("Enter the number of rows in pyramid of stars you want to see ");rn  scanf("%d",&n);rn for (i=1; i<=n; i++) rn {rn     for (k=samp; k<=n; k++) rn     {rn          printf(" ");rn     }rn     for (j=0; j< i; j++) rn     {rn          printf("*");rn     }rn     samp = samp + 1;rn     printf("
-");rn }rn samp = 1;rn for (i=n-1; i>=1; i--) rn {rn     for (k=samp; k>=0; k--) rn     {rn         printf(" ");rn     }rn     for (j=i; j>=1; j--)rn     {rn         printf("*");rn     }rn     samp = samp + 1;rn     printf("
-");rn }rn getch();rn}
-```rn**Output #9:**rn##  [![Pattern9](http://technhit.in/wp-content/uploads/2016/08/nested-pattern9.png)](http://technhit.in/wp-content/uploads/2016/08/nested-pattern9.png)
+ 	
+- **C Program to print various pattern using * and space and number:**
 
-rn## Print Pattern Program #10
+Here we describe how to create various patterns using c programming. Most of these c programs involve usage of nested loops number, star (*) and space. A pattern of numbers, star or characters is a way of arranging these in some logical manner or they may form a sequence. Some of these patterns are triangles which have special importance in mathematics. Some patterns are symmetrical while other are not. Please see the complete page and look at comments for many different patterns.
 
-rnThis program makes an animation using the pattern with color. Here we user cprintf function from conio.h library to print color. Also, we use delay function from dos.h library to hold screen some moment.rn```
-#include <stdio.h>rn#include <conio.h>rn#include<dos.h>rnvoid main()rn{rnint row,c,tmp,color=1;rn while(!kbhit())                 //kbhit() returns true if anybody press any key from keyboard.rn { rn    clrscr();rn    if (color==7)rn    color=1;rn    textcolor(color);              // set corsor colorrn    tmp=5;rn    for ( row = 1 ; row <= 5 ; row++ )rn    {rn        for ( c = 1 ; c <tmp ; c++ )rn            cprintf(" ");rn            tmp--;rnrnrn        for ( c = 1 ; c <= 2*row - 1 ; c++ )rn            cprintf("*");rnrn            printf("
-");rn    }rn    delay(200);rn    clrscr();rn    textcolor(color);rn    tmp=1;rn    for ( row = 5 ; row >= 1 ; row-- )rn    {rn        for ( c = 1 ; c < tmp ; c++ )rn             cprintf(" ");rn             tmp++;rnrnrnrn        for ( c = 1 ; c <= 2*row - 1 ; c++ )rn             cprintf("*");rnrn             printf("
-");rn    }rn    delay(200);rn    color++;rn }rn getch();rn}
-```rn**Output #10**rnrn[![print animation](http://technhit.in/wp-content/uploads/2016/08/print-animation.gif)](http://technhit.in/wp-content/uploads/2016/08/print-animation.gif)rn## Print Pattern Program #11  (Print Inverted Right Triangle Star Pattern)
+## Print Pattern Program #1
 
-rn```
-/* C Program to Print Inverted Right Triangle Star Pattern */rn#include <stdio.h>rn rnint main() rn{rn  int Rows, i, j;rn	rn  printf("Please Enter the Number of Rows:  ");rn  scanf("%d", &Rows);rn	rn  printf("
-Printing Inverted Right Angled Triangle 
+```c
+ 1
+ 22
+ 333
+ 444
+ 55555
+
+```c
+ #include<stdio.h>
+void main()
+{
+   int i,j,term;
+   clrscr();
+   printf("Enter the number of row you want to see");
+   scanf("%d",&term);
+   for (i = 1 ; i <= term ; i++)
+   {
+       for(j = 1 ; j <= i ; j++)
+       {
+           printf("%d",i);
+       }
+       printf("\n");
+   }
+   getch();
+  
+   
+}
+
+```
+
+**Output #1:**
+
+[![nested pattern1](http://technhit.in/wp-content/uploads/2016/08/nested-pattern1.png)](http://technhit.in/wp-content/uploads/2016/08/nested-pattern1.png)
+
+## Print Pattern Progam #2
+
+```c
+ 1
+ 12
+ 123
+ 1234
+ 12345
+
+```c
+  #include<stdio.h>
+void main()
+{
+   int i,j,term;
+   clrscr();
+   printf("Enter the number of row you want to see");
+   scanf("%d",&term);
+   for (i = 1 ; i <= term ; i++)
+   {
+       for(j = 1 ; j <= i ; j++)
+       {
+           printf("%d",j);
+       }
+       printf("\n");
+   }
+   getch();
+  
+   
+}
+
+```
+
+**Output #2:**
+
+[![Pattern2](http://technhit.in/wp-content/uploads/2016/08/nested-pattern2.png)](http://technhit.in/wp-content/uploads/2016/08/nested-pattern2.png)
+
+## Print Pattern Program #3
+
+```c
+ 12345
+ 1234
+ 123
+ 12
+ 1
+
+```c
+  #include<stdio.h>
+void main()
+{
+   int i,j,term;
+   clrscr();
+   printf("Enter the number of row you want to see");
+   scanf("%d",&term);
+   for (i = term ; i >= 1 ; i--)
+   {
+       for(j = 1 ; j <= i ; j++)
+       {
+           printf("%d",j);
+       }
+       printf("\n");
+   }
+   getch();
+  
+   
+}
+
+```
+
+**Output #3:**
+
+[![Pattern3](http://technhit.in/wp-content/uploads/2016/08/nested-pattern3.png)](http://technhit.in/wp-content/uploads/2016/08/nested-pattern3.png)
+
+## Print Pattern Program #4
+
+```c
+55555
+4444
+333
+22
+1
+
+```c
+  #include<stdio.h>
+void main()
+{
+   int i,j,term;
+   clrscr();
+   printf("Enter the number of row you want to see");
+   scanf("%d",&term);
+   for (i = term ; i >= 1 ; i--)
+   {
+       for(j = 1 ; j <= i ; j++)
+       {
+           printf("%d",i);
+       }
+       printf("\n");
+   }
+   getch();
+  
+   
+}
+
+```
+
+**Output #4:**
+
+[![Pattern4](http://technhit.in/wp-content/uploads/2016/08/nested-pattern4.png)](http://technhit.in/wp-content/uploads/2016/08/nested-pattern4.png)
+
+## Print Pattern Program #5
+
+```c
+        1
+       232
+      34543
+     4567654
+    567898765
+
+```c
+ #include<stdio.h>
  
-");rn  for ( i = Rows ; i > 0 ; i-- ) rn  {rn      for ( j = i ; j > 0 ; j-- ) rn      {rn          printf("* ");rn      }rn      printf("
-");rn  }rn  return 0;rn}
-```rn**Output#11**rn```
- * * * * * * *rn * * * * * *rn * * * * *rn * * * *rn * *rn *
-```rnUsing Nested loop number, alphabet special characters you can be created your desired pattern for yourself just applying your thought and using nested loop properly.
+void main()
+{
+      int n, j, i, num = 1, space;
+      clrscr();
+
+      printf("Enter the number of rows in pyramid of stars you want to see ");
+ 
+      scanf("%d",&n);
+ 
+      space = n - 1;
+ 
+      for ( i = 1 ; i <= n ; i++ )
+      {
+          num = i;
+ 
+          for ( j = 1 ; j <= space ; j++ )
+              printf(" ");
+ 
+          space--;
+ 
+          for ( j = 1 ; j <= i ; j++ )
+          {
+              printf("%d", num);
+              num++;
+          }
+          num--;
+          num--;
+          for ( j = 1 ; j < i ; j++)
+          {
+              printf("%d", num);
+              num--;
+          }
+          printf("\n");
+ 
+      }
+      getch();
+      
+}
+
+```
+
+**Output #5:**
+
+[![Pattern5](http://technhit.in/wp-content/uploads/2016/08/nested-pattern5.png)](http://technhit.in/wp-content/uploads/2016/08/nested-pattern5.png)
+
+## Print Pattern Program #6
+
+```c
+* * * * *
+  * * * *
+    * * *
+      * *
+        *
+
+```c
+ #include <stdio.h>
+void main() {
+ int n,i,j,k,samp=1;
+ clrscr();
+ printf("Enter the number of rows in pyramid of stars you want to see ");
+ scanf("%d",&n);
+ for (i=n; i>=1; i--) 
+ {
+    for (k=samp; k>=0; k--) 
+    {
+       printf(" "); // Put only 1 space
+    }
+    for (j=i; j>=1; j--) 
+    {
+       printf("*");
+    }
+    samp = samp + 1;
+    printf("\n");
+ }
+ getch();
+}
+
+```
+
+**Output #6:**
+
+[![pattern6](http://technhit.in/wp-content/uploads/2016/08/nested-pattern6.png)](http://technhit.in/wp-content/uploads/2016/08/nested-pattern6.png)
+
+## Print Pattern Program #7
+
+```c
+* * * * *
+* * * *
+* * *
+* *
+*
+
+```c
+#include <stdio.h>
+void main() {
+ int n,i,j;
+ clrscr();
+ printf("Enter the number of rows in pyramid of stars you want to see ");
+ scanf("%d",&n);
+ for (i=n; i>=1; i--) 
+ {
+    for (j=1; j<=i; j++) 
+    {
+        printf(" * ");
+    }
+    printf("\n");
+ }
+ getch();
+}
+
+```
+
+**Output #7:**
+
+[![Pattern7](http://technhit.in/wp-content/uploads/2016/08/nested-pattern7.png)](http://technhit.in/wp-content/uploads/2016/08/nested-pattern7.png)
+
+## Print Pattern Program #8
+
+```c
+    *
+   ***
+  *****
+ *******
+*********
+
+```c
+#include <stdio.h>
+ 
+void main()
+{
+   int row, c, n, temp;
+   clrscr();
+ 
+   printf("Enter the number of rows in pyramid of stars you want to see ");
+   scanf("%d",&n);
+ 
+   temp = n;
+ 
+   for ( row = 1 ; row <= n ; row++ )
+   {
+      for ( c = 1 ; c < temp ; c++ )
+         printf(" ");
+ 
+      temp--;
+ 
+      for ( c = 1 ; c <= 2*row - 1 ; c++ )
+         printf("*");
+ 
+      printf("\n");
+   }
+   getch();
+ 
+   
+}
+
+```
+
+** Output #8:**
+
+[![Pattern8](http://technhit.in/wp-content/uploads/2016/08/nested-pattern8.png)](http://technhit.in/wp-content/uploads/2016/08/nested-pattern8.png)
+
+## Print Pattern Program #9
+
+```c
+         *
+       * *
+     * * *
+   * * * *
+ * * * * *
+   * * * *
+     * * *
+       * *
+         *
+
+```c
+ #include <stdio.h>
+#include <conio.h>
+void main() {
+ int n,i,j,k,samp=1;
+  clrscr();
+  printf("Enter the number of rows in pyramid of stars you want to see ");
+  scanf("%d",&n);
+ for (i=1; i<=n; i++) 
+ {
+     for (k=samp; k<=n; k++) 
+     {
+          printf(" ");
+     }
+     for (j=0; j< i; j++) 
+     {
+          printf("*");
+     }
+     samp = samp + 1;
+     printf("\n");
+ }
+ samp = 1;
+ for (i=n-1; i>=1; i--) 
+ {
+     for (k=samp; k>=0; k--) 
+     {
+         printf(" ");
+     }
+     for (j=i; j>=1; j--)
+     {
+         printf("*");
+     }
+     samp = samp + 1;
+     printf("\n");
+ }
+ getch();
+}
+
+```
+
+**Output #9:**
+
+##  [![Pattern9](http://technhit.in/wp-content/uploads/2016/08/nested-pattern9.png)](http://technhit.in/wp-content/uploads/2016/08/nested-pattern9.png)
+
+## Print Pattern Program #10
+
+This program makes an animation using the pattern with color. Here we user cprintf function from conio.h library to print color. Also, we use delay function from dos.h library to hold screen some moment.
+
+```c
+#include <stdio.h>
+#include <conio.h>
+#include<dos.h>
+void main()
+{
+int row,c,tmp,color=1;
+ while(!kbhit())                 //kbhit() returns true if anybody press any key from keyboard.
+ { 
+    clrscr();
+    if (color==7)
+    color=1;
+    textcolor(color);              // set corsor color
+    tmp=5;
+    for ( row = 1 ; row <= 5 ; row++ )
+    {
+        for ( c = 1 ; c <tmp ; c++ )
+            cprintf(" ");
+            tmp--;
+
+        for ( c = 1 ; c <= 2*row - 1 ; c++ )
+            cprintf("*");
+
+            printf("\n");
+    }
+    delay(200);
+    clrscr();
+    textcolor(color);
+    tmp=1;
+    for ( row = 5 ; row >= 1 ; row-- )
+    {
+        for ( c = 1 ; c < tmp ; c++ )
+             cprintf(" ");
+             tmp++;
+
+        for ( c = 1 ; c <= 2*row - 1 ; c++ )
+             cprintf("*");
+
+             printf("\n");
+    }
+    delay(200);
+    color++;
+ }
+ getch();
+}
+
+```
+
+**Output #10**
+
+[![print animation](http://technhit.in/wp-content/uploads/2016/08/print-animation.gif)](http://technhit.in/wp-content/uploads/2016/08/print-animation.gif)
+
+## Print Pattern Program #11  (Print Inverted Right Triangle Star Pattern)
+
+```c
+/* C Program to Print Inverted Right Triangle Star Pattern */
+#include <stdio.h>
+ 
+int main() 
+{
+  int Rows, i, j;
+	
+  printf("Please Enter the Number of Rows:  ");
+  scanf("%d", &Rows);
+	
+  printf("\nPrinting Inverted Right Angled Triangle \n \n");
+  for ( i = Rows ; i > 0 ; i-- ) 
+  {
+      for ( j = i ; j > 0 ; j-- ) 
+      {
+          printf("* ");
+      }
+      printf("\n");
+  }
+  return 0;
+}
+
+```
+
+**Output#11**
+
+```c
+ * * * * * * *
+ * * * * * *
+ * * * * *
+ * * * *
+ * *
+ *
+
+```
+
+Using Nested loop number, alphabet special characters you can be created your desired pattern for yourself just applying your thought and using nested loop properly.

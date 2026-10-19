@@ -4,9 +4,10 @@ slug: "enable-root-user-ubuntu-16-04-1-lts"
 date: "2016-09-25"
 category: "linux-server-admin"
 status: "Published"
-summary: "This tutorial shows you how to **enable root user on Ubuntu 16.04.1 Lts**. Nowadays Ubuntu becomes a trend on people. Ubuntu community releases their version on April and October in a year. And rel..."
+summary: "This tutorial shows you how to **enable root user on Ubuntu 16.04.1 Lts**. Nowadays Ubuntu becomes a trend on people. Ubuntu community releases their version on April and October in a year. And rel..."
 tags: ["How to", "Ubuntu", "Linux"]
-wordCount: 269
+youtubeId: "YX50ISWVA3k"
+wordCount: 275
 readTime: 2
 ---
 
@@ -24,32 +25,56 @@ readTime: 2
 
 ---
 
-This tutorial shows you how to **enable root user on Ubuntu 16.04.1 Lts**. Nowadays Ubuntu becomes a trend on people. Ubuntu community releases their version on April and October in a year. And release LTS (Long Term Support) version once in two years on the month of Apil. Ubuntu 16.04 LTS was released on 21-04-2016 and traditionally it has a name Xenial Xerus. If you notice a little on version number it made up with year and month. In the case of 16.04.1, 16 denotes 2016, 04 is April. And  1 is the extended version of 16.04.
+This tutorial shows you how to **enable root user on Ubuntu 16.04.1 Lts**. Nowadays Ubuntu becomes a trend on people. Ubuntu community releases their version on April and October in a year. And release LTS (Long Term Support) version once in two years on the month of Apil. Ubuntu 16.04 LTS was released on 21-04-2016 and traditionally it has a name Xenial Xerus. If you notice a little on version number it made up with year and month. In the case of 16.04.1, 16 denotes 2016, 04 is April. And  1 is the extended version of 16.04.
 
-rnNow move on to the point. unlike every release, root account on Ubuntu 16.04.1 is unset by default. Though, user which you set at the time of installation is a member of sudo. And sudo has superuser privilege. The word sudo denotes to superuser do, by using sudo command you can do almost every task. But some critical cases you need to root user privilege. That's why we need to enable root user with the manual login.
+Now move on to the point. unlike every release, root account on Ubuntu 16.04.1 is unset by default. Though, user which you set at the time of installation is a member of sudo. And sudo has superuser privilege. The word sudo denotes to superuser do, by using sudo command you can do almost every task. But some critical cases you need to root user privilege. That's why we need to enable root user with the manual login.
 
-rnrn##  Watch On Youtube :
+:
 
-rn[embedyt] http://www.youtube.com/watch?v=YX50ISWVA3k[/embedyt]rn## Steps To Enable Root User On Ubuntu 16.04.1 LTS:
+## Steps To Enable Root User On Ubuntu 16.04.1 LTS:
 
-rn**1) First of all login your account**
+**1) First of all login your account**
 
-rn**2)Open terminal (Alt +Ctrl +T)**
+**2)Open terminal (Alt +Ctrl +T)**
 
-rn**3)Set Root user Password **
+**3)Set Root user Password **
 
-rnrn```
-technhit@technhit-virtual-machine:~$sudo passwd rootrn[sudo]password for technhit:rnEnter UNIX password:rnRetype UNIX password:rnpasswd:password updated successfullyrntechnhit@technhit-virtual-machine:~$rnrn
-```rn[![enable-root-ubuntu1](https://www.technhit.in/wp-content/uploads/2016/09/enable-root-ubuntu1.png)](https://www.technhit.in/wp-content/uploads/2016/09/enable-root-ubuntu1.png)rnrn**4) Now open file 50-ubuntu.conf with nano command.**rn```
-technhit@technhit-virtual-machine:~$sudo nano /usr/share/lightdm/lightdm.conf.d/50-ubuntu.confrn
-```rn[![enable-root-ubuntu2](https://www.technhit.in/wp-content/uploads/2016/09/enable-root-ubuntu2.png)](https://www.technhit.in/wp-content/uploads/2016/09/enable-root-ubuntu2.png)
+```bash
+technhit@technhit-virtual-machine:~$sudo passwd root
+[sudo]password for technhit:
+Enter UNIX password:
+Retype UNIX password:
+passwd:password updated successfully
+technhit@technhit-virtual-machine:~$
 
-rn**5)Now Add the following line to the end of file:**
+```
 
-rnrn```
+[![enable-root-ubuntu1](https://www.technhit.in/wp-content/uploads/2016/09/enable-root-ubuntu1.png)](https://www.technhit.in/wp-content/uploads/2016/09/enable-root-ubuntu1.png)
+
+**4) Now open file 50-ubuntu.conf with nano command.**
+
+```bash
+technhit@technhit-virtual-machine:~$sudo nano /usr/share/lightdm/lightdm.conf.d/50-ubuntu.conf
+
+```
+
+[![enable-root-ubuntu2](https://www.technhit.in/wp-content/uploads/2016/09/enable-root-ubuntu2.png)](https://www.technhit.in/wp-content/uploads/2016/09/enable-root-ubuntu2.png)
+
+**5)Now Add the following line to the end of file:**
+
+```bash
 greeter-show-manual-login=true
-```rn[![enable-root-ubuntu3](https://www.technhit.in/wp-content/uploads/2016/09/enable-root-ubuntu3.png)](https://www.technhit.in/wp-content/uploads/2016/09/enable-root-ubuntu3.png)rnrn**6) Press Ctrl +X then press Y to exit**rn**7)Now restart your system and login as root.**
 
-rn[![enable-root-ubuntu4](https://www.technhit.in/wp-content/uploads/2016/09/enable-root-ubuntu4.png)](https://www.technhit.in/wp-content/uploads/2016/09/enable-root-ubuntu4.png)
+```
 
-rn rn### [See Also Allow Root Login over SSH:](https://www.technhit.in/allow-root-login-ssh-ubuntu-16-04-lts/)
+[![enable-root-ubuntu3](https://www.technhit.in/wp-content/uploads/2016/09/enable-root-ubuntu3.png)](https://www.technhit.in/wp-content/uploads/2016/09/enable-root-ubuntu3.png)
+
+**6) Press Ctrl +X then press Y to exit**
+
+**7)Now restart your system and login as root.**
+
+[![enable-root-ubuntu4](https://www.technhit.in/wp-content/uploads/2016/09/enable-root-ubuntu4.png)](https://www.technhit.in/wp-content/uploads/2016/09/enable-root-ubuntu4.png)
+
+ 
+
+### [See Also Allow Root Login over SSH:](https://www.technhit.in/allow-root-login-ssh-ubuntu-16-04-lts/)

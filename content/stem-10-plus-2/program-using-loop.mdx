@@ -6,7 +6,7 @@ category: "stem-10-plus-2"
 status: "Published"
 summary: "Unlike most of the computer programming languages, a **while loop** is a control flow statement that allows code to be executed repeatedly based on a given boolean condition in C or C++. The **whil..."
 tags: ["C / C++", "while loop", "Reverse", "Armstrong Number", "Palindrome", "String", "strrev", "strcpy", "strcmp", "palindrome in c"]
-wordCount: 391
+wordCount: 402
 readTime: 2
 ---
 
@@ -30,31 +30,136 @@ readTime: 2
 
 Unlike most of the computer programming languages, a **while loop** is a control flow statement that allows code to be executed repeatedly based on a given boolean condition in C or C++. The **while loop** can be thought of as a repeating if statement. Here is some program using **while Loop:**
 
-rnrn
-rn 	- rn## **C Program to return reverse of a three digit number:**
+ 	
+- 
 
-rn
-rn
-rnAssume that you have input a number 123 to computer and computer return it to 321. we know that if a number divided by 10 then its reminder is always the last digit of inputted number. (123%10 =3, 12%10=2)
+## **C Program to return reverse of a three digit number:**
 
-rnrn```
- #include<stdio.h>rnvoid main()rn{rn    int number,reverse=0,reminder;rn    clrscr();rn    printf("Enter any three digits value: ");rn    scanf("%d",&number);rn    while(number>0)rn    {rn         reminder=number%10;rn         reverse=(reverse*10)+reminder;rn         number=number/10;rn    }rn    printf("Reverse value is %d",reverse);rnrn}
-```rnOutput:rnrn[![reverse](http://technhit.in/wp-content/uploads/2016/08/reverse.jpg)](http://technhit.in/wp-content/uploads/2016/08/reverse.jpg)rnrn rn
-rn 	- rn## **C Program to find Armstrong number between a range :**
+Assume that you have input a number 123 to computer and computer return it to 321. we know that if a number divided by 10 then its reminder is always the last digit of inputted number. (123%10 =3, 12%10=2)
 
-rn
-rn
-rnAn **Armstrong number **is the  sum of the cubes of its digits and  is equal to the **number** itself. For example, 371 is an **Armstrong number **since 3**3 + 7**3 + 1**3 = 371.
+```c
+ #include<stdio.h>
+void main()
+{
+    int number,reverse=0,reminder;
+    clrscr();
+    printf("Enter any three digits value: ");
+    scanf("%d",&number);
+    while(number>0)
+    {
+         reminder=number%10;
+         reverse=(reverse*10)+reminder;
+         number=number/10;
+    }
+    printf("Reverse value is %d",reverse);
 
-rnrn```
- #include<stdio.h>rnvoid main()rn{rn int i=0,number, reminder, armstrong=0,term;rn clrscr();rn printf("Enter term to search Armstrong:");rn scanf("%d", &term);rn while(i<=term)rn {rn number=i;rn while(number>0)rn {rn reminder=number%10;rn armstrong =armstrong +(reminder*reminder*reminder);rn number=number/10;rn }rn if(armstrong ==i)rn printf("Armstrong No is %d",i)rnrn i++;rn }rn}
-```rnOutput:rnrn[![armstrong](http://technhit.in/wp-content/uploads/2016/08/armstrong.jpg)](http://technhit.in/wp-content/uploads/2016/08/armstrong.jpg)rn
-rn 	- rn## C Program to check a given number whether palindrome or not.
+}
 
-rn
-rn
-rnA **palindrome** is a word, phrase, [number](https://en.wikipedia.org/wiki/Palindromic_number), or other sequences of [characters](https://en.wikipedia.org/wiki/Character_(symbol)) which read the same backwards or forward. Allowances may be made for adjustments to capital letters, punctuation, and word dividers. Examples in English include "A man, a plan, a canal, Panama!", "Amor, Roma", "race car", "stack cats", "step on no pets", "taco cat", "put it up", "Was it a car or a cat I saw?" and "No 'x' in Nixon" ,"121" etc.rnrnIn case of number we use reverse method:rn```
- #include<stdio.h>rnvoid main()rn{rn   int num,value,reminder,tmp;rn   printf("Enter any number to check palindrome");rn   scanf("%d",&num);rn   tmp=num;rn   while(tmp>0)rn   {rn      reminder=tmp%10;rn      value=value*10+reminder;rn      tmp=tmp/10;rnrn   }rn   if (num==value)rn   {rn     printf("Entered Number %d is a palidrome number",num);rn   }rn   elsern   {rn     printf("Entered Number %d is not apalindrome number",num);rn   }rn}
-```rnIn case of String we use string function substr()rn```
- #include<stdio.h>rn#include<string.h>rnvoid main()rn{rn char word[100],rev[100];rn clrscr();rn printf("Enter any word: ");rn scanf("%s", &word);rn strcpy(rev,word);rn if (strcmp(word,strrev(rev))==0)rn {rn printf("The word is palindrome");rn }rn elsern {rn printf("The word is not a palindrome");rn }rn getch();rnrn}
-```rn[![palindrom](http://technhit.in/wp-content/uploads/2016/08/palindrom.jpg)](http://technhit.in/wp-content/uploads/2016/08/palindrom.jpg)
+```
+
+Output:
+
+[![reverse](http://technhit.in/wp-content/uploads/2016/08/reverse.jpg)](http://technhit.in/wp-content/uploads/2016/08/reverse.jpg)
+
+ 
+
+ 	
+- 
+
+## **C Program to find Armstrong number between a range :**
+
+An **Armstrong number **is the  sum of the cubes of its digits and  is equal to the **number** itself. For example, 371 is an **Armstrong number **since 3**3 + 7**3 + 1**3 = 371.
+
+```c
+ #include<stdio.h>
+void main()
+{
+ int i=0,number, reminder, armstrong=0,term;
+ clrscr();
+ printf("Enter term to search Armstrong:");
+ scanf("%d", &term);
+ while(i<=term)
+ {
+ number=i;
+ while(number>0)
+ {
+ reminder=number%10;
+ armstrong =armstrong +(reminder*reminder*reminder);
+ number=number/10;
+ }
+ if(armstrong ==i)
+ printf("Armstrong No is %d",i)
+
+ i++;
+ }
+}
+
+```
+
+Output:
+
+[![armstrong](http://technhit.in/wp-content/uploads/2016/08/armstrong.jpg)](http://technhit.in/wp-content/uploads/2016/08/armstrong.jpg)
+
+ 	
+- 
+
+## C Program to check a given number whether palindrome or not.
+
+A **palindrome** is a word, phrase, [number](https://en.wikipedia.org/wiki/Palindromic_number), or other sequences of [characters](https://en.wikipedia.org/wiki/Character_(symbol)) which read the same backwards or forward. Allowances may be made for adjustments to capital letters, punctuation, and word dividers. Examples in English include "A man, a plan, a canal, Panama!", "Amor, Roma", "race car", "stack cats", "step on no pets", "taco cat", "put it up", "Was it a car or a cat I saw?" and "No 'x' in Nixon" ,"121" etc.
+
+In case of number we use reverse method:
+
+```c
+ #include<stdio.h>
+void main()
+{
+   int num,value,reminder,tmp;
+   printf("Enter any number to check palindrome");
+   scanf("%d",&num);
+   tmp=num;
+   while(tmp>0)
+   {
+      reminder=tmp%10;
+      value=value*10+reminder;
+      tmp=tmp/10;
+
+   }
+   if (num==value)
+   {
+     printf("Entered Number %d is a palidrome number",num);
+   }
+   else
+   {
+     printf("Entered Number %d is not apalindrome number",num);
+   }
+}
+
+```
+
+In case of String we use string function substr()
+
+```c
+ #include<stdio.h>
+#include<string.h>
+void main()
+{
+ char word[100],rev[100];
+ clrscr();
+ printf("Enter any word: ");
+ scanf("%s", &word);
+ strcpy(rev,word);
+ if (strcmp(word,strrev(rev))==0)
+ {
+ printf("The word is palindrome");
+ }
+ else
+ {
+ printf("The word is not a palindrome");
+ }
+ getch();
+
+}
+
+```
+
+[![palindrom](http://technhit.in/wp-content/uploads/2016/08/palindrom.jpg)](http://technhit.in/wp-content/uploads/2016/08/palindrom.jpg)

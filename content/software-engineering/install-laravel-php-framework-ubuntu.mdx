@@ -4,9 +4,10 @@ slug: "install-laravel-php-framework-ubuntu"
 date: "2017-06-23"
 category: "software-engineering"
 status: "Published"
-summary: "It is about Install Laravel**. Laravel** is a free, open-source PHP web framework, created by Taylor Otwell and intended for the development of web applications following the model–view–controller ..."
+summary: "It is about Install Laravel**. Laravel** is a free, open-source PHP web framework, created by Taylor Otwell and intended for the development of web applications following the model-view-controller ..."
 tags: ["Ubuntu", "PHP", "Laravel", "Framework"]
-wordCount: 1032
+youtubeId: "4Ove9dOK-iM"
+wordCount: 1073
 readTime: 6
 ---
 
@@ -24,110 +25,276 @@ readTime: 6
 
 ---
 
-It is about Install Laravel**. Laravel** is a free, open-source PHP web framework, created by Taylor Otwell and intended for the development of web applications following the model–view–controller (MVC) architectural pattern.
+It is about Install Laravel**. Laravel** is a free, open-source PHP web framework, created by Taylor Otwell and intended for the development of web applications following the model-view-controller (MVC) architectural pattern.
 
-rnIn this article, we are going to demonstrate how to up and run Laravel 5.x on Ubuntu 16.04 LTS, 15.04 LTS, 14.04 LTS, 12.04 LTS.
+In this article, we are going to demonstrate how to up and run Laravel 5.x on Ubuntu 16.04 LTS, 15.04 LTS, 14.04 LTS, 12.04 LTS.
 
-rnrn## **Prerequisites & Environment to Install Laravel**
+## **Prerequisites & Environment to Install Laravel**
 
-rnYou will need to make sure your server meets the following requirements:
+You will need to make sure your server meets the following requirements:
 
-rnrn
-rn 	- **A Host System(Mac, Linux, Windows) with LAMP server.**
-rn 	- **PHP >= 5.6.4**
-rn 	- **OpenSSL PHP Extension**
-rn 	- **PDO PHP Extension**
-rn 	- **Mbstring PHP Extension**
-rn 	- **Tokenizer PHP Extension**
-rn 	- **XML PHP Extension**
-rn
-rn**So let's start installing Laravel from scratch:**
+ 	
+- **A Host System(Mac, Linux, Windows) with LAMP server.**
+ 	
+- **PHP >= 5.6.4**
+ 	
+- **OpenSSL PHP Extension**
+ 	
+- **PDO PHP Extension**
+ 	
+- **Mbstring PHP Extension**
+ 	
+- **Tokenizer PHP Extension**
+ 	
+- **XML PHP Extension**
 
-rnrn## **Step1: --- [Installing LAMP Server to host](https://www.technhit.in/install-lamp-stack-ubuntu-16-04-lts/)**
+**So let's start installing Laravel from scratch:**
 
-rnrn<hr />rn[Click to view how to install LAMP and Virtual Host in detail:](https://www.technhit.in/configure-apache-virtual-host-ubuntu-16-04-lts/)
+## **Step1: --- [Installing LAMP Server to host](https://www.technhit.in/install-lamp-stack-ubuntu-16-04-lts/)**
 
-rnrn
-rn 	- **Installing Apache2**
-rn
-rn```
-$ sudo apt-get updatern$ sudo apt-get install python-software-properties rn$ sudo apt-get install -y apache2 libapache2-mod-php
-```rn
-rn 	- **Installing MySQL **
-rn
-rn```
+<hr />
+
+[Click to view how to install LAMP and Virtual Host in detail:](https://www.technhit.in/configure-apache-virtual-host-ubuntu-16-04-lts/)
+
+ 	
+- **Installing Apache2**
+
+```bash
+$ sudo apt-get update
+$ sudo apt-get install python-software-properties 
+$ sudo apt-get install -y apache2 libapache2-mod-php
+
+```
+
+- **Installing MySQL **
+
+```bash
 $ sudo apt-get install -y mysql-server php-mysql
-```rn
-rn 	- **Installing PHP and required Module**
-rn
-rn```
-$ sudo apt-get install -y php php-mcrypt php-mbstring php-xml php-gd
-```rn## **Step2: --- Installing Few Utility Tools**
 
-rnrn<hr />rnYou need few utility tools to proceed further if you are using a minimal version of Ubuntu server otherwise you can ignore the step 2.
+```
 
-rnrn
-rn 	- **Installing CURL, git, nano editor, unzip**
-rn
-rn```
+- **Installing PHP and required Module**
+
+```bash
+$ sudo apt-get install -y php php-mcrypt php-mbstring php-xml php-gd
+
+```
+
+## **Step2: --- Installing Few Utility Tools**
+
+<hr />
+
+You need few utility tools to proceed further if you are using a minimal version of Ubuntu server otherwise you can ignore the step 2.
+
+ 	
+- **Installing CURL, git, nano editor, unzip**
+
+```bash
 $ sudo apt-get install -y curl unzip git nano
-```rn## **Step3: --- Installing Composer**
 
-rnrn<hr />rnComposer is required for installing Laravel dependencies. In order to download and install composer use below commands.
+```
 
-rnrn```
-$ curl -sS https://getcomposer.org/installer | phprn$ sudo mv composer.phar /usr/local/bin/composerrn$ sudo chmod +x /usr/local/bin/composer
-```rn## **Step4: --- Installing Laravel Framework: **
+## **Step3: --- Installing Composer**
 
-rnrn<hr />rnClone and download the latest version of Laravel. Use below command to clone master repo of laravel from GitHub.
+<hr />
 
-rnrn```
-$ cd /var/wwwrn$ git clone https://github.com/laravel/laravel.git
-```rnAfter completing clone and download move on laravel directory and use composer to install all dependencies required for Laravel framework.
+Composer is required for installing Laravel dependencies. In order to download and install composer use below commands.
 
-rnrn```
-$ cd /var/www/laravelrn$ sudo composer install
-```rn<blockquote>rnNote:rnTry to avoid root user for run Composer because Certain Composer commands, including `exec`, `install`, and `update` allow third party code to execute on your system. This is from its "plugins" and "scripts" features. Plugins and scripts have full access to the user account which runs Composer. For this reason, it is strongly advised to **avoid running Composer as super-user/root**.
+```bash
+$ curl -sS https://getcomposer.org/installer | php
+$ sudo mv composer.phar /usr/local/bin/composer
+$ sudo chmod +x /usr/local/bin/composer
 
-rn</blockquote>rnAfter install all dependencies, change ownership of your web dir Laravel under www directory and change following permission.rn```
-$ chown -R www-data.www-data /var/www/laravelrn$ chmod -R 755 /var/www/laravelrn$ chmod -R 777 /var/www/laravel/storage
-```rn## **Step5: --- Setting Encryption Key to App: **
+```
 
-rnrn<hr />rnrnMake sure that your present working directory is laravel (/var/www/laravel).rnrnBefore generating Key. Copy or rename the `.env.example` file to `.env` file otherwise, you will get an error while generating the key.rn```
- $ cp /var/www/laravel/.env.example /var/www/laravel/.env
-```rnNow generate a  32 bit long random number encryption key, which used by the Illuminate encrypted service.rn```
-$ php artisan key:generaternApplication key [base64:5zcSAFWQ+379F/TZsxxVmJMeO2R19b1FTi2aD280/Yo=] set successfully.
-```rnNow it's time to put the Application Key at "app.php" file. Let's edit **config/app.php** configuration file and update above generated application key as followings. Also, make sure cipher is set properly. find the following at 106 no line:rn```
- rn'key' => env('APP_KEY', 'base64:5zcSAFWQ+379F/TZsxxVmJMeO2R19b1FTi2aD280/Yo='),rnrn'cipher' => 'AES-256-CBC',
-```rn## **Step6: --- [Setting up Apache Virtual Host: ](https://www.technhit.in/configure-apache-virtual-host-ubuntu-16-04-lts/)**
+## **Step4: --- Installing Laravel Framework: **
 
-rnrn<hr />rnrnNow add a Virtual Host in your Apache configuration file to access Laravel framework from a web browser. Create Apache configuration file under `/etc/apache2/sites-available/` directory and add below content.rn```
- $ sudo nano /etc/apache2/sites-available/laravel.example.com.conf
-```rn```
-<VirtualHost *:80>rn ServerName laravel.example.comrn DocumentRoot /var/www/laravel/publicrn <Directory />rn    Options FollowSymLinksrn    AllowOverride Nonern </Directory>rn <Directory /var/www/laravel>rn     AllowOverride Allrn </Directory>rn   ErrorLog ${APACHE_LOG_DIR}/error.logrn   LogLevel warnrn   CustomLog ${APACHE_LOG_DIR}/access.log combinedrn</VirtualHost>rnrn
-```rnNow enable the virtual host and reload apache service. using below command.rn```
-$ sudo a2ensite laravel.example.comrn$ sudo service apache2 reload
-```rnNow you have completed the installation of Laravel 5.x successfully. To access your site follow the one more step.rn## **Step7: --- View / Access Laravel: **
+<hr />
 
-rnrn<hr />rnWe assume that you are on a test server so, to access Laravel make host file entry to access your Laravel application in the web browser. Change 127.0.0.1 with your server ip and laravel.example.com with your domain name configured in Apache to your accessing system. if you are in Linux or Mac then follow the path `/etc/hosts` and if you are accessing through windows system then follow the `C:/Windows/System32/drivers/etc/hosts` and insert the following line.
+Clone and download the latest version of Laravel. Use below command to clone master repo of laravel from GitHub.
 
-rnrn
-rn 	- **For Linux:**
-rn
-rn```
-$ sudo echo "127.0.0.1  laravel.example.com" >> /etc/hosts
-```rn
-rn 	- **For Windows**
-rn
-rn```
-# Copyright (c) 1993-2009 Microsoft Corp.rn#rn# This is a sample HOSTS file used by Microsoft TCP/IP for Windows.rn#rn# This file contains the mappings of IP addresses to host names. Eachrn# entry should be kept on an individual line. The IP address shouldrn# be placed in the first column followed by the corresponding host name.rn# The IP address and the host name should be separated by at least onern# space.rnrn#rn# Additionally, comments (such as these) may be inserted on individualrn# lines or following the machine name denoted by a '#' symbol.rn#rn# For example:rn#rn#      102.54.94.97     rhino.acme.com          rn# source serverrn#       38.25.63.10     x.acme.com              rn# x client hostrn# localhost name resolution is handled within DNS itself.rn# 127.0.0.1       localhostrn# ::1             localhostrnrn#If your server on same host that you are use for accessrnrn127.0.0.1  laravel.example.comrnrn# Orrnrn#<your Server Ip> laravel.example.com
-```rnAnd access **http://laravel.example.com** in your favourite web browser as below.rnrn[![access laravel](https://www.technhit.in/wp-content/uploads/2017/06/access-laravel.png)](https://www.technhit.in/wp-content/uploads/2017/06/access-laravel.png)rnrnNow build your awesome app using Laravel.rn## One Step Method of  Install Laravel on Ubuntu 14.04 and above:
+```bash
+$ cd /var/www
+$ git clone https://github.com/laravel/laravel.git
 
-rnrn<hr />rnrnIf you are puzzled on above code and steps then sit back and relax. we are here for you, everything will do our shell script. Execute following code on your terminal:rn```
- $ bash <(curl -s https://www.technhit.in/wp-content/uploads/2017/06/vhostlaravel.txt)
-```rnEnter your website name when it asking for FQDN name for example (**mylaravelapp.com**). After that when it will be prompted for MySQL root password. Then you have to enter a password whichever you want to set. For your information, the following script sets your web directory at `/home/<your site>/public_html/laravel`. Nothing else enjoy Laravel.
+```
 
-rnrn
-rn 	- **See On Youtube how to install Laravel:**
-rn
-rn[embedyt] https://www.youtube.com/watch?v=4Ove9dOK-iM[/embedyt]rnrn
+After completing clone and download move on laravel directory and use composer to install all dependencies required for Laravel framework.
+
+```bash
+$ cd /var/www/laravel
+$ sudo composer install
+
+```
+
+<blockquote>
+
+Note:
+Try to avoid root user for run Composer because Certain Composer commands, including `exec`, `install`, and `update` allow third party code to execute on your system. This is from its "plugins" and "scripts" features. Plugins and scripts have full access to the user account which runs Composer. For this reason, it is strongly advised to **avoid running Composer as super-user/root**.
+
+</blockquote>
+After install all dependencies, change ownership of your web dir Laravel under www directory and change following permission.
+
+```bash
+$ chown -R www-data.www-data /var/www/laravel
+$ chmod -R 755 /var/www/laravel
+$ chmod -R 777 /var/www/laravel/storage
+
+```
+
+## **Step5: --- Setting Encryption Key to App: **
+
+<hr />
+
+Make sure that your present working directory is laravel (/var/www/laravel).
+
+Before generating Key. Copy or rename the `.env.example` file to `.env` file otherwise, you will get an error while generating the key.
+
+```bash
+ $ cp /var/www/laravel/.env.example /var/www/laravel/.env
+
+```
+
+Now generate a  32 bit long random number encryption key, which used by the Illuminate encrypted service.
+
+```bash
+$ php artisan key:generate
+Application key [base64:5zcSAFWQ+379F/TZsxxVmJMeO2R19b1FTi2aD280/Yo=] set successfully.
+
+```
+
+Now it's time to put the Application Key at "app.php" file. Let's edit **config/app.php** configuration file and update above generated application key as followings. Also, make sure cipher is set properly. find the following at 106 no line:
+
+```bash
+ 
+'key' => env('APP_KEY', 'base64:5zcSAFWQ+379F/TZsxxVmJMeO2R19b1FTi2aD280/Yo='),
+
+'cipher' => 'AES-256-CBC',
+
+```
+
+## **Step6: --- [Setting up Apache Virtual Host: ](https://www.technhit.in/configure-apache-virtual-host-ubuntu-16-04-lts/)**
+
+<hr />
+
+Now add a Virtual Host in your Apache configuration file to access Laravel framework from a web browser. Create Apache configuration file under `/etc/apache2/sites-available/` directory and add below content.
+
+```bash
+ $ sudo nano /etc/apache2/sites-available/laravel.example.com.conf
+
+```bash
+<VirtualHost *:80>
+ ServerName laravel.example.com
+ DocumentRoot /var/www/laravel/public
+ <Directory />
+    Options FollowSymLinks
+    AllowOverride None
+ </Directory>
+ <Directory /var/www/laravel>
+     AllowOverride All
+ </Directory>
+   ErrorLog ${APACHE_LOG_DIR}/error.log
+   LogLevel warn
+   CustomLog ${APACHE_LOG_DIR}/access.log combined
+</VirtualHost>
+
+```
+
+Now enable the virtual host and reload apache service. using below command.
+
+```bash
+$ sudo a2ensite laravel.example.com
+$ sudo service apache2 reload
+
+```
+
+Now you have completed the installation of Laravel 5.x successfully. To access your site follow the one more step.
+
+## **Step7: --- View / Access Laravel: **
+
+<hr />
+
+We assume that you are on a test server so, to access Laravel make host file entry to access your Laravel application in the web browser. Change 127.0.0.1 with your server ip and laravel.example.com with your domain name configured in Apache to your accessing system. if you are in Linux or Mac then follow the path `/etc/hosts` and if you are accessing through windows system then follow the `C:/Windows/System32/drivers/etc/hosts` and insert the following line.
+
+ 	
+- **For Linux:**
+
+```bash
+$ sudo echo "127.0.0.1  laravel.example.com" >> /etc/hosts
+
+```
+
+- **For Windows**
+
+```bash
+
+# Copyright (c) 1993-2009 Microsoft Corp.
+
+#
+# This is a sample HOSTS file used by Microsoft TCP/IP for Windows.
+
+#
+# This file contains the mappings of IP addresses to host names. Each
+
+# entry should be kept on an individual line. The IP address should
+
+# be placed in the first column followed by the corresponding host name.
+
+# The IP address and the host name should be separated by at least one
+
+# space.
+
+#
+# Additionally, comments (such as these) may be inserted on individual
+
+# lines or following the machine name denoted by a '#' symbol.
+
+#
+# For example:
+
+#
+#      102.54.94.97     rhino.acme.com          
+
+# source server
+
+#       38.25.63.10     x.acme.com              
+
+# x client host
+
+# localhost name resolution is handled within DNS itself.
+
+# 127.0.0.1       localhost
+
+# ::1             localhost
+
+#If your server on same host that you are use for access
+
+127.0.0.1  laravel.example.com
+
+# Or
+
+#<your Server Ip> laravel.example.com
+
+```
+
+And access **http://laravel.example.com** in your favourite web browser as below.
+
+[![access laravel](https://www.technhit.in/wp-content/uploads/2017/06/access-laravel.png)](https://www.technhit.in/wp-content/uploads/2017/06/access-laravel.png)
+
+Now build your awesome app using Laravel.
+
+## One Step Method of  Install Laravel on Ubuntu 14.04 and above:
+
+<hr />
+
+If you are puzzled on above code and steps then sit back and relax. we are here for you, everything will do our shell script. Execute following code on your terminal:
+
+```bash
+ $ bash <(curl -s https://www.technhit.in/wp-content/uploads/2017/06/vhostlaravel.txt)
+
+```
+
+Enter your website name when it asking for FQDN name for example (**mylaravelapp.com**). After that when it will be prompted for MySQL root password. Then you have to enter a password whichever you want to set. For your information, the following script sets your web directory at `/home/<your site>/public_html/laravel`. Nothing else enjoy Laravel.
+
+ 	
+- **See On Youtube how to install Laravel:**

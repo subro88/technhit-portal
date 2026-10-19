@@ -4,9 +4,9 @@ slug: "atm-money-withdrawal-algorithm-using-c-array"
 date: "2016-10-21"
 category: "stem-10-plus-2"
 status: "Published"
-summary: "Hello, friends!  We all uses ATM to withdraw money in our daily life. Ever thought how it is work behind ATM. As per Wikipedia Cash Machine is the origin name of ATM (<b style=\"color: 252525; font..."
+summary: "Hello, friends!  We all uses ATM to withdraw money in our daily life. Ever thought how it is work behind ATM. As per Wikipedia Cash Machine is the origin name of ATM (automated teller machine) also..."
 tags: ["C / C++", "while loop", "C Programming Arrays", "c array"]
-wordCount: 199
+wordCount: 204
 readTime: 2
 ---
 
@@ -28,11 +28,35 @@ readTime: 2
 
 ---
 
-Hello, friends!  We all uses ATM to withdraw money in our daily life. Ever thought how it is work behind ATM. As per Wikipedia Cash Machine is the origin name of ATM (<b style="color: #252525; font-family: sans-serif; font-size: 14px; line-height: 22.4px; background-color: #ffffff;">automated teller machine)</b> also it called ABM (<b style="color: #252525; font-family: sans-serif; font-size: 14px; line-height: 22.4px; background-color: #ffffff;">automated banking machine). </b>It is the combination of electromechanical hardware and software. Actually, most of ATM are programmed with JAVA behind it, but here we implement algorithm only withdrawal functionality using C-Array.
+Hello, friends!  We all uses ATM to withdraw money in our daily life. Ever thought how it is work behind ATM. As per Wikipedia Cash Machine is the origin name of ATM (<b style="color: #252525; font-family: sans-serif; font-size: 14px; line-height: 22.4px; background-color: #ffffff;">automated teller machine)</b> also it called ABM (<b style="color: #252525; font-family: sans-serif; font-size: 14px; line-height: 22.4px; background-color: #ffffff;">automated banking machine). </b>It is the combination of electromechanical hardware and software. Actually, most of ATM are programmed with JAVA behind it, but here we implement algorithm only withdrawal functionality using C-Array.
 
-rnrn## **C ATM Money Withdrawal Algorithm:**
+## **C ATM Money Withdrawal Algorithm:**
 
-rn```
-#include<stdio.h>rnvoid main()rn{rn   int money[]={1000,500,100,50,20,10,5,2,1};  //money to disbursedrn   int withdraw_amt=0;                         //For store withdrawl amountrn   int i=0,r; rn   clrscr();rn   printf(" Enter An Amount to Withdrawal : ");rn   scanf("%d",&withdraw_amt);rn   while(withdraw_amt >0)rn   {rn        r=withdraw_amt/money[i]; // Withdrawl amount devided by each money sets on abovern        withdraw_amt= withdraw_amt%money[i]; //a reminder will set again withdrawal amount.rn        printf(" Please Collect note of %4d rupees : %4d 
-",money[i],r);rn        i++;rn   }rn   printf(" THANKS FOR USING OUR ATM SERVICE ");rn   getch();rn}
-```rnOutput:rnrn[![ATM Money Withdrawal Algorithm](https://www.technhit.in/wp-content/uploads/2016/10/output.png)](https://www.technhit.in/wp-content/uploads/2016/10/output.png)rnrnSo, The above program shows only  how the money will be disbursed. Here I use cent also, usually the cent and coin not use in the ATM machines.
+```c
+#include<stdio.h>
+void main()
+{
+   int money[]={1000,500,100,50,20,10,5,2,1};  //money to disbursed
+   int withdraw_amt=0;                         //For store withdrawl amount
+   int i=0,r; 
+   clrscr();
+   printf(" Enter An Amount to Withdrawal : ");
+   scanf("%d",&withdraw_amt);
+   while(withdraw_amt >0)
+   {
+        r=withdraw_amt/money[i]; // Withdrawl amount devided by each money sets on above
+        withdraw_amt= withdraw_amt%money[i]; //a reminder will set again withdrawal amount.
+        printf(" Please Collect note of %4d rupees : %4d \n",money[i],r);
+        i++;
+   }
+   printf(" THANKS FOR USING OUR ATM SERVICE ");
+   getch();
+}
+
+```
+
+Output:
+
+[![ATM Money Withdrawal Algorithm](https://www.technhit.in/wp-content/uploads/2016/10/output.png)](https://www.technhit.in/wp-content/uploads/2016/10/output.png)
+
+So, The above program shows only  how the money will be disbursed. Here I use cent also, usually the cent and coin not use in the ATM machines.

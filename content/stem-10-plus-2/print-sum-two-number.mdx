@@ -6,7 +6,7 @@ category: "stem-10-plus-2"
 status: "Published"
 summary: "**Write a c program that takes two or more numbers from the user then print the sum of these number.**"
 tags: ["C / C++", "Addition of number"]
-wordCount: 434
+wordCount: 445
 readTime: 2
 ---
 
@@ -28,31 +28,157 @@ readTime: 2
 
 ---
 
-## **Write a c program that takes two or more numbers from the user then print the sum of these number.**
+#
 
-rnThis c language program performs the basic arithmetic operation of addition on two numbers and then prints the sum on the screen. For example, if the user entered two numbers as 2, 4 then 6 (2 + 4) will be printed on the screen.rn## C programming code
+# **Write a c program that takes two or more numbers from the user then print the sum of these number.**
 
-rnrnrn```C
-rn#include<stdio.h>rn rnint main()rn{rn   int a, b, c;rn rn   printf("Enter two numbers to add
-");rn   scanf("%d%d",&a,&b);rn rn   c = a + b;rn rn   printf("Sum of entered numbers = %d
-",c);rn   getch();rn rn   return 0;rn}rn
-```rnrnrnOutput of program:rnrn[![add output](http://technhit.in/wp-content/uploads/2016/05/add-output.jpg)](http://technhit.in/wp-content/uploads/2016/05/add-output.jpg)rnrnIn the expression (c = a + b) overflow may occur if the sum of a and b is larger than maximum value which can be stored in variable c.rn## Addition without using the third variable
+This c language program performs the basic arithmetic operation of addition on two numbers and then prints the sum on the screen. For example, if the user entered two numbers as 2, 4 then 6 (2 + 4) will be printed on the screen.
 
-rnrnrn```c
-rn#include<stdio.h>rn rnmain()rn{rn   int a = 1, b = 2;rn rn   /* Storing result of addition in variable a */rn rn   a = a + b;rn rn   /** Not recommended because original value of a is lost  rn    *  and you may be using it somewhere in code considering it rn    *  as it was entered by the user. rn    */rn rn   printf("Sum of a and b = %d
-", a);rn   getch();rn   return 0;rn}rn
-```rnrnrn## C program to add two numbers repeatedly
+## C programming code
 
-rnrnrn```c
-rn#include <stdio.h>rn rnint main()rn{rn   int a, b, c;rn   char ch;rn rn   while (1) {rn      printf("Inut two integers
-");rn      scanf("%d%d", &a, &b);rn      getchar();rn rn      c = a + b;rn rn      printf("(%d) + (%d) = (%d)
-", a, b, c);rn rn      printf("Do you wish to add more numbers (y/n)
-");rn      scanf("%c", &ch);rn rn      if (ch == 'y' || ch == 'Y')rn         continue;rn      elsern   	   break;rn   }rn rn   return 0;rn}rn
-```rnrnrnOutput of program:rnrn```
-Inut two integersrn2 6rn(2) + (6) = (8)rnDo you wish to add more numbers (y/n)rnyrnInut two integersrn2 -6rn(2) + (-6) = (-4)rnDo you wish to add more numbers (y/n)rnyrnInut two integersrn-5 3rn(-5) + (3) = (-2)rnDo you wish to add more numbers (y/n)rnyrnInut two integersrn-5 -6rn(-5) + (-6) = (-11)rnDo you wish to add more numbers (y/n)rnn
-```rnrn## Adding numbers in c using function
+```C
 
-rnrnrn```c
-rn#include<stdio.h>rn rnlong addition(long, long);rn rnmain()rn{rn   long first, second, sum;rn rn   scanf("%ld%ld", &first, &second);rn rn   sum = addition(first, second);rn rn   printf("%ld
-", sum);rn   getch();rn   return 0;rn}rn rnlong addition(long a, long b)rn{rn   long result;rn rn   result = a + b;rn rn   return result;rn}rn
-```rnrnrnWe have used long data type as it can handle large numbers if you want to add still larger numbers which don't fit in long range then use an array, string or other data structure.
+#include<stdio.h>
+ 
+int main()
+{
+   int a, b, c;
+ 
+   printf("Enter two numbers to add\n");
+   scanf("%d%d",&a,&b);
+ 
+   c = a + b;
+ 
+   printf("Sum of entered numbers = %d\n",c);
+   getch();
+ 
+   return 0;
+}
+
+```
+
+Output of program:
+
+[![add output](http://technhit.in/wp-content/uploads/2016/05/add-output.jpg)](http://technhit.in/wp-content/uploads/2016/05/add-output.jpg)
+
+In the expression (c = a + b) overflow may occur if the sum of a and b is larger than maximum value which can be stored in variable c.
+
+## Addition without using the third variable
+
+```c
+
+#include<stdio.h>
+ 
+main()
+{
+   int a = 1, b = 2;
+ 
+   /* Storing result of addition in variable a */
+ 
+   a = a + b;
+ 
+   /** Not recommended because original value of a is lost  
+    *  and you may be using it somewhere in code considering it 
+    *  as it was entered by the user. 
+    */
+ 
+   printf("Sum of a and b = %d\n", a);
+   getch();
+   return 0;
+}
+
+```
+
+## C program to add two numbers repeatedly
+
+```c
+
+#include <stdio.h>
+ 
+int main()
+{
+   int a, b, c;
+   char ch;
+ 
+   while (1) {
+      printf("Inut two integers\n");
+      scanf("%d%d", &a, &b);
+      getchar();
+ 
+      c = a + b;
+ 
+      printf("(%d) + (%d) = (%d)\n", a, b, c);
+ 
+      printf("Do you wish to add more numbers (y/n)\n");
+      scanf("%c", &ch);
+ 
+      if (ch == 'y' || ch == 'Y')
+         continue;
+      else
+   	   break;
+   }
+ 
+   return 0;
+}
+
+```
+
+Output of program:
+
+```c
+Inut two integers
+2 6
+(2) + (6) = (8)
+Do you wish to add more numbers (y/n)
+y
+Inut two integers
+2 -6
+(2) + (-6) = (-4)
+Do you wish to add more numbers (y/n)
+y
+Inut two integers
+-5 3
+(-5) + (3) = (-2)
+Do you wish to add more numbers (y/n)
+y
+Inut two integers
+-5 -6
+(-5) + (-6) = (-11)
+Do you wish to add more numbers (y/n)
+n
+
+```
+
+## Adding numbers in c using function
+
+```c
+
+#include<stdio.h>
+ 
+long addition(long, long);
+ 
+main()
+{
+   long first, second, sum;
+ 
+   scanf("%ld%ld", &first, &second);
+ 
+   sum = addition(first, second);
+ 
+   printf("%ld\n", sum);
+   getch();
+   return 0;
+}
+ 
+long addition(long a, long b)
+{
+   long result;
+ 
+   result = a + b;
+ 
+   return result;
+}
+
+```
+
+We have used long data type as it can handle large numbers if you want to add still larger numbers which don't fit in long range then use an array, string or other data structure.

@@ -6,7 +6,8 @@ category: "linux-server-admin"
 status: "Published"
 summary: "Hi, Friends in this tutorial we are going to install Visual Studio Code on Ubuntu. As all of you know Visual Studio Code is a free source-code editor made by Microsoft for Windows, Linux, and macOS..."
 tags: ["systems-engineering"]
-wordCount: 568
+youtubeId: "sjcO6DDJWm8"
+wordCount: 569
 readTime: 3
 ---
 
@@ -26,57 +27,77 @@ readTime: 3
 
 Hi, Friends in this tutorial we are going to install Visual Studio Code on Ubuntu. As all of you know Visual Studio Code is a free source-code editor made by Microsoft for Windows, Linux, and macOS. It has exclusive Features of debugging, syntax highlighting, intelligent code completion, snippets, code refactoring, and embedded Git. Also, it has thousands of plugins support which makes VScode very popular.
 
-rnAnd it’s one of the widely-popular code editors that are highly used by full stack and Front-end developers. The main reason behind its popularity is that it has everything which any programmer expects from any code editor with some additional and useful features. Its lightweight, fast, open-source, and cross-platform nature along with other cool features gives it an extra edge over any other editor.
+And it's one of the widely-popular code editors that are highly used by full stack and Front-end developers. The main reason behind its popularity is that it has everything which any programmer expects from any code editor with some additional and useful features. Its lightweight, fast, open-source, and cross-platform nature along with other cool features gives it an extra edge over any other editor.
 
-rnAs per the stack overflow survey 2019, it has almost 51% share that’s really impressive. [Stack Overflow Servey Insights ](https://insights.stackoverflow.com/survey/2019)
+As per the stack overflow survey 2019, it has almost 51% share that's really impressive. [Stack Overflow Servey Insights ](https://insights.stackoverflow.com/survey/2019)
 
-rn[![Visual Studio](https://www.technhit.in/wp-content/uploads/2020/12/stat1.png)](https://www.technhit.in/wp-content/uploads/2020/12/stat1.png)rn**In this tutorial, we will show two ways of installing Visual Studio Code on Ubuntu 20.04. VS Code can be installed as a deb package from Microsoft repositories or snap package via the Snapcraft store. Choose the installation method that is most appropriate for your environment.**
+[![Visual Studio](https://www.technhit.in/wp-content/uploads/2020/12/stat1.png)](https://www.technhit.in/wp-content/uploads/2020/12/stat1.png)
 
-rnrn## **Installing Visual Studio Code with the apt package manager:**
+**In this tutorial, we will show two ways of installing Visual Studio Code on Ubuntu 20.04. VS Code can be installed as a deb package from Microsoft repositories or snap package via the Snapcraft store. Choose the installation method that is most appropriate for your environment.**
 
-rnVS Code is available from the official Microsoft apt repositories. To install it, follow the steps below:
+## **Installing Visual Studio Code with the apt package manager:**
 
-rnUpdate the packages index and install the dependencies by running the following command as a user with sudo privileges :
+VS Code is available from the official Microsoft apt repositories. To install it, follow the steps below:
 
-rnrn```
-sudo apt updaternsudo apt install software-properties-common
-```rn### Import the Microsoft GPG key using the following wget command :
+Update the packages index and install the dependencies by running the following command as a user with sudo privileges :
 
-rn```
+```bash
+sudo apt update
+sudo apt install software-properties-common
+
+```
+
+### Import the Microsoft GPG key using the following wget command :
+
+```bash
 wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add -
-```rn### And enable the Visual Studio Code repository by typing:
 
-rn```
+```
+
+### And enable the Visual Studio Code repository by typing:
+
+```bash
 sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
-```rn### Once the apt repository is enabled, install the Visual Studio Code package:
 
-rn```
+```
+
+### Once the apt repository is enabled, install the Visual Studio Code package:
+
+```bash
 sudo apt install code
-```rnWhen a new version is released you can update the VS Code package through your desktop standard Software Update tool or by running the following commands in your terminal:
 
-rnrn### Starting Visual Studio Code
+```
 
-rn
-rn 	- *In the Activities search bar type “VS Code” and click on the icon to launch the application.*
-rn 	- *When you start VS Code for the first time, a window like the following should appear:*
-rn 	- *VS Code can also be launched from the command line by typing `code`.*
-rn
-rn[embedyt] https://www.youtube.com/watch?v=sjcO6DDJWm8[/embedyt]rn## **Installing Visual Studio Code as a Snap Package:**
+When a new version is released you can update the VS Code package through your desktop standard Software Update tool or by running the following commands in your terminal:
 
-rnVisual Studio Code snap package is distributed and maintained by Microsoft. Snaps are self-contained software packages that include the binary all dependencies needed to run the application. Snap packages are easy to upgrade and secure. Unlike the standard deb packages, snaps have a larger disk footprint and longer application startup time.
+### Starting Visual Studio Code
 
-rnSnap packages can be installed from either the command-line or via the Ubuntu Software application.
+ 	
+- *In the Activities search bar type "VS Code" and click on the icon to launch the application.*
+ 	
+- *When you start VS Code for the first time, a window like the following should appear:*
+ 	
+- *VS Code can also be launched from the command line by typing `code`.*
 
-rnTo install the VS Code snap, open your terminal (`Ctrl+Alt+T`) and run the following command:
+## **Installing Visual Studio Code as a Snap Package:**
 
-rnrn```
+Visual Studio Code snap package is distributed and maintained by Microsoft. Snaps are self-contained software packages that include the binary all dependencies needed to run the application. Snap packages are easy to upgrade and secure. Unlike the standard deb packages, snaps have a larger disk footprint and longer application startup time.
+
+Snap packages can be installed from either the command-line or via the Ubuntu Software application.
+
+To install the VS Code snap, open your terminal (`Ctrl+Alt+T`) and run the following command:
+
+```bash
 sudo snap install --classic code
-```rnThat’s it. VS Code has been installed on your Ubuntu machine.
 
-rnIf you prefer using a GUI, open Ubuntu Software, search for “Visual Studio Code” and install the application:
+```
 
-rnrn## Final Word:
+That's it. VS Code has been installed on your Ubuntu machine.
 
-rnWe’ve explained how to install the VS Code on Ubuntu 20.04.
+If you prefer using a GUI, open Ubuntu Software, search for "Visual Studio Code" and install the application:
 
-rnYou can now start installing new extensions and customizing your workspace. To learn more about VS Code visit their official [documentation](https://code.visualstudio.com/docs/) page. If you have any questions, please leave a comment below.
+## Final Word:
+
+We've explained how to install the VS Code on Ubuntu 20.04.
+
+You can now start installing new extensions and customizing your workspace. To learn more about VS Code visit their official [documentation](https://code.visualstudio.com/docs/) page. If you have any questions, please leave a comment below.

@@ -4,9 +4,9 @@ slug: "codeigniter-remove-index-php-url"
 date: "2017-03-19"
 category: "software-engineering"
 status: "Published"
-summary: "Everyone should want to remove trailing index php from URL after installing CodeIgniter. Removing Index.php from URL, it looks clean and more search engine friendly. That's why you want too. You ca..."
+summary: "Everyone should want to remove trailing index php from URL after installing CodeIgniter. Removing Index.php from URL, it looks clean and more search engine friendly. That's why you want too. You ca..."
 tags: ["CodeIgniter"]
-wordCount: 233
+wordCount: 239
 readTime: 2
 ---
 
@@ -24,28 +24,66 @@ readTime: 2
 
 ---
 
-Everyone should want to remove trailing index php from URL after installing CodeIgniter. Removing Index.php from URL, it looks clean and more search engine friendly. That's why you want too. You can remove index php part of the URL by adding a*** "<strong>.**htaccess"*</strong> file to the root of your CodeIgniter install. 
+Everyone should want to remove trailing index php from URL after installing CodeIgniter. Removing Index.php from URL, it looks clean and more search engine friendly. That's why you want too. You can remove index php part of the URL by adding a*** "<strong>.**htaccess"*</strong> file to the root of your CodeIgniter install. 
 
-rnrn## **Steps to Remove Index php from URL:**
+## **Steps to Remove Index php from URL:**
 
-rn**Step:-1** Open the directory `“application/config”` and open the file “config.php“. find and replace the below code in config.php file.
+**Step:-1** Open the directory `"application/config"` and open the file "config.php". find and replace the below code in config.php file.
 
-rnrn```
-//find the below codernrn$config['index_page']="index.php"rnrn//replace with the below codern rn$config['index_page']=""
-```rn**Step:-2** Go to your CodeIgniter directory and create .htaccess
+```bash
+//find the below code
 
-rnrn```
-Your_website_root_dir/rn  |->application/rn  |->assets/rn  |->system/rn  |->.htaccess <———Create this file rn  |->index.php
-```rn**Step:-3** Write below code in .htaccess file
+$config['index_page']="index.php"
 
-rnrn```
-<IfModulemod_rewrite.c>rnrn   RewriteEngine Onrn   RewriteCond %{REQUEST_FILENAME} !-frn   RewriteCond %{REQUEST_FILENAME} !-drn   RewriteRule ^(.*)$ index.php/$1 [L]rnrn</IfModule>
-```rnThe above code checks requested file*(-f)* with the specified name in the browser exist, or the directory*(-d)* in the browser exist. If does not exists then proceed to the rewrite rule below.
+//replace with the below code
+ 
+$config['index_page']=""
 
-rn**Step:-4** In some case the default setting for *uri_protocol* does not work properly. To solve this problem just open the file “*application/config/config.php*“, then find and replace the below code.
+```
 
-rnrn```
- //find the below code rn$config['uri_protocol']="AUTO"rnrn//replace with the below code rn$config['uri_protocol']="REQUEST_URI"
-```rn This will work on all apache based web server but in wamp server, it does not work because rewrite_module by default disabled so we have need to enable it.
+**Step:-2** Go to your CodeIgniter directory and create .htaccess
 
-rn rnrn[<>](https://www.technhit.in/codeigniter-route-configuration/)
+```bash
+Your_website_root_dir/
+  |->application/
+  |->assets/
+  |->system/
+  |->.htaccess <------Create this file 
+  |->index.php
+
+```
+
+**Step:-3** Write below code in .htaccess file
+
+```bash
+<IfModulemod_rewrite.c>
+
+   RewriteEngine On
+   RewriteCond %{REQUEST_FILENAME} !-f
+   RewriteCond %{REQUEST_FILENAME} !-d
+   RewriteRule ^(.*)$ index.php/$1 [L]
+
+</IfModule>
+
+```
+
+The above code checks requested file*(-f)* with the specified name in the browser exist, or the directory*(-d)* in the browser exist. If does not exists then proceed to the rewrite rule below.
+
+**Step:-4** In some case the default setting for *uri_protocol* does not work properly. To solve this problem just open the file "*application/config/config.php*", then find and replace the below code.
+
+```bash
+ //find the below code 
+$config['uri_protocol']="AUTO"
+
+//replace with the below code 
+$config['uri_protocol']="REQUEST_URI"
+
+```
+
+ This will work on all apache based web server but in wamp server, it does not work because rewrite_module by default disabled so we have need to enable it.
+
+ 
+
+[<
+
+>](https://www.technhit.in/codeigniter-route-configuration/)

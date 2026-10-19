@@ -6,7 +6,7 @@ category: "software-engineering"
 status: "Published"
 summary: "**Creating your own libraries:**"
 tags: ["CodeIgniter", "library"]
-wordCount: 531
+wordCount: 547
 readTime: 3
 ---
 
@@ -24,41 +24,130 @@ readTime: 3
 
 ---
 
-## **Creating your own libraries:**
+#
 
-rnYou can easily create your own libraries. The first step in creating a library is to create a file inside the ***System/application/libra****ries/*** directory, with a relevant name, you should also take the naming conventions outlined in the style guide into account.rnThe next step is to create a class inside this file, with the same name as your PHP file, but without the .php extension. You do not need to extend any classes when creating your own library.
+# **Creating your own libraries:**
 
-rnrn<blockquote>While creating new library one should keep in mind, the following things −rn
-rn 	- The name of the file must start with a capital letter e.g. Example_library.php
-rn 	- class name must start with a capital letter e.g. class Example_library
-rn 	- The name of the class and name of the file must match.
-rn
-rn</blockquote>rn **A prototype of "Example_library.php"**
+You can easily create your own libraries. The first step in creating a library is to create a file inside the ***System/application/libra****ries/*** directory, with a relevant name, you should also take the naming conventions outlined in the style guide into account.
+The next step is to create a class inside this file, with the same name as your PHP file, but without the .php extension. You do not need to extend any classes when creating your own library.
 
-rnrn```
- <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');rn rn class Example_library {rnrn rn       public function some_function() {rnrnrn       //your function bodyrn       //......rnrn      }rn }rn rn/* End of file Example_library.php */
-```rn####  **Utilizing CodeIgniter Resources within Your Library:**
+<blockquote>While creating new library one should keep in mind, the following things −
 
-rnWhen using CodeIgniter, you load helpers, libraries, and other resources by using the super object $this->. However, when creating your own library, you will not have access to this unless you explicitly add it in by using the following function:rn`$CI =& get_instance();`
+ 	
+- The name of the file must start with a capital letter e.g. Example_library.php
+ 	
+- class name must start with a capital letter e.g. class Example_library
+ 	
+- The name of the class and name of the file must match.
 
-rnOnce you do this inside a function, you would use $CI in place of $this when utilizing CodeIgniter resources.
+</blockquote>
 
-rnrn```
- class Example_library {rnrn protected $CI;rnrn // We'll use a constructor, as you can't directly call a functionrn // from a property definition.rn public function __construct()rn {rn      // Assign the CodeIgniter super-objectrn      $this->CI =& get_instance();rn }rnrn public function foo()rn {rn     $this->CI->load->helper('url');rn     redirect();rn }rnrn public function bar()rn {rn     echo $this->CI->config->item('base_url');rn }rnrn}
-```rn### ** Use your own Class:**
+ **A prototype of "Example_library.php"**
 
-rnYou can simply load your library using load method in your application. for examplernrn`$this->load->library('example_library');`rn## **Extending core libraries:**
+```bash
+ <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');
+ 
+ class Example_library {
 
-rnTo extend a core CodeIgniter library, first, create a file with the same name as the library you wish to extend, but add the MY_ prefix. For example, to extend the Session class, create a file called MY_Session.php and place it inside thern***system/application/libraries ***directory. Once this is done, you simply extend the core library as follows:
+ 
+       public function some_function() {
 
-rnrn```
-<?php  class MY_Session extends CI_Session{rnrn    function MY_Session()rn    {rn        parent::CI_Session();rn    }rn }rn?>
-```rnLoading Extending Libraries:rnrnYou load your extended library in exactly the same way as you load the core library.rnrn`$this->load->library('session');`rnrnNote that I do not include the MY_ prefix to load my extended library. There is no need to include the prefix at the time of loading.rn## **Replacing core libraries:**
+       //your function body
+       //......
 
-rnReplacing core libraries is similar to extending them. Instead of using the MY_ prefix in your file name and class name, you drop the prefix for the filename and use the prefix CI_ for the class name. This is because all CodeIgniter core libraries have the prefix CI_. Staying with the session class, we would replace it as follows:
+      }
+ }
+ 
+/* End of file Example_library.php */
 
-rnrn```
-<?php class CI_Session{rnrnrn// Your updated class..rnrnrn}rn?>
-```rnLoading Replaced Library:rnrnLoading method is similar as extending library.rnrn`$this->load->library('session');`rn## **Conclusion:**
+```
 
-rnSo you can create your own library for your application, and also customize any existing library as you wish in CodeIgniter with flexible way.
+####  **Utilizing CodeIgniter Resources within Your Library:**
+
+When using CodeIgniter, you load helpers, libraries, and other resources by using the super object $this->. However, when creating your own library, you will not have access to this unless you explicitly add it in by using the following function:
+`$CI =& get_instance();`
+
+Once you do this inside a function, you would use $CI in place of $this when utilizing CodeIgniter resources.
+
+```bash
+ class Example_library {
+
+ protected $CI;
+
+ // We'll use a constructor, as you can't directly call a function
+ // from a property definition.
+ public function __construct()
+ {
+      // Assign the CodeIgniter super-object
+      $this->CI =& get_instance();
+ }
+
+ public function foo()
+ {
+     $this->CI->load->helper('url');
+     redirect();
+ }
+
+ public function bar()
+ {
+     echo $this->CI->config->item('base_url');
+ }
+
+}
+
+```
+
+### ** Use your own Class:**
+
+You can simply load your library using load method in your application. for example
+
+`$this->load->library('example_library');`
+
+## **Extending core libraries:**
+
+To extend a core CodeIgniter library, first, create a file with the same name as the library you wish to extend, but add the MY_ prefix. For example, to extend the Session class, create a file called MY_Session.php and place it inside the
+***system/application/libraries ***directory. Once this is done, you simply extend the core library as follows:
+
+```bash
+<?php  class MY_Session extends CI_Session{
+
+    function MY_Session()
+    {
+        parent::CI_Session();
+    }
+ }
+?>
+
+```
+
+Loading Extending Libraries:
+
+You load your extended library in exactly the same way as you load the core library.
+
+`$this->load->library('session');`
+
+Note that I do not include the MY_ prefix to load my extended library. There is no need to include the prefix at the time of loading.
+
+## **Replacing core libraries:**
+
+Replacing core libraries is similar to extending them. Instead of using the MY_ prefix in your file name and class name, you drop the prefix for the filename and use the prefix CI_ for the class name. This is because all CodeIgniter core libraries have the prefix CI_. Staying with the session class, we would replace it as follows:
+
+```bash
+<?php class CI_Session{
+
+// Your updated class..
+
+}
+?>
+
+```
+
+Loading Replaced Library:
+
+Loading method is similar as extending library.
+
+`$this->load->library('session');`
+
+## **Conclusion:**
+
+So you can create your own library for your application, and also customize any existing library as you wish in CodeIgniter with flexible way.

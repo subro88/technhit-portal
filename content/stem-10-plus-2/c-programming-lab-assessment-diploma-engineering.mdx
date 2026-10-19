@@ -6,8 +6,8 @@ category: "stem-10-plus-2"
 status: "Published"
 summary: "**Lab Manual for Mechanical Dept.(3rd year)**"
 tags: ["Addition of number", "Odd Even", "GCD", "LCM", "switch case", "factorial", "prime number", "Palindrome", "multiply", "subtract", "Division", "print pattern", "swap", "interchange", "area of a rectangle", "area", "greater number", "triangle", "equilateral", "isosceles", "scalene", "quadratic equation", "continue statement", "vowel", "average of an array", "sorting", "sorting array element", "length of string", "addition of matrices", "square of number"]
-wordCount: 2421
-readTime: 13
+wordCount: 3149
+readTime: 17
 ---
 
 ## Key Architecture Takeaways
@@ -28,165 +28,1021 @@ readTime: 13
 
 ---
 
-## **Lab Manual for Mechanical Dept.(3rd year)**
+#
 
-rn**Attention:**rnDear Students, ME-A,ME-B1,ME-B2 (3rd Year) submit Your **C Programming lab copy** within 26/09/2016.rn## Program #1. Write a C program to perform addition , subtraction , multiplication and division of two numbers .
+# **Lab Manual for Mechanical Dept.(3rd year)**
 
-rn```
- # include <stdio.h>rn# include <conio.h>rnvoid main ( )rn{rnint a , b ,sum , sub , mul , div ;rnclrscr ( ) ;rnprintf(“ Enter two numbers =”) ;rnscanf ( “ %d %d “ , &a, &b);rnsum = a + b;rnsub= a – b ;rnmul = a * b ;rndiv = a / b ;rnprintf( “addition is = %d 
-“ , sum);rnprintf( “subtraction is = %d
- “ , sub);rnprintf( “multiplication is = %d 
-“ , mul);rnprintf( “division is = %d “ , div);rngetch ( );rn}
-```rnOUTPUT :rnEnter two numbers = 12 2rnaddition is = 14rnsubtraction is = 10rnmultiplication is = 24rndivision is = 6rn## Program #2. To interchange the numeric values of two variables using the third variable.
+**Attention:**
+Dear Students, ME-A,ME-B1,ME-B2 (3rd Year) submit Your **C Programming lab copy** within 26/09/2016.
 
-rn```
- # include <stdio.h>rn# include <conio.h>rnvoid main ( )rn{rnint a , b , t ;rnclrscr ( ) ;rnprintf(“ Enter two numbers =”) ;rnscanf ( “ %d %d “ , &a, &b);rnt = a ;rna= b ;rnb= t ;rnprintf( “After interchange value is a = %d b=%d “, a , b);rngetch ( );rn}
-```rnOUTPUT :rnEnter two numbers = 12 34rnAfter interchange, value is a = 34rnb = 12rnProgram #3. To interchange the numeric values of two variables without using the third variable.rn```
- # include <stdio.h>rn# include <conio.h>rnvoid main ( )rn{rnint a , b , t ;rnrnclrscr ( ) ;rnprintf(“ Enter two numbers =”) ;rnscanf ( “ %d %d “ , &a, &b);rna = a + b;rnb = a – b ;rna = a – b ;rnprintf( “After interchange value is a = %d b=%d “, a , b);rngetch ( );rn}
-```rnOUTPUT :rnEnter two numbers = 12rn34rnAfter interchange value isrna = 34 b = 12rn## Program #4. To calculate an area of a rectangle .
+## Program #1. Write a C program to perform addition , subtraction , multiplication and division of two numbers .
 
-rn```
- # include <stdio.h>rn# include <conio.h>rnvoid main ( )rn{rnint a , b , area ;rnclrscr ( ) ;rnprintf(“ Enter length of the rectangle =”) ;rnscanf ( “ %d “, &a);rnprintf(“ Enter width of the rectangle =”) ;rnscanf ( “ %d “, &b);rnarea = a * b ;rnprintf( “Area is = %d”, area);rngetch ( );rn}
-```rnOUTPUT :rnEnter length of the rectangle = 15rnEnter width of the rectangle =10rnArea is = 150rn## Program #5. Identify greater number between two numbers using C program.
+```c
+ 
 
-rn```
- # include <stdio.h>rn# include <conio.h>rnvoid main ( )rn{rnint a , b ;rnclrscr ( ) ;rnprintf(“ Enter two numbers =”) ;rnscanf ( “ %d %d “ , &a, &b);rnif ( a > b)rnprintf ( “greater is = %d “ , a);rnelsernprintf( “greater is = %d “ , b);rngetch ( ) ;rn}
-```rnOUTPUT :rnEnter two numbers= 40 60rngreater is = 60rn## Program #6. To check a given number is Even or Odd .
+# include <stdio.h>
 
-rn```
- # include <stdio.h>rn# include <conio.h>rnvoid main ( )rn{rnint n ;rnclrscr ( ) ;rnprintf(“ Enter the number =”) ;rnscanf ( “ %d” ,&n);rnif ( n % 2 = = 0)rnprintf(“even number “);rnelsernprintf(“odd number “);rngetch ( );rn}
-```rnOUTPUT :rnEnter the number = 6rnEven numberrn## Program #7. Take three sides of a triangle as input and check whether the triangle can be drawn or not. If possible, classify the triangle as equilateral, isosceles, or scalene.
+# include <conio.h>
+void main ( )
+{
+int a , b ,sum , sub , mul , div ;
+clrscr ( ) ;
+printf(" Enter two numbers =") ;
+scanf ( " %d %d " , &a, &b);
+sum = a + b;
+sub= a - b ;
+mul = a * b ;
+div = a / b ;
+printf( "addition is = %d \n" , sum);
+printf( "subtraction is = %d\n " , sub);
+printf( "multiplication is = %d \n" , mul);
+printf( "division is = %d " , div);
+getch ( );
+}
 
-rn```
- #include<stdio.h>rn#include<conio.h>rnvoid main ( )rn{rnint a,b,c;rnclrscr ( );rnprintf("Enter the value of three sides=");rnscanf("%d %d %d", &a, &b, &c);rnif( a + b > c || a + c > b || b + c > a)rn{rnprintf("triangle is possible 
-");rnif(a==b && b==c)rn{rnprintf("Equilateral triangle");rn}rnelsern{rnif(a= =b || b= =c || a= =c)rnprintf(" Isoceles triangle ");rnelsernprintf(" Scalene triangle ");rn}rn}rnelsernprintf(" Triangle is not possible ");rngetch ( ) ;rn}
-```rnOUTPUT :rnEnter the value of three sides = 5 8 5rnthe triangle is possiblernIsosceles trianglern## Program #8. To find the roots of a quadratic equation.
+```
 
-rn```
- #include<stdio.h>rn#include<conio.h>rn#include<math.h>rnvoid main ( )rn{rnfloat a,b,c,r1,r2,d;rnclrscr ( );rnprintf("Enter the value of a,b,c");rnscanf("%f %f %f", &a, &b, &c);rnd=sqrt(b*b-4*a*c);rnif(d==0)rn{rnprintf("Both roots are Equal
-");rnr1=r2=-b/(2*a);rnprintf("r1=%f r2=%f",r1,r2);rn}rnelsern{rnif(d>0)rn{rnprintf(" Roots are real and Unequal 
-");rnr1 = (-b+d) / (2*a) ;rnr2 = (-b-d) / (2*a) ;rnprintf("r1=%f r2=%f",r1,r2);rn}rnelsernprintf("roots are imaginary");rn}rngetch( );rn}
-```rnOUTPUT :rnEnter the value of a , b, c =rn1 -3 -4rnRoots are real and unequalrnr1=4.000000 r2 = -1.000000rnEnter the value of a , b, c =rn1 0 -4rnRoots are real and unequalrnr1= -2.000000 r2 = 2.000000rn## Program #9. Find the factorial of given number.
+OUTPUT :
+Enter two numbers = 12 2
+addition is = 14
+subtraction is = 10
+multiplication is = 24
+division is = 6
 
-rn```
- # include <stdio.h>rn# include <conio .h>rnvoid main ( )rn{rnint i, n, fact = 1 ;rnclrscr ( ) ;rnprintf("Enter a number to calculate it's factorial = “) ;rnscanf("%d", &n);rnfor (i = 1; i <= n; i++)rnfact = fact * i ;rnprintf("Factorial of %d = %d
-", n, fact);rngetch ( );rn}
-```rnOUTPUT :rnEnter a number to calculate it's factorialrn= 5rnFactorial of 5 is = 120rn## Program #10. To find the sum of n natural numbers.
+## Program #2. To interchange the numeric values of two variables using the third variable.
 
-rn```
- #include <stdio.h>rn#include<conio .h >rnvoid main ( )rn{rnint n, i, sum=0 ;rnclrscr ( ) ;rnprintf("Enter an integer = ");rnscanf("%d",&n);rnfor(i =1; i <=n ; i++)rn{rnsum = sum + i ;rn}rnprintf("Sum is = %d",sum);rngetch ( ) ;rn}
-```rn rn## Program #11. Print the sum of 1 + 3 + 5 + 7 +…………..+ n
+```c
+ 
 
-rn```
- #include <stdio.h>rn#include<conio .h >rnvoid main ( )rn{rnint n, i, sum=0 ;rnclrscr ( ) ;rnprintf("Enter the range = ");rnscanf("%d",&n);rnfor(i =1; i <=n ; i = i + 2)rn{rnsum = sum + i ;rn}rnprintf("Sum is = %d",sum);rngetch ( ) ;rn}
-```rnOUTPUT :rnEnter an integer = 7rnSum is = 28rnOUTPUT :rnEnter the range =9rnSum is = 25rn## Program #12. Print the pattern .
+# include <stdio.h>
 
-rn*rn* *rn* * *rn* * * *rn* * * * *rn```
- #include <stdio.h>rn#include<conio .h >rnvoid main ( )rn{rnint i, j, rows;rnclrscr ( ) ;rnprintf("Enter the number of rows: ");rnscanf("%d",&rows);rnfor(i=1; i<=rows; i++)rn{rnfor(j=1; j<=i; j++)rn{rnprintf (" * ");rn}rnprintf("
-");rn}rngetch ( ) ;rn}
-```rn## Program #13. Print the pattern
+# include <conio.h>
+void main ( )
+{
+int a , b , t ;
+clrscr ( ) ;
+printf(" Enter two numbers =") ;
+scanf ( " %d %d " , &a, &b);
+t = a ;
+a= b ;
+b= t ;
+printf( "After interchange value is a = %d b=%d ", a , b);
+getch ( );
+}
 
-rn1rn1 2rn1 2 3rn1 2 3 4rn1 2 3 4 5rn```
- #include <stdio.h>rn#include<conio .h >rnvoid main ( )rn{rnint i, j, rows;rnclrscr ( ) ;rnprintf("Enter the number of rows: ");rnscanf("%d",&rows);rnfor(i=1 ; i<=rows ; i++)rnCopyright Protected @2016 (Computer Dept. NHIT)rn{rnfor(j=1; j<= i ; j++)rn{rnprintf (" %d" , j ) ;rn}rnprintf("
-") ;rn}rngetch ( ) ;rn}
-```rn## Program #14. Print the pattern
+```
 
-rnArnA BrnA B CrnA B C DrnA B C D Ern```
- #include <stdio.h>rn#include<conio .h >rnvoid main( )rn{rnint i, j;rnfor(i=1;i<=5;i++)rn{rnfor(j=1 ; j<=i ; j++)rn{rnprintf("%c" ,'A' + j-1);rn}rnprintf("
-");rn}rngetch ( );rn}
-```rn## Program #15. Print the pattern
+OUTPUT :
+Enter two numbers = 12 34
+After interchange, value is a = 34
+b = 12
+Program #3. To interchange the numeric values of two variables without using the third variable.
 
-rn* * * * *rn* * * *rn* * *rn* *rn*rn```
- #include <stdio.h>rn#include<conio .h >rnvoid main ( )rn{rnint i, j, rows;rnclrscr ( ) ;rnprintf("Enter the number of rows: ");rnscanf("%d",&rows);rnrnfor( i= rows ; i > = 1 ; i - -)rn{rnfor ( j=1; j<= i ; j++)rn{rnprintf (" * “ ) ;rn}rnprintf("
-") ;rn}rngetch ( ) ;rn}
-```rn rn## Program #16. Check whether an input number is a palindrome or not.
+```c
+ 
 
-rn```
- #include <stdio.h>rn#include < conio. h >rnvoid main( )rn{rnint n, reverse = 0, temp ,r;rnclrscr ( ) ;rnprintf ("Enter a number to check if it is a palindrome or not=");rnscanf ("%d", &n);rntemp = n;rnwhile( temp ! = 0 )rn{rnr = temp % 10rnreverse = reverse * 10 + r ;rntemp = temp/10;rn}rnif ( n == reverse )rnprintf("%d is a palindrome number.
-", n);rnelsernprintf("%d is not a palindrome number.
-", n);rngetch ( );rn}
-```rnOUTPUT :rnEnter a number to check if it is arnpalindrome or not= 151rn151 is a palindrome numberrn## Program #17. To find Sum of digits of an integer.
+# include <stdio.h>
 
-rn```
- # include < stdio. h>rn# include < conio . h>rnvoid main( )rn{rnint n, sum = 0, r ;rnprintf(" Enter an integer=" ) ;rnrnscanf("%d", &n);rnwhile (n != 0)rn{rnr = n % 10;rnsum = sum + r ;rnn = n / 10 ;rn}rnprintf("Sum of digits =%d “ , sum);rngetch ( ) ;rn}
-```rn## Program #18. Find the G.C.D and L.C.M of two numbers.
+# include <conio.h>
+void main ( )
+{
+int a , b , t ;
 
-rn```
- # include <stdio.h>rn# include <conio. h>rnvoid main ( )rn{rnint a, b, x, y, t, gcd, lcm ;rnclrscr ( );rnprintf("Enter two integers=") ;rnscanf("%d%d", &x, &y) ;rna = x;rnb = y;rnwhile (b != 0)rn{rnt = b;rnb = a % b;rna = t;rn}rngcd = a;rnlcm = (x*y) / gcd;rnprintf("Greatest common divisor of %d and %d = %d
-", x, y, gcd);rnprintf("Least common multiple of %d and %d = %d
-", x, y, lcm);rngetch ( ) ;rn}
-```rnOUTPUT :rnEnter two integers = 15 18rnGreatest common divisor of 15 and 18 = 3rnLeast common divisor of 15 and 18 = 90rn## Program #19. Print the sum of 2 + 4 + 6 + 8 +………………..+n
+clrscr ( ) ;
+printf(" Enter two numbers =") ;
+scanf ( " %d %d " , &a, &b);
+a = a + b;
+b = a - b ;
+a = a - b ;
+printf( "After interchange value is a = %d b=%d ", a , b);
+getch ( );
+}
 
-rn```
- #include <stdio.h>rn#include<conio .h >rnvoid main ( )rn{rnint n, i = 2, sum=0 ;rnclrscr ( ) ;rnprintf("Enter the range = ");rnscanf("%d",&n);rndorn{rnsum = sum + i ;rni = i + 2 ;rn}while ( i <= n) ;rnprintf("Sum is = %d", sum) ;rngetch ( ) ;rn}
-```rnOUTPUT :rnEnter the range = 10rnSum is = 30rnOUTPUT :rnEnter the range = 5rnSum is = 55rn## Program #20. Print the sum of ( 1*1) + (2*2) + (3*3) + (4*4) + (5*5) + ... + (n*n)
+```
 
-rn```
- #include <stdio.h>rn#include<conio .h >rnvoid main ( )rn{rnint n , i =1, sum = 0 ;rnclrscr ( ) ;rnprintf("Enter the range = ");rnscanf("%d",&n);rndorn{rnsum = sum + i * i ;rni + + ;rn}while ( i <= n) ;rnprintf("Sum is = %d", sum) ;rngetch ( ) ;rn}
-```rn## Program #21. To check a given number is prime or not.
+OUTPUT :
+Enter two numbers = 12
+34
+After interchange value is
+a = 34 b = 12
 
-rn```
- #include<stdio.h>rn#include<conio .h >rnvoid main ( )rn{rnint n , c = 2;rnclrscr ( );rnprintf("Enter a number to check if it is prime
-");rnscanf("%d",&n);rnfor ( c = 2 ; c <= n - 1 ; c++ )rn{rnif ( n%c = = 0 )rn{rnprintf("%d is not prime.
-", n);rnbreak;rn}rn}rnif ( c == n )rnprintf("%d is prime.
-", n);rngetch ( ) ;rn}
-```rn## Program #22. Use of “continue “ statement .
+## Program #4. To calculate an area of a rectangle .
 
-rn```
- #include<stdio.h>rn#include<conio .h >rnvoid main ( )rn{rnint j ;rnclrscr ( ) ;rnfor ( j=0; j<=8; j++)rn{rnif (j==4)rn{rncontinue ;rn}rnprintf("%d ", j);rn}rngetch ( ) ;rn}
-```rn## Program #23. To test whether the given character is Vowel or not. ( using switch case )
+```c
+ 
 
-rn```
- #include<stdio.h>rn#include<conio.h>rnvoid main()rn{rnchar ch;rnclrscr ( );rnprintf("Enter a character=") ;rnrnscanf("%c", &ch);rnswitch ( ch )rn{rncase 'a' :rncase 'A' :rncase 'e' :rncase 'E' :rncase 'i' :rncase 'I' :rncase 'o' :rncase 'O' :rncase 'U' :rncase 'u' :rnprintf(" %c is vowel ", ch);rnbreak;rndefault:rnprintf(" %c is not vowel ",ch);rn}rngetch ( );rn}
-```rnOUTPUT :rnEnter a character= ErnE is vowelrn## Program #24 . Write a C program to print day of week name using the switch case.
+# include <stdio.h>
 
-rn```
- #include<stdio.h>rn#include<conio.h>rnvoid main()rn{rnint week;rnclrscr();rnprintf("Enter week number(1-7): ");rnscanf("%d", &week);rnswitch(week)rn{rncase 1: printf("MONDAY");rnbreak;rncase 2: printf("TUESDAY");rnbreak;rncase 3: printf("WEDNESDAY");rnbreak;rncase 4: printf("THURSDAY");rnbreak;rncase 5: printf("FRIDAY");rnbreak;rncase 6: printf("SATURDAY");rnbreak;rncase 7: printf("SUNDAY");rnbreak;rndefault: printf("Invalid input! Please enter week number between 1-7");rn}rnrngetch();rn}
-```rnOUTPUT:rnEnter Week number(1-7): 7rnSUNDAYrn## Program #25. C program to print the number of days in a month using switch case?
+# include <conio.h>
+void main ( )
+{
+int a , b , area ;
+clrscr ( ) ;
+printf(" Enter length of the rectangle =") ;
+scanf ( " %d ", &a);
+printf(" Enter width of the rectangle =") ;
+scanf ( " %d ", &b);
+area = a * b ;
+printf( "Area is = %d", area);
+getch ( );
+}
 
-rn```
- #include<stdio.h>rn#include<conio.h>rnvoid main()rn{rnint month;rnclrscr();rnprintf("Enter month number(1-12): ");rnscanf("%d", &month);rnswitch(month)rn{rncase 1:rncase 3:rncase 5:rncase 7:rncase 8:rncase 10:rncase 12: printf("31 days");rnbreak;rncase 4:rncase 6:rncase 9:rncase 11: printf("30 days");rnbreak;rncase 2: printf("28/29 days");rnbreak;rndefault: printf("Invalid input! Please enter month number between 1-12");rn}rngetch();rn}
-```rnOUTPUT:rnEnter month number(1-12): 2rn28/29 daysrn## Program #26.To accept 10 numbers and make the average of the numbers using one dimensional array.
+```
 
-rn```
- #include <stdio.h>rn#include<conio .h >rnvoid main ( )rn{rnfloat a[15], sum =0 , avg , i ;rnclrscr ( ) ;rnprintf("Enter values of 10 numbers = ");rnfor( i=0 ; i< 10 ; i ++)rn{rnscanf("%f ",& a [ i ] );rnrnsum = sum + a[ i ] ;rn}rnavg = sum / 10 ;rnprintf("Average is = %f ",avg);rngetch ( ) ;rn}
-```rnOUTPUT:rnEnter values of 10 numbers = 8 2rn6 3 9 7 11 21 30 22rnAverage is = 11 . 900000rn## Program #27.To accept 10 elements and sort them in descending order using one
+OUTPUT :
+Enter length of the rectangle = 15
+Enter width of the rectangle =10
+Area is = 150
 
-rn```
- #include<stdio.h>rn#include<conio.h>rnvoid main ( )rn{rnint i, j,temp,a[10];rnclrscr ( );rnprintf(“Enter 10 integer numbers: 
-”);rnfor(i=0;i<10;i++);rnscanf(“%d”,&a[i]);rnfor (i=0;i<10;i++)rn{rnfor(j=i+1;j<10;j++)rn{rnif ( a[i] < a[j] )rn{rntemp=a[j];rna[ j]=a[i];rna [ i]=temp;rn}rn}rn}rnprintf(“
+## Program #5. Identify greater number between two numbers using C program.
 
-The 10 numbers sorted in descending order are: 
-”);rnfor(i=0;i<10;i++)rnprintf(“%d  ”,a[i]);rngetch ( );rn}
-```rnOUTPUT :rnEnter a string: programmingrnLength of string : 11rnOUTPUT:rnEnter 10 integer numbers: 5 2 10 7 6rn1 4 3 8 9rnThe 10 numbers sorted in descending orderrnare:rn10 9 8 7 6 5 4 3 2 1rn## Program #28. Find out the length of a string .
+```c
+ 
 
-rn```
- #include <stdio.h>rn#include<conio.h>rnvoid main()rn{rnchar s[90] , i;rnprintf("Enter a string: ");rnscanf("%s",s);rnfor(i=0; s[i]!='\0'; i++);rnprintf("Length of string: %d",i);rngetch ( );rn}
-```rnOUTPUT :rnEnter a string: programmingrnLength of string : 11rn## Program #29. Find out the addition of two matrices .
+# include <stdio.h>
 
-rn```
-#include <stdio.h>rn#include<conio.h>rnvoid main()rn{rnint m, n, c, d, first[10][10], second[10][10], sum[10][10];rnprintf("Enter the number of rows and columns of matrix
-");rnscanf("%d%d", &m, &n);rnprintf("Enter the elements of first matrix
-");rnfor (c = 0; c < m; c++)rnfor (d = 0; d < n; d++)rnscanf("%d", &first```c
-[d]);rnprintf("Enter the elements of second matrix
-");rnfor (c = 0; c < m; c++)rnfor (d = 0 ; d < n; d++)rnscanf("%d", &second```c
-[d]) ;rnprintf("Sum of entered matrices:-
-");rnfor (c = 0 ; c < m; c++) {rnfor (d = 0 ; d < n; d++) {rnsum```c
-[d] = first```c
-[d] + second```c
-[d];rnprintf("%d  ", sum```c
-[d]);rn}rnprintf("
-");rn}rngetch ( ) ;rn}
-```rnOUTPUT :rnEnter the number of rows and columns of matrixrn3 2rnEnter the elements of the first matrixrn5 8rn4 1rn5 2rnEnter the elements of the second matrixrn2 6rn4 7rn1 2rnSum of entered matricesrn7 14rn8 8rn6 4rn## Program #30. To find the summation of three numbers using the function.
+# include <conio.h>
+void main ( )
+{
+int a , b ;
+clrscr ( ) ;
+printf(" Enter two numbers =") ;
+scanf ( " %d %d " , &a, &b);
+if ( a > b)
+printf ( "greater is = %d " , a);
+else
+printf( "greater is = %d " , b);
+getch ( ) ;
+}
 
-rn```
- #include <stdio.h>rn#include<conio .h >rnint add ( int x , int y, int z);rnvoid main ( )rn{rnint a ,b ,c, r ;rnclrscr ( ) ;rnprintf("Enter three numbers = ");rnscanf("%d %d %d “, &a, &b, &c );rnr = add (a, b, c);rnprintf (“ summation is = %d “, r);rngetch ( );rn}rnint add ( int x, int y , int z)rn{rnint s;rns = x + y + z ;rnreturn s;rn}
-```rnOUTPUT :rnEnter three numbers = 10 20 30rnSummation is = 60rn## Program #31. To find the maximum between two numbers using the function .
+```
 
-rn```
- #include <stdio.h>rn#include<conio .h >rnint max ( int x , int y, );rnvoid main ( )rn{rnint a ,b , r ;rnclrscr ( ) ;rnprintf("Enter two numbers = ");rnscanf("%d %d %d “, &a, &b );rnr = max (a, b);rnprintf (“ maximum is = %d “, r);rngetch ( );rn}rnint max ( int x, int y )rn{rnint s;rnif (x > y)rns=x;rnelserns=y;rnreturn s ;rn}
-```rnOUTPUT :rnEnter two numbers = 10 20rnmaximum is = 20rn## Program #32. Find out the square of a number using a function .
+OUTPUT :
+Enter two numbers= 40 60
+greater is = 60
 
-rn```
- #include <stdio.h>rn#include<conio .h >rnint square( int x );rnvoid main ( )rn{rnint n , r ;rnclrscr ( ) ;rnprintf("Enter the number = ");rnscanf("%d “, &n);rnr = square ( n ) ;rnprintf (“ Square value is = %d “, r);rngetch ( );rn}rnint square ( int x )rn{rnint s ;rns = x * x ;rnreturn s ;rn}rnOUTPUT :rnEnter the number = 10rnSquare value is = 100
-```rnOUTPUT :rnEnter the number = 10rnSquare value is = 100rnrn[Click Here to Download all Program.](https://www.technhit.in/wp-content/uploads/2016/09/ME_C_LAB_2016-1.pdf)
+## Program #6. To check a given number is Even or Odd .
+
+```c
+ 
+
+# include <stdio.h>
+
+# include <conio.h>
+void main ( )
+{
+int n ;
+clrscr ( ) ;
+printf(" Enter the number =") ;
+scanf ( " %d" ,&n);
+if ( n % 2 = = 0)
+printf("even number ");
+else
+printf("odd number ");
+getch ( );
+}
+
+```
+
+OUTPUT :
+Enter the number = 6
+Even number
+
+## Program #7. Take three sides of a triangle as input and check whether the triangle can be drawn or not. If possible, classify the triangle as equilateral, isosceles, or scalene.
+
+```c
+ #include<stdio.h>
+#include<conio.h>
+void main ( )
+{
+int a,b,c;
+clrscr ( );
+printf("Enter the value of three sides=");
+scanf("%d %d %d", &a, &b, &c);
+if( a + b > c || a + c > b || b + c > a)
+{
+printf("triangle is possible \n");
+if(a==b && b==c)
+{
+printf("Equilateral triangle");
+}
+else
+{
+if(a= =b || b= =c || a= =c)
+printf(" Isoceles triangle ");
+else
+printf(" Scalene triangle ");
+}
+}
+else
+printf(" Triangle is not possible ");
+getch ( ) ;
+}
+
+```
+
+OUTPUT :
+Enter the value of three sides = 5 8 5
+the triangle is possible
+Isosceles triangle
+
+## Program #8. To find the roots of a quadratic equation.
+
+```c
+ #include<stdio.h>
+#include<conio.h>
+#include<math.h>
+void main ( )
+{
+float a,b,c,r1,r2,d;
+clrscr ( );
+printf("Enter the value of a,b,c");
+scanf("%f %f %f", &a, &b, &c);
+d=sqrt(b*b-4*a*c);
+if(d==0)
+{
+printf("Both roots are Equal\n");
+r1=r2=-b/(2*a);
+printf("r1=%f r2=%f",r1,r2);
+}
+else
+{
+if(d>0)
+{
+printf(" Roots are real and Unequal \n");
+r1 = (-b+d) / (2*a) ;
+r2 = (-b-d) / (2*a) ;
+printf("r1=%f r2=%f",r1,r2);
+}
+else
+printf("roots are imaginary");
+}
+getch( );
+}
+
+```
+
+OUTPUT :
+Enter the value of a , b, c =
+1 -3 -4
+Roots are real and unequal
+r1=4.000000 r2 = -1.000000
+Enter the value of a , b, c =
+1 0 -4
+Roots are real and unequal
+r1= -2.000000 r2 = 2.000000
+
+## Program #9. Find the factorial of given number.
+
+```c
+ 
+
+# include <stdio.h>
+
+# include <conio .h>
+void main ( )
+{
+int i, n, fact = 1 ;
+clrscr ( ) ;
+printf("Enter a number to calculate it's factorial = ") ;
+scanf("%d", &n);
+for (i = 1; i <= n; i++)
+fact = fact * i ;
+printf("Factorial of %d = %d\n", n, fact);
+getch ( );
+}
+
+```
+
+OUTPUT :
+Enter a number to calculate it's factorial
+= 5
+Factorial of 5 is = 120
+
+## Program #10. To find the sum of n natural numbers.
+
+```c
+ #include <stdio.h>
+#include<conio .h >
+void main ( )
+{
+int n, i, sum=0 ;
+clrscr ( ) ;
+printf("Enter an integer = ");
+scanf("%d",&n);
+for(i =1; i <=n ; i++)
+{
+sum = sum + i ;
+}
+printf("Sum is = %d",sum);
+getch ( ) ;
+}
+
+```
+
+## Program #11. Print the sum of 1 + 3 + 5 + 7 +…………..+ n
+
+```c
+ #include <stdio.h>
+#include<conio .h >
+void main ( )
+{
+int n, i, sum=0 ;
+clrscr ( ) ;
+printf("Enter the range = ");
+scanf("%d",&n);
+for(i =1; i <=n ; i = i + 2)
+{
+sum = sum + i ;
+}
+printf("Sum is = %d",sum);
+getch ( ) ;
+}
+
+```
+
+OUTPUT :
+Enter an integer = 7
+Sum is = 28
+OUTPUT :
+Enter the range =9
+Sum is = 25
+
+## Program #12. Print the pattern .
+
+*
+* *
+* * *
+* * * *
+* * * * *
+
+```c
+ #include <stdio.h>
+#include<conio .h >
+void main ( )
+{
+int i, j, rows;
+clrscr ( ) ;
+printf("Enter the number of rows: ");
+scanf("%d",&rows);
+for(i=1; i<=rows; i++)
+{
+for(j=1; j<=i; j++)
+{
+printf (" * ");
+}
+printf("\n");
+}
+getch ( ) ;
+}
+
+```
+
+## Program #13. Print the pattern
+
+1
+1 2
+1 2 3
+1 2 3 4
+1 2 3 4 5
+
+```c
+ #include <stdio.h>
+#include<conio .h >
+void main ( )
+{
+int i, j, rows;
+clrscr ( ) ;
+printf("Enter the number of rows: ");
+scanf("%d",&rows);
+for(i=1 ; i<=rows ; i++)
+Copyright Protected @2016 (Computer Dept. NHIT)
+{
+for(j=1; j<= i ; j++)
+{
+printf (" %d" , j ) ;
+}
+printf("\n") ;
+}
+getch ( ) ;
+}
+
+```
+
+## Program #14. Print the pattern
+
+A
+A B
+A B C
+A B C D
+A B C D E
+
+```c
+ #include <stdio.h>
+#include<conio .h >
+void main( )
+{
+int i, j;
+for(i=1;i<=5;i++)
+{
+for(j=1 ; j<=i ; j++)
+{
+printf("%c" ,'A' + j-1);
+}
+printf("\n");
+}
+getch ( );
+}
+
+```
+
+## Program #15. Print the pattern
+
+* * * * *
+* * * *
+* * *
+* *
+*
+
+```c
+ #include <stdio.h>
+#include<conio .h >
+void main ( )
+{
+int i, j, rows;
+clrscr ( ) ;
+printf("Enter the number of rows: ");
+scanf("%d",&rows);
+
+for( i= rows ; i > = 1 ; i - -)
+{
+for ( j=1; j<= i ; j++)
+{
+printf (" * " ) ;
+}
+printf("\n") ;
+}
+getch ( ) ;
+}
+
+```
+
+## Program #16. Check whether an input number is a palindrome or not.
+
+```c
+ #include <stdio.h>
+#include < conio. h >
+void main( )
+{
+int n, reverse = 0, temp ,r;
+clrscr ( ) ;
+printf ("Enter a number to check if it is a palindrome or not=");
+scanf ("%d", &n);
+temp = n;
+while( temp ! = 0 )
+{
+r = temp % 10
+reverse = reverse * 10 + r ;
+temp = temp/10;
+}
+if ( n == reverse )
+printf("%d is a palindrome number.\n", n);
+else
+printf("%d is not a palindrome number.\n", n);
+getch ( );
+}
+
+```
+
+OUTPUT :
+Enter a number to check if it is a
+palindrome or not= 151
+151 is a palindrome number
+
+## Program #17. To find Sum of digits of an integer.
+
+```c
+ 
+
+# include < stdio. h>
+
+# include < conio . h>
+void main( )
+{
+int n, sum = 0, r ;
+printf(" Enter an integer=" ) ;
+
+scanf("%d", &n);
+while (n != 0)
+{
+r = n % 10;
+sum = sum + r ;
+n = n / 10 ;
+}
+printf("Sum of digits =%d " , sum);
+getch ( ) ;
+}
+
+```
+
+## Program #18. Find the G.C.D and L.C.M of two numbers.
+
+```c
+ 
+
+# include <stdio.h>
+
+# include <conio. h>
+void main ( )
+{
+int a, b, x, y, t, gcd, lcm ;
+clrscr ( );
+printf("Enter two integers=") ;
+scanf("%d%d", &x, &y) ;
+a = x;
+b = y;
+while (b != 0)
+{
+t = b;
+b = a % b;
+a = t;
+}
+gcd = a;
+lcm = (x*y) / gcd;
+printf("Greatest common divisor of %d and %d = %d\n", x, y, gcd);
+printf("Least common multiple of %d and %d = %d\n", x, y, lcm);
+getch ( ) ;
+}
+
+```
+
+OUTPUT :
+Enter two integers = 15 18
+Greatest common divisor of 15 and 18 = 3
+Least common divisor of 15 and 18 = 90
+
+## Program #19. Print the sum of 2 + 4 + 6 + 8 +………………..+n
+
+```c
+ #include <stdio.h>
+#include<conio .h >
+void main ( )
+{
+int n, i = 2, sum=0 ;
+clrscr ( ) ;
+printf("Enter the range = ");
+scanf("%d",&n);
+do
+{
+sum = sum + i ;
+i = i + 2 ;
+}while ( i <= n) ;
+printf("Sum is = %d", sum) ;
+getch ( ) ;
+}
+
+```
+
+OUTPUT :
+Enter the range = 10
+Sum is = 30
+OUTPUT :
+Enter the range = 5
+Sum is = 55
+
+## Program #20. Print the sum of ( 1*1) + (2*2) + (3*3) + (4*4) + (5*5) + ... + (n*n)
+
+```c
+ #include <stdio.h>
+#include<conio .h >
+void main ( )
+{
+int n , i =1, sum = 0 ;
+clrscr ( ) ;
+printf("Enter the range = ");
+scanf("%d",&n);
+do
+{
+sum = sum + i * i ;
+i + + ;
+}while ( i <= n) ;
+printf("Sum is = %d", sum) ;
+getch ( ) ;
+}
+
+```
+
+## Program #21. To check a given number is prime or not.
+
+```c
+ #include<stdio.h>
+#include<conio .h >
+void main ( )
+{
+int n , c = 2;
+clrscr ( );
+printf("Enter a number to check if it is prime\n");
+scanf("%d",&n);
+for ( c = 2 ; c <= n - 1 ; c++ )
+{
+if ( n%c = = 0 )
+{
+printf("%d is not prime.\n", n);
+break;
+}
+}
+if ( c == n )
+printf("%d is prime.\n", n);
+getch ( ) ;
+}
+
+```
+
+## Program #22. Use of "continue " statement .
+
+```c
+ #include<stdio.h>
+#include<conio .h >
+void main ( )
+{
+int j ;
+clrscr ( ) ;
+for ( j=0; j<=8; j++)
+{
+if (j==4)
+{
+continue ;
+}
+printf("%d ", j);
+}
+getch ( ) ;
+}
+
+```
+
+## Program #23. To test whether the given character is Vowel or not. ( using switch case )
+
+```c
+ #include<stdio.h>
+#include<conio.h>
+void main()
+{
+char ch;
+clrscr ( );
+printf("Enter a character=") ;
+
+scanf("%c", &ch);
+switch ( ch )
+{
+case 'a' :
+case 'A' :
+case 'e' :
+case 'E' :
+case 'i' :
+case 'I' :
+case 'o' :
+case 'O' :
+case 'U' :
+case 'u' :
+printf(" %c is vowel ", ch);
+break;
+default:
+printf(" %c is not vowel ",ch);
+}
+getch ( );
+}
+
+```
+
+OUTPUT :
+Enter a character= E
+E is vowel
+
+## Program #24 . Write a C program to print day of week name using the switch case.
+
+```c
+ #include<stdio.h>
+#include<conio.h>
+void main()
+{
+int week;
+clrscr();
+printf("Enter week number(1-7): ");
+scanf("%d", &week);
+switch(week)
+{
+case 1: printf("MONDAY");
+break;
+case 2: printf("TUESDAY");
+break;
+case 3: printf("WEDNESDAY");
+break;
+case 4: printf("THURSDAY");
+break;
+case 5: printf("FRIDAY");
+break;
+case 6: printf("SATURDAY");
+break;
+case 7: printf("SUNDAY");
+break;
+default: printf("Invalid input! Please enter week number between 1-7");
+}
+
+getch();
+}
+
+```
+
+OUTPUT:
+Enter Week number(1-7): 7
+SUNDAY
+
+## Program #25. C program to print the number of days in a month using switch case?
+
+```c
+ #include<stdio.h>
+#include<conio.h>
+void main()
+{
+int month;
+clrscr();
+printf("Enter month number(1-12): ");
+scanf("%d", &month);
+switch(month)
+{
+case 1:
+case 3:
+case 5:
+case 7:
+case 8:
+case 10:
+case 12: printf("31 days");
+break;
+case 4:
+case 6:
+case 9:
+case 11: printf("30 days");
+break;
+case 2: printf("28/29 days");
+break;
+default: printf("Invalid input! Please enter month number between 1-12");
+}
+getch();
+}
+
+```
+
+OUTPUT:
+Enter month number(1-12): 2
+28/29 days
+
+## Program #26.To accept 10 numbers and make the average of the numbers using one dimensional array.
+
+```c
+ #include <stdio.h>
+#include<conio .h >
+void main ( )
+{
+float a[15], sum =0 , avg , i ;
+clrscr ( ) ;
+printf("Enter values of 10 numbers = ");
+for( i=0 ; i< 10 ; i ++)
+{
+scanf("%f ",& a [ i ] );
+
+sum = sum + a[ i ] ;
+}
+avg = sum / 10 ;
+printf("Average is = %f ",avg);
+getch ( ) ;
+}
+
+```
+
+OUTPUT:
+Enter values of 10 numbers = 8 2
+6 3 9 7 11 21 30 22
+Average is = 11 . 900000
+
+## Program #27.To accept 10 elements and sort them in descending order using one
+
+```c
+ #include<stdio.h>
+#include<conio.h>
+void main ( )
+{
+int i, j,temp,a[10];
+clrscr ( );
+printf("Enter 10 integer numbers: \n");
+for(i=0;i<10;i++);
+scanf("%d",&a[i]);
+for (i=0;i<10;i++)
+{
+for(j=i+1;j<10;j++)
+{
+if ( a[i] < a[j] )
+{
+temp=a[j];
+a[ j]=a[i];
+a [ i]=temp;
+}
+}
+}
+printf("\n\nThe 10 numbers sorted in descending order are: \n");
+for(i=0;i<10;i++)
+printf("%d\t",a[i]);
+getch ( );
+}
+
+```
+
+OUTPUT :
+Enter a string: programming
+Length of string : 11
+OUTPUT:
+Enter 10 integer numbers: 5 2 10 7 6
+1 4 3 8 9
+The 10 numbers sorted in descending order
+are:
+10 9 8 7 6 5 4 3 2 1
+
+## Program #28. Find out the length of a string .
+
+```c
+ #include <stdio.h>
+#include<conio.h>
+void main()
+{
+char s[90] , i;
+printf("Enter a string: ");
+scanf("%s",s);
+for(i=0; s[i]!='\0'; i++);
+printf("Length of string: %d",i);
+getch ( );
+}
+
+```
+
+OUTPUT :
+Enter a string: programming
+Length of string : 11
+
+## Program #29. Find out the addition of two matrices .
+
+```c
+#include <stdio.h>
+#include<conio.h>
+void main()
+{
+int m, n, c, d, first[10][10], second[10][10], sum[10][10];
+printf("Enter the number of rows and columns of matrix\n");
+scanf("%d%d", &m, &n);
+printf("Enter the elements of first matrix\n");
+for (c = 0; c < m; c++)
+for (d = 0; d < n; d++)
+scanf("%d", &first
+
+```c
+[d]);
+printf("Enter the elements of second matrix\n");
+for (c = 0; c < m; c++)
+for (d = 0 ; d < n; d++)
+scanf("%d", &second
+
+```c
+[d]) ;
+printf("Sum of entered matrices:-\n");
+for (c = 0 ; c < m; c++) {
+for (d = 0 ; d < n; d++) {
+sum
+
+```c
+[d] = first
+
+```c
+[d] + second
+
+```c
+[d];
+printf("%d\t", sum
+
+```c
+[d]);
+}
+printf("\n");
+}
+getch ( ) ;
+}
+
+```
+
+OUTPUT :
+Enter the number of rows and columns of matrix
+3 2
+Enter the elements of the first matrix
+5 8
+4 1
+5 2
+Enter the elements of the second matrix
+2 6
+4 7
+1 2
+Sum of entered matrices
+7 14
+8 8
+6 4
+
+## Program #30. To find the summation of three numbers using the function.
+
+```c
+ #include <stdio.h>
+#include<conio .h >
+int add ( int x , int y, int z);
+void main ( )
+{
+int a ,b ,c, r ;
+clrscr ( ) ;
+printf("Enter three numbers = ");
+scanf("%d %d %d ", &a, &b, &c );
+r = add (a, b, c);
+printf (" summation is = %d ", r);
+getch ( );
+}
+int add ( int x, int y , int z)
+{
+int s;
+s = x + y + z ;
+return s;
+}
+
+```
+
+OUTPUT :
+Enter three numbers = 10 20 30
+Summation is = 60
+
+## Program #31. To find the maximum between two numbers using the function .
+
+```c
+ #include <stdio.h>
+#include<conio .h >
+int max ( int x , int y, );
+void main ( )
+{
+int a ,b , r ;
+clrscr ( ) ;
+printf("Enter two numbers = ");
+scanf("%d %d %d ", &a, &b );
+r = max (a, b);
+printf (" maximum is = %d ", r);
+getch ( );
+}
+int max ( int x, int y )
+{
+int s;
+if (x > y)
+s=x;
+else
+s=y;
+return s ;
+}
+
+```
+
+OUTPUT :
+Enter two numbers = 10 20
+maximum is = 20
+
+## Program #32. Find out the square of a number using a function .
+
+```c
+ #include <stdio.h>
+#include<conio .h >
+int square( int x );
+void main ( )
+{
+int n , r ;
+clrscr ( ) ;
+printf("Enter the number = ");
+scanf("%d ", &n);
+r = square ( n ) ;
+printf (" Square value is = %d ", r);
+getch ( );
+}
+int square ( int x )
+{
+int s ;
+s = x * x ;
+return s ;
+}
+OUTPUT :
+Enter the number = 10
+Square value is = 100
+
+```
+
+OUTPUT :
+Enter the number = 10
+Square value is = 100
+
+[Click Here to Download all Program.](https://www.technhit.in/wp-content/uploads/2016/09/ME_C_LAB_2016-1.pdf)

@@ -4,9 +4,9 @@ slug: "selection-statements-switch-flow-control"
 date: "2016-07-02"
 category: "stem-10-plus-2"
 status: "Published"
-summary: "C/C++ supports two types of selection statements: if and switch. In addition, the ? operator is an alternative to if in certain circumstances for flow control.rn**if**rnThe *Syntax* of  if statemen..."
+summary: "C/C++ supports two types of selection statements: if and switch. In addition, the ? operator is an alternative to if in certain circumstances for flow control. **if** The *Syntax* of  if statement is"
 tags: ["c", "Flow Control", "if statement", "switch case", "Nested If", "if else"]
-wordCount: 1012
+wordCount: 1029
 readTime: 6
 ---
 
@@ -28,56 +28,171 @@ readTime: 6
 
 ---
 
-C/C++ supports two types of selection statements: if and switch. In addition, the ? operator is an alternative to if in certain circumstances for flow control.rn**if**rnThe *Syntax* of  if statement is
+C/C++ supports two types of selection statements: if and switch. In addition, the ? operator is an alternative to if in certain circumstances for flow control.
+**if**
+The *Syntax* of  if statement is
 
-rnif *(expression) statement*;rnelse *statement*;rnrn[![if](http://technhit.in/wp-content/uploads/2016/07/if-300x245.gif)](http://technhit.in/wp-content/uploads/2016/07/if.gif)rnwhere a statement may consist of a single statement, a block of statements, or nothing in the case of empty statements). The else clause is optional. If an expression evaluates to true (anything other than 0), the statement or block that forms the target off if is executed; otherwise, the statement or block that is the target of else will be executed if it exists. Remember, only the code associated with if or the code associated with else executes, never both.
+if *(expression) statement*;
+else *statement*;
 
-rnIn case of branch of activity, statement are written in a parenthesis {} like that:rnrnSyntax:rnif*(expreassion)*rn{rn*//statement 1*rn*   //.......*rn*   //statement n*rn}rnelsern{rn*//statement 1*rn*   //.......*rn*   //statement n*rn}rnrn rn```
- if ( TRUE )rn{rnrn    /* Execute these statements if true */rn}rnelsern{rnrn    /* Execute these statements if FALSE */rn}
-```rnIt has the ability to control the flow of your program. The if statement allows you to control if a program enters a section of code or not based on whether a given condition is true or false. One of the important functions of the if statement is that it allows the program to select an action based on the user's input. For example, by using an if statement to check a valid parameter like age is greater than 18+ or not to execute or enter the segment.
+[![if](http://technhit.in/wp-content/uploads/2016/07/if-300x245.gif)](http://technhit.in/wp-content/uploads/2016/07/if.gif)
 
-rnWhen programming, the aim of the program will often require the checking of one value stored in a variable against another value to determine whether one is larger, smaller, or equal to the other.
+where a statement may consist of a single statement, a block of statements, or nothing in the case of empty statements). The else clause is optional. If an expression evaluates to true (anything other than 0), the statement or block that forms the target off if is executed; otherwise, the statement or block that is the target of else will be executed if it exists. Remember, only the code associated with if or the code associated with else executes, never both.
 
-rnThere are a number of operators that allow these checks.
+In case of branch of activity, statement are written in a parenthesis {} like that:
 
-rnHere are the relational operators, as they are known, along with examples:
+Syntax:
+if*(expreassion)*
+{
+*//statement 1*
+*   //.......*
+*   //statement n*
+}
+else
+{
+*//statement 1*
+*   //.......*
+*   //statement n*
+}
 
-rnrn```
->     greater than              10 > 9 is TRUErn<     less than                 15 < 19 is TRUErn>=    greater than or equal     10 >= 10 is TRUErn<=    less than or equal        1 <= 3 is TRUErn==    equal to                  7 == 7 is TRUErn!=    not equal to              15 != 7 is TRUErn
-```rn rn## Else if
+ 
 
-rnAnother use of else is when there are multiple conditional statements that may all evaluate to true, yet you want only one if statement's body to execute. You can use an "else if" statement following an if statement and its body; that way if the first statement is true, the "else if" will be ignored, but if the if statement is false, it will then check the condition for the else if statement. If the if statement was true the else statement will not be checked. It is possible to use numerous else if statements to ensure that only one block of code is executed.
+```c
+ if ( TRUE )
+{
 
-rnLet's look at a simple program for you to try out on your own.
+    /* Execute these statements if true */
+}
+else
+{
 
-rnrn```
- #include <stdio.h> rnrnint main() rn{rn int sub; rn rn printf( "Please enter any subject marks" ); /* Asks for marks obtain in any one subject */rn scanf( "%d", &sub ); /* The input is put in sub */rn if ( sub < 50 ) { /* check given no is less then 50 */rn printf ("You obtain D
-" ); /* Just to show you it works... */rn }rn else if ( sub <60 ) { /* I use else just to show an example */ rn printf( "You obtain C
-" ); rn }rn else if ( sub <70 ) { /* I use else just to show an example */ rn printf( "You obtain B
-" ); rn }rn else if ( sub <80 ) { /* I use else just to show an example */ rn printf( "You obtain A
-" ); rn }rn else {rn printf( "Woow! you get A+
-" ); /* Executed if no other statement is */rn }rn return 0;rn}
-```rn rn## Nested ifs
+    /* Execute these statements if FALSE */
+}
 
-rn A nested if is an if that is the target of another if or else. Nested ifs are very common in programming. In a nested if, an else statement always refers to the nearest if statement that is within the same block as the else and that is not already associated with an else. For example
+```
 
-rnrn```
-#include <stdio.h>rn#include <stdlib.h>rnint main(void)rn{rn   int magic; /* magic number */rn   int guess; /* user's guess */rn   magic = rand(); /* get a random number */rn   printf("Guess the magic number: ");rn   scanf("%d", &guess);rn   if (guess == magic) {rn      printf("** Right **");rn      printf(" %d is the magic number
-", magic);rn   }rn   else {rn      printf("Wrong, ");rn      if(guess > magic) printf("too high
-");rn      else printf("too low
-");rn   }rnreturn 0;rn}
-```rn rn## switch
+It has the ability to control the flow of your program. The if statement allows you to control if a program enters a section of code or not based on whether a given condition is true or false. One of the important functions of the if statement is that it allows the program to select an action based on the user's input. For example, by using an if statement to check a valid parameter like age is greater than 18+ or not to execute or enter the segment.
 
-rnC/C++ has a built-in multiple-branch selection statement, called switch, which successively tests the value of an expression against a list of integer or character constants. When a match is found, the statements associated with that constant are executed. The general form of the switch statement is
+When programming, the aim of the program will often require the checking of one value stored in a variable against another value to determine whether one is larger, smaller, or equal to the other.
 
-rnrn```
-switch (expression) rn{case constant1: statement sequence break;rn case constant2: statement sequence break;rn case constant3: statement sequence break;rn ..rn default statement sequencern}
-```rn The expression must evaluate to a character or integer value. Floating-point expressions, for example, are not allowed. The value of an expression is tested, in order, against the values of the constants specified in the case statements. When a match is found, the statement sequence associated with that case is executed until the break statement or the end of the switch statement is reached. The default statement is executed if no matches are found. The default is optional and, if it is not present, no action takes place if all matches fail.
+There are a number of operators that allow these checks.
 
-rnrn```
-void menu(void)rn{rn   char ch;rn   printf("1. Check Spelling
-");rn   printf("2. Correct Spelling Errors
-");rn   printf("3. Display Spelling Errors
-");rn   printf("Strike Any Other Key to Skip
-");rn   printf(" Enter your choice: ");rn   ch = getchar(); /* read the selection fromrn                    the keyboard */rn   switch(ch) {rn      case '1':rn      printf("You have selected Check spelling option);rn      break;rn      case '2':rn      printf("You have selected Correct Spelling Errors option);rn      break;rn      case '3':rn      printf("You have selected Display Spelling Errors option);rn      break;rn      default :rn      printf("No option selected");rn  }rn}
-```rn
+Here are the relational operators, as they are known, along with examples:
+
+```c
+>     greater than              10 > 9 is TRUE
+<     less than                 15 < 19 is TRUE
+>=    greater than or equal     10 >= 10 is TRUE
+<=    less than or equal        1 <= 3 is TRUE
+==    equal to                  7 == 7 is TRUE
+!=    not equal to              15 != 7 is TRUE
+
+```
+
+## Else if
+
+Another use of else is when there are multiple conditional statements that may all evaluate to true, yet you want only one if statement's body to execute. You can use an "else if" statement following an if statement and its body; that way if the first statement is true, the "else if" will be ignored, but if the if statement is false, it will then check the condition for the else if statement. If the if statement was true the else statement will not be checked. It is possible to use numerous else if statements to ensure that only one block of code is executed.
+
+Let's look at a simple program for you to try out on your own.
+
+```c
+ #include <stdio.h> 
+
+int main() 
+{
+ int sub; 
+ 
+ printf( "Please enter any subject marks" ); /* Asks for marks obtain in any one subject */
+ scanf( "%d", &sub ); /* The input is put in sub */
+ if ( sub < 50 ) { /* check given no is less then 50 */
+ printf ("You obtain D\n" ); /* Just to show you it works... */
+ }
+ else if ( sub <60 ) { /* I use else just to show an example */ 
+ printf( "You obtain C\n" ); 
+ }
+ else if ( sub <70 ) { /* I use else just to show an example */ 
+ printf( "You obtain B\n" ); 
+ }
+ else if ( sub <80 ) { /* I use else just to show an example */ 
+ printf( "You obtain A\n" ); 
+ }
+ else {
+ printf( "Woow! you get A+\n" ); /* Executed if no other statement is */
+ }
+ return 0;
+}
+
+```
+
+## Nested ifs
+
+ A nested if is an if that is the target of another if or else. Nested ifs are very common in programming. In a nested if, an else statement always refers to the nearest if statement that is within the same block as the else and that is not already associated with an else. For example
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+int main(void)
+{
+   int magic; /* magic number */
+   int guess; /* user's guess */
+   magic = rand(); /* get a random number */
+   printf("Guess the magic number: ");
+   scanf("%d", &guess);
+   if (guess == magic) {
+      printf("** Right **");
+      printf(" %d is the magic number\n", magic);
+   }
+   else {
+      printf("Wrong, ");
+      if(guess > magic) printf("too high\n");
+      else printf("too low\n");
+   }
+return 0;
+}
+
+```
+
+## switch
+
+C/C++ has a built-in multiple-branch selection statement, called switch, which successively tests the value of an expression against a list of integer or character constants. When a match is found, the statements associated with that constant are executed. The general form of the switch statement is
+
+```c
+switch (expression) 
+{case constant1: statement sequence break;
+ case constant2: statement sequence break;
+ case constant3: statement sequence break;
+ ..
+ default statement sequence
+}
+
+```
+
+ The expression must evaluate to a character or integer value. Floating-point expressions, for example, are not allowed. The value of an expression is tested, in order, against the values of the constants specified in the case statements. When a match is found, the statement sequence associated with that case is executed until the break statement or the end of the switch statement is reached. The default statement is executed if no matches are found. The default is optional and, if it is not present, no action takes place if all matches fail.
+
+```c
+void menu(void)
+{
+   char ch;
+   printf("1. Check Spelling\n");
+   printf("2. Correct Spelling Errors\n");
+   printf("3. Display Spelling Errors\n");
+   printf("Strike Any Other Key to Skip\n");
+   printf(" Enter your choice: ");
+   ch = getchar(); /* read the selection from
+                    the keyboard */
+   switch(ch) {
+      case '1':
+      printf("You have selected Check spelling option);
+      break;
+      case '2':
+      printf("You have selected Correct Spelling Errors option);
+      break;
+      case '3':
+      printf("You have selected Display Spelling Errors option);
+      break;
+      default :
+      printf("No option selected");
+  }
+}
+
+```

@@ -4,9 +4,10 @@ slug: "configure-ssh-key-authentication"
 date: "2017-02-19"
 category: "linux-server-admin"
 status: "Published"
-summary: "**Introduction: SSH** Key Authentication is a way to log in any Linux server without any password. This authentication process uses public and private key instead of password. When a client attempt..."
+summary: "**Introduction: SSH** Key Authentication is a way to log in any Linux server without any password. This authentication process uses public and private key instead of password. When a client attempt..."
 tags: ["Ubuntu", "Linux", "SSH"]
-wordCount: 457
+youtubeId: "429e4NwhMyA"
+wordCount: 483
 readTime: 3
 ---
 
@@ -24,37 +25,80 @@ readTime: 3
 
 ---
 
-**Introduction: SSH** Key Authentication is a way to log in any Linux server without any password. This authentication process uses public and private key instead of password. When a client attempts to authenticate using SSH keys, the server will test the client on whether they have the private key. If the client can prove that it owns the private key, a shell session is spawned or the requested command is executed.
+**Introduction: SSH** Key Authentication is a way to log in any Linux server without any password. This authentication process uses public and private key instead of password. When a client attempts to authenticate using SSH keys, the server will test the client on whether they have the private key. If the client can prove that it owns the private key, a shell session is spawned or the requested command is executed.
 
-rn[![SSH Key Authentication](https://www.technhit.in/wp-content/uploads/2017/02/work-diagram-ssh-key-autherntication.png)](https://www.technhit.in/wp-content/uploads/2017/02/work-diagram-ssh-key-autherntication.png)
+[![SSH Key Authentication](https://www.technhit.in/wp-content/uploads/2017/02/work-diagram-ssh-key-autherntication.png)](https://www.technhit.in/wp-content/uploads/2017/02/work-diagram-ssh-key-autherntication.png)
 
-rnrn## **Steps to Create SSH Key Authentication:**
+## **Steps to Create SSH Key Authentication:**
 
-rn### Step 1 --
+### Step 1 --
 
-rnFirst of all, Create a private key for the client and public key for the server from a client machine. The key pair is created by the user itself. Therefore, log in to the client side as the user who creates the key pair. Then follow the commands:
+First of all, Create a private key for the client and public key for the server from a client machine. The key pair is created by the user itself. Therefore, log in to the client side as the user who creates the key pair. Then follow the commands:
 
-rnrn```
-ssh-keygen -t rsarnGenerating public/private rsa key pair.rnEnter file in which to save the key (/home/technhit/.ssh/id_rsa):rnEnter passphrase (empty for no passphrase):rnEnter same passphrase again:rnYour identification has been saved in /home/technhit/.ssh/id_rsa.rnYour public key has been saved in /home/technhit/.ssh/id_rsa.pub.rnThe key fingerprint is:rnSHA256:2BE0mYwJIBg4QLJf9eeHK7TtFfyroNEC86YCnkPIdM4 technhit@ubunturnThe key's randomart image is:rn+---[RSA 2048]----+rn|Xo.....=+o       |rn|=o   .o.+o       |rn|..  .   o .      |rn| o o   o + o     |rn|o.=   + S o +    |rn|..oE   = + o o   |rn| o o    B = . .  |rn|  + .  o * o   . |rn|   . .. . . ...  |rn+----[SHA256]-----+rnrn
-```rnAs you see above we do not set the path, let it be the default (*/root/.ssh/id_rsa* ). and we do not set any passphrase. That means using that key files anyone can log in (eg. root on the target machine) and have the same level of access of the user and no password will be asked when the client tries to connect to the servers. Protecting the keys with password means that every time the user tries to connect to a server using those keys, the password for decrypting it will be asked.
+```bash
+ssh-keygen -t rsa
+Generating public/private rsa key pair.
+Enter file in which to save the key (/home/technhit/.ssh/id_rsa):
+Enter passphrase (empty for no passphrase):
+Enter same passphrase again:
+Your identification has been saved in /home/technhit/.ssh/id_rsa.
+Your public key has been saved in /home/technhit/.ssh/id_rsa.pub.
+The key fingerprint is:
+SHA256:2BE0mYwJIBg4QLJf9eeHK7TtFfyroNEC86YCnkPIdM4 technhit@ubuntu
+The key's randomart image is:
++---[RSA 2048]----+
+|Xo.....=+o       |
+|=o   .o.+o       |
+|..  .   o .      |
+| o o   o + o     |
+|o.=   + S o +    |
+|..oE   = + o o   |
+| o o    B = . .  |
+|  + .  o * o   . |
+|   . .. . . ...  |
++----[SHA256]-----+
 
-rnrn### Step 2--** **
+```
 
-rnAfter creating keys on the client, you have to install public key (*id_rsa.pub*) to the server side with name *authorized_keys*. If you don't have ~/*.ssh *directory on the server side then you have to create the same. Now log in to the server computer.
+As you see above we do not set the path, let it be the default (*/root/.ssh/id_rsa* ). and we do not set any passphrase. That means using that key files anyone can log in (eg. root on the target machine) and have the same level of access of the user and no password will be asked when the client tries to connect to the servers. Protecting the keys with password means that every time the user tries to connect to a server using those keys, the password for decrypting it will be asked.
 
-rnrn```
-mkdir ~/.sshrn
-rnchmod 700 ~/.ssh
-```rn### Step 3 -**-**
+### Step 2--** **
 
-rnNow log in to your client computer and simply adds the contents of client’s `~/.ssh/id_rsa.pub` to the server’s `~/.ssh/authorized_keys`
+After creating keys on the client, you have to install public key (*id_rsa.pub*) to the server side with name *authorized_keys*. If you don't have ~/*.ssh *directory on the server side then you have to create the same. Now log in to the server computer.
 
-rnrn```
-scp /home/technhit/.ssh/id_rsa.pub technhit@123.63.218.18:/home/technhit/ .ssh/authorized_keysrntechnhit@123.63.218.18's password:rnid_rsa.pub          100%                     397 0.4KB/s 00:00
-```rn### Step 4--
+```bash
+mkdir ~/.ssh
 
-rnNow log in to your server from client system with key authentication just simply type:rn```
-ssh technhit@123.63.218.18rnWelcome to Ubuntu 16.04 LTS (GNU/Linux 4.4.0-62-generic x86_64)rnrn * Documentation: https://help.ubuntu.com/rnrn321 packages can be updated.rn4 updates are security updates.rnrnLast login: Sat Feb 18 17:25:25 2017 from 47.11.7.236
-```rnWe logged in successfully.rn## Watch On Youtube:
+chmod 700 ~/.ssh
 
-rn[embedyt] http://www.youtube.com/watch?v=429e4NwhMyA[/embedyt]rnrn
+```
+
+### Step 3 -**-**
+
+Now log in to your client computer and simply adds the contents of client's `~/.ssh/id_rsa.pub` to the server's `~/.ssh/authorized_keys`
+
+```bash
+scp /home/technhit/.ssh/id_rsa.pub technhit@123.63.218.18:/home/technhit/ .ssh/authorized_keys
+technhit@123.63.218.18's password:
+id_rsa.pub          100%                     397 0.4KB/s 00:00
+
+```
+
+### Step 4--
+
+Now log in to your server from client system with key authentication just simply type:
+
+```bash
+ssh technhit@123.63.218.18
+Welcome to Ubuntu 16.04 LTS (GNU/Linux 4.4.0-62-generic x86_64)
+
+ * Documentation: https://help.ubuntu.com/
+
+321 packages can be updated.
+4 updates are security updates.
+
+Last login: Sat Feb 18 17:25:25 2017 from 47.11.7.236
+
+```
+
+We logged in successfully.
