@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   description: "Enterprise Linux administration, ZFS storage arrays, sysctl kernel optimization, nftables firewalls, and systemd services.",
 };
 
+export const revalidate = 60;
+
 export default function LinuxAdminPage() {
   const posts = getPostsByCategory("linux-server-admin");
 

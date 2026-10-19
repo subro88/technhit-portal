@@ -30,6 +30,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+export const revalidate = 60;
+
 export default async function LinuxArticlePage({ params }: Props) {
   const { slug } = await params;
   const post = getPostBySlug("linux-server-admin", slug);

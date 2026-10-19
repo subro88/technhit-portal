@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   description: "Self-hosted private LLM compute clusters, Ollama, vLLM, CUDA containerization, Docker GPU pass-through, and multi-node inference.",
 };
 
+export const revalidate = 60;
+
 export default function LocalAiPage() {
   const posts = getPostsByCategory("local-ai-inference");
 

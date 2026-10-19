@@ -31,6 +31,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+export const revalidate = 60;
+
 export default async function StemArticlePage({ params }: Props) {
   const { slug } = await params;
   const post = getPostBySlug("stem-10-plus-2", slug);

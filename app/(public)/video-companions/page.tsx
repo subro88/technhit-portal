@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   description: "Official companion notes, terminal commands, and configuration diffs for @TechBlogTutorial YouTube videos.",
 };
 
+export const revalidate = 60;
+
 export default function VideoCompanionsPage() {
   const posts = getPostsByCategory("video-companions");
 

@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   description: "Enterprise virtualization clusters, Proxmox VE 8 high-availability, Ceph storage pools, Corosync quorum, and Docker Swarm mesh.",
 };
 
+export const revalidate = 60;
+
 export default function ClusteringPage() {
   const posts = getPostsByCategory("clustering-virtualization");
 

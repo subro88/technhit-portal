@@ -39,10 +39,14 @@ if [[ -f "$INSTALL_DIR/.env" ]]; then
     fi
 fi
 
+PREV_REV=$(git rev-parse HEAD 2>/dev/null || echo "")
+
 git stash || true
 git fetch origin main
 git reset --hard origin/main
 git stash pop 2>/dev/null || true
+
+CURR_REV=$(git rev-parse HEAD 2>/dev/null || echo "")
 
 # 3. Restore verified production .env
 if [[ -f "$INSTALL_DIR/.env.prod.bak" ]]; then
@@ -56,12 +60,49 @@ echo "[3/6] Verifying storage permissions for media and markdown content..."
 mkdir -p "$INSTALL_DIR/content" "$INSTALL_DIR/public/uploads"
 chmod -R 775 "$INSTALL_DIR/content" "$INSTALL_DIR/public/uploads" 2>/dev/null || true
 
-# 5. Build and launch updated Docker container
-echo "[4/6] Building production standalone container (clean build)..."
-docker compose build --no-cache technhit-portal
+# 5. Smart Deployment Engine: Differentiate Content vs Code Changes
+echo "[4/6] Analyzing deployment changes..."
 
-echo "[5/6] Swapping container in place..."
-docker compose up -d --force-recreate --remove-orphans technhit-portal
+MODE="auto"
+for arg in "$@"; do
+    case "$arg" in
+        --clean|--rebuild|--no-cache)
+            MODE="clean"
+            ;;
+        --content|--fast|--restart)
+            MODE="restart"
+            ;;
+    esac
+done
+
+if [[ "$MODE" == "auto" ]]; then
+    if [[ -n "$PREV_REV" && -n "$CURR_REV" && "$PREV_REV" != "$CURR_REV" ]]; then
+        CODE_CHANGES=$(git diff --name-only "$PREV_REV" "$CURR_REV" | grep -v -E '^content/|^public/uploads/|\.md$' || true)
+        if [[ -z "$CODE_CHANGES" ]]; then
+            MODE="restart"
+            echo "  ⚡ Only Markdown / Content changes detected ($PREV_REV..$CURR_REV)."
+        else
+            MODE="cached-build"
+            echo "  🔨 Code or configuration changes detected:"
+            echo "$CODE_CHANGES" | head -n 5 | sed 's/^/     - /'
+        fi
+    else
+        MODE="cached-build"
+    fi
+fi
+
+if [[ "$MODE" == "restart" ]]; then
+    echo "[5/6] ⚡ Performing instant container hot-restart (0s build time)..."
+    docker compose restart technhit-portal
+elif [[ "$MODE" == "clean" ]]; then
+    echo "[5/6] 🧹 Building production standalone container from scratch (--no-cache)..."
+    docker compose build --no-cache technhit-portal
+    docker compose up -d --force-recreate --remove-orphans technhit-portal
+else
+    echo "[5/6] 🚀 Building production container with layer cache (~30s build time)..."
+    docker compose build technhit-portal
+    docker compose up -d --remove-orphans technhit-portal
+fi
 
 # 6. Automated Health Check Verification
 echo "[6/6] Verifying cluster health status..."

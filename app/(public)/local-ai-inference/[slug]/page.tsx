@@ -30,6 +30,8 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+export const revalidate = 60;
+
 export default async function LocalAiArticlePage({ params }: Props) {
   const { slug } = await params;
   const post = getPostBySlug("local-ai-inference", slug);

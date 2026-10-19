@@ -2,6 +2,8 @@ import { MetadataRoute } from "next";
 import { getAllPosts, CATEGORIES } from "@/lib/posts";
 import { env } from "@/lib/env";
 
+export const revalidate = 60;
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const baseUrl = env.SITE_URL;
   const posts = getAllPosts();

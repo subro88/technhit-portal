@@ -12,6 +12,8 @@ import VectorFieldVisualizer from "@/components/visual-lab/VectorFieldVisualizer
 import { getAllPosts } from "@/lib/posts";
 import { ArrowRight, Terminal, BookOpen, Compass, ShieldCheck } from "lucide-react";
 
+export const revalidate = 60;
+
 export default function HomePage() {
   const posts = getAllPosts();
   const latestPosts = posts.slice(0, 4);

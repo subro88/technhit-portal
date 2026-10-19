@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   description: "Senior Secondary (Grade 11 & 12) Calculus, Vectors, Coordinate Geometry, Differential Equations, and Classical Physics simulation lab.",
 };
 
+export const revalidate = 60;
+
 export default function Stem10Plus2Page() {
   const posts = getPostsByCategory("stem-10-plus-2");
 

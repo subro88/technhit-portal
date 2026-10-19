@@ -9,6 +9,8 @@ export const metadata: Metadata = {
   description: "Modern full-stack engineering, Laravel ecosystem, React 19, Node.js runtimes, CodeIgniter architecture, and distributed database designs.",
 };
 
+export const revalidate = 60;
+
 export default function SoftwareEngineeringPage() {
   const posts = getPostsByCategory("software-engineering");
 
