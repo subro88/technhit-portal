@@ -26,11 +26,13 @@ elif [[ -f "$INSTALL_DIR/.env.local" ]]; then
     cp -f "$INSTALL_DIR/.env.local" "$INSTALL_DIR/.env.prod.bak" 2>/dev/null || true
 fi
 
-# 2. Git Fetch & Hard Reset
+# 2. Git Safe Directory & Sync
 echo "[1/6] Synchronizing repository from origin/main..."
+git config --global --add safe.directory "$INSTALL_DIR" 2>/dev/null || true
+git config --system --add safe.directory "$INSTALL_DIR" 2>/dev/null || true
 git stash || true
-git fetch origin main || true
-git reset --hard origin/main || true
+git fetch origin main
+git reset --hard origin/main
 git stash pop 2>/dev/null || true
 
 # 3. Restore verified production .env
