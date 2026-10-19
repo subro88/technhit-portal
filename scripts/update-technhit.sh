@@ -30,6 +30,15 @@ fi
 echo "[1/6] Synchronizing repository from origin/main..."
 git config --global --add safe.directory "$INSTALL_DIR" 2>/dev/null || true
 git config --system --add safe.directory "$INSTALL_DIR" 2>/dev/null || true
+
+# Auto-configure authenticated git origin if GITHUB_PERSONAL_ACCESS_TOKEN is present in .env
+if [[ -f "$INSTALL_DIR/.env" ]]; then
+    ENV_TOKEN=$(grep -E '^GITHUB_PERSONAL_ACCESS_TOKEN=' "$INSTALL_DIR/.env" | cut -d '=' -f2- | tr -d '"' | tr -d "'" | tr -d ' ' || true)
+    if [[ -n "$ENV_TOKEN" && "$ENV_TOKEN" != "ghp_placeholder_pat_token" && "$ENV_TOKEN" == ghp_* ]]; then
+        git remote set-url origin "https://${ENV_TOKEN}@github.com/subro88/technhit-portal.git" 2>/dev/null || true
+    fi
+fi
+
 git stash || true
 git fetch origin main
 git reset --hard origin/main
@@ -48,11 +57,11 @@ mkdir -p "$INSTALL_DIR/content" "$INSTALL_DIR/public/uploads"
 chmod -R 775 "$INSTALL_DIR/content" "$INSTALL_DIR/public/uploads" 2>/dev/null || true
 
 # 5. Build and launch updated Docker container
-echo "[4/6] Building production standalone container..."
-docker compose build --pull technhit-portal
+echo "[4/6] Building production standalone container (clean build)..."
+docker compose build --no-cache technhit-portal
 
 echo "[5/6] Swapping container in place..."
-docker compose up -d --remove-orphans technhit-portal
+docker compose up -d --force-recreate --remove-orphans technhit-portal
 
 # 6. Automated Health Check Verification
 echo "[6/6] Verifying cluster health status..."
