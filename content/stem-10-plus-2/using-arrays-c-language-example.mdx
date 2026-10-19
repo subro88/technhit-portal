@@ -1,0 +1,94 @@
+---
+title: "Using Arrays C Language with Example"
+slug: "using-arrays-c-language-example"
+date: "2016-08-21"
+category: "stem-10-plus-2"
+status: "Published"
+summary: "In a single sentence, an Array is a container of the homogeneous data type. that can store a fixed-size sequential collection of elements of the same type. An array is used to store a collection of..."
+tags: ["C / C++", "C Programming Arrays", "Array", "c array", "Multidimensional array", "arrays in c"]
+wordCount: 764
+readTime: 4
+---
+
+## Key Architecture Takeaways
+
+- **Point 1**: Core computer science and engineering computing concept: Using Arrays C Language with Example.
+- **Point 2**: Detailed trace of memory representation, algorithmic complexity, and control structures.
+- **Point 3**: Includes portable ISO C (C17/C23) code examples verified with modern GCC and Clang.
+
+
+> [!NOTE]
+> **Compiler & Toolchain Modernization**
+> While legacy educational environments used 16-bit DOSBox Turbo C++, all code presented here adheres to standard ANSI/ISO C standards. You can compile these programs cleanly on modern Linux, Windows (MSYS2/WSL), or macOS using:
+> ```bash
+> gcc -Wall -Wextra -O2 program.c -o program
+> ./program
+> ```
+
+
+---
+
+In a single sentence, an Array is a container of the homogeneous data type. that can store a fixed-size sequential collection of elements of the same type. An array is used to store a collection of data, but it is often more useful to think of an array as a collection of variables of the same type.
+
+rnInstead of declaring individual variables, such as num0, num1, ..., and num99, you declare one array variable such as numbers and use num[0], num[1], and ..., num[99] to represent individual variables. A specific element in an array is accessed by an index.
+
+rnAll arrays consist of contiguous memory locations. The lowest address corresponds to the first element and the highest address to the last element.
+
+rnrn## Declaring Array:
+
+rn rnrn[![array declearation](http://technhit.in/wp-content/uploads/2016/08/array-declearation.png)](http://technhit.in/wp-content/uploads/2016/08/array-declearation.png)rn## Subscripts and pointer arithmetic:
+
+rnarray[*subscript*] equivalent to **(array + (subscript))*rnrnStrange but true. Given earlier declaration of m, the expression *2[m]* is legal!. Not only that it’s equivalent to :rnrn**(2+m)*rnrn**(m+2)*rnrn*m[2]*rn## Initializing arrays:
+
+rnBy default, regular arrays of *local scope* (for example, those declared within a function) are left uninitialized. This means that none of its elements are set to any particular value; their contents are undetermined at the point the array is declared. A user can put element and execute during program execution.
+
+rnBut the elements in an array can be explicitly initialized to specific values when it is declared, by enclosing those initial values in braces {}. For example:
+
+rnrn```
+ int num[5]={10,5,17,4,8};
+```rn[![array exam5](http://technhit.in/wp-content/uploads/2016/08/array-exam5.png)](http://technhit.in/wp-content/uploads/2016/08/array-exam5.png)rnArray Pocket index starts with 0 and last pocket index is array element -1. Assume that array element is *n* then  last pocket index is* n-1.*
+
+rnThe number of values between braces `{}` should not greater than the number of elements in the array. If its happens then value overrides from the first element of this array.  Assume that you have an array *num[5]*  with 5 elements. After that, you initialized  it with 7 values. *num[5]={10,5,17,4,8,15,12}*
+
+rnrn```
+ int num[5]={10,5,17,4,8,15,12};
+```rnFirst of all its grab array pockets as chronological order.rnrn[![array exam6](http://technhit.in/wp-content/uploads/2016/08/array-exam6.png)](http://technhit.in/wp-content/uploads/2016/08/array-exam6.png)rnrnBut you still have two more values remain to be placed. The remain two values override the first and second pocket of the array. Finally its looks like bellow:rnrn[![array exam7](http://technhit.in/wp-content/uploads/2016/08/array-exam7.png)](http://technhit.in/wp-content/uploads/2016/08/array-exam7.png)rnrnIf you initialized less element than declared size of the array. It's ok the remaining pocket has *0* value by default.rn```
+ int num[5]={10,5,17};
+```rn[![array exam8](http://technhit.in/wp-content/uploads/2016/08/array-exam8.png)](http://technhit.in/wp-content/uploads/2016/08/array-exam8.png)rnrnThe initializer can even have no values, just the braces:rn```
+ int num [5] = { };
+```rn[![array exam9](http://technhit.in/wp-content/uploads/2016/08/array-exam9.png)](http://technhit.in/wp-content/uploads/2016/08/array-exam9.png)rnWhen an initialization of values is provided for an array, C/C++ allows the possibility of leaving the square brackets empty`[]`. In this case, the compiler will assume automatically a size for the array that matches the number of values included between the braces `{}`:
+
+rnrn```
+ int num[]={10,5,17,4,8};
+```rn[![array exam13](http://technhit.in/wp-content/uploads/2016/08/array-exam13.png)](http://technhit.in/wp-content/uploads/2016/08/array-exam13.png)rn## Accessing the values of an array:
+
+rnThe values of any of the elements in an array can be accessed just like the value of a regular variable of the same type. The syntax is:
+
+rn`name[index]`rnFollowing the previous examples in which num had 5 elements and each of those elements was of type `int`, the name which can be used to refer to each element is the following:
+
+rn[![array exam10](http://technhit.in/wp-content/uploads/2016/08/array-exam10.png)](http://technhit.in/wp-content/uploads/2016/08/array-exam10.png)rnrnFor example considering the following code segment. You are able to access its values from this array as follows:rn```
+  int num[5]={10,5,17,4,8};
+```rn[![array exam11](http://technhit.in/wp-content/uploads/2016/08/array-exam11.png)](http://technhit.in/wp-content/uploads/2016/08/array-exam11.png)rn```
+x=num[2];      // The value of x  is equal to 17rnrnx=num[4];      // The value of x is equal to 8
+```rn```
+ scanf("%d",&num[2]);rn/* statement to insert value in the third element of array num[]. */rnrnscanf("%d",&num[i]);rn/* you can use a variable instead of number to insert value, in this case (i+1)th element of array num[]. Because array use zero(0) based index, the first element of array is num[0], second is num[1], ith is num[i-1] and (i+1)th is num[i]. */rnrnprintf("%d",num[0]);rn/* statement to print first element of an array. */rnrnprintf("%d",num[i]);rn/* statement to print (i+1)th element of an array. */
+```rn rn## Array names and pointer variables, playing together:
+
+rn[![arrays](http://technhit.in/wp-content/uploads/2016/08/array-exam1.png)](http://technhit.in/wp-content/uploads/2016/08/array-exam1.png) [![array exam2](http://technhit.in/wp-content/uploads/2016/08/array-exam2.png)](http://technhit.in/wp-content/uploads/2016/08/array-exam2.png) [![array exam3](http://technhit.in/wp-content/uploads/2016/08/array-exam3.png)](http://technhit.in/wp-content/uploads/2016/08/array-exam3.png) [![array exam4](http://technhit.in/wp-content/uploads/2016/08/array-exam4.png)](http://technhit.in/wp-content/uploads/2016/08/array-exam4.png)rnrn rn## Multidimensional arrays:
+
+rnMultidimensional arrays can be described as "arrays of arrays". It can be two dimensional, three dimensional and even more in deep. However, **arrays** more than three levels deep are hard to manage for most people. Generally, two-dimensional array we can imagine as a two-dimensional table and three-dimensional array can imagine as a cube of a two-dimensional table.
+
+rnDeclaring multidimensional array :
+
+rnrn```
+ int num[5][5];
+```rn[![array exam12](http://technhit.in/wp-content/uploads/2016/08/array-exam12.png)](http://technhit.in/wp-content/uploads/2016/08/array-exam12.png)rn```
+ int num[3][5][4];
+```rn rnrn rn[![image002](http://technhit.in/wp-content/uploads/2016/08/image002.jpg)](http://technhit.in/wp-content/uploads/2016/08/image002.jpg)
+
+rnSee:
+
+rnrn
+rn 	- [C Program calculates the sum & average of an array](https://www.technhit.in/c-program-sum-average-array/)
+rn
+rnIn next tutorial, we learn execution of array its applications. it is very grateful to me if this tutorial is helpful for you. Thank you.

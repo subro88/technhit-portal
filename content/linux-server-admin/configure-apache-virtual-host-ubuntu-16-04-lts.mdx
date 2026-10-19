@@ -1,0 +1,91 @@
+---
+title: "How to Configure Apache Virtual Host on Ubuntu 16.04 LTS"
+slug: "configure-apache-virtual-host-ubuntu-16-04-lts"
+date: "2016-10-13"
+category: "linux-server-admin"
+status: "Published"
+summary: "The **Apache** is the world most popular Http server which serves web content to the Internet since 1995. And become leading web server in the world. An open developer community developed Apache an..."
+tags: ["How to", "Ubuntu", "Linux", "Apache"]
+wordCount: 973
+readTime: 5
+---
+
+## Key Architecture Takeaways
+
+- **Point 1**: Production blueprint for How to Configure Apache Virtual Host on Ubuntu 16.04 LTS on Linux infrastructure.
+- **Point 2**: Covers root privilege management, daemon supervision via systemd, and secure file operations.
+- **Point 3**: Applies to LTS releases (Ubuntu 24.04/22.04 LTS, Debian 12 Bookworm).
+
+
+> [!NOTE]
+> **Enterprise Compatibility Update (2026 / LTS)**
+> While these fundamentals apply directly to existing deployments, modern installations on Ubuntu 22.04 and 24.04 LTS use `systemd-resolved`, `nftables` for packet filtering, and modern OpenSSH 9+ with Ed25519 cryptography.
+
+
+---
+
+The **Apache** is the world most popular Http server which serves web content to the Internet since 1995. And become leading web server in the world. An open developer community developed Apache and maintain under apache software foundation. The secret of the popularity of Apache, it is customizable and after all, it's an open source application. You can configure Apache's individual function independently. A **virtual host** is one of the basic units which indicates the individual domain. Within a single machine or VPS, you can configure multiple websites using a single IP and interface. Each domain arranged in such a way that direct visitor to a specific directory holding the web content.
+
+rnIn this article, we will describe you how to configure Apache Virtual hosts on Ubuntu 16.04 LTS.
+
+rnrn# Configure Apache Virtual Host:
+
+rnHere we configure each domain to an individual user directory. The main reason behind this that users are not able to modify or interferes others. you can jail the user to his directory for security reason.
+
+rnrn## Prerequisites:
+
+rnFirst of all, you need Linux box or VPS ubuntu 16.04. After that install, [LAMP Stack click here for LAMP installation tutorial.](https://www.technhit.in/install-lamp-stack-ubuntu-16-04-lts/) If want to set up only Apache then follow the command.
+
+rnrn```
+$ sudo apt-get updatern$ sudo apt-get install apache2
+```rnAfter completing above you can proceed for Vhost configuration.rn## Step 1: Add user and Web content directory:
+
+rnCreating a user and directory for the domainrn```
+$ sudo useradd -m abcrn$ sudo mkdir /home/abc/public_htmlrnrn
+```rnCreate another user and its directory.rn```
+$ sudo useradd -m xyzrn$ sudo mkdir /home/xyz/public_html
+```rn## Step 2: Adding a demo page for each domain:
+
+rnNow create an index file for testing purpose.rn```
+$ sudo nano /home/abc/public_html/index.htmlrnrn#insert following line to index filernrn<html>rn  <head>rn    <title>Welcome to abc.com</title>rn  </head>rn  <body>rn    # Hi!  The abc.com virtual host is working!
+
+rn  </body>rn</html>
+```rnSimilarly, create XYZ demo page.rn```
+$ sudo nano /home/xyz/public_html/index.htmlrnrn#insert following line to index filernrn<html>rn  <head>rn    <title>Welcome to xyz.com</title>rn  </head>rn  <body>rn    # Hi!  The xyz.com virtual host is working!
+
+rn  </body>rn</html>
+```rn## Step 3: Create and Configure Vhost file for each domain:
+
+rn```
+  $ sudo nano /etc/apache2/sites-available/abc.com.conf
+```rnInsert the following line to abc vhost file.rn```
+<VirtualHost *:80> rn    ServerAdmin abc@abc.comrn    ServerName abc.comrn    ServerAlias www.abc.comrn    DocumentRoot /home/abc/public_html/rnrn    <Directory /home/abc/public_html/>rn       Options Indexes FollowSymLinksrn       AllowOverride Nonern       Require all grantedrn    </Directory>rnrn    ErrorLog ${APACHE_LOG_DIR}/error.logrn    CustomLog ${APACHE_LOG_DIR}/access.log combinedrn</VirtualHost>
+```rnSimilarly, create XYZ vhost file.rn```
+ $ sudo nano /etc/apache2/sites-available/xyz.com.conf
+```rnNow copy and past the following:rn```
+<VirtualHost *:80> rn    ServerAdmin xyz@xyz.comrn    ServerName xyz.comrn    ServerAlias www.xyz.comrn    DocumentRoot /home/xyz/public_html/rnrn    <Directory /home/xyz/public_html/>rn       Options Indexes FollowSymLinksrn       AllowOverride Nonern       Require all grantedrn    </Directory>rnrn    ErrorLog ${APACHE_LOG_DIR}/error.logrn    CustomLog ${APACHE_LOG_DIR}/access.log combinedrn</VirtualHost>
+```rn## Step 4: Enable the New Virtual Host Files
+
+rn```
+$ sudo a2ensite abc.com.confrn$ sudo a2ensite xyz.com.conf
+```rnWhen you are finished, you need to restart Apache to make these changes take effect:rn```
+$ sudo service apache2 restart
+```rn## Step 5: Adding Domain information to local Host file:
+
+rn```
+$ sudo nano /etc/hostsrnrnAdd following line to the end of hosts filernrn127.0.0.1   abc.comrn127.0.0.1   xyz.comrnrn
+```rn## Step 6: Test your Virtual Hosts:
+
+rnNow if you are in a test environment on your local LAN. And you are using a windows machine for test your sites then you have to set a DNS record to your windows host file. That is  located at c:/windows/system32/Driver/etc/hosts. Open this file using notepad and add FQDN with your server IP. In my case server, IP is 192.168.182.50
+
+rnOpen Command prompt and type ***notepad*** ***C:/windows/system32/Driver/etc/hosts ***and add the following line at the end of the file.
+
+rnrn```
+192.168.182.50  abc.comrn192.168.182.50  xyz.com
+```rnEventually, open a browser then type your domain name to test whether its working or not.rnrnhttp://abc.comrnrn[![Virtual Host](https://www.technhit.in/wp-content/uploads/2016/10/abcvhost.png)](https://www.technhit.in/wp-content/uploads/2016/10/abcvhost.png)rnrnhttp:// xyz.comrnrn[![xyzhost](https://www.technhit.in/wp-content/uploads/2016/10/xyzhost.png)](https://www.technhit.in/wp-content/uploads/2016/10/xyzhost.png)rn## Conclusion:
+
+rnSo finally we are able to run multiple websites from a single Linux box or VPS. You can expand your virtual hosts using above method. There are not limits to add the virtual host on Apache so feel free to add Vhosts as much as you wish. But remember the there is a limitation on your physical server processing power and memory consumption to handle this. Here we made a shell script to easy installation for you. Thank you for reading our blog. Hope it helpful for you. If you have any query please comment us.
+
+rnrn```
+ #!/bin/shrnecho ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;"rnecho "; Welcom to TechNHIT LAMP Stack with VHost installation ;"rnecho "; Thank You for installanton Virtual Host ;"rnecho ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;"rnrnecho -n "Enter Your Domin (FQDN) name :"rnread vuserrnecho -n "Enter Admin Email Address :"rnread emlrnecho "You have enter Domin Name : $vuser"rnlen=`echo $vuser|awk '{print length}'`rnecho "lenth is $len"rndn=""rnp=$(echo ${vuser%.*} | wc -c) #Finding position of . in domen namernrnif [ $p -eq 8 ]rnthenrnecho "your virtual username will be `expr substr $vuser 1 $((p-1))` "rndn=`expr substr $vuser 1 $((p-1))`rnelif [ $p -lt 8 ]rnthenrnecho "your virtual username will be `expr substr $vuser 1 $((p-1))` "rndn=`expr substr $vuser 1 $((p-1))`rnelsernecho "your virtual username will be `expr substr $vuser 1 8`"rndn=`expr substr $vuser 1 8`rnfirnrnif grep -c "^$dn:" /etc/passwd ; thenrnrnecho -n "User already exist,Please Enter Another User Name:"rnread dnrnfirnrnecho "Do you want to proceed (Yes/No)?"rnread chrnif [ "$ch" = "y" ] || [ "$ch" = "Y" ] || [ "$ch" = "yes" ] || [ "$ch" = "YES" ]rnthenrnsudo apt-get updaternsudo apt-get install apache2 mysql-server php libapache2-mod-php php-mysql php-gd php-mcryptrnrnsudo useradd -m $dnrnrn#sudo chown -R $dn:$dn /home/$dn/rnrnsudo mkdir /home/$dn/public_htmlrnsudo touch /home/$dn/public_html/index.phprnrnf="/home/$dn/public_html/index.php"rnsudo sh -c "echo '<?php phpinfo(); ?>' >> $f"rnrnrnsudo cp /etc/apache2/sites-available/000-default.conf /etc/apache2/sites-available/$vuser.confrnrnf="/etc/apache2/sites-available/$vuser.conf"rnrnsudo sed -i -e '11c'"ServerAdmin $eml" $frnsudo sed -i -e '12c'"ServerName $vuser" $frnsudo sed -i -e '13i'"ServerAlias www.$vuser" $frnsudo sed -i -e '14i'"DocumentRoot /home/$dn/public_html/" $frnsudo sed -i -e '15i'"<Directory /home/$dn/public_html/>" $frnsudo sed -i -e '16i'"Options Indexes FollowSymLinks" $frnsudo sed -i -e '17i'"AllowOverride None" $frnsudo sed -i -e '18i'"Require all granted" $frnsudo sed -i -e '19i'"</Directory>" $frnrnrnsudo a2dissite 000-default.conf #Desible the default sitesrnsudo a2ensite $vuser.conf #Enable the sitesrnsudo service apache2 restart #Apache configration reload and restartrnrn#Add record to hosts filernf2="/etc/hosts"rnsudo sed -i -e '1i'"127.0.0.1 $vuser" $f2rnrnfirn#End of Script
+```rn

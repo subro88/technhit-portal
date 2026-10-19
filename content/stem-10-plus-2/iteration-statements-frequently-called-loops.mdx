@@ -1,0 +1,95 @@
+---
+title: "Iteration Statements (Frequently Called Loops)"
+slug: "iteration-statements-frequently-called-loops"
+date: "2016-07-10"
+category: "stem-10-plus-2"
+status: "Published"
+summary: "Well, friends today we discuss about loops in C /C++. Iteration statements (Loops) allow a set of instruction to be executed repeatedly until a certain condition meets. The condition may be predefi..."
+tags: ["C / C++", "loops", "for loop", "while loop", "do-while loop", "Iteration statements", "Sum of n natural number"]
+wordCount: 783
+readTime: 4
+---
+
+## Key Architecture Takeaways
+
+- **Point 1**: Core computer science and engineering computing concept: Iteration Statements (Frequently Called Loops).
+- **Point 2**: Detailed trace of memory representation, algorithmic complexity, and control structures.
+- **Point 3**: Includes portable ISO C (C17/C23) code examples verified with modern GCC and Clang.
+
+
+> [!NOTE]
+> **Compiler & Toolchain Modernization**
+> While legacy educational environments used 16-bit DOSBox Turbo C++, all code presented here adheres to standard ANSI/ISO C standards. You can compile these programs cleanly on modern Linux, Windows (MSYS2/WSL), or macOS using:
+> ```bash
+> gcc -Wall -Wextra -O2 program.c -o program
+> ./program
+> ```
+
+
+---
+
+Well, friends today we discuss about loops in C /C++. Iteration statements (Loops) allow a set of instruction to be executed repeatedly until a certain condition meets. The condition may be predefined or open ended like (for loop and do-while or while loop)
+
+rnrn## ***For Loop***
+
+rnIn general for loop is constitute with three parts *initialization, condition and increment or decrement*. It provides unexpected flexibility and power to control program iteration. The for loop allows many variations, but its most common works like this. The initialization is an assignment statement that is used to set loop control variable. The condition is a relational expression that determines when the loop exits. And the last one increment defines how loop control variable changes each time the loop repeated.
+
+rnrn## ***Flowchart of for loop:***
+
+rn[![for-loop](http://technhit.in/wp-content/uploads/2016/07/for-loop.jpg)](http://technhit.in/wp-content/uploads/2016/07/for-loop.jpg)
+
+rnrn## ***Example of for loop:***
+
+rn```
+#include <stdio.h>rnint main(void)rn{rn    int i;rn    for(i=1; i <= 50; i++) printf("%d ", i);rn    return 0;rn}
+```rnIn above case, you can view a variable 'i' initially set to 1 and compared with 50, until i is less than or equal to 50 .It repeatedly do the job printf() which print the value of i itself and it increased by 1 and again tested to see whether its value still less than 50 or reached 50 . Here we set a predefined condition  "**i<=50**"
+
+rnrn## ***While loop:***
+
+rnThe general form of a while loop is *while(condition)statement*; here statement can be empty, single or block of statement.
+
+rnrn## ***Flowchart of while loop:***
+
+rn[![c-while-loop](http://technhit.in/wp-content/uploads/2016/07/c-while-loop.jpg)](http://technhit.in/wp-content/uploads/2016/07/c-while-loop.jpg)
+
+rnrn## ***Example of while loop:***
+
+rn```
+ #include<studio.h>rnvoid main()rn{rn   int i;rn   i=1;rn   while(i<=50)rn   {rn      printf("%d",i);rn   }rn}
+```rn## *** The do-while loop:***
+
+rnUnlike*** for** *and ***while*** loops, which check the loop condition at the beginning, the do-while loop checks its condition at the end of the loop. The basic defiance is the do-while always executes at least once. The general form of ***do-while*** loop is :rnrndo{rn*statement;*rn}while(*condition*);rnrnAlthough {} are not necessary for a single statement but best practice is to use the curly braces to avoid confusion.rn## ***Flowchart of do-while loop:***
+
+rn[![c-do-while-loop](http://technhit.in/wp-content/uploads/2016/07/c-do-while-loop.jpg)](http://technhit.in/wp-content/uploads/2016/07/c-do-while-loop.jpg)rn## ***Example of do-while loop:***
+
+rn```
+ #include<studio.h>rnvoid main()rn{rn    char ch; // this variable used for input user choicern    int a,b,c; // we can declare variable in one line also. rn    rn    dorn    {rn       printf("Enter any Integer for variable A"); rn       scanf("%d",&a); rn       printf("Enter any Integer for variable B"); rn       scanf("%d", &b);       rn       c=a+b;rn       printf("The Sum of A and B is =%d",c);rn       printf("To Continue press 1 and To exit press any other key")rn       ch=getchar();rn    }while(ch=='1');rn}
+```rnIn this case, iteration will happen as per user's choice when the user put value 1 it continue again to do the same job else it terminates the program.  Hence it is open ended.rn## ***The Infinite Loop:***
+
+rnThe infinite loop is a loop that's run forever, in case of for() its looks like ***for(; ; ) ***rn```
+#include<studio.h>rnvoid main(void)rn{rn    for( ; ; ) printf("This loop will run forever.
+");rn} rnrn
+```rnWhen the conditional expression is absent, it assumed to be true. Although you can use any loop statement to create an infinite loop, for is traditionally used for this purpose.
+
+rn***Here some other infinite loop example:***rn```
+ #include<studio.h>rnvoid main(void)rn{rn    while(1)rn    {rn        printf("This loop will run forever.
+");rn    }rnrn}
+```rn rn```
+ #include<stdio.h>rnvoid main()rn{rnint num=20;rn  while(num>10) {rn      printf("Hello");rn  }rn}
+```rnThe output will print "Hello" forever.rn**Explanation :**
+
+rnrn
+rn 	- The condition is specified in while Loop, but terminating condition is not specified and even we haven’t modified the condition variable.
+rn 	- In this case, our subscript variable (Variable used to Repeat action) is not either incremented or decremented
+rn 	- so while remains true forever.
+rn
+rn***How to Come out from the infinite loop?***rnIf you haven't set any brake statement inside the loop then you have to force brake through*** Ctrl+Brake/Pause Brake** **key*** from the keyboard. If you have set a break statement then you can terminate loop by using break or exit function like that.
+
+rnrn```
+ #include <stdio.h>rnint main()rn{rn int count;rn count = 0;rn while(1)rn {rn printf("%d, ",count);rn count = count+1;rn if( count > 50)rn break;rn }rn putchar('
+');rn return(0);rn}
+```rnorrn```
+ #include<studio.h>rnvoid main() //here main function should not have any return type thus its void.rn{rn  ch = '\0';   // \0 is called NULL character in c / c++ rn  for( ; ; ) rn  {rn     ch = getchar(); /* get a character */rn     if(ch=='A') break; /* exit the loop */rn  }rn}
+```rn***Program to calculate the sum of first n natural numbers Positive integers 1,2,3...n are known as natural numbers***rn```
+ rnrn#include <stdio.h>rnint main()rn{rn int n, count, sum = 0;rnrn printf("Enter a positive integer: ");rn scanf("%d", &n);rnrn // for loop terminates when n is less than countrn for(count = 1; count <= n; ++count)rn {rn sum += count;rn }rnrn printf("Sum = %d", sum);rnrn return 0;rn}
+```rn

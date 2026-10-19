@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from "next";
 
 import Link from "next/link";
-import { Server, Terminal, Cpu, BookOpen, Compass, Youtube, Shield } from "lucide-react";
+import { Server, Terminal, Cpu, BookOpen, Compass, Youtube, Shield, Code2 } from "lucide-react";
 import { TuxGearLogo } from "@/components/brand/TuxGearLogo";
 import { ThemeProvider } from "@/components/theme/ThemeContext";
 import { ThemeSwitcher } from "@/components/theme/ThemeSwitcher";
@@ -112,6 +112,13 @@ export default function RootLayout({
                 <span>Local AI</span>
               </Link>
               <Link
+                href="/software-engineering"
+                className="text-zinc-300 hover:text-cyber-cyan transition-colors flex items-center gap-2"
+              >
+                <Code2 className="w-3.5 h-3.5 text-cyber-cyan" />
+                <span>Web & Software</span>
+              </Link>
+              <Link
                 href="/stem-10-plus-2"
                 className="text-zinc-300 hover:text-amber-400 transition-colors flex items-center gap-2"
               >
@@ -200,6 +207,7 @@ export default function RootLayout({
                 <ul className="space-y-2 text-sm text-zinc-400">
                   <li><Link href="/linux-server-admin" className="hover:text-zinc-100 transition-colors">Linux Admin</Link></li>
                   <li><Link href="/clustering-virtualization" className="hover:text-zinc-100 transition-colors">Clustering</Link></li>
+                  <li><Link href="/software-engineering" className="hover:text-zinc-100 transition-colors">Software & Web</Link></li>
                   <li><Link href="/local-ai-inference" className="hover:text-zinc-100 transition-colors">Local AI</Link></li>
                   <li><Link href="/stem-10-plus-2" className="hover:text-zinc-100 transition-colors">10+2 STEM</Link></li>
                 </ul>

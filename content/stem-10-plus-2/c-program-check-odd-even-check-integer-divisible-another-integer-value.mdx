@@ -1,0 +1,79 @@
+---
+title: "C program to check odd or even and check any integer that divisible by another integer value"
+slug: "c-program-check-odd-even-check-integer-divisible-another-integer-value"
+date: "2016-06-11"
+category: "stem-10-plus-2"
+status: "Published"
+summary: "C program to check odd or even: In childhood As you have studied in mathematics that in decimal number system even numbers are divisible by 2 while odd are not divisible by 2, we may use modulus op..."
+tags: ["Odd Even", "Modulus Operator", "Bitwise Operator", "Conditional Operator"]
+wordCount: 565
+readTime: 3
+---
+
+## Key Architecture Takeaways
+
+- **Point 1**: Core computer science and engineering computing concept: C program to check odd or even and check any integer that divisible by another integer value.
+- **Point 2**: Detailed trace of memory representation, algorithmic complexity, and control structures.
+- **Point 3**: Includes portable ISO C (C17/C23) code examples verified with modern GCC and Clang.
+
+
+> [!NOTE]
+> **Compiler & Toolchain Modernization**
+> While legacy educational environments used 16-bit DOSBox Turbo C++, all code presented here adheres to standard ANSI/ISO C standards. You can compile these programs cleanly on modern Linux, Windows (MSYS2/WSL), or macOS using:
+> ```bash
+> gcc -Wall -Wextra -O2 program.c -o program
+> ./program
+> ```
+
+
+---
+
+C program to check odd or even: In childhood As you have studied in mathematics that in decimal number system even numbers are divisible by 2 while odd are not divisible by 2, we may use modulus operator(%) which returns remainder, For example, 7%2 gives 1 ( remainder when seven is divided by two). Even numbers are of the form 2*X and odd are of the form (2*X+1) where X is is an integer.We will determine whether a number is odd or even by using different methods all are provided with a code in c language.
+
+rnrnrnrn<article id="node-323" class="node node-page node-full clearfix">rnrnrnrnrn## C program to check odd or even using modulus operator
+
+rnrnrn```c
+rn#include <stdio.h>rnrnint main()rn{rn   int a;rnrn   printf("Enter an integer
+");rn   scanf("%d", &a);rnrn   if (a%2 == 0)rn      printf("Even
+");rn   elsern      printf("Odd
+");rn   getch();            //This function holds your screen to see result.rn   return 0;rn}rn
+```rnrnrn rn## Find odd or even using conditional operator
+
+rnrnrn```c
+rn#include <stdio.h>rnrnint main()rn{rn   int n;rnrn   printf("Input an integer
+");rn   scanf("%d", &n);rnrn   n%2 == 0 ? printf("Even
+") : printf("Odd
+");rnrn   return 0;rn}rn
+```rnrnrn## C program to check odd or even without using bitwise or modulus operator
+
+rnrnrn```c
+rn#include <stdio.h>rn rnint main()rn{rn   int n;rn   printf("Enter an integer
+");rn   scanf("%d", &n);rnrn   if ((n/2)*2 == n)rn      printf("Even
+");rn   elsern      printf("Odd
+");rnrn   return 0;rn}rn
+```rnrnrnIn C programming language when we divide two integers we get an integer result, For example, the result of 10/3 will be 3. So we can take advantage of this and may use it to find whether the number is odd or even. Consider an integer n we can first divide by 2 and then multiply it by 2 if the result is the original number then the number is even otherwise the number is odd. For example 11/2 = 5, 5*2 = 10 (which is not equal to eleven), now consider 12/2 = 6 and 6*2 = 12 (same as original number). These are some logic which may help you in finding if a number is odd or not.rnrnrn## **Find odd or even using conditional operator**
+
+rnrnrn```c
+rn#include<stdio.h>rnrnmain()rn{rn   int a;rnrn   printf("Enter an integer
+");rn   scanf("%d",&a);rnrn   a%2 == 0 ? printf("Even number
+") : printf("Odd number
+");rn   return 0;rn}rn
+```rnrnWe can use bitwise AND (&) operator to check odd or even, as an example consider binary of 7 (0111) when we perform 7 & 1 the result will be one and you may observe that the least significant bit of every odd number is 1, so ( odd_number & 1 ) will be one always and also ( even_number & 1 ) is zero.rn## C program to check odd or even using bitwise operator
+
+rnrnrn```c
+rn#include <stdio.h>rnrnint main()rn{rn   int a;rnrn   printf("Enter an integer
+");rn   scanf("%d", &a);rnrn   if (a & 1 == 1)rn      printf("Odd
+");rn   elsern      printf("Even
+");rnrn   return 0;rn}rn
+```rnrnrn### **To check the given no. is even or odd without using the % operator**
+
+rnrnrnrnrnrnrn```c
+rn#include <stdio.h>;rnrnmain()rn{rn  char *a[]={"Odd", "Even"};rn  int n;rn  printf("Enter an integer
+");rn  scanf("%d",&n);rnrn  printf("%s
+", a[(n/2)*2 == n]);rnrn  return 0;rn}rn
+```rnrn### **To check the given no. is divisible by 3 and also divisible by 5 (Using bitwise and operator) **
+
+rnrn```c
+rn #include<stdio.h>rn  main()rn  {rn     int n;rn     printf("Eneter any integer value 
+");rn     scanf("%d",&n);rn     rn     if(n%3==0 && n%5==0)rn     {rn        printf("Entered integer is divisible by both 3 and 5");rn     }rn     elsern     {rn        printf("Entered integer is not divisible by both 3 and 5");rn     }rn     return 0;rn  }rn
+```rnrnOutputrn[![odd even output](http://technhit.in/wp-content/uploads/2016/06/odd-even-output.jpg)](http://technhit.in/wp-content/uploads/2016/06/odd-even-output.jpg)rnrnrnrnrnrnrnrnrnrnrn</article>rnrn

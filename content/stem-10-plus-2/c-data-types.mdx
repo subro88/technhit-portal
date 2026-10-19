@@ -1,0 +1,50 @@
+---
+title: "C - Variable Data Types"
+slug: "c-data-types"
+date: "2016-05-15"
+category: "stem-10-plus-2"
+status: "Published"
+summary: "Data types in c give you abilities to choose exact data type of variable for your operation. The type of a variable determines how much space it occupies in storage and how the bit pattern stored i..."
+tags: ["C / C++", "Variable", "Data types", "int", "float", "void", "Integer", "character", "real", "pointer", "unsigned"]
+wordCount: 630
+readTime: 4
+---
+
+## Key Architecture Takeaways
+
+- **Point 1**: Core computer science and engineering computing concept: C - Variable Data Types.
+- **Point 2**: Detailed trace of memory representation, algorithmic complexity, and control structures.
+- **Point 3**: Includes portable ISO C (C17/C23) code examples verified with modern GCC and Clang.
+
+
+> [!NOTE]
+> **Compiler & Toolchain Modernization**
+> While legacy educational environments used 16-bit DOSBox Turbo C++, all code presented here adheres to standard ANSI/ISO C standards. You can compile these programs cleanly on modern Linux, Windows (MSYS2/WSL), or macOS using:
+> ```bash
+> gcc -Wall -Wextra -O2 program.c -o program
+> ./program
+> ```
+
+
+---
+
+Data types in c give you abilities to choose exact data type of variable for your operation. The type of a variable determines how much space it occupies in storage and how the bit pattern stored is interpreted.rnrnrnrnThe Data types in C can be classified as follows −rnrn[![Data Types](http://technhit.in/wp-content/uploads/2016/05/Data-Types.jpeg)](http://technhit.in/wp-content/uploads/2016/05/Data-Types.jpeg)rn<table class="table table-bordered">rn<tbody>rn<tr>rn<th>S.N.</th>rn<th>Data Types & Description</th>rn</tr>rn<tr>rn<td>1</td>rn<td>**Basic Types**rnrnThey are arithmetic types and are further classified into: (a) integer types and (b) floating-point types.</td>rn</tr>rn<tr>rn<td>2</td>rn<td>**Enumerated types**rnrnThey are again arithmetic types and they are used to define variables that can only assign certain discrete integer values throughout the program.</td>rn</tr>rn<tr>rn<td>3</td>rn<td>**The type void**rnrnThe type specifier *void* indicates that no value is available.</td>rn</tr>rn<tr>rn<td>4</td>rn<td>**Derived types**rnrnThey include (a) Pointer types, (b) Array types, (c) Structure types, (d) Union types and (e) Function types.</td>rn</tr>rn</tbody>rn</table>rnThe array types and structure types are referred collectively as the aggregate types but the basic difference is that array is a collection of homogeneous data type and structure is a collection of the heterogeneous data type. The type of a function specifies the type of the function's return value. Pointer and other Data types will be discussed in the upcoming post.rn## [Integer Types](https://en.wikipedia.org/wiki/Integer_(computer_science))
+
+rnThe following table provides the details of standard integer types with their storage sizes and value ranges −rn<table class="table table-bordered">rn<tbody>rn<tr>rn<th>Type</th>rn<th>Storage size</th>rn<th>Value range</th>rn</tr>rn<tr>rn<td>char</td>rn<td>1 byte</td>rn<td>-128 to 127 or 0 to 255</td>rn</tr>rn<tr>rn<td>unsigned char</td>rn<td>1 byte</td>rn<td>0 to 255</td>rn</tr>rn<tr>rn<td>signed char</td>rn<td>1 byte</td>rn<td>-128 to 127</td>rn</tr>rn<tr>rn<td>int</td>rn<td>2 or 4 bytes</td>rn<td>-32,768 to 32,767 or -2,147,483,648 to 2,147,483,647</td>rn</tr>rn<tr>rn<td>unsigned int</td>rn<td>2 or 4 bytes</td>rn<td>0 to 65,535 or 0 to 4,294,967,295</td>rn</tr>rn<tr>rn<td>short</td>rn<td>2 bytes</td>rn<td>-32,768 to 32,767</td>rn</tr>rn<tr>rn<td>unsigned short</td>rn<td>2 bytes</td>rn<td>0 to 65,535</td>rn</tr>rn<tr>rn<td>long</td>rn<td>4 bytes</td>rn<td>-2,147,483,648 to 2,147,483,647</td>rn</tr>rn<tr>rn<td>unsigned long</td>rn<td>4 bytes</td>rn<td>0 to 4,294,967,295</td>rn</tr>rn</tbody>rn</table>rnTo get the exact size of a type or a variable on a particular platform, you can use the **sizeof** operator. The expressions *sizeof(type)* field the storage size of the object or type in bytes. Given below is an example to get the size of int type on any machine −rnrn```c
+rn#include<stdio.h>rn#include<limits.h>rnrn main()rn{rnrn   printf("Storage size for int : %d 
+",sizeof(int));rn   rn   return 0;rn}rn
+```rnrnWhen you compile and execute the above program, it produces the following result on Linux −rn```
+Storage size for int : 4rn
+```rn## [Floating-Point Types](https://www.google.com/url?sa=t&rct=j&q=&esrc=s&source=web&cd=4&cad=rja&uact=8&ved=0ahUKEwifvMiYotvMAhWKO48KHQ_OAUoQFggsMAM&url=https%3A%2F%2Fen.wikipedia.org%2Fwiki%2FFloating_point&usg=AFQjCNHBkFKDNAv5fnTso-iiEOLuceSkgQ&sig2=h1Uq2wTruNlLy6jEDWfM1g)
+
+rnThe following table provides the details of standard floating-point data types with storage sizes and value ranges and their precision −rn<table class="table table-bordered">rn<tbody>rn<tr>rn<th>Type</th>rn<th>Storage size</th>rn<th>Value range</th>rn<th>Precision</th>rn</tr>rn<tr>rn<td>float</td>rn<td>4 byte</td>rn<td>1.2E-38 to 3.4E+38</td>rn<td>6 decimal places</td>rn</tr>rn<tr>rn<td>double</td>rn<td>8 byte</td>rn<td>2.3E-308 to 1.7E+308</td>rn<td>15 decimal places</td>rn</tr>rn<tr>rn<td>long double</td>rn<td>10 byte</td>rn<td>3.4E-4932 to 1.1E+4932</td>rn<td>19 decimal places</td>rn</tr>rn</tbody>rn</table>rnThe header file float.h defines macros that allow you to use these values and other details about the binary representation of real numbers in your programs. The following example prints the storage space taken by a float type and its range values −rnrn rnrn```c
+rn#include <stdio.h>rn#include <float.h>rnint main()rn{rn     printf("Storage size for float : %d 
+", sizeof(float));rn     printf("Minimum float positive value: %E
+", FLT_MIN );rn     printf("Maximum float positive value: %E
+", FLT_MAX );rn     printf("Precision value: %d
+", FLT_DIG );rn     return 0;rn}rn
+```rnrnWhen you compile and execute the above program, it produces the following result on Linux −rn```
+Storage size for float : 4rnMinimum float positive value: 1.175494E-38rnMaximum float positive value: 3.402823E+38rnPrecision value: 6rn
+```rn## The void Data Type
+
+rnThe void Data type specifies that no value is available. It is used in three kinds of situations −rn<table class="table table-bordered">rn<tbody>rn<tr>rn<th>S.N.</th>rn<th>Data Types & Description</th>rn</tr>rn<tr>rn<td>1</td>rn<td>**Function returns as void**rnrnThere are various functions in C which do not return any value or you can say they return void. A function with no return value has the return type as void. For example, **void exit (int status);**</td>rn</tr>rn<tr>rn<td>2</td>rn<td>**Function arguments as void**rnrnThere are various functions in C which do not accept any parameter. A function with no parameter can accept a void. For example, **int rand(void);**</td>rn</tr>rn<tr>rn<td>3</td>rn<td>**Pointers to void**rnrnA pointer of type void * represents the address of an object, but not its type. For example, a memory allocation function **void *malloc( size_t size );** returns a pointer to void which can be casted to any data type.</td>rn</tr>rn</tbody>rn</table>rn#

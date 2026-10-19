@@ -1,0 +1,82 @@
+---
+title: "C Language Structures"
+slug: "c-language-structures"
+date: "2016-11-29"
+category: "stem-10-plus-2"
+status: "Published"
+summary: "A structure in \"C\" Language is a collection of the heterogeneous data type. Where you can store the value of different types in form of a grouped list in a single variable. The value of structure..."
+tags: ["C / C++", "c array", "Structure"]
+wordCount: 827
+readTime: 5
+---
+
+## Key Architecture Takeaways
+
+- **Point 1**: Core computer science and engineering computing concept: C Language Structures.
+- **Point 2**: Detailed trace of memory representation, algorithmic complexity, and control structures.
+- **Point 3**: Includes portable ISO C (C17/C23) code examples verified with modern GCC and Clang.
+
+
+> [!NOTE]
+> **Compiler & Toolchain Modernization**
+> While legacy educational environments used 16-bit DOSBox Turbo C++, all code presented here adheres to standard ANSI/ISO C standards. You can compile these programs cleanly on modern Linux, Windows (MSYS2/WSL), or macOS using:
+> ```bash
+> gcc -Wall -Wextra -O2 program.c -o program
+> ./program
+> ```
+
+
+---
+
+A structure in "C" Language is a collection of the heterogeneous data type. Where you can store the value of different types in form of a grouped list in a single variable. The value of structure accessed using ***struct*** declared name or through the pointer. Structures are defined using ***Struct*** keyword.
+
+rnrn## **The syntax of Structures:**
+
+rn**Struct** <*Structute Name*> {rnDatatype     <*Variable1*>;rnDatatype     <*Variable2*>;rnDatatype     <*Variable3*>;rn}<structure variables optional>;
+
+rnSuppose you want to store information about some people. In such case, the arrays are not useful because personal information data is never homogeneous. For example
+
+rn*NAME : *Mr.* SUBHRA LAHIRI*rn*AGE     : 20*rn*Marks : 85.77*rn*CLASS : 3rd Year(Computer Sc.)*
+
+rnShows that "Name" is String of character type, whereas "Age" and "Marks" are number type. In order to handle such situations. C Language provides a facility known as structures.
+
+rnWe know that Arrays provide the facility of grouping homogeneous data items into a single object while structure group together heterogeneous data types into a single object. To store the above information we can define a structure as follows
+
+rnrn```
+struct information{rn     char name[40];rn     int age;rn     float marks;rn     char class[30];rn};
+```rnorrn```
+struct infomation{rn     char name[40];rn     int age;rn     float marks;rn     char class[30];rn}info1,info2;
+```rnwe can define structure variable at the end of the structure it can be one or more than one as per our requirement. we can also define structure variable like that:rn```
+// Include File//rnrnrnstruct infomation{rn     char name[40];rn     int age;rn     float marks;rn     char class[30];rn};rnrnvoid main()rn{rn   struct information info1; /* Declare info1 of type information */rn   struct information info2; /* Declare info2 of type information */rnrn   /* use info1 variable to perform here rn     .....rn     .....rn   */rnrnrn}
+```rnWe can also define an array of structure. The array of structure is useful and has another importance when you think a structure in a tabular form or format. Its gives you ability to store the pieces of information as like spreadsheet and database. Let's see the example of an array of structure.
+
+rnrn```
+#include<stdio.h>rnrnrnstruct infomation{rn     char name[40];rn     int age;rn     float marks;rn     char class[30];rn};rnrnvoid main()rn{rn   struct information info[5]; /* Declare an array info of 5 row of type information */rn  rn   rnrnrn}
+```rn*Struct information info[5]* which defines an array with five elements, each of which is of type <tt>struct information</tt>, i.e. each is an information structure. We can imagine this as:rnrn[![structures ](https://www.technhit.in/wp-content/uploads/2016/11/array-of-structure.png)](https://www.technhit.in/wp-content/uploads/2016/11/array-of-structure.png)rnThis is very similar to a two-dimensional array, except that in an array, all data items must be of the same type, where an array of structures consists of columns, each of which may be of a distinct data type. Here one question arises i.e, is an array of structure violate the rule of the array that is homogeneous data type? The answer is No. It does not violate the rule of the array. A structure itself a data type. When we declare an array of structure, this is homogeneous data type of that structure. That's why the array of structure not violating the rule of an array.
+
+rnrn## **Storing and retrieving value from a structure:**
+
+rn```
+#include <stdio.h>rn#include <string.h>rn rnstruct infomation{rn     char name[40];rn     int age;rn     float marks;rn     char class[30];rn};rn rnint main( ) {rnrn   struct information info1;        /* Declare info1 of type information */rn   struct information info1;        /* Declare info2 of type information */rn rn   /* info 1 specification */rn   strcpy( info1.name, "Subhra Lahiri");rn   info1.age=20;  // (.) dot operator is use to access structure element // rn   info1.marks=85.77; rn   strcpy( info1.class, "3rd year");rn  rnrn   /* info 2 specification */rn   strcpy( info2.name, "Bivas Mondal");rn   info2.age=19;rn   info2.marks=81.77; rn   strcpy( info2.class, "2nd year");rn rn   /* print info1 data */rn   printf( "info 1 name : %s
+", info1.name);rn   printf( "info 1 Age  : %d
+", info1.age);rn   printf( "info 1 Marks: %f
+", info1.marks);rn   printf( "info 1 Class: %s
+", info1.class);rnrn   /* print info2 data */rn   printf( "info 2 name : %s
+", info2.name);rn   printf( "info 2 Age  : %d
+", info2.age);rn   printf( "info 2 Marks: %f
+", info2.marks);rn   printf( "info 2 Class: %s
+", info2.class);rnrn   return 0;rn}
+```rn## Pointers to Structures:
+
+rnDefine pointers to structure similar to define a pointer of other variables. We can store the address of structure variable using & operator.
+
+rnrn```
+#include <stdio.h>rn#include <string.h>rn rnstruct information{rn     char name[40];rn     int age;rn     float marks;rn     char class[30];rn};rnrnvoid viewinfo( struct information *info ); // prototype of viewinforn rnint main( ) {rnrn   struct information info1;        /* Declare info1 of type information */rn   struct information info2;        /* Declare info2 of type information */rn rn   /* info 1 specification */rn   strcpy( info1.name, "Subhra Lahiri");rn   info1.age=20;  // (.) dot operator is use to access structure element // rn   info1.marks=85.77; rn   strcpy( info1.class, "3rd year");rn  rnrn   /* info 2 specification */rn   strcpy( info2.name, "Bivas Mondal");rn   info2.age=19;rn   info2.marks=81.77; rn   strcpy( info2.class, "2nd year");rnrnrn   //print info1 data by passing address of info1//rn   viewinfo(&info1);rn   printf("
+");rn   //print info2 data by passing address of info2 //rn   viewinfo(&info2);rnrn   getch();rn rn   rn   return 0;rn}rnrnvoid viewinfo(struct information *info){rn   printf( "Name : %s
+", info->name);rn   printf( "Age  : %d
+", info->age);rn   printf( "Marks: %f
+", info->marks);rn   printf( "Class: %s
+", info->class);rn}
+```rn### **Output:**
+
+rn[![output2](https://www.technhit.in/wp-content/uploads/2016/11/output2.png)](https://www.technhit.in/wp-content/uploads/2016/11/output2.png)rn

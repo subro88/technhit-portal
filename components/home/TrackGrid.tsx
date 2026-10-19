@@ -90,6 +90,20 @@ const TRACKS: Track[] = [
     href: "/video-companions",
     accentColor: "text-red-400",
   },
+  {
+    id: "software",
+    category: "FULL STACK WEB",
+    tag: "06 / SOFTWARE SYSTEMS",
+    title: "SOFTWARE & WEB ARCHITECTURE",
+    desc: "Modern web systems, Laravel 11 ecosystem, React 19 toolchains, multi-runtime Node.js orchestration, and distributed database designs.",
+    image: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80",
+    complexity: "80%",
+    duration: "4 WEEKS",
+    hardware: "NODE / PHP RUNTIMES",
+    level: "INTERMEDIATE",
+    href: "/software-engineering",
+    accentColor: "text-cyber-cyan",
+  },
 ];
 
 export function TrackGrid() {

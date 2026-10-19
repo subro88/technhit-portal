@@ -1,0 +1,43 @@
+---
+title: "CodeIgniter Base URL Configuration"
+slug: "codeigniter-base-url-configuration"
+date: "2017-03-13"
+category: "software-engineering"
+status: "Published"
+summary: "In continuation of CodeIgniter configuration, in this tutorial, we are going to configure **Base URL **for a web application"
+tags: ["PHP", "CodeIgniter"]
+wordCount: 337
+readTime: 2
+---
+
+## Key Architecture Takeaways
+
+- **Point 1**: Full-stack architecture blueprint: CodeIgniter Base URL Configuration.
+- **Point 2**: Covers MVC separation of concerns, routing pipelines, and database abstraction.
+- **Point 3**: Modern ecosystems: Laravel 11/PHP 8.3, React 19, and Node.js LTS runtimes.
+
+
+> [!NOTE]
+> **Modern Framework Landscape (2026)**
+> Web engineering patterns have evolved: Laravel now utilizes PHP 8.2+ typed properties, Vite asset bundling, and strict Eloquent typing, while Node.js LTS supports native `fetch` and ESM modules out of the box.
+
+
+---
+
+In continuation of CodeIgniter configuration, in this tutorial, we are going to configure **Base URL **for a web application
+
+rnrn## CodeIgniter URLs
+
+rnCodeIgniter URLs use Uniform Resource Identifiers (URI). In simple terms, CodeIgniter's URLs are simply segments. These segments are then split up and used to load a particular controller and method. Here is a typical CodeIgniter URL:rn`http://mywebsite.ext/index.php/controller/method/parameters`rnEverything after the index.php segment is used by CodeIgniter to determine what to load. The first segment is the name of the Controller. The second segment is used to determine which function to load—if this is blank then the index function will be used. The final segment will be used to pass any data to the function.
+
+rnrn## **Config Base URL:**
+
+rnBase URL is your CodeIgniter root. Typically, this will be your Domain name or IP Address, with a trailing slash e.g.  ***"http://technhit.in/"*** We can configure **Base URL**  in the ***config.php*** file under ***application/config*** directory. Base URL should be absolute, including the protocol:
+
+rn`$config['base_url']="http://somesite.com/somedir/";`rnIf you are using the URL helper, then `base_url()` will output the above string.
+
+rnIf Base URL is not set, then CodeIgniter will try to guess the protocol, domain and path to your installation. However, you should always configure this explicitly and never rely on auto-guessing, especially in production environments. You can configure the base URL in the ***$config*** array with key ***“base_url”*** as shown below
+
+rnrn```
+ <?phprndefined('BASEPATH') OR exit('No direct script access allowed');rnrn/*rn|--------------------------------------------------------------------------rn| Base Site URLrn|--------------------------------------------------------------------------rn|rn| URL to your CodeIgniter root. Typically this will be your base URL,rn| WITH a trailing slash:rn|rn| http://example.com/rn|rn| WARNING: You MUST set this value!rn|rn| If it is not set, then CodeIgniter will try guess the protocol and pathrn| your installation, but due to security concerns the hostname will be setrn| to $_SERVER['SERVER_ADDR'] if available, or localhost otherwise.rn| The auto-detection mechanism exists only for convenience duringrn| development and MUST NOT be used in production!rn|rn| If you need to allow multiple domains, remember that this file is stillrn| a PHP script and you can easily do that on your own.rn|rn*/rn$config['base_url'] = 'http://technhit.in/';rnrnrn
+```rn[<>](https://www.technhit.in/codeigniter-remove-index-php-url/)

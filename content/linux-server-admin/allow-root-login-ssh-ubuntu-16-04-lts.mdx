@@ -1,0 +1,57 @@
+---
+title: "Allow Root Login Over SSH Ubuntu 16.04 LTS"
+slug: "allow-root-login-ssh-ubuntu-16-04-lts"
+date: "2017-01-25"
+category: "linux-server-admin"
+status: "Published"
+summary: "This article is follow up of [Enable root login on Ubuntu 16.04 LTS.](https://www.technhit.in/enable-root-user-ubuntu-16-04-1-lts/) Assume that you have already set the password for your root accou..."
+tags: ["How to", "Ubuntu", "Linux"]
+wordCount: 282
+readTime: 2
+---
+
+## Key Architecture Takeaways
+
+- **Point 1**: Production blueprint for Allow Root Login Over SSH Ubuntu 16.04 LTS on Linux infrastructure.
+- **Point 2**: Covers root privilege management, daemon supervision via systemd, and secure file operations.
+- **Point 3**: Applies to LTS releases (Ubuntu 24.04/22.04 LTS, Debian 12 Bookworm).
+
+
+> [!NOTE]
+> **Enterprise Compatibility Update (2026 / LTS)**
+> While these fundamentals apply directly to existing deployments, modern installations on Ubuntu 22.04 and 24.04 LTS use `systemd-resolved`, `nftables` for packet filtering, and modern OpenSSH 9+ with Ed25519 cryptography.
+
+
+---
+
+This article is follow up of [Enable root login on Ubuntu 16.04 LTS.](https://www.technhit.in/enable-root-user-ubuntu-16-04-1-lts/) Assume that you have already set the password for your root account. It will help you allow to login as root over SSH. SSH stands for **Secure Shell** that is a cryptographic network protocol for operating network services securely over an unsecured network. For example, remote login to computer systems by users. SSH works over port 22. As usual, for better security root ssh access is set as by default "`Prohibit-password",`That means to you is that, if you are trying to ssh to your server with your root account and password, you will receive an access denied error.
+
+rn[![SSH Root](https://www.technhit.in/wp-content/uploads/2017/01/ssh.png)](https://www.technhit.in/wp-content/uploads/2017/01/ssh.png)
+
+rnIn order to overcome this limitation, you will need to edit the file `/etc/ssh/sshd_config` to allow root password logins through SSH. As shown below, go to Authentication Section and comment out #PermitRootLogin Prohibit-password and add PermitRootLogin yes.
+
+rnrn### **Prerequisite: **
+
+rnMake sure you have installed OpenSSH-Server. If you do not have then install it.
+
+rn`$ sudo apt-get install openssh-server`
+
+rnrn### **Authentication Configuration  of sshd_config:**
+
+rnOpen `/etc/ssh/sshd_config` using editorrn```
+# Authentication:rnLoginGraceTime 30rn#PermitRootLogin Prohinit-passwordrnPermitRootLogin yesrnStrictModes yes
+```rn```
+FROM:rnPermitRootLogin prohibit-passwordrnTO:rnPermitRootLogin yes
+```rnOnce you have made the above configuration then save the file, And finally, you will need to restart the ssh daemon in order for the changes to take effect using the command below.
+
+rnrnrnrn```
+ $ service ssh restart
+```rnAfter the ssh service is restarted, you should now be able to login through SSH using your root account and password.
+
+rn[![ssh after config](https://www.technhit.in/wp-content/uploads/2017/01/ssh-after.png)](https://www.technhit.in/wp-content/uploads/2017/01/ssh-after.png)
+
+rnrnrn## Watch On Youtube:
+
+rn[embedyt] https://www.youtube.com/watch?v=NBArU21lGoQ[/embedyt]rnrnHope this article helpful for you. If you have and query please leave a reply below we will try to solve your problem.
+
+rnrnrn

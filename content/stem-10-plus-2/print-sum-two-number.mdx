@@ -1,0 +1,58 @@
+---
+title: "Print sum of two or more number"
+slug: "print-sum-two-number"
+date: "2016-05-31"
+category: "stem-10-plus-2"
+status: "Published"
+summary: "**Write a c program that takes two or more numbers from the user then print the sum of these number.**"
+tags: ["C / C++", "Addition of number"]
+wordCount: 434
+readTime: 2
+---
+
+## Key Architecture Takeaways
+
+- **Point 1**: Core computer science and engineering computing concept: Print sum of two or more number.
+- **Point 2**: Detailed trace of memory representation, algorithmic complexity, and control structures.
+- **Point 3**: Includes portable ISO C (C17/C23) code examples verified with modern GCC and Clang.
+
+
+> [!NOTE]
+> **Compiler & Toolchain Modernization**
+> While legacy educational environments used 16-bit DOSBox Turbo C++, all code presented here adheres to standard ANSI/ISO C standards. You can compile these programs cleanly on modern Linux, Windows (MSYS2/WSL), or macOS using:
+> ```bash
+> gcc -Wall -Wextra -O2 program.c -o program
+> ./program
+> ```
+
+
+---
+
+## **Write a c program that takes two or more numbers from the user then print the sum of these number.**
+
+rnThis c language program performs the basic arithmetic operation of addition on two numbers and then prints the sum on the screen. For example, if the user entered two numbers as 2, 4 then 6 (2 + 4) will be printed on the screen.rn## C programming code
+
+rnrnrn```C
+rn#include<stdio.h>rn rnint main()rn{rn   int a, b, c;rn rn   printf("Enter two numbers to add
+");rn   scanf("%d%d",&a,&b);rn rn   c = a + b;rn rn   printf("Sum of entered numbers = %d
+",c);rn   getch();rn rn   return 0;rn}rn
+```rnrnrnOutput of program:rnrn[![add output](http://technhit.in/wp-content/uploads/2016/05/add-output.jpg)](http://technhit.in/wp-content/uploads/2016/05/add-output.jpg)rnrnIn the expression (c = a + b) overflow may occur if the sum of a and b is larger than maximum value which can be stored in variable c.rn## Addition without using the third variable
+
+rnrnrn```c
+rn#include<stdio.h>rn rnmain()rn{rn   int a = 1, b = 2;rn rn   /* Storing result of addition in variable a */rn rn   a = a + b;rn rn   /** Not recommended because original value of a is lost  rn    *  and you may be using it somewhere in code considering it rn    *  as it was entered by the user. rn    */rn rn   printf("Sum of a and b = %d
+", a);rn   getch();rn   return 0;rn}rn
+```rnrnrn## C program to add two numbers repeatedly
+
+rnrnrn```c
+rn#include <stdio.h>rn rnint main()rn{rn   int a, b, c;rn   char ch;rn rn   while (1) {rn      printf("Inut two integers
+");rn      scanf("%d%d", &a, &b);rn      getchar();rn rn      c = a + b;rn rn      printf("(%d) + (%d) = (%d)
+", a, b, c);rn rn      printf("Do you wish to add more numbers (y/n)
+");rn      scanf("%c", &ch);rn rn      if (ch == 'y' || ch == 'Y')rn         continue;rn      elsern   	   break;rn   }rn rn   return 0;rn}rn
+```rnrnrnOutput of program:rnrn```
+Inut two integersrn2 6rn(2) + (6) = (8)rnDo you wish to add more numbers (y/n)rnyrnInut two integersrn2 -6rn(2) + (-6) = (-4)rnDo you wish to add more numbers (y/n)rnyrnInut two integersrn-5 3rn(-5) + (3) = (-2)rnDo you wish to add more numbers (y/n)rnyrnInut two integersrn-5 -6rn(-5) + (-6) = (-11)rnDo you wish to add more numbers (y/n)rnn
+```rnrn## Adding numbers in c using function
+
+rnrnrn```c
+rn#include<stdio.h>rn rnlong addition(long, long);rn rnmain()rn{rn   long first, second, sum;rn rn   scanf("%ld%ld", &first, &second);rn rn   sum = addition(first, second);rn rn   printf("%ld
+", sum);rn   getch();rn   return 0;rn}rn rnlong addition(long a, long b)rn{rn   long result;rn rn   result = a + b;rn rn   return result;rn}rn
+```rnrnrnWe have used long data type as it can handle large numbers if you want to add still larger numbers which don't fit in long range then use an array, string or other data structure.

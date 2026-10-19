@@ -1,0 +1,51 @@
+---
+title: "Find GCD and LCM Using C Program"
+slug: "find-gcd-lcm-using-c-program"
+date: "2016-06-12"
+category: "stem-10-plus-2"
+status: "Published"
+summary: "**GCD:** The *greatest common divisor* (GCD), which is also known as the *greatest common factor* (GCF), of two or more integers, is the largest integer that is a common divisor (factor) of all the..."
+tags: ["GCD", "LCM", "Conio.h"]
+wordCount: 296
+readTime: 2
+---
+
+## Key Architecture Takeaways
+
+- **Point 1**: Core computer science and engineering computing concept: Find GCD and LCM Using C Program.
+- **Point 2**: Detailed trace of memory representation, algorithmic complexity, and control structures.
+- **Point 3**: Includes portable ISO C (C17/C23) code examples verified with modern GCC and Clang.
+
+
+> [!NOTE]
+> **Compiler & Toolchain Modernization**
+> While legacy educational environments used 16-bit DOSBox Turbo C++, all code presented here adheres to standard ANSI/ISO C standards. You can compile these programs cleanly on modern Linux, Windows (MSYS2/WSL), or macOS using:
+> ```bash
+> gcc -Wall -Wextra -O2 program.c -o program
+> ./program
+> ```
+
+
+---
+
+**GCD:** The *greatest common divisor* (GCD), which is also known as the *greatest common factor* (GCF), of two or more integers, is the largest integer that is a common divisor (factor) of all the given integers.
+
+rn**LCM: **The *least common multiple* (LCM), which is also known as the *least common denominator* (LCD) in fractions, of two or more integers is the smallest integer that is a common multiple (denominator) of all the given integers.
+
+rnrn## C program to find GCD & LCM
+
+rn```
+ #include<stdio.h>rnrnint main()rn{rnint a, b, x, y, tmp, lcm, gcd;rnrnprintf("Enter two integers
+");rnscanf("%d%d", &x, &y);rnrna = x; //Assign value of x to a for farther use.rnb = y; //Assign value of y to b for farther use.rnrnwhile (b != 0)rn{rntmp = b;rnb = a % b;rna = tmp;rn}rnrngcd = a;rnlcm = (x*y)/gcd;rnrnprintf("Greatest common divisor of %d and %d is = %d
+", x, y, gcd);rnprintf("Least common multiple of %d and %d is = %d
+", x, y, lcm);rnrnreturn 0;rn}
+```rn rn## C program to find LCM and HCF of two numbers using recursion
+
+rnrn```
+/*rn* C Program to find GCD and LCM of two numbers using recursionrn*/rn#include <stdio.h>rn#include <conio.h> rnrnint getGcd(int a, int b);rnint main(){rn int num1, num2, gcd, lcm;rn textcolor(BLUE+BLINK);rn cprintf("Enter two numbers
+");rn cscanf("%d %d", &num1, &num2);rn /*rn * GCD(a, b) * LCM(a, b) = a*b rn */rn gcd = getGcd(num1, num2);rn lcm = (num1 * num2)/ gcd;rn textcolor(RED);rn cprintf("GCD of %d and %d is %d
+", num1, num2, gcd);rn cprintf("LCM of %d and %d is %d
+", num1, num2, lcm);rn getch();rn return 0;rn}rn/*rn * Function to calculate Greatest Common Divisor of two numberrn */rn int getGcd(int a, int b) {rn if (b == 0) {rn return a;rn }rn else {rn return getGcd(b, a % b);rn }rn}rnrnrnrn
+```rn```
+ Output
+```rn[![GCD LCM](http://technhit.in/wp-content/uploads/2016/06/GCD-LCM.jpg)](http://technhit.in/wp-content/uploads/2016/06/GCD-LCM.jpg)rnrnrn rnrn

@@ -1,0 +1,125 @@
+---
+title: "How To Remotely Copy Files Over SSH Ubuntu Client"
+slug: "how-remotely-copy-files-over-ssh-ubuntu-client-sftp-scp"
+date: "2017-01-26"
+category: "linux-server-admin"
+status: "Published"
+summary: "Using SSH protocol not only access your remote shell. But also use it for transfer files between computers securely through encrypted communication. You can use any one way out of following:"
+tags: ["Ubuntu", "Linux", "SSH", "SFTP", "SCP"]
+wordCount: 952
+readTime: 5
+---
+
+## Key Architecture Takeaways
+
+- **Point 1**: Production blueprint for How To Remotely Copy Files Over SSH Ubuntu Client on Linux infrastructure.
+- **Point 2**: Covers root privilege management, daemon supervision via systemd, and secure file operations.
+- **Point 3**: Applies to LTS releases (Ubuntu 24.04/22.04 LTS, Debian 12 Bookworm).
+
+
+> [!NOTE]
+> **Enterprise Compatibility Update (2026 / LTS)**
+> While these fundamentals apply directly to existing deployments, modern installations on Ubuntu 22.04 and 24.04 LTS use `systemd-resolved`, `nftables` for packet filtering, and modern OpenSSH 9+ with Ed25519 cryptography.
+
+
+---
+
+Using SSH protocol not only access your remote shell. But also use it for transfer files between computers securely through encrypted communication. You can use any one way out of following:
+
+rnrn
+rn 	- scp (Secure Copy)
+rn 	- sftp (Secure File Transfer Protocol)
+rn
+rn## **SCP (Secure Copy):**
+
+rnscp stands for secure cp (copy), which means you can copy files across ssh connection. It is a very secure way to copy files between two computers because the connection securely encrypted.
+
+rnscp uses by default the port 22, and connect via an encrypted connection or secure shell connection (SSH). Using scp you can copy files from your local computer to remote computer and remote computer to another remote computer.
+
+rnrn### Examples of scp:
+
+rn**Copy single file from local to a remote destination:**rn```
+scp /path/to/source-file user@host:/path/to/destination-folder/
+```rnAssume that we have a file test.txt in local directory <tt>/home/technhit/test.txt </tt>and want to copy to the destination server root@192.168.182.50 in tmp directory.
+
+rn[![scp](https://www.technhit.in/wp-content/uploads/2017/01/scp.png)](https://www.technhit.in/wp-content/uploads/2017/01/scp.png)
+
+rn**Copy single file from a remote server to your current local server:**
+
+rnrn```
+ scp user@host:/path/to/source-file /path/to/destination-folder
+```rnAssume that we similarly have a test2.txt file on the remote server `/tmp/test2.txt` and copy to the local system.rn[![scp](https://www.technhit.in/wp-content/uploads/2017/01/scp2.png)](https://www.technhit.in/wp-content/uploads/2017/01/scp2.png)
+
+rn[![scp](https://www.technhit.in/wp-content/uploads/2017/01/scp3.png)](https://www.technhit.in/wp-content/uploads/2017/01/scp3.png)
+
+rn**Copy single file from a remote server to another remote server**
+
+rnrn```
+ scp user1@server1:/path/to/file user2@server2:/path/to/folder/
+```rnLet's assume that we have two remote server one is ***root@192.168.182.50**  *and another is*** technhit@192.168.182.51 ***and operating ***scp*** through our local system.
+
+rnrn```
+ scp technhit@192.168.182.51:/home/technhit/test3.txt root@192.168.182.50:/tmp/
+```rn**Copy multiple files with one command**rnrnWe can copy multiple files using scp, file names followed by space with each.rn```
+ scp file1.txt file2.txt file3.txt technhit@192.168.182.51:/home/technhit/rnrn
+```rn#### **Copy files using wildcards:**
+
+rn```
+ scp /path/to/folder/*.ext user@server:/path/to/folder/
+```rnFor example,  we want to copy all .txt file from `/home/technhit` to `/tmp/ `directory of host 192.168.182.50rn```
+ scp /home/technhit/*.txt root@192.168.182.50:/tmp/
+```rn**Copy a directory and all its contents to a remote server**rn```
+ scp -rp /path/to/source-directoy user@server:/path/to/destination-directory/
+```rn
+rn 	- -r means recursive
+rn 	- -p preserves modification times, access times, and modes from the original file.
+rn
+rnThe above syntax copy entire directory with its associative file information. One more time we'll use an example.
+
+rnrn```
+ scp -rp /home/technhit/ root@192.168.182.50:/tmp/
+```rn[![scp](https://www.technhit.in/wp-content/uploads/2017/01/scp4.png)](https://www.technhit.in/wp-content/uploads/2017/01/scp4.png)rnYou can use scp on Linux, Mac and Windows (using WinSCP). [Download WinSCP fro here ](https://winscp.net/download/WinSCP-5.9.3-Setup.exe)
+
+rn[![winscp](https://www.technhit.in/wp-content/uploads/2017/01/winscp.png)](https://www.technhit.in/wp-content/uploads/2017/01/winscp.png)
+
+rn[![winscp](https://www.technhit.in/wp-content/uploads/2017/01/winscp2.png)](https://www.technhit.in/wp-content/uploads/2017/01/winscp2.png)
+
+rnrn## SFTP Secure File Transfer Protocol:
+
+rnThe **SSH File Transfer** Protocol ( SFTP ) is a network protocol that provides file access, **file transfer**, and **file** management functionalities over the secure connection.
+
+rnThe SFTP server function is enabled by default in Ubuntu, but if it is not enabled, comment out or add the line [`Subsystem `sftp` / `usr` / lib / `openssh` / sftp-server`] to [`/ etc / ssh / sshd_config`] After that restart ssh service.
+
+rn**Login remote server for sftp file transfer:**
+
+rnrn```
+sftp user@hostnmane
+```rn[![sftp](https://www.technhit.in/wp-content/uploads/2017/01/sftp.png)](https://www.technhit.in/wp-content/uploads/2017/01/sftp.png)rn#### **Remote current directory display:**
+
+rn`sftp> pwd`rn`Remote working directory: /root`rn#### **Display local current directory:**
+
+rn`sftp> !pwd`rn`/home/technhit`rn#### **Display file list of the remote current directory:**
+
+rn`sftp> ls -l`rn`drwx------ 3 root root 4096    Jan 25 21:20    systemd-private`rn`drwxr-xr-x 4 root root 4096    Jan 26 21:52    technhit`rn`-rw-r--r-- 1 root root 31      Jan 26 20:40    test.txt`rn`-rw-r--r-- 1 root root 22      Jan 26 21:26    test2.txt`rn`-rw-r--r-- 1 root root 0       Jan 26 21:58    test3.txt`rn`drwx------ 2 root root 4096    Jan 25 21:20    vmware-root`rn#### **Display the file list of the local current directory:**
+
+rn`sftp> !ls -l`rn`total 8`rn`-rw-r--r-- 1 technhit technhit 22    Jan 26 21:28    test2.txt`rn`-rw-rw-r-- 1 technhit technhit 0     Jan 26 21:52    test3.txt`rn`-rw-rw-r-- 1 technhit technhit 31    Jan 26 20:27    test.txt`rn#### **Directory move:**
+
+rn`sftp> cd /tmp`rnrn`sftp>pwd`rn`Remote working directory: /tmp`rn#### **Rename files remotely:**
+
+rn`sftp> put test.txt ubuntutest.txt`rn`Uploading test.txt to /tmp/ubuntutest.txt`rn`test.txt 100% 31 0.0KB/s 00:00`rn`sftp> ls -l`rn`drwx------ 3 root root 4096    Jan 25 21:20    systemd-private`rn`drwxr-xr-x 4 root root 4096    Jan 26 21:52    technhit`rn`-rw-r--r-- 1 root root 31      Jan 26 20:40    test.txt`rn`-rw-r--r-- 1 root root 22      Jan 26 21:26    test2.txt`rn`-rw-r--r-- 1 root root 0       Jan 26 21:58    test3.txt`rn`-rw-r--r-- 1 root root 31      Jan 26 23:43    ubuntutest.txt`rn`drwx------ 2 root root 4096    Jan 25 21:20    vmware-root`rn#### **Upload multiple local files remotely:**
+
+rn`sftp> put *.txt`rn`Uploading test.txt to /tmp/test.txt`rn`test.txt            100%               31 0.0KB/s           00:00`rn`Uploading test2.txt to /tmp/test2.txt`rn`test2.txt           100%               22 0.0KB/s           00:00`rn`Uploading test3.txt to /tmp/test3.txt`rn`test3.txt           100%               0 0.0KB/s            00:00`rn#### **Download the remote file locally:**
+
+rn`sftp> get test.txt`rn`Fetching /tmp/test.txt to test.txt`rn`/tmp/test.txt            100%          31 0.0KB/s          00:00`rn#### **Batch download of multiple remote files locally:**
+
+rn`sftp> get *.txt`rn`Fetching /tmp/test2.txt to test2.txt`rn`/tmp/test2.txt           100%          22 0.0KB/s          00:00`rn`Fetching /tmp/test3.txt to test3.txt`rn`/tmp/test3.txt           100%          31 0.0KB/s          00:00`rn`Fetching /tmp/ubuntutest.txt to ubuntutest.txt`rn`/tmp/ubuntutest.txt      100%          31 0.0KB/s          00:00`rn#### **Create a directory in the remote current directory:**
+
+rn`sftp> mkdir testdirectory`rn`sftp> ls -l`rn`drwx------ 3 root root 4096    Jan 25 21:20    systemd-private`rn`drwxr-xr-x 4 root root 4096    Jan 26 21:52    technhit`rn`-rw-r--r-- 1 root root 31      Jan 26 23:45    test.txt`rn`-rw-r--r-- 1 root root 22      Jan 26 23:45    test2.txt`rn`-rw-r--r-- 1 root root 0       Jan 26 23:45    test3.txt`rn`drwxr-xr-x 2 root root 4096    Jan 26 23:46    testdirectory`rn`-rw-r--r-- 1 root root 31      Jan 26 23:43    ubuntutest.txt`rn`drwx------ 2 root root 4096    Jan 25 21:20    vmware-root`rn#### **Delete directory in remote**** current directory:**
+
+rn`sftp> rmdir testdirectory`rn`sftp> ls -l`rn`drwx------ 3 root root 4096    Jan 25 21:20    systemd-private`rn`drwxr-xr-x 4 root root 4096    Jan 26 21:52    technhit`rn`-rw-r--r-- 1 root root 31      Jan 26 23:45    test.txt`rn`-rw-r--r-- 1 root root 22      Jan 26 23:45    test2.txt`rn`-rw-r--r-- 1 root root 0       Jan 26 23:45    test3.txt`rn`-rw-r--r-- 1 root root 31      Jan 26 23:43    ubuntutest.txt`rn`drwx------ 2 root root 4096    Jan 25 21:20    vmware-root`rn#### **Delete file Remotely:**
+
+rn`sftp> rm test.txt`rn`Removing /tmp/test.txt`rn`sftp> ls -l`rn`drwx------ 3 root root 4096    Jan 25 21:20    systemd-private`rn`drwxr-xr-x 4 root root 4096    Jan 26 21:52    technhit`rn`-rw-r--r-- 1 root root 22      Jan 26 23:45    test2.txt`rn`-rw-r--r-- 1 root root 0       Jan 26 23:45    test3.txt`rn`-rw-r--r-- 1 root root 31      Jan 26 23:43    ubuntutest.txt`rn`drwx------ 2 root root 4096    Jan 25 21:20    vmware-root`rn#### **Exit Sftp Terminal:**
+
+rn`sftp> quit`rn`quit`rn`technhit@ubuntu:~$`rn## Conclusion :
+
+rnSo this entire article we learn how to use scp and sftp using ssh. hope this helpful for you. Thank you have a good day.

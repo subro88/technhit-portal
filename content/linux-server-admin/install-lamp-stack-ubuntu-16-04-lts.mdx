@@ -1,0 +1,97 @@
+---
+title: "Install LAMP Stack on Ubuntu 16.04 LTS"
+slug: "install-lamp-stack-ubuntu-16-04-lts"
+date: "2016-10-12"
+category: "linux-server-admin"
+status: "Published"
+summary: "**LAMP Stack** is very popular open source web platform which is commonly used to run web servers. The word LAMP stands for Linux, Apache, Mysql and PHP or Perl or Python. And stack is the hierarch..."
+tags: ["How to", "Ubuntu", "Linux", "LAMP", "Apache", "MySQL", "PHP", "PHPMyAdmin"]
+wordCount: 727
+readTime: 4
+---
+
+## Key Architecture Takeaways
+
+- **Point 1**: Production blueprint for Install LAMP Stack on Ubuntu 16.04 LTS on Linux infrastructure.
+- **Point 2**: Covers root privilege management, daemon supervision via systemd, and secure file operations.
+- **Point 3**: Applies to LTS releases (Ubuntu 24.04/22.04 LTS, Debian 12 Bookworm).
+
+
+> [!NOTE]
+> **Enterprise Compatibility Update (2026 / LTS)**
+> While these fundamentals apply directly to existing deployments, modern installations on Ubuntu 22.04 and 24.04 LTS use `systemd-resolved`, `nftables` for packet filtering, and modern OpenSSH 9+ with Ed25519 cryptography.
+
+
+---
+
+**LAMP Stack** is very popular open source web platform which is commonly used to run web servers. The word LAMP stands for Linux, Apache, Mysql and PHP or Perl or Python. And stack is the hierarchy of aforesaid. The base level holds Linux, then Apache & Mysql, then script like PHP/Perl/Python. It has a complete solution for development and deploys web applications. Most of the people like it because it is reliable, customizable and completely free.
+
+rnAs per [Netcraft](https://en.wikipedia.org/wiki/Netcraft) serves Its holds approx 33% market share which is leading the world. and most of the web application like WordPress, duple, Joomla etc. runs based on it.
+
+rnrn# Here I go to install LAMP Stack on my Ubuntu 16.04 LTS.
+
+rn## **Step1 : Install Ubuntu 16.04 LTS**
+
+rnFirst of all, you have to install [Ubuntu 16.04 LTS server](https://www.ubuntu.com/download/server) on your system. If you haven't click on the link to download ISO.
+
+rnBy default at the final stage of installation, it will ask which purpose your server will use to.  There is an option LAMP, you have to check it. And then Continue. It will automatically install LAMP into your server. Please see the picture. But rather default installation, manual installation is best practice for you. because you can install customized module as per your need.
+
+rn[![LAMP Stack](https://www.technhit.in/wp-content/uploads/2016/10/lamp.png)](https://www.technhit.in/wp-content/uploads/2016/10/lamp.png)
+
+rnIf you haven't at the time installation then you have to proceed with the manual installation.  [Here I have a shell script that installs LAMP with the virtual host at the end of configuring Vhost tutorial.](https://www.technhit.in/configure-apache-virtual-host-ubuntu-16-04-lts/) [Click here](https://www.technhit.in/wp-content/uploads/2016/10/script_lamp.rar) to download the script
+
+rnrn##  Step2 : Update Ubuntu 16.04 LTS
+
+rn```
+$ sudo apt-get updatern$ sudo apt-get upgrade
+```rn<blockquote> Note: Do not use super user access if you are newbie and unless its necessary.</blockquote>rn[![aptget-update](https://www.technhit.in/wp-content/uploads/2016/10/aptget-update.gif)](https://www.technhit.in/wp-content/uploads/2016/10/aptget-update.gif)rn## Step3 : Install Apache on Ubuntu 16.04 LTS
+
+rn```
+$ sudo apt-get install apache2
+```rn[![install-apache-server](https://www.technhit.in/wp-content/uploads/2016/10/install-apache-server.gif)](https://www.technhit.in/wp-content/uploads/2016/10/install-apache-server.gif)rnAfter installing apache you can check whether its work or not by typing http:// 192.168.xxx.xxx  your server IP. The page should display the words “It works!" like this. In my case, the server IP is 192.168.182.50. You can find your Server IP using* ifconfig* command.
+
+rn[![check-apache-server](https://www.technhit.in/wp-content/uploads/2016/10/check-apache-server.gif)](https://www.technhit.in/wp-content/uploads/2016/10/check-apache-server.gif)rn## Step4 : Install MySQL Server on Ubuntu 16.04 LTS
+
+rn```
+$ sudo apt-get install mysql-server php-mysql
+```rn[![install-mysql-server](https://www.technhit.in/wp-content/uploads/2016/10/install-Mysql-server.gif)](https://www.technhit.in/wp-content/uploads/2016/10/install-Mysql-server.gif)rnDuring the installation of Mysql server, it will ask for the root password to Mysql user. Do not confuse with ubuntu root user and Mysql root user. Here you ask to set the password for MySql root user to access MySQL shell.
+
+rnIf you want to install PHPMyAdmin for MySQL follow this.(This is optional)
+
+rnrn```
+$ sudo apt-get install phpmyadmin
+```rn[![install-phpmyadmin](https://www.technhit.in/wp-content/uploads/2016/10/install-phpmyadmin.gif)](https://www.technhit.in/wp-content/uploads/2016/10/install-phpmyadmin.gif)
+
+rnAfter installing phpmyadmin you can access MySQL administration over the browser. simply type your IP afterward /phpmydamin. **Check it after installing PHP otherwise an error will occur. Do this after step 4.**
+
+rn[![phpmyadmin](https://www.technhit.in/wp-content/uploads/2016/10/phpmyadmin.png)](https://www.technhit.in/wp-content/uploads/2016/10/phpmyadmin.png)
+
+rnrn## Step4 : Install PHP and its Module on Ubuntu 16.04 LTS
+
+rn```
+$ sudo apt-get install php libapache2-mod-php php-gd php-mcrypt
+```rn[![install-php](https://www.technhit.in/wp-content/uploads/2016/10/install-php.gif)](https://www.technhit.in/wp-content/uploads/2016/10/install-php.gif)rnThere are various PHP modules you can install on your server as per your requirements. You can find the list of PHP module using following.
+
+rnrn```
+$ apt-cache search php
+```rn[![php-module](https://www.technhit.in/wp-content/uploads/2016/10/php-module.png)](https://www.technhit.in/wp-content/uploads/2016/10/php-module.png)rn## Step5 : Setup your web application and finalize.
+
+rnAfter that, you have to add PHP to the directory index, to serve the relevant PHP index. Here I add index.php at the begin.
+
+rnrn```
+$ sudo nano /etc/apache2/mods-enabled/dir.conf
+```rn```
+ GNU nano 2.5.3 File:               /etc/apache2/mods-enabled/dir.conf Modifiedrnrn<IfModule mod_dir.c>rn DirectoryIndex index.php index.html index.cgi index.pl index.php index.xhtml index.htmrn</IfModule>rnrn# vim: syntax=apache ts=4 sw=4 sts=4 sr noetrnrnrn
+```rnPress Ctrl+X then Y enter to save and exit.
+
+rnNow its time to setup your web application. go to */var/www/html* directory and copy your application. Here I made a test whether its works perfectly or not by making a file with name *index.php *then putting the following line.
+
+rnrn```
+$ sudo nano /var/www/html/index.php
+```rn```
+<?phprnphpinfo();rn?>
+```rnNow Press Ctrl+X then Y enter to save and exit. and go to browser type your IP.rnrn[![phpinfo](https://www.technhit.in/wp-content/uploads/2016/10/phpinfo.png)](https://www.technhit.in/wp-content/uploads/2016/10/phpinfo.png)rn## **Conclusion**
+
+rnSo Basically LAMP Stack is Linux and bundle of Open source software and modules that provide a reliable platform to the user to set up their web applications. The above setting used for a single web application if you want to run multiple web application then you have to configure the virtual host. In next article, I will discuss and setting up Vhost for multiple web applications on a single server. Thank you for reading this article hope it helpful to you.
+
+rn

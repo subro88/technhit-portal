@@ -1,0 +1,124 @@
+---
+title: "Configure Nginx as Gateway for Multiple Servers"
+slug: "configure-nginx-as-gateway-for-multiple-servers"
+date: "2021-03-24"
+category: "clustering-virtualization"
+status: "Published"
+summary: "In this tutorial, we are going to configure Nginx as Gateway for multiple servers sharing one single public IP."
+tags: ["systems-engineering"]
+wordCount: 865
+readTime: 5
+---
+
+## Key Architecture Takeaways
+
+- **Point 1**: Hypervisor & container orchestration blueprint for Configure Nginx as Gateway for Multiple Servers.
+- **Point 2**: Architecture covers resource isolation, networking bridges, and high availability.
+- **Point 3**: Optimized for Proxmox VE 8, modern Docker 27+, and kernel cgroups v2.
+
+
+> [!TIP]
+> **High Availability Cluster Recommendation**
+> In modern virtualized datacenters (Proxmox VE 8.x), ensure guest configurations utilize VirtIO SCSI Single controllers with IOThread enabled, and isolate cluster corosync traffic onto dedicated 10GbE VLANs.
+
+
+---
+
+## In this tutorial, we are going to configure Nginx as Gateway for multiple servers sharing one single public IP.
+
+rnWe often need an entire dedicated or VPS server for some web application and if you are managing a large number of such servers that obviously need public IP for each to commutate. And consuming lots of public IPs is not a good solution for an enterprise in terms of cost. Here the Proxy or gateway concept comes into effect.
+
+rn[As we describe in our earlier tutorial of Nginx reverse proxy that Nginx can be used in many ways like a load balancer, reverse proxy, etc.](https://www.technhit.in/setting-up-an-nginx-reverse-proxy/)
+
+rnNow we are going to use Nginx as a gateway of multiple servers along with reverse proxy. The concept is that I have multiple servers running with the local IP address. And I am going to use one public IP to make all my local servers publicly accessible through Nginx.
+
+rn[![Nginx as getway](https://www.technhit.in/wp-content/uploads/2021/03/Nginx-as-getway-0-00-09-14.jpg)](https://www.technhit.in/wp-content/uploads/2021/03/Nginx-as-getway-0-00-09-14.jpg)
+
+rnrn## Prerequisites and Environment for this Experiment:
+
+rn
+rn 	- *Nginx Server (With two NIC Port first one for Public IP 103.10.208.52 and the second one for Private IP 10.0.50.10)*
+rn 	- *Application Server 1 (Having pre-installed Apache webserver to serve the web content over private IP 10.0.50.11)*
+rn 	- *Application Server 2 (Having pre-installed Apache webserver to serve the web content over private IP 10.0.50.12)*
+rn
+rnSo, before going to the actual process let me show you, my environment and scenario which I used here. Actually, I have a **[ProxMox data center](https://www.technhit.in/proxmox-hypervisor-setup-overview/)** and I have 3 LXC Containers one for [Nginx](https://www.nginx.com/) and the other two for demo web applications [having pre-installed Apache webserver](https://www.technhit.in/configure-apache-virtual-host-on-ubuntu-20-04-lts/) to serve the web content as per the above requirement.
+
+rn[![Nginx 1](https://www.technhit.in/wp-content/uploads/2021/03/Nginex-as-gateway-1.png)](https://www.technhit.in/wp-content/uploads/2021/03/Nginex-as-gateway-1.png)rn## Follow Steps at youtube:
+
+rn[embedyt] https://www.youtube.com/watch?v=uYFhsrDakCs[/embedyt]rn## Steps to Configure Nginx as Gateway:
+
+rn## **Step 01: Install Nginx at Server 01**
+
+rnLet’s go and login to our Nginx remote server.  type
+
+rnrn```
+ssh root@103.10.208.52    Your Public IP
+```rnIt asking for add fingerprint first time, here we go and type in yes and put the server password
+
+rnAlways, the first thing is first to do update your package list. Go ahead and type
+
+rnrn```
+sudo apt update
+```rnNow, we need to install Nginx, Let’s move and type
+
+rnrn```
+sudo apt install nginx
+```rnAnd hit enter key.
+
+rnAfter installing Nginx, you could check it perfectly running or not by using the service command just type
+
+rnrn```
+sudo service nginx status.
+```rnMy Nginx server running.
+
+rn[![Nginex 2](https://www.technhit.in/wp-content/uploads/2021/03/Nginex-as-gateway-2.png)](https://www.technhit.in/wp-content/uploads/2021/03/Nginex-as-gateway-2.png)rnyou could check through your browser, open up a tab aside and type your public IP, and you could see the default Nginx page is serving.
+
+rn[![Nginex 3](https://www.technhit.in/wp-content/uploads/2021/03/Nginex-as-gateway-3.png)](https://www.technhit.in/wp-content/uploads/2021/03/Nginex-as-gateway-3.png)rnNow enable Nginx service at boot, go ahead and type
+
+rnrn```
+sudo systemctl enable nginx.servicernsudo service nginx restart.
+```rn## **Step 02: Config Proxy Parameters **
+
+rnNow we are going to edit the Proxy params file. Go ahead and type
+
+rnrn```
+sudo nano /etc/nginx/proxy_params
+```rnAnd add the following lines at the end as proxy parameters for better performance.
+
+rnrn```
+ client_max_body_size 100M;rn client_body_buffer_size 1m;rn proxy_intercept_errors on;rn proxy_buffering on;rn proxy_buffer_size 128k;rn proxy_buffers 256 16k;rn proxy_busy_buffers_size 256k;rn proxy_temp_file_write_size 256k;rn proxy_max_temp_file_size 0;rn proxy_read_timeout 300;
+```rn## **Step 03: Config Nginx Virtual Host **
+
+rnNow you need to modify the default vhost file of Nginx, go ahead and type
+
+rnrn```
+sudo nano /etc/nginx/sites-available/default
+```rnScroll down a little bit here you will find the virtual host configuration. Uncomment the lines. After that, move to the server name section the name of your first application server. In my case, I gonna given it app1.technhit.in.
+
+rnrn```
+...rnserver {rn      listen 80 default_server;rn      listen [::]:80 default_server;rn rn      root /var/www/html;rn rn      # Add index.php to the list if you are using PHPrn      index index.html index.htm index.nginx-debian.html;rn rn      server_name app1.technhit.in;rn rn      location / {rn        proxy_pass http://10.0.50.11;rn        include /etc/nginx/proxy_params;rn      }rn }rnserver {rn      listen 80 default_server;rn      listen [::]:80 default_server;rn rn      root /var/www/html;rn rn      # Add index.php to the list if you are using PHPrn      index index.html index.htm index.nginx-debian.html;rn rn      server_name app2.technhit.in;rn rn      location / {rn        proxy_pass http://10.0.50.12;rn        include /etc/nginx/proxy_params;rn      }rn }rn...
+```rnYou need to change the server name and server IP (red marked) as per yours. After that, you need to save the config file and restart the Nginx server.
+
+rnrn```
+sudo service nginx restart
+```rn## **Step 04: Setup DNS Record**
+
+rnNow you need to add a DNS record to your name server pointing to your Public IP in order to access your application globally. For this experiment here I am going to add a local DNS resolver to access my application servers. For that open up a local terminal from the client system and edit the host file:
+
+rnrn```
+sudo nano /etc/hosts
+```rnand add the record.
+
+rnrn```
+103.10.208.52   app1.technhit.inrn103.10.208.52   app2.technhit.in
+```rnFor Windows client edit C:\Windows\System32\drivers\etc\hosts file. And add the records.
+
+rnrn## **Step 05: Testing**
+
+rnNow, open up a web browser and try to access the application by hostname.
+
+rn[![Nginex 4](https://www.technhit.in/wp-content/uploads/2021/03/Nginex-as-gateway-4.png)](https://www.technhit.in/wp-content/uploads/2021/03/Nginex-as-gateway-4.png)rnrn[![Nginex 5](https://www.technhit.in/wp-content/uploads/2021/03/Nginex-as-gateway-5.png)](https://www.technhit.in/wp-content/uploads/2021/03/Nginex-as-gateway-5.png)rn## **Conclusion:**
+
+rnSo, finally, we set Nginx as a Gateway of multiple standalone servers by the proxy method. This will reduce cost for your organization when your organization running multiple dedicated/VPS servers to serve different services for your Enterprise. Hope this tutorial helpful to you. Please do comment if you have any queries. And subscribe to encourage us and get the latest update. Thank you.
+
+rn

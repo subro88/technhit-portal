@@ -1,0 +1,131 @@
+---
+title: "PROXMOX Hypervisor Setup and Overview"
+slug: "proxmox-hypervisor-setup-overview"
+date: "2020-10-18"
+category: "clustering-virtualization"
+status: "Published"
+summary: "<!-- wp:paragraph -->rnProxmox VE is an open-source server management platform for your enterprise virtualization. It tightly integrates KVM hypervisor and LXC, software-defined storage, and networ..."
+tags: ["systems-engineering"]
+wordCount: 1053
+readTime: 6
+---
+
+## Key Architecture Takeaways
+
+- **Point 1**: Hypervisor & container orchestration blueprint for PROXMOX Hypervisor Setup and Overview.
+- **Point 2**: Architecture covers resource isolation, networking bridges, and high availability.
+- **Point 3**: Optimized for Proxmox VE 8, modern Docker 27+, and kernel cgroups v2.
+
+
+> [!TIP]
+> **High Availability Cluster Recommendation**
+> In modern virtualized datacenters (Proxmox VE 8.x), ensure guest configurations utilize VirtIO SCSI Single controllers with IOThread enabled, and isolate cluster corosync traffic onto dedicated 10GbE VLANs.
+
+
+---
+
+<!-- wp:paragraph -->rnProxmox VE is an open-source server management platform for your enterprise virtualization. It tightly integrates KVM hypervisor and LXC, software-defined storage, and networking functionality on a single platform. With the integrated web-based user interface you can easily manage VMs and containers.
+
+rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rnSo, are you ready to build an open-source and future-proof data center with Proxmox VE? To install Proxmox VE System Requirements are:
+
+rn[embedyt] https://www.youtube.com/watch?v=EtIDI3zC9Gk[/embedyt]
+
+rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph --><!-- /wp:paragraph -->rnrn<!-- wp:paragraph --><!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rn## **Recommended Hardware :**
+
+rnFor production servers, high-quality server equipment is needed.: [https://www.proxmox.com/en/proxmox-ve/requirements](https://www.proxmox.com/en/proxmox-ve/requirements)
+
+rn<!-- /wp:paragraph -->rnrn<!-- wp:list -->rn
+rn- Intel EMT64 or AMD64 with Intel VT/AMD-V CPU flag.
+rn- Memory, a minimum of 2 GB for OS and Proxmox VE services. Plus designated memory for guests. For Ceph or ZFS additional memory is required, approximately 1 GB memory for every TB used storage.
+rn
+rn[![Screenshot from 2020-10-18 11-07-56](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-2020-10-18-11-07-56.png)](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-2020-10-18-11-07-56.png)
+
+rn<!-- /wp:list -->rnrn<!-- wp:paragraph -->rn## **Download PROXMOX ISO Image:**
+
+rnGo to search and just type Proxmox then click on the download page for PROXMOX. From this list, you need to be download Proxmox VE [https://www.proxmox.com/en/downloads](https://www.proxmox.com/en/downloads)
+
+rn[![Screenshot from 2020-10-18 10-59-09](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-2020-10-18-10-59-09.png)](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-2020-10-18-10-59-09.png)
+
+rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph --><!-- /wp:paragraph -->rnrn<!-- wp:paragraph --><!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rn## **Installing PPROXMOX:**
+
+rnAfter downloading the ISO file, you need to make a bootable disk or USB, Let’s go and spin up your PROXMOX bootable disk into the system, you can see the Installation wizard 
+
+rn[![Screenshot from 1-](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-1-.png)](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-1-.png)
+
+rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph --><!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rnSelect Proxmox Ve and Hit the enter key. Now Select Your target hard disk and click on next button.
+
+rn[![Screenshot from 2-](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-2-.png)](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-2-.png)
+
+rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph --><!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rnNow Select your country, Time Zone, and keyboard layout. Then click on next.
+
+rn[![Screenshot from 3-](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-3-.png)](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-3-.png)
+
+rn 
+
+rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rnHere you need to set your root user password. Confirm password again. Then give a valid email address and click on next.
+
+rn[![Screenshot from 5-](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-5-.png)](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-5-.png)
+
+rnSet your management interface and then set your hostname. After that put your server public IP, I am doing the experiment in my local environment so I used local IP, you may modify as per your scenario.
+
+rn[![Screenshot from 4-](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-4-.png)](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-4-.png)
+
+rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph --><!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rnYou can able to see a summary before finally install into your system. Click on the Install button to proceed further.
+
+rn[![Screenshot from 6-](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-6-.png)](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-6-.png)
+
+rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rnNow sit back and relax until the installation is completed. When Installation successfully completed, you need to restart your system, and before restart copy or note down web management access. The Default Proxmox web access port is 8006.
+
+rn[![Screenshot from 7-](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-7-.png)](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-7-.png)
+
+rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph --><!-- /wp:paragraph -->rnrn<!-- wp:paragraph --><!-- /wp:paragraph -->rnrn<!-- wp:paragraph --><!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rnYou can see here my server reboot has been completed. And I am able to access my PROXMOX server through any computer in my network using this IP **https://192.168.108.131:8006**
+
+rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph --><!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rn## **Overview of PROXMOX Dashboard and It's Elements: **
+
+rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rnHere you can see the ProxMox dashboard. With the integrated web-based user interface you can easily manage VMs and containers, highly available clusters, or the integrated disaster recovery tools easily.
+
+rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rn### The Proxmox VE user interface consists of four regions.
+
+rn<!-- /wp:paragraph -->rnrn<!-- wp:table -->rn<figure class="wp-block-table" style="text-align: justify;">rn<table>rn<tbody>rn<tr>rn<td>Header</td>rn<td>On top. Shows status information and contains buttons for the most important actions.</td>rn</tr>rn<tr>rn<td>Resource Tree</td>rn<td>On the left side. A navigation tree where you can select specific objects.</td>rn</tr>rn<tr>rn<td>Content Panel</td>rn<td>In this Center region. Selected objects display configuration options and status are shown here.</td>rn</tr>rn<tr>rn<td>Log Panel</td>rn<td>At the bottom. It Displays log entries for recent tasks. You can double-click on those log entries to get more details or to abort a running task.</td>rn</tr>rn</tbody>rn</table>rn</figure>rn<!-- /wp:table -->rnrn<!-- wp:paragraph -->rn[![Screenshot from 8-](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-8-.png)](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-8-.png)
+
+rnHere in the leftmost panel, you will find datacenter and under your datacenter, you can manage multiple Proxmox Node from different locations easily. For now, I have only one node under my datacenter. When you select a PVE node the content panel shows some status and configuration.
+
+rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph --><!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rn[![](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-9-1-1.png)](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-9-1-1.png)
+
+rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rn**Summary:** Display full summary like CPU uses, Load average, RAM uses, HDD Space, Network Traffic, etc.  of your selected Object like PVE Node, Container, or VMS.
+
+rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rn**Notes: Notes **is the place where custom notes about a node can be written.
+
+rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rn**Shell:** It logs you into the shell of the node. You can execute all command from here.
+
+rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rn**System:** here you can configure the network, DNS, and time, and also shows your Syslog.
+
+rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rn**Updates:** It will upgrade the system and inform you about new packages.
+
+rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rn**Firewall:** In this section, you can define firewall rules to secure your node and container, you can define what traffic let you in or out.
+
+rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rn**Disks:** It gives you a brief overview of your physical hard drives and how they are used.
+
+rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rn**Ceph:** It is only used if you have installed a Ceph server on your host. Then you can manage your Ceph cluster and see the status of it here.
+
+rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rn**Replication:** It shows replication jobs and allows to create new ones. For a replication job, you need at least two Identical nodes.
+
+rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rn**Task History:** here you can see a list of all past tasks’ history.
+
+rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rn**Subscription:** here you can upload your subscription key and get a system overview in case of a support case.
+
+rn## **Downloading and Installing Container Template:**
+
+rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rnlook into your node here you can see only two storage objects. Under Local storage, you will find the content section.
+
+rn[![](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-10-.png)](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-10-.png)
+
+rnAnd from template, you can load a wide range of OS templates for your node. Just select a template and click on the download button.
+
+rn[![Screenshot from 11-](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-11-.png)](https://www.technhit.in/wp-content/uploads/2020/10/Screenshot-from-11-.png)
+
+rn<!-- /wp:paragraph -->rnrn<!-- wp:paragraph --><!-- /wp:paragraph -->rnrn<!-- wp:paragraph -->rnYou can also upload an ISO image of any OS to deploy as a Virtual Machine. Just click on upload and then select your ISO file and upload it.
+
+rnHope this article helpful to you. Leave comments if you have any questions.
+
+rn<!-- /wp:paragraph -->

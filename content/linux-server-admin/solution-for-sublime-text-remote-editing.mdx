@@ -1,0 +1,41 @@
+---
+title: "Solution for Sublime text Remote Editing"
+slug: "solution-for-sublime-text-remote-editing"
+date: "2018-07-06"
+category: "linux-server-admin"
+status: "Published"
+summary: "The solution for Sublime text Remote Editing: Sublime text is a powerful and most popular text editor for the Linux, Mac and Windows. But most often especially in windows, the issue is remote editi..."
+tags: ["systems-engineering"]
+wordCount: 344
+readTime: 2
+---
+
+## Key Architecture Takeaways
+
+- **Point 1**: Production blueprint for Solution for Sublime text Remote Editing on Linux infrastructure.
+- **Point 2**: Covers root privilege management, daemon supervision via systemd, and secure file operations.
+- **Point 3**: Applies to LTS releases (Ubuntu 24.04/22.04 LTS, Debian 12 Bookworm).
+
+
+> [!NOTE]
+> **Enterprise Compatibility Update (2026 / LTS)**
+> While these fundamentals apply directly to existing deployments, modern installations on Ubuntu 22.04 and 24.04 LTS use `systemd-resolved`, `nftables` for packet filtering, and modern OpenSSH 9+ with Ed25519 cryptography.
+
+
+---
+
+The solution for Sublime text Remote Editing: Sublime text is a powerful and most popular text editor for the Linux, Mac and Windows. But most often especially in windows, the issue is remote editing. Combining Sublime Text and ExpanDrive is a powerful solution for that. You can edit and manipulate files on SFTP/FTP or S3 in real-time from directly within the Sublime Text.
+
+rnSo, we are going to explain how to install ExpanDrive and Sublime text in windows. And combining them, for a better workflow of your project.rnrn[embedyt] https://www.youtube.com/watch?v=4c7ocysDMb8[/embedyt]rn## Prerequisites:
+
+rn
+rn 	- [Sublime Text 3](https://www.sublimetext.com/3)
+rn 	- [ExpanDrive ](https://www.expandrive.com/apps/expandrive/)
+rn
+rn## Installing Sublime Text3:
+
+rnFirst, [download sublime text](https://www.sublimetext.com/3) and install it in your windows system.rnrn[![Sublime Text3 Download](https://www.technhit.in/wp-content/uploads/2018/07/Sublime-Text3-Download.png)](https://www.technhit.in/wp-content/uploads/2018/07/Sublime-Text3-Download.png)rnrn[![](https://www.technhit.in/wp-content/uploads/2018/07/Install-Sublime-Text3-Download.png)](https://www.technhit.in/wp-content/uploads/2018/07/Install-Sublime-Text3-Download.png)rnrn rn## Installing Expand Drive:
+
+rnDownload ExpanDrive and install on your system. Follow the installation instruction.rnrn[![Expandrive](https://www.technhit.in/wp-content/uploads/2018/07/Expandrive.png)](https://www.technhit.in/wp-content/uploads/2018/07/Expandrive.png)rnrn rnrn[![](https://www.technhit.in/wp-content/uploads/2018/07/Expandrive-2.png)](https://www.technhit.in/wp-content/uploads/2018/07/Expandrive-2.png)rnrnNow We start by creating a new SSH (SFTP) connection within ExpanDrive, although you can connect to FTP, Amazon S3 or a whole variety of other support cloud storage providers if you prefer.rnrn[![Expandrive 3](https://www.technhit.in/wp-content/uploads/2018/07/Expandrive-3.png)](https://www.technhit.in/wp-content/uploads/2018/07/Expandrive-3.png)[![Expandrive 4](https://www.technhit.in/wp-content/uploads/2018/07/Expandrive-4.png)](https://www.technhit.in/wp-content/uploads/2018/07/Expandrive-4.png)rnrnOnce you have made the connection to the server, the contents are viewable in Finder, Explorer or any other application. On the Mac, I like the Open in Sublimebutton to click a folder and then click Open in Sublime and have Sublime open up the tree as a project. This is easier on Windows where you can right click and have the default shell extension offer “Open in Sublime.”rnrn[![Expandrive Explorer](https://www.technhit.in/wp-content/uploads/2018/07/Expandrive-Explorer.png)](https://www.technhit.in/wp-content/uploads/2018/07/Expandrive-Explorer.png)rnrnNow you can edit any file directly within Sublime and have the entire tree visible in the sublime sidebar.rnrn[![Expandrive Sublime Explorer](https://www.technhit.in/wp-content/uploads/2018/07/Expandrive-Sublime-Explorer.png)](https://www.technhit.in/wp-content/uploads/2018/07/Expandrive-Sublime-Explorer.png)rnrnWhile there are some other options out now for accessing SFTP servers from within Sublime, I feel pretty confident that ExpanDrive is the best. We have rock-solid background saves that let you hit command-s [or ctrl-s, if you’re on windows] with abandon. You’ll experience no delay as the file is saved instantly and pushed out to your server in the background.rn## There are a couple of option out there which I will list which are either paid or not:
+
+rn[https://mountainduck.io/](https://www.youtube.com/redirect?redir_token=_udvHlSj2jv_kmF51R6yxSewM198MTUzMDk1MDU5MEAxNTMwODY0MTkw&event=video_description&v=4c7ocysDMb8&q=https%3A%2F%2Fmountainduck.io%2F) Paidrnrn[http://www.sftpnetdrive.com/](https://www.youtube.com/redirect?redir_token=_udvHlSj2jv_kmF51R6yxSewM198MTUzMDk1MDU5MEAxNTMwODY0MTkw&event=video_description&v=4c7ocysDMb8&q=http%3A%2F%2Fwww.sftpnetdrive.com%2F) Free for Personal Usernrn[https://www.expandrive.com/](https://www.youtube.com/redirect?redir_token=_udvHlSj2jv_kmF51R6yxSewM198MTUzMDk1MDU5MEAxNTMwODY0MTkw&event=video_description&v=4c7ocysDMb8&q=https%3A%2F%2Fwww.expandrive.com%2F) Paidrnrn[https://github.com/Foreveryone-cz/win...](https://www.youtube.com/redirect?redir_token=_udvHlSj2jv_kmF51R6yxSewM198MTUzMDk1MDU5MEAxNTMwODY0MTkw&event=video_description&v=4c7ocysDMb8&q=https%3A%2F%2Fgithub.com%2FForeveryone-cz%2Fwin-sshfs) Open Source

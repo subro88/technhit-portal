@@ -7,7 +7,7 @@ export interface PostMetadata {
   title: string;
   slug: string;
   date: string;
-  category: "linux-server-admin" | "clustering-virtualization" | "local-ai-inference" | "stem-10-plus-2" | "video-companions";
+  category: "linux-server-admin" | "clustering-virtualization" | "local-ai-inference" | "stem-10-plus-2" | "video-companions" | "software-engineering";
   status: "Published" | "Draft";
   summary: string;
   youtubeId?: string;
@@ -48,6 +48,13 @@ export const CATEGORIES = [
     description: "Self-hosted LLMs, Ollama, vLLM, CUDA containerization, and private multi-node inference clusters.",
     badge: "GPU Inference",
     color: "purple",
+  },
+  {
+    slug: "software-engineering",
+    name: "Software & Web Systems",
+    description: "Modern full-stack web engineering, Laravel, React, Node.js runtimes, API design, and distributed architectures.",
+    badge: "Full Stack Dev",
+    color: "teal",
   },
   {
     slug: "stem-10-plus-2",

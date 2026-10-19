@@ -1,0 +1,106 @@
+---
+title: "How to Install ReactJS on Ubuntu 20.04"
+slug: "how-to-install-reactjs-on-ubuntu-20-04"
+date: "2021-04-07"
+category: "software-engineering"
+status: "Published"
+summary: "React. js is an open-source JavaScript library that is used for creating web frontend and UI components specifically for single-page applications. It's used for handling the view layer for web and ..."
+tags: ["systems-engineering"]
+wordCount: 674
+readTime: 4
+---
+
+## Key Architecture Takeaways
+
+- **Point 1**: Full-stack architecture blueprint: How to Install ReactJS on Ubuntu 20.04.
+- **Point 2**: Covers MVC separation of concerns, routing pipelines, and database abstraction.
+- **Point 3**: Modern ecosystems: Laravel 11/PHP 8.3, React 19, and Node.js LTS runtimes.
+
+
+> [!NOTE]
+> **Modern Framework Landscape (2026)**
+> Web engineering patterns have evolved: Laravel now utilizes PHP 8.2+ typed properties, Vite asset bundling, and strict Eloquent typing, while Node.js LTS supports native `fetch` and ESM modules out of the box.
+
+
+---
+
+React. js is an open-source JavaScript library that is used for creating web frontend and UI components specifically for single-page applications. It's used for handling the view layer for web and mobile apps. It is developed and maintained by Facebook and a large community of developers.
+
+rnrn## History of React JS
+
+rnReact was created by Jordan Walke, a software engineer at Facebook, who released an early prototype of React called "FaxJS". It was first deployed on Facebook's News Feed in 2011 and later on Instagram in 2012. And finally, it was open-sourced at JS Conference US in May 2013. And as a result, the Reacts first release was published in 2013.
+
+rn**In this tutorial, you will learn to install and create React Application on a Ubuntu Linux system.**
+
+rnView on Youtube:rnrn[embedyt] https://www.youtube.com/watch?v=DOOHMrmaV6U[/embedyt]rn## *Here are the major steps that you have to follow:*
+
+rn
+rn 	- *– Install Node.js*
+rn 	- *– Install Yarn package manager on your system*
+rn 	- *– Create A New React Application*
+rn 	- *– Start React Application*
+rn 	- *– Create React.js Production Build*
+rn
+rn## Step 1 – Install Node.js
+
+rnNode.js is required to create and run a React.js application. The following steps will install Node.js 14 on your Ubuntu system. or [click here to choose your desired version.](https://github.com/nodesource/distributions/blob/master/README.md)
+
+rnrn
+rn 	- rn
+rn 	<li>Add the Node.js 14 (current stable version) PPA to your Ubuntu systemrn```
+curl -sL https://deb.nodesource.com/setup_14.x | sudo bash - 
+```rn
+rn 	- Next, run the following command to install the Node.js to your system:rn```
+sudo apt install -y nodejs
+```rn
+rn 	- Check the currently active version of Node.jsrn```
+node -v 
+```rn
+rn 	- Also, you can check npm version using.rn```
+npm -v
+```rn
+rn
+rn</li>rn
+rn## [![react js 1](https://www.technhit.in/wp-content/uploads/2021/04/react-js-1.png)](https://www.technhit.in/wp-content/uploads/2021/04/react-js-1.png)
+
+rn## Step 2–Install Yarn package manager on your system
+
+rnAlso install `Yarn` package manager on your system.rn```
+npm install -g yarn 
+```rn## Step 3 – Create A New React Application
+
+rnAnd now we are move for next step to install yarn package manager, although you could use npm or npx command to install the React JS. But I am gonna use yarn to do that. And obviously, there are some reasons behind that. The key difference between npm and yarn is that the yarn is easy to manage and it can install packages simultaneously which tremendously reduces your install time. It gives Clean output compare to npm. So, there are lots of advantages using yarn.
+
+rnrn```
+yarn create react-app myreactapp 
+```rnOn successful application creation, you will see a long result on the screen. In the end, you will find the result like below with some useful commands.
+
+rn[![react js 2](https://www.technhit.in/wp-content/uploads/2021/04/react-js-2.png)](https://www.technhit.in/wp-content/uploads/2021/04/react-js-2.png)
+
+rnrn## Step 4 – Start React Application
+
+rnOnce you have created your React application. This will create a folder in the current directory with the project name. Switch to that project and run `yarn start` to start the application.
+
+rnrn```
+cd myreactapp </code> `yarn start 
+```rnThe default reacts application starts on port 3000. Access your React application using 3000 port with the system IP address. For local machines use “localhost” followed by port.
+
+rn[![reactjs](https://www.technhit.in/wp-content/uploads/2021/04/react-js-3.png)](https://www.technhit.in/wp-content/uploads/2021/04/react-js-3.png)
+
+rnLet's create an awesome user interface with React.
+
+rnrn## Step 5 – Create React js Production Build
+
+rnOnce your application is ready for production deployment. Let’s create a production build of your React application. The Production build contains static files required to run the application in the production environment. You don’t need to install Node.js on production servers as they don’t contain any development files.
+
+rnUse <code>yarn build` or `npm run build` command to create a production build of your React.js application.
+
+rnrn```
+cd myreactapp </code> <code class="terminal-user">yarn build 
+```rnOn successful build, you will see the output like below:
+
+rn[![reactjs](https://www.technhit.in/wp-content/uploads/2021/04/react-js-4.png)](https://www.technhit.in/wp-content/uploads/2021/04/react-js-4.png)rnAll the production files are created under the **build** directory. Upload all the content from the build directory to the production website document root.
+
+rnrn## Conclusion
+
+rnIn this tutorial, you have learned, how to set up the React.js development environment and access the application in a web browser. Additionally, you found instructions to create a production build of your React application.

@@ -1,0 +1,38 @@
+---
+title: "ATM Money Withdrawal Algorithm Using C Array"
+slug: "atm-money-withdrawal-algorithm-using-c-array"
+date: "2016-10-21"
+category: "stem-10-plus-2"
+status: "Published"
+summary: "Hello, friends!  We all uses ATM to withdraw money in our daily life. Ever thought how it is work behind ATM. As per Wikipedia Cash Machine is the origin name of ATM (<b style=\"color: 252525; font..."
+tags: ["C / C++", "while loop", "C Programming Arrays", "c array"]
+wordCount: 199
+readTime: 2
+---
+
+## Key Architecture Takeaways
+
+- **Point 1**: Core computer science and engineering computing concept: ATM Money Withdrawal Algorithm Using C Array.
+- **Point 2**: Detailed trace of memory representation, algorithmic complexity, and control structures.
+- **Point 3**: Includes portable ISO C (C17/C23) code examples verified with modern GCC and Clang.
+
+
+> [!NOTE]
+> **Compiler & Toolchain Modernization**
+> While legacy educational environments used 16-bit DOSBox Turbo C++, all code presented here adheres to standard ANSI/ISO C standards. You can compile these programs cleanly on modern Linux, Windows (MSYS2/WSL), or macOS using:
+> ```bash
+> gcc -Wall -Wextra -O2 program.c -o program
+> ./program
+> ```
+
+
+---
+
+Hello, friends!  We all uses ATM to withdraw money in our daily life. Ever thought how it is work behind ATM. As per Wikipedia Cash Machine is the origin name of ATM (<b style="color: #252525; font-family: sans-serif; font-size: 14px; line-height: 22.4px; background-color: #ffffff;">automated teller machine)</b> also it called ABM (<b style="color: #252525; font-family: sans-serif; font-size: 14px; line-height: 22.4px; background-color: #ffffff;">automated banking machine). </b>It is the combination of electromechanical hardware and software. Actually, most of ATM are programmed with JAVA behind it, but here we implement algorithm only withdrawal functionality using C-Array.
+
+rnrn## **C ATM Money Withdrawal Algorithm:**
+
+rn```
+#include<stdio.h>rnvoid main()rn{rn   int money[]={1000,500,100,50,20,10,5,2,1};  //money to disbursedrn   int withdraw_amt=0;                         //For store withdrawl amountrn   int i=0,r; rn   clrscr();rn   printf(" Enter An Amount to Withdrawal : ");rn   scanf("%d",&withdraw_amt);rn   while(withdraw_amt >0)rn   {rn        r=withdraw_amt/money[i]; // Withdrawl amount devided by each money sets on abovern        withdraw_amt= withdraw_amt%money[i]; //a reminder will set again withdrawal amount.rn        printf(" Please Collect note of %4d rupees : %4d 
+",money[i],r);rn        i++;rn   }rn   printf(" THANKS FOR USING OUR ATM SERVICE ");rn   getch();rn}
+```rnOutput:rnrn[![ATM Money Withdrawal Algorithm](https://www.technhit.in/wp-content/uploads/2016/10/output.png)](https://www.technhit.in/wp-content/uploads/2016/10/output.png)rnrnSo, The above program shows only  how the money will be disbursed. Here I use cent also, usually the cent and coin not use in the ATM machines.

@@ -1,0 +1,67 @@
+---
+title: "CodeIgniter Database Configuration"
+slug: "codeigniter-database-configuration"
+date: "2017-02-21"
+category: "software-engineering"
+status: "Published"
+summary: "In continuation of basic configuration tutorial, now we are going to configure our database for the web application. The database is most important (Backbone) part of any application for storing an..."
+tags: ["CodeIgniter"]
+wordCount: 700
+readTime: 4
+---
+
+## Key Architecture Takeaways
+
+- **Point 1**: Full-stack architecture blueprint: CodeIgniter Database Configuration.
+- **Point 2**: Covers MVC separation of concerns, routing pipelines, and database abstraction.
+- **Point 3**: Modern ecosystems: Laravel 11/PHP 8.3, React 19, and Node.js LTS runtimes.
+
+
+> [!NOTE]
+> **Modern Framework Landscape (2026)**
+> Web engineering patterns have evolved: Laravel now utilizes PHP 8.2+ typed properties, Vite asset bundling, and strict Eloquent typing, while Node.js LTS supports native `fetch` and ESM modules out of the box.
+
+
+---
+
+In continuation of basic configuration tutorial, now we are going to configure our database for the web application. The database is most important (Backbone) part of any application for storing and retrieve information an organised manner. In CodeIgniter **database configuration** comes in ***database.php*** under** */application/config*** directory. CodeIgniter currently supports following database to build any web application:
+
+rnrnrnrnrn
+rn 	- MySQL (5.1+) via the *mysql* (deprecated), *mysqli* and *pdo* drivers
+rn 	- Oracle via the *oci8* and *pdo* drivers
+rn 	- PostgreSQL via the *postgre* and *pdo* drivers
+rn 	- MS SQL via the *mssql*, *sqlsrv* (version 2005 and above only) and *pdo* drivers
+rn 	- SQLite via the *sqlite* (version 2), *sqlite3* (version 3) and *pdo* drivers
+rn 	- CUBRID via the *cubrid* and *pdo* drivers
+rn 	- Interbase/Firebird via the *ibase* and *pdo* drivers
+rn 	- ODBC via the *odbc* and *pdo* drivers (you should know that ODBC is actually an abstraction layer)
+rn
+rnrnrnrn<footer>rnChose any database from above for your application as per your application requirement and as familiar with you. we are using MySQL for our application.rn## CodeIgniter Database Configuration snippet:
+
+rn```
+ $db['default'] = array(rn 'dsn' => '',rn 'hostname' => 'localhost',rn 'username' => '',rn 'password' => '',rn 'database' => '',rn 'dbdriver' => 'mysqli',rn 'dbprefix' => '',rn 'pconnect' => FALSE,rn 'db_debug' => (ENVIRONMENT !== 'production'),rn 'cache_on' => FALSE,rn 'cachedir' => '',rn 'char_set' => 'utf8',rn 'dbcollat' => 'utf8_general_ci',rn 'swap_pre' => '',rn 'encrypt' => FALSE,rn 'compress' => FALSE,rn 'stricton' => FALSE,rn 'failover' => array(),rn 'save_queries' => TRUErn);
+```rnAs we see above code snippet there are lots of parameters uses in **DB config** as an array(). We need not change all those parameters. You can leave those parameters its default value, except* hostname, username, password, database* and *dbdriver.*
+
+rnrn</footer>rn**Hostname--** In this parameter specify the database server location. If your database locates the same server where your application runs use "*localhost*" for hostname parameter. If your database server runs from the different server then you have to put *Domain name* or* IP* address of database server.
+
+rn**Username--** In this parameter tell your database user name.
+
+rn**Password--** In this parameter specify your database password.
+
+rn**Database--** In this parameter specify your database name.
+
+rn**Dbdriver--** In this parameter set your database type. For example *MySQL, MySQLi, Postgre SQL, ODBC, and MS SQL* etc.
+
+rnrn## After Configuration snippet:
+
+rn```
+ $db['default'] = array(rn 'dsn' => '',rn 'hostname' => 'localhost',rn 'username' => 'dbuser',rn 'password' => '1234',rn 'database' => 'portal',rn 'dbdriver' => 'mysqli',rn 'dbprefix' => '',rn 'pconnect' => FALSE,rn 'db_debug' => FALSE,// Set FALSE if your application on production environmentrn 'cache_on' => FALSE,rn 'cachedir' => '',rn 'char_set' => 'utf8',rn 'dbcollat' => 'utf8_general_ci',rn 'swap_pre' => '',rn 'encrypt' => FALSE,rn 'compress' => FALSE,rn 'stricton' => FALSE,rn 'failover' => array(),rn 'save_queries' => TRUErn rn);
+```rn On above snippet, you notice that ***db_debug*** is set to FALSE. If your application is in a production environment then, it is recommended to set FALSE because of security issue. The ***db_debug*** determines whether database errors should be displayed or not.
+
+rnrn### **$active_group --**
+
+rnUsing ***$active_group*** variable you can choose a connection group to make active from sets of connection group. By default, there is only one group (the 'default' group). You can simply switch to different connection by changing the value of a variable as shown below −
+
+rnrn```
+ <?phprndefined('BASEPATH') OR exit('No direct script access allowed');rnrnrn//$active_group = 'default'; //comment on the defaule grouprnrn$active_group = 'conn2';   //Conn2 is active nowrnrn$query_builder = TRUE;rnrn$db['default'] = array(rn 'dsn' => '',rn 'hostname' => 'localhost',rn 'username' => 'dbuser',rn 'password' => '1234',rn 'database' => 'portal',rn 'dbdriver' => 'mysqli',rn 'dbprefix' => '',rn 'pconnect' => FALSE,rn 'db_debug' => FALSE,rn 'cache_on' => FALSE,rn 'cachedir' => '',rn 'char_set' => 'utf8',rn 'dbcollat' => 'utf8_general_ci',rn 'swap_pre' => '',rn 'encrypt' => FALSE,rn 'compress' => FALSE,rn 'stricton' => FALSE,rn 'failover' => array(),rn 'save_queries' => TRUErn rn);rnrnrn$db['conn2'] = array(rn 'dsn' => '',rn 'hostname' => 'localhost',rn 'username' => 'dbuser2',rn 'password' => '1234',rn 'database' => 'portal2',rn 'dbdriver' => 'mysqli',rn 'dbprefix' => '',rn 'pconnect' => FALSE,rn 'db_debug' => FALSE,rn 'cache_on' => FALSE,rn 'cachedir' => '',rn 'char_set' => 'utf8',rn 'dbcollat' => 'utf8_general_ci',rn 'swap_pre' => '',rn 'encrypt' => FALSE,rn 'compress' => FALSE,rn 'stricton' => FALSE,rn 'failover' => array(),rn 'save_queries' => TRUErn rn);
+```rn**$query_builder** --rnrnThe $query_builder variables determine whether or not to load the query builder class.rnrn rnrn[<>](https://www.technhit.in/codeigniter-base-url-configuration/)

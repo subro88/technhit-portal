@@ -1,0 +1,170 @@
+---
+title: "Setup Laravel On Ubuntu with Apache"
+slug: "setup-laravel-on-ubuntu-with-apache"
+date: "2020-11-17"
+category: "software-engineering"
+status: "Published"
+summary: "Hi Friends, in this article we are going to install Laravel Framework with Apache on Ubuntu 20.04 LTS. It will give you feelings of production environment while developing your application in the l..."
+tags: ["Ubuntu", "Apache", "PHP", "Laravel"]
+wordCount: 1090
+readTime: 6
+---
+
+## Key Architecture Takeaways
+
+- **Point 1**: Full-stack architecture blueprint: Setup Laravel On Ubuntu with Apache.
+- **Point 2**: Covers MVC separation of concerns, routing pipelines, and database abstraction.
+- **Point 3**: Modern ecosystems: Laravel 11/PHP 8.3, React 19, and Node.js LTS runtimes.
+
+
+> [!NOTE]
+> **Modern Framework Landscape (2026)**
+> Web engineering patterns have evolved: Laravel now utilizes PHP 8.2+ typed properties, Vite asset bundling, and strict Eloquent typing, while Node.js LTS supports native `fetch` and ESM modules out of the box.
+
+
+---
+
+Hi Friends, in this article we are going to install Laravel Framework with Apache on Ubuntu 20.04 LTS. It will give you feelings of production environment while developing your application in the local environment.
+
+rnAs you all know Laravel is a powerful web application framework. At the time of recording this video, Laravel's latest version is 8.13, and [Laravel 8.13](https://laravel.com/) requires PHP 7.3 or greater version.
+
+rnWe can segregate the entire setup with 5 major steps as follows:
+
+rnrn
+rn 	- Step 1 - Install Apache Web Server
+rn 	- Step 2 - Install and Configure PHP 7.4
+rn 	- Step 3 - Install Composer PHP Packages Management
+rn 	- Step 4 - Install Laravel 8.x on Ubuntu 20.04
+rn 	- Step 5 - Finally Configure Apache for Laravel and test it.
+rn
+rn## [embedyt] https://www.youtube.com/watch?v=QU43xeaAtSY[/embedyt]
+
+rn## **Step 1 - Install Apache Web Server**
+
+rnLet’s open up a Terminal and do first thing first update your package list using Sudo apt update command.
+
+rnrn```
+sudo apt update
+```rnAfter updating your package list install apache webserver. So, go ahead and type sudo apt install apache2 then hit the enter key. Press y key to proceed. You can also setup laravel with Nginx instead of the apache web server. Click Here
+
+rnrn```
+sudo apt install apache2rnsystemctl status apache2rn
+```rn[![laravel ubuntu apache](https://www.technhit.in/wp-content/uploads/2020/11/laravel-ubuntu-apache.png)](https://www.technhit.in/wp-content/uploads/2020/11/laravel-ubuntu-apache.png)rnIf the Apache server not running then use the following command to start apache serve and add to boot startup.
+
+rnrn```
+systemctl start apache2rnsystemctl enable apache2
+```rnNow open up the web browser and type localhost to see the default apache webpage is serving or not.
+
+rnrn## **Step 2 - Install and Configure PHP 7.4**
+
+rnGet back to the terminal and it's time to install PHP. Also, you can Checkout this Article on [how to handle multiple PHP on a single server.](https://www.technhit.in/install-and-configure-multiple-php-version-with-apache-on-ubuntu-20-04/) To install Laravel 8.x, at least you must have PHP >= 7.3 on your system. And by default, the official Ubuntu 20.04 repository provides PHP 7.4 packages. Install PHP 7.4 packages using the apt command below.
+
+rnrn```
+sudo apt install libapache2-mod-php php php-common php-xml php-gd php-opcache php-mbstring php-tokenizer php-json php-bcmath php-zip unzip
+```rnYou can check your PHP version using it.
+
+rnrn```
+php -- version
+```rn[![php version](https://www.technhit.in/wp-content/uploads/2020/11/php-version.png)](https://www.technhit.in/wp-content/uploads/2020/11/php-version.png)rnNow go ahead and make tweak changes in PHP ini file and set cgi.fix_pathinfo set to be 0. If this number is kept as a 1, the php interpreter will do its best to process the file that is as near to the requested file as possible. This is a possible security risk. If this number is set to 0, conversely, the interpreter will only process the exact file path—a much safer alternative.
+
+rnrn```
+cd /etc/php/7.4/apache2rnsudo nano php.ini
+```rnPress ctrl+w and search for the word "cgi.fix" the uncomment the line and set it to 0.
+
+rnrn```
+...rncgi.fix_pathinfo=0rn...
+```rnPress Ctrl + x then y to Save and Exit.
+
+rnNow Restart The apache service.
+
+rnrn```
+systemctl restart apache2
+```rn## **Step 3 - Install Composer PHP Packages Management**
+
+rnNow it's time to install the composer package manager go ahead and download and install Composer. and move the composer .phar file to usr/local/bin/composer directory.
+
+rnrn```
+sudo apt install curlrncurl -sS https://getcomposer.org/installer | phprnsudo mv composer.phar /usr/local/bin/composer
+```rnYou can check your installed composer version by typing the composer – version.
+
+rnrn```
+composer --version
+```rnHere you can see my version is 2.8.4
+
+rn[![composer version](https://www.technhit.in/wp-content/uploads/2020/11/composer-version.png)](https://www.technhit.in/wp-content/uploads/2020/11/composer-version.png)rn## **Step 4 - Install Laravel 8.x on Ubuntu 20.04**
+
+rnNow install Laravel Framework using composer, just type composer global require Laravel/installer It will take a while to complete download its dependencies.
+
+rnrn```
+composer global require laravel/installer
+```rnAs you had seen above image, all packages have been installed on the '~/.config/composer' directory. Next, we need to add the 'bin' directory to the PATH environment through the ~/.bashrc configuration. So Now Edit the ~/.bashrc configuration using nano command.
+
+rnrn```
+nano ~/.bashrc
+```rnAnd add the following line at the end of the file.
+
+rnrn```
+...rnexport PATH="$HOME/.config/composer/vendor/bin:$PATH"rn...
+```rnNow reload your bashrc configuration using the source command.
+
+rnrn```
+source ~/.bashrc
+```rnNow echo $PATH. It will return your “Bin” directory path for the Composer package.
+
+rnrn```
+echo $PATH
+```rnThe 'bin' directory for the composer packages has been added to the $PATH environment variable. And as a result, you can use the command 'laravel' to start and create a new project. Now go ahead and type Laravel new then your project name to start a new Laravel project.
+
+rnrn```
+laravel new myapp1
+```rnThis will take a while to download all dependencies required by Laravel.
+
+rnHere you can see the installation of my new project myapp1 finished. You can also see inside my home directory a new directory has been created with my project name.
+
+rnrn## **Step 5 - Finally Configure Apache for Laravel and test it.**
+
+rnFirst, add your project directory to www-data group use the following command
+
+rnrn```
+sudo chgrp -R www-data /home/techblog/myapp1
+```rn -R flag is recursive, Recursive means all subdirectory and files under your project directory become changed to the "www-data" group.
+
+rnAlso, you need to change access permission 775 of the storage directory under your project. So, go ahead and use the following command.
+
+rnrn```
+sudo chmod -R 775 /home/techblog/myapp1/storage
+```rnNow create an apache vhost configuration go to the following directory and create a vhost config file using nano file editor.
+
+rnrn```
+cd /etc/apache2/sites-available/rnsudo nano myapp1.com.conf
+```rnAnd paste the following line inside the file.
+
+rnrn```
+<VirtualHost *:80>rn    ServerName myapp1.comrnrn    ServerAdmin admin@myapp1.comrn    DocumentRoot /home/techblog/myapp1/publicrnrn    <Directory /home/techblog/myapp1>rn        Options Indexes MultiViewsrn        AllowOverride Nonern        Require all grantedrn    </Directory>rnrn    ErrorLog ${APACHE_LOG_DIR}/error.logrn    CustomLog ${APACHE_LOG_DIR}/access.log combinedrn</VirtualHost>rnrn//All Red colored text must be changed as per your//
+```rnTo learn more about Vhost configuration click here [How to configure Apache Virtual Host on Ubuntu.](https://www.technhit.in/configure-apache-virtual-host-ubuntu-16-04-lts/) Now enable mod rewrite for apache2 just type
+
+rnrn```
+sudo a2enmod rewrite.
+```rnNow enable your site, just type
+
+rnrn```
+sudo a2ensite myapp1.com.conf.
+```rnFinally, Restart the apache service, type
+
+rnrn```
+systemctl restart apache2
+```rnAs you are in a local environment you need a local dns resolver for your site. Go ahead and edit /etc/hosts file, add a dns record for your site then save the file.
+
+rnrn```
+sudo nano /etc/hosts
+```rn```
+...rn127.0.0.1   myapp1.comrn...
+```rnNow get back to the web browser and open a tab then type your project hostname.
+
+rn[![laravel home](https://www.technhit.in/wp-content/uploads/2020/11/laravel-home.png)](https://www.technhit.in/wp-content/uploads/2020/11/laravel-home.png)rnAnd here it is it's working. Here you can see the Laravel version and PHP version.
+
+rnSo, from here open your project directory with the sublime editor or any PHP editor and create amazing projects for clients.
+
+rnHope this article helpful to you. Leave a comment if you have any questions. Also, click on the subscribe button to encourage us and get the latest update. Thank you.
+
+rn

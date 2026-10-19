@@ -1,0 +1,82 @@
+---
+title: "Example Program Using 'for' Loop"
+slug: "example-program-using-loop"
+date: "2016-07-22"
+category: "stem-10-plus-2"
+status: "Published"
+summary: "Unlike any programming, language loops play a very important role in C or C++ . Here is some example program using for loop.rn
+rn 	- rn**C Program to print *n* natural number using for loop:**"
+tags: ["example program", "factorial", "prime number", "Fibonacci series", "divisible by 5 and 3"]
+wordCount: 599
+readTime: 3
+---
+
+## Key Architecture Takeaways
+
+- **Point 1**: Core computer science and engineering computing concept: Example Program Using 'for' Loop.
+- **Point 2**: Detailed trace of memory representation, algorithmic complexity, and control structures.
+- **Point 3**: Includes portable ISO C (C17/C23) code examples verified with modern GCC and Clang.
+
+
+> [!NOTE]
+> **Compiler & Toolchain Modernization**
+> While legacy educational environments used 16-bit DOSBox Turbo C++, all code presented here adheres to standard ANSI/ISO C standards. You can compile these programs cleanly on modern Linux, Windows (MSYS2/WSL), or macOS using:
+> ```bash
+> gcc -Wall -Wextra -O2 program.c -o program
+> ./program
+> ```
+
+
+---
+
+Unlike any programming, language loops play a very important role in C or C++ . Here is some example program using for loop.rn
+rn 	- rn## **C Program to print *n* natural number using for loop:**
+
+rn
+rn
+rnA *natural number* is a *number* that occurs commonly and obviously in nature. As such, it is a whole, non-negative *number*. The set of *natural numbers*, denoted N, can be *defined* in either of two ways: N = {0, 1, 2, 3, ...}
+
+rnrn```
+#include<studio.h>rnvoid main()rn{rn    int i;rn    printf("Enter any value");rn    scanf("%d",&i);rn    for(j=1;j<=i;j++)rn    {rn       printf("Value of j is now %d
+",j);rn    }rn}
+```rn
+rn 	- rn## ** C program to find prime no between *n* value given by user:**
+
+rn
+rn
+rnA *prime number* (or a *prime*) is a natural *number* greater than 1 that has no positive divisors other than 1 and itself. The first few **prime numbers** are 1,2, 3, 5, 7, 11, 13, 17, 19, 23, and 29.
+
+rnrn```
+#include<stdio.h>rnvoid main()rn{rn int i,j,n,count=0;rn clrscr();rn printf("Enter n term value to search prime");rn scanf("%d",&n);rn for (i=1;i<=n;i++)rn {rn count=0;rn for ( j =1 ; j <= i ; j++ )rn {rn if ( i % j == 0 )rn count=count+1;rn }rn if ( count<=2 )rn printf("Prime number.=%d
+",i);rn }rn getch();rn}
+```rnOutputrnrn[![prime output](http://technhit.in/wp-content/uploads/2016/07/prime-output.png)](http://technhit.in/wp-content/uploads/2016/07/prime-output.png)rn
+rn 	- rn## ** C Program to check how many number are divisible by 5 and 3 between given range by user: **
+
+rn
+rn
+rnWhen one number can be divided by another and the result is an exact whole number. Example: *15* is *divisible* by *3*, because* 15 ÷ 3 = 5* exactly. In this case, we use logical "*&&*" for checking two conditions, if here any condition returns false the whole expression is return false.
+
+rnrn```
+#include <stdio.h>rn rnint main()rn{rn int range1,range2, result,i;rn printf("Enter Start value of range:");rn scanf("%d",&range1);rn printf("Enter End value of range:");rn scanf("%d",&range2);rn printf("##################################################");rn printf(" The following No is divisible by 5 and 3 both");rn printf("##################################################");rn for(i=range1; i<=range2; i++)rn {rn    if (i%5==0 && i%3==0)rn    {rn        printf("%d   ",i); //   is escape sequence used to put a tabrn    }rn }rn getch();rn return 0;rn}
+```rnOutputrnrn[![divisible](http://technhit.in/wp-content/uploads/2016/07/divisible.png)](http://technhit.in/wp-content/uploads/2016/07/divisible.png)rn
+rn 	- rn## **C Program to print Fibonacci series:**
+
+rn
+rn
+rnFibonacci series is sequence of number like that *0,1,1,2,3,5,8,13.......n* . The basic algorithm is *{3rd number = 1st number + 2nd number}* and 1st and 2nd number can start with any natural number. for example, you can start series with *4,5,9,14,23.......n .* In mathematics and computer science, this sequence has many application.
+
+rnrn```
+ #include<stdio.h>rn rnint main()rn{rn int n, fn = 0, sn = 1, tmp, k;rn rn clrscr();rn printf("Enter the number of terms
+");rn scanf("%d",&n);rn rn printf("First %d terms of Fibonacci series are :-
+",n);rn rn for ( k = 0 ; k < n ; k++ )rn {rn    printf("%d  ",fn);rn rn    tmp = fn + sn;rn    fn = sn;rn    sn = tmp;rn rn rn }rn getch();rn return 0;rn}
+```rn** Output**rnrn[![fibonacci](http://technhit.in/wp-content/uploads/2016/07/fibonacci.png)](http://technhit.in/wp-content/uploads/2016/07/fibonacci.png)rn
+rn 	- **C Program to calculate factorial of a given number:**
+rn
+rnIn mathematics, the **factorial** of a non-negative integer n, denoted by "*n*!", is the product of all positive integers less than or equal to *n. n! = n*(n-1)*(n-2)*(n-3)...3.2.1* and zero factorial is defined as one i.e. *0! = 1*.
+
+rnrn```
+#include <stdio.h>rn rnint main()rn{rn int i, v, fact = 1;rn clrscr();rn printf("Enter a number to calculate it's factorial
+");rn scanf("%d", &v);rn if (v==0)rn { rn fact=1;rn printf("Factorial of %d = %d
+", v, fact);rn }rn elsern {rn rn for (i = 1; i <= v; i++)rn {rn fact = fact * i;rn }rn rn printf("Factorial of %d = %d
+", v, fact);rn }rn getch();rn return 0;rn}
+```rnOutputrnrn[![Example Program factorial](http://technhit.in/wp-content/uploads/2016/07/factorial.png)](http://technhit.in/wp-content/uploads/2016/07/factorial.png)

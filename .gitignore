@@ -37,3 +37,8 @@ Thumbs.db
 # TypeScript declaration cache
 *.tsbuildinfo
 next-env.d.ts
+
+# Large Database Dumps & Scratch Extractions
+*.sql
+extracted_posts_summary.json
+

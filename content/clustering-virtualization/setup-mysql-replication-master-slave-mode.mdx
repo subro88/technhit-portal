@@ -1,0 +1,145 @@
+---
+title: "Setup MySQL Replication Master-Slave Mode"
+slug: "setup-mysql-replication-master-slave-mode"
+date: "2017-07-29"
+category: "clustering-virtualization"
+status: "Published"
+summary: "MySQL Replication is a method, which uses for sync database two or more replica servers. Typically it's known as \"Master-Slave\" Replication."
+tags: ["How to", "MySQL", "Database"]
+wordCount: 1046
+readTime: 6
+---
+
+## Key Architecture Takeaways
+
+- **Point 1**: Hypervisor & container orchestration blueprint for Setup MySQL Replication Master-Slave Mode.
+- **Point 2**: Architecture covers resource isolation, networking bridges, and high availability.
+- **Point 3**: Optimized for Proxmox VE 8, modern Docker 27+, and kernel cgroups v2.
+
+
+> [!TIP]
+> **High Availability Cluster Recommendation**
+> In modern virtualized datacenters (Proxmox VE 8.x), ensure guest configurations utilize VirtIO SCSI Single controllers with IOThread enabled, and isolate cluster corosync traffic onto dedicated 10GbE VLANs.
+
+
+---
+
+MySQL Replication is a method, which uses for sync database two or more replica servers. Typically it's known as "Master-Slave" Replication.
+
+rnWe have extended this configuration from Master-Slave to Master-Master Mode. Generally, in Master-Slave Mode there is a one master server with read write access. And one or more replica servers that only replicate the master. In a simple word, any thing changes in the master server is reflected on slaves but any changes in slaves do not reflect on the master. But in Master-Master mode replication is take effect both master to slave and slave to master. That's why it's called Master Master Mode.
+
+rnSo, now we start config with Master-Slave mode and finally convert it to Master-Master mode.rn## **Environment and Prerequisites for MySQL Replication: **
+
+rnrn<hr />rnrn
+rn 	- **Ubuntu 16.04.**
+rn 	- **MySQL 5.7**
+rn
+rnThe examples in this article will be based on two Ubuntu servers.rn
+rn 	- **Server A (Master) -> IP (10.0.50.54)**
+rn 	- **Server B (Slave) ->    IP (10.0.50.55)**
+rn
+rn## **Steps for MySQL Replication Master-Slave Mode: **
+
+rn[![Mysql Replication ](https://www.technhit.in/wp-content/uploads/2017/07/msaster-slave.png)](https://www.technhit.in/wp-content/uploads/2017/07/msaster-slave.png)rn<script async src="//pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>rn<ins class="adsbygoogle" style="display: block; text-align: center;" data-ad-layout="in-article" data-ad-format="fluid" data-ad-client="ca-pub-8190450325503411" data-ad-slot="2118052253"></ins>rn<script>rn     (adsbygoogle = window.adsbygoogle || []).push({});rn</script>rnrn[embedyt] https://www.youtube.com/watch?v=HPJYY6FlUGU[/embedyt]rnrn**Step 1:--- Install and Setup MySQL Master Configuration:**rnrn<hr />rnrn
+rn 	- **Installing MySQL**
+rn
+rnThe Ubuntu 16.04 LTS repositories come with version 5.7 of MySQL, go to terminal and type:rn```
+$sudo apt install mysql-server
+```rnRest of article we assumed that, you have setup two identical nodes running MySQL, which can talk to each other over a private network, and that the nodes have the above IPs:rn
+rn 	- **Update Master Server config**
+rn
+rnIn the file **/etc/mysql/mysql.conf.d/mysqld.cnf** uncomment or set the following. open the file with an editor.rn```
+ $ sudo nano /etc/mysql/mysql.conf.d/mysqld.cnfrnrnbind-address = 10.0.50.54 rnserver-id = 1 rnlog_bin = /var/log/mysql/mysql-bin.log
+```rn
+rn 	- **Restart The MySQL Server.**
+rn 	- **Create a Mysql User for Replication**
+rn
+rn```
+ $ sudo service mysql restart
+```rnWe need a user that connects to the master. This account generally used in the slave when the slave connects to master. The account needs `REPLICATION SLAVE`privilege. Here we’re using the username.`replica.`rn
+rn 	- rn#### Lock The Master
+
+rn
+rn
+rn```
+$ mysql -u root -p Password: mysql> CREATE USER 'replica'@'10.0.50.55' IDENTIFIED BY 'yourpassword'; rnQuery OK, 0 rows affected (0.00 sec) rnmysql> GRANT REPLICATION SLAVE ON *.* TO 'replica'@'10.0.50.55'; rnQuery OK, 0 rows affected (0.00 sec)rnrnmysql> FLUSH TABLES WITH READ LOCK; Query OK, 0 rows affected (0.00 sec)
+```rn<blockquote> rnrnNote that this lock is released either when you exit the mysql CLI client, or when you issue `UNLOCK TABLES`. The lock needs to remain in place until the `mysqldump`  is complete.</blockquote>rn
+rn 	- **View and Note Down Master Log Position**
+rn
+rn```
+mysql> SHOW MASTER STATUS;rn+------------------+----------+--------------+------------------+-------------------+rn| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB | Executed_Gtid_Set |rn+------------------+----------+--------------+------------------+-------------------+rn| mysql-bin.000001 | 674      |              |                  |                   |rn+------------------+----------+--------------+------------------+-------------------+rn1 row in set (0.00 sec)
+```rn
+rn 	- **Dump the All database of Master**
+rn
+rn```
+ $ mysqldump -u root -p --all-databases --master-data > dbdump.sql
+```rn
+rn 	- **Unlock Master Database**
+rn
+rn```
+ mysql> UNLOCK TABLES;
+```rn
+rn 	- **Copy Dumped database to Slave Computer**
+rn
+rnHere we are using scp command to copy the database to slave computer.rn```
+ $ scp dbdump.sql 10.0.50.55:/tmp
+```rn**Step 2:--- Setup MySQL Slave Configuration: **rnrn<hr />rnrnWe assumed that you have installed MySQL on the slave.rn
+rn 	- **Setup Slave Server Configuration**
+rn
+rnSimilarly like master, In the file **/etc/mysql/mysql.conf.d/mysqld.cnf** uncomment or set the following. open the file with an editor.rn```
+ $ sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf
+```rn```
+bind-address = 10.0.50.55rnserver-id = 2rnlog_bin = /var/log/mysql/mysql-bin.log
+```rnSimilar to master set bind-address, server id (here we use id 2 this time). Though binary log is optional. But it is good practice to set the log for future reference in case it acts as a master in future.rn
+rn 	- **Restart The MySQL Server.**
+rn
+rn```
+$ sudo service mysql restart
+```rn
+rn 	- **Import Dump Database to Slave**
+rn
+rnNow it's time to import the master dump database to the slave which we stored earlier into /tmp directory.rn```
+$ mysql -u root -p < /tmp/dbdump.sql
+```rn
+rn 	- **Set Slave to Communicate Master Database**
+rn
+rn```
+$ mysql -u root -prnrnType your mysql root passwordrnrn
+```rn```
+mysql> STOP SLAVE;rnQuery OK, 0 rows affected, 1 warning (0.00 sec)
+```rn```
+mysql> CHANGE MASTER TOrn -> MASTER_HOST='10.0.50.54',rn -> MASTER_USER='replica',rn -> MASTER_PASSWORD='yourpassword',rn -> MASTER_LOG_FILE='mysql-bin.000001',rn -> MASTER_LOG_POS=674;rnQuery OK, 0 rows affected, 2 warnings (0.01 sec)
+```rnChange the above blue marked parameter as per your value.rn```
+mysql> START SLAVE;rnQuery OK, 0 rows affected (0.00 sec)
+```rnNow your slave is ready to sync with the master database. Whichever changes occur in master database slaves accept a reply from the master and update the slave.
+
+rnYou can show slave status using the following command.rn```
+mysql> SHOW SLAVE STATUS\G
+```rn## Extended Setup for Master-Master MySQL Replication:
+
+rn[![master master replication](https://www.technhit.in/wp-content/uploads/2017/07/master-master.png)](https://www.technhit.in/wp-content/uploads/2017/07/master-master.png)rnrn<hr />rnThis extended setup is optional. If you want to replicate your server both way then follow configuration.
+
+rnrn
+rn 	- **Prepare your slave as Master **
+rn
+rnLogin slave server and follow the steps. in our case we login server Brn```
+$ mysql -u root -prnrnrnrnmysql> CREATE USER 'master'@'10.0.50.54' IDENTIFIED BY 'masterpasswored';rnQuery OK, 0 rows affected (0.00 sec)rnrnrnmysql> GRANT REPLICATION SLAVE ON *.* TO 'master'@'10.0.50.54';rnQuery OK, 0 rows affected (0.00 sec)
+```rn
+rn 	- **View Log Position**
+rn
+rn```
+mysql> STOP SLAVE;rnrnrnmysql> SHOW MASTER STATUS;rn+------------------+----------+--------------+------------------+-------------------+rn| File             | Position | Binlog_Do_DB | Binlog_Ignore_DB | Executed_Gtid_Set |rn+------------------+----------+--------------+------------------+-------------------+rn| mysql-bin.000004 | 154      |              |                  |                   |rn+------------------+----------+--------------+------------------+-------------------+rn1 row in set (0.00 sec)
+```rnNote down the above information for future use.rn
+rn 	- **Setup your master as slave**
+rn
+rnLogin server A which you previously set as master and then follow the steps.rn```
+$ mysql -u root -p rnType your mysql root password
+```rn```
+mysql> STOP SLAVE;rnQuery OK, 0 rows affected, 1 warning (0.00 sec)
+```rn```
+mysql> CHANGE MASTER TOrn -> MASTER_HOST='10.0.50.55',rn -> MASTER_USER='master',rn -> MASTER_PASSWORD='masterpassword',rn -> MASTER_LOG_FILE='mysql-bin.000004',rn -> MASTER_LOG_POS=154;rnQuery OK, 0 rows affected, 2 warnings (0.01 sec)
+```rn```
+mysql> START SLAVE;rnQuery OK, 0 rows affected (0.00 sec)
+```rnNow your both Server ready to talk each other. This mode is known as master-master replication mode.rn## Conclusion:
+
+rnAs of now, you see that, first we have created a master-slave MySQL Replication. It is a one-way replication. Therefore we convert it master-master replication with few extended setup and configuration. Hope this article helpful for you.

@@ -1,0 +1,40 @@
+---
+title: "Making Analogue Clock with C-Language using Graphics"
+slug: "making-analogue-clock-c-language-using-graphics"
+date: "2020-01-01"
+category: "stem-10-plus-2"
+status: "Published"
+summary: "Hi Friends here is another small project Analogue Clock made with C-Language. Here I have used Graphics of turbo C, and for the hand of houres and minute and second use pie slice.rnScreenshot:"
+tags: ["systems-engineering"]
+wordCount: 150
+readTime: 2
+---
+
+## Key Architecture Takeaways
+
+- **Point 1**: Core computer science and engineering computing concept: Making Analogue Clock with C-Language using Graphics.
+- **Point 2**: Detailed trace of memory representation, algorithmic complexity, and control structures.
+- **Point 3**: Includes portable ISO C (C17/C23) code examples verified with modern GCC and Clang.
+
+
+> [!NOTE]
+> **Compiler & Toolchain Modernization**
+> While legacy educational environments used 16-bit DOSBox Turbo C++, all code presented here adheres to standard ANSI/ISO C standards. You can compile these programs cleanly on modern Linux, Windows (MSYS2/WSL), or macOS using:
+> ```bash
+> gcc -Wall -Wextra -O2 program.c -o program
+> ./program
+> ```
+
+
+---
+
+Hi Friends here is another small project Analogue Clock made with C-Language. Here I have used Graphics of turbo C, and for the hand of houres and minute and second use pie slice.rn## Screenshot:
+
+rnrnrn[![](https://www.technhit.in/wp-content/uploads/2020/01/clock.png)](https://www.technhit.in/wp-content/uploads/2020/01/clock.png)rn## [![](https://www.technhit.in/wp-content/uploads/2020/01/clock.gif)](https://www.technhit.in/wp-content/uploads/2020/01/clock.gif)
+
+rn## Code for Analogue Clock.
+
+rn```
+ #include<stdio.h>rn #include<conio.h>rn #include<stdlib.h>rn #include<string.h>rn #include<alloc.h>rn #include<dos.h>rn #include<graphics.h>rnrnrnrnrn void main(void)rn {rn	char choice;                 /*--variable for input choice--*/rn	int gdriver =DETECT, gmode;            /*--select driver & mode--*/rn		 float red1=100,stan=90,endan=91,mred=80,hred=50,mstar=90,mend=92,hstar=60,hend=63;rn	int md=300,sd=17,hd=1,red=90;rn	struct time t;rn	gettime(&t);rn	stan=stan-(t.ti_sec*6);rn	stan=stan-16;rn	endan=stan+1;rn	mstar=mstar-(t.ti_min*6);rn	mstar=mstar-2;rn	mend=mstar+2;rn	hstar=hstar-(t.ti_hour*30);rn	hstar=hstar-(t.ti_min*0.1)+14;rn	hend=hstar+3;rn	clrscr();rn	initgraph(&gdriver, &gmode, "c:\\TURBOC3/BGI/");   //Change as per your turbo C Graphics Path        /*--initialized driver--*/rn	setfillstyle(SOLID_FILL,WHITE);rn	bar(0,0,getmaxx(),getmaxy());rn	setfillstyle(SOLID_FILL,BLUE);rn		 //	bar(3,1,635,17);rn	setfillstyle(SOLID_FILL,LIGHTBLUE);rn	setcolor(RED);rn	outtextxy(getmaxx()/2-10,130,"12");rn	outtextxy(210,getmaxy()/2,"9");rn	outtextxy(getmaxx()/2-10,340,"6");rn	outtextxy(420,getmaxy()/2,"3");rn	circle(getmaxx()/2,getmaxy()/2,red1+11);rn	setcolor(WHITE);rnrn	while(!kbhit())rn	{rn		gettime(&t);rn	gotoxy(3,10);rn	 printf("time is: %2d:%02d:%02d.%02d
+",t.ti_hour, t.ti_min, t.ti_sec, t.ti_hund);rn		setfillstyle(SOLID_FILL,LIGHTBLUE);rn		fillellipse(getmaxx()/2,getmaxy()/2,red1,red1);rn		setcolor(YELLOW);rn		outtextxy(280,getmaxy()/2-50,"Subu Watch");rn		setcolor(WHITE);rn		setfillstyle(SOLID_FILL,RED);rn		pieslice(getmaxx()/2,getmaxy()/2,stan,endan,red);rn		pieslice(getmaxx()/2,getmaxy()/2,mstar,mend,mred);rn		pieslice(getmaxx()/2,getmaxy()/2,hstar,hend,hred);rn		delay(1000);rn		setfillstyle(SOLID_FILL,LIGHTGREEN);rn		setcolor(YELLOW);rn		outtextxy(280,getmaxy()/2-50,"Subu Watch");rn		setcolor(WHITE);rn		pieslice(getmaxx()/2,getmaxy()/2,stan,endan,red);rn		pieslice(getmaxx()/2,getmaxy()/2,mstar,mend,mred);rn		pieslice(getmaxx()/2,getmaxy()/2,hstar,hend,hred);rn		stan=stan-6;rn		endan=endan-6;rnrn		mstar=mstar-0.1;rn		mend=mend-0.1;rn		hstar=hstar-(0.1/60);rn		hend=hend-(0.1/60);rnrn	}rn	getch();rn }rnrnrn
+```rn

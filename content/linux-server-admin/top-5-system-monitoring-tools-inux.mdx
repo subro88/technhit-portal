@@ -1,0 +1,126 @@
+---
+title: "Top 5 System Monitoring Tools on Linux"
+slug: "top-5-system-monitoring-tools-inux"
+date: "2016-10-07"
+category: "linux-server-admin"
+status: "Published"
+summary: "**System Monitoring** is a routine task for a system administrator. As a system administrator, you'll need the ability to find out what is happening on your system at any time. Whether it is the pe..."
+tags: ["How to", "Linux"]
+wordCount: 1319
+readTime: 7
+---
+
+## Key Architecture Takeaways
+
+- **Point 1**: Production blueprint for Top 5 System Monitoring Tools on Linux on Linux infrastructure.
+- **Point 2**: Covers root privilege management, daemon supervision via systemd, and secure file operations.
+- **Point 3**: Applies to LTS releases (Ubuntu 24.04/22.04 LTS, Debian 12 Bookworm).
+
+
+> [!NOTE]
+> **Enterprise Compatibility Update (2026 / LTS)**
+> While these fundamentals apply directly to existing deployments, modern installations on Ubuntu 22.04 and 24.04 LTS use `systemd-resolved`, `nftables` for packet filtering, and modern OpenSSH 9+ with Ed25519 cryptography.
+
+
+---
+
+**System Monitoring** is a routine task for a system administrator. As a system administrator, you'll need the ability to find out what is happening on your system at any time. Whether it is the percent of CPU uses, Percent of Memory uses. What process consuming more or less memory or CPU, how many users and who logged in your system etc. System monitoring play very important role when a program malfunction.
+
+rnWhen a performance issue arises, there are 4 main areas to consider: CPU, Memory, Disk I/O, and Network. The ability to determine where the bottleneck is can save you a lot of time. In the case of shared hosting, there are lots of users uses lots of services i.e Webservice(Apache), Nginx, PHP, Mysql, mail etc. And individual users uses the system resources. It will help you to know and determine whether your system needs any upgrades. Or if some services need to be moved to another machine.
+
+rnFor each Linux distribution, there are various open source system monitoring program that can help you. Here I describe top 5 System monitoring tools for you these are:
+
+rnrn
+rn 	- **The **top** command.**
+rn 	- **The **iostat** Command**
+rn 	- **The **ps** command**
+rn 	- **The **vmstat** command**
+rn 	- **The **lsof** command**
+rn
+rn# Top 5 System Monitoring Tools
+
+rn##  1) The top command.
+
+rnThe most common of these commands is top. The top will display a continually updating report of system resource usage.
+
+rnrn```
+# top
+```rn rn[![System Monitoring](https://www.technhit.in/wp-content/uploads/2016/10/Top-Command.png)](https://www.technhit.in/wp-content/uploads/2016/10/Top-Command.png)
+
+rnThe top portion of the report lists information such as the system time, server uptime, CPU usage, physical and swap memory usage and the number of processes. Below that is a list of the processes sorted by CPU utilisation.
+
+rnYou can modify the output of top while is running. If you hit an i, top will no longer display idle processes. Hit i again to see them again. Hitting M will sort by memory usage, S will sort by how long they processes have been running, and P will sort by CPU usage again.
+
+rnIn addition to viewing options, you can also modify processes from within the top command. You can use u to view processes owned by a specific user, k to kill processes, and r to renice them.
+
+rnrn## 2) The iostat Command:
+
+rnThe iostat will display the current CPU load average and disk I/O information. This is a great command to monitor your disk I/O usage. The iostat create reports that can be used to change system configuration to better balance the input/output between physical disks. By default, iostat command is not installed on your Linux distributions. you need to install it before use.
+
+rnrn### **Installing **iostat** **
+
+rnNote: iostat command is included in sysstat packagernrn**To install iostat on RHEL ( RedHat / CentOS / Fedora )**rn```
+# yum install sysstat
+```rn**To install iostat on Debian ( Debian / Ubuntu / Lunux Mint )**rn```
+$ sudo apt-get install sysstat
+```rn**How to use ***iostat*** command**rn```
+# iostat
+```rn[![iostat-command](https://www.technhit.in/wp-content/uploads/2016/10/iostat-Command.png)](https://www.technhit.in/wp-content/uploads/2016/10/iostat-Command.png)rnrn**To see extend view of **iostat** use *iostat -x***rn```
+# iostat -x
+```rn[![iostat-x-command](https://www.technhit.in/wp-content/uploads/2016/10/iostat-x-Command.png)](https://www.technhit.in/wp-content/uploads/2016/10/iostat-x-Command.png)rnrnBy default iostat display report in bytes unit. If you want to see the report as kilobyte and megabyte, you can use -k and -m respectively.rn```
+# iostat -k
+```rn[![iostat-k-command](https://www.technhit.in/wp-content/uploads/2016/10/iostat-k-Command.png)](https://www.technhit.in/wp-content/uploads/2016/10/iostat-k-Command.png)rn```
+# iostat -m
+```rn[![iostat-m-command](https://www.technhit.in/wp-content/uploads/2016/10/iostat-m-Command.png)](https://www.technhit.in/wp-content/uploads/2016/10/iostat-m-Command.png)rn### **Field Description :**
+
+rn### **The first section contains CPU report**
+
+rn
+rn 	- **%user :** show the percentage of CPU utilisation that occurred while executing at the user (application) level
+rn 	- **%nice :** show the percentage of CPU utilisation that occurred while executing at the user level with nice priority
+rn 	- **%system :** show the percentage of CPU utilisation that occurred while executing at the system (kernel) level
+rn 	- **%iowait :** show the percentage of the time that the CPU or CPUs were idle during which the system had an outstanding disk I/O request
+rn 	- **%steal :** show the percentage of time spent in involuntary wait by the virtual CPU or CPUs while the hypervisor was servicing another virtual processor
+rn 	- **%idle :** show the percentage of time that the CPU or CPUs were idle and the system did not have an outstanding disk I/O request
+rn
+rn### **The second section contains device utilisation report**
+
+rn
+rn 	- **Device :** device / partition name as listed in **/dev** directory
+rn 	- **tps :** show the number of transfers per second that were issued to the device. Higher tps means the processor is busier
+rn 	- **Blk_read/s :** show the amount of data read from the device expressed in a number of blocks (kilobytes, megabytes) per second
+rn 	- **Blk_wrtn/s :** show the amount of data written to the device expressed in a number of blocks (kilobytes, megabytes) per second
+rn 	- **Blk_read :** show the total number of blocks read
+rn 	- **Blk_wrtn :** show the total number of blocks written
+rn
+rn## 3)The ps command
+
+rnThe ps will provide you report with a list of processes currently running. There is a wide variety of options that this command gives you. A common use would be to list all processes currently running. To do this you would use the ps −ef command. (Screen output from this command is too large to include, the following is only a partial output.)
+
+rnrn```
+# ps -ef
+```rn[![ps-ef-command](https://www.technhit.in/wp-content/uploads/2016/10/ps-ef-Command.png)](https://www.technhit.in/wp-content/uploads/2016/10/ps-ef-Command.png)
+
+rn The first column shows who owns the process. The second column is the process ID. The Third column is the parent process ID. This is the process that generated, or started the process. The fourth column is the CPU usage (in percent). The fifth column is the start time, of date if the process has been running long enough. The sixth column is the tty associated with the process, if applicable. The seventh column is the cumulative CPU usage (total amount of CPU time is has used while running). The eighth column is the command itself.
+
+rnrn## 4)The vmstat command
+
+rnThe vmstat command will provide a report showing statistics for system processes, memory, swap, I/O, and the CPU. These statistics are generated using data from the last time the command was run to the present. In the case of the command never being run, the data will be from the last reboot until the present.rn```
+# vmstat
+```rn[![vmstat-command](https://www.technhit.in/wp-content/uploads/2016/10/vmstat-command.png)](https://www.technhit.in/wp-content/uploads/2016/10/vmstat-command.png)rnrnFIELD DESCRIPTIONSrn
+rn 	- **Procs**rnr: The number of processes waiting for run time.rnb: The number of processes in uninterruptible sleep.rnw: The number of processes swapped out but otherwise runnable. Thisrnfield is calculated, but Linux never desperation swaps.
+rn 	- **Memory**rnswpd: the amount of virtual memory used (kB).rnfree: the amount of idle memory (kB).rnbuff: the amount of memory used as buffers (kB).
+rn 	- **Swap**rnsi: Amount of memory swapped in from disk (kB/s).rnso: Amount of memory swapped to disk (kB/s).
+rn 	- **IO**rnbi: Blocks sent to a block device (blocks/s).rnbo: Blocks received from a block device (blocks/s).
+rn 	- **System**rnin: The number of interrupts per second, including the clock.rncs: The number of context switches per second.
+rn 	- **CPU**rnThese are percentages of total CPU time.rnus: user timernsy: system timernid: idle time
+rn
+rn## 5)The lsof command
+
+rnThe lsof command will print out a list of every file that is in use. Since Linux considers everything a file, this list can be very long. However, this command can be useful in diagnosing problems. An example of this is if you wish to unmount a filesystem, but you are being told that it is in use. You could use this command and grep for the name of the filesystem to see who is using it.
+
+rnrn```
+# lsof
+```rn[![lsof-command](https://www.technhit.in/wp-content/uploads/2016/10/lsof-command.png)](https://www.technhit.in/wp-content/uploads/2016/10/lsof-command.png)rn## Conclusion
+
+rnWith *top* command, we can view real-time process details. And *iostat* to monitor CPU usage and I/O system. Vmstat tells us memory uses in details. And *ps* to monitor each process information. And *lsof* tells all information to file. All together gives you empower to monitor every detail happens on your server and make right decision to handle any situation.

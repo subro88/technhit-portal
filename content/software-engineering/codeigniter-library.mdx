@@ -1,0 +1,51 @@
+---
+title: "CodeIgniter library"
+slug: "codeigniter-library"
+date: "2017-05-09"
+category: "software-engineering"
+status: "Published"
+summary: "CodeIgniter library:"
+tags: ["CodeIgniter"]
+wordCount: 360
+readTime: 2
+---
+
+## Key Architecture Takeaways
+
+- **Point 1**: Full-stack architecture blueprint: CodeIgniter library.
+- **Point 2**: Covers MVC separation of concerns, routing pipelines, and database abstraction.
+- **Point 3**: Modern ecosystems: Laravel 11/PHP 8.3, React 19, and Node.js LTS runtimes.
+
+
+> [!NOTE]
+> **Modern Framework Landscape (2026)**
+> Web engineering patterns have evolved: Laravel now utilizes PHP 8.2+ typed properties, Vite asset bundling, and strict Eloquent typing, while Node.js LTS supports native `fetch` and ESM modules out of the box.
+
+
+---
+
+## CodeIgniter library:
+
+rnA CodeIgniter library is simply a class file that abstracts functionality into easy-to-use functions that take much of the strain off the developer. Take the Database Library as an example. It contains many functions that make the creation of complex SQL queries very easy; it also makes queries much more readable.rnIn CodeIgniter, project-specific libraries are located in the ***system/application/libraries/*** folder and all of the CodeIgniter core libraries are located in the ***system/libraries/ ***folder
+
+rnrn## **What do libraries do?**
+
+rnLibraries abstract out functionality for developers and make it easy to re-use code. CodeIgniter comes with many core libraries that provide ways to code your applications much faster than without libraries, removing much of the unnecessary code from your applications, and taking the strain off the developer.rnThere are many types of libraries included with CodeIgniter, and much more released by community members.rnEvery library has a different set of collected functions, but all work to make coding applications much simpler than they would be if you were not using a framework.
+
+rnrn## **Loading Libraries:**
+
+rnYou can load any library by using load method within a controller.  For example, you have Mycontroller.php
+
+rnrn```
+ <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');rnrnclass Mycontroller extends CI_Controller {rnrn function __construct()rn {rn parent::__construct();rn //$this->load->library('class_name');rn $this->load->library('form_validation');rn }
+```rnOnce initialized you can use it as per guidelines of the corresponding library.
+
+rnAdditionally, multiple libraries can be loaded at the same time by passing an array of libraries to the load method.
+
+rnrn```
+ <?php if ( ! defined('BASEPATH')) exit('No direct script access allowed');rnrnclass Mycontroller extends CI_Controller {rnrn function __construct()rn {rn parent::__construct();rn //$this->load->library(array('class1','class2','class3'));rn $this->load->library(array('email', 'table'));rn }
+```rnIf your library entirely used in your application then it is best practice to load the following libraries using [autoload method](https://www.technhit.in/codeigniter-basic-configuration-using-auto-load/). Open ***application/config/autoload.php***. and set your libraries as following:
+
+rnrn```
+ /*rn| -------------------------------------------------------------------rn| Auto-load Librariesrn| -------------------------------------------------------------------rn| These are the classes located in system/libraries/ or yourrn| application/libraries/ directory, with the addition of thern| 'database' library, which is somewhat of a special case.rn|rn| Prototype:rn|rn| $autoload['libraries'] = array('database', 'email', 'session');rn|rn| You can also supply an alternative library name to be assignedrn| in the controller:rn|rn| $autoload['libraries'] = array('user_agent' => 'ua');rn*/rnrn$autoload['libraries'] = array('database', 'form_validation', 'session','parser');
+```rn rnrn[<>

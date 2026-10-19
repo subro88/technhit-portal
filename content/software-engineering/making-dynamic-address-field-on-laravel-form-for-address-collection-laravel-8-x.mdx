@@ -1,0 +1,61 @@
+---
+title: "Making Dynamic Address Field on Laravel Form, for Address Collection - Laravel 8.x"
+slug: "making-dynamic-address-field-on-laravel-form-for-address-collection-laravel-8-x"
+date: "2021-07-10"
+category: "software-engineering"
+status: "Published"
+summary: "Hello world! Welcome to “TechBlog” and Today we are going to make dynamic address collection form through drop down input."
+tags: ["systems-engineering"]
+wordCount: 622
+readTime: 3
+---
+
+## Key Architecture Takeaways
+
+- **Point 1**: Full-stack architecture blueprint: Making Dynamic Address Field on Laravel Form, for Address Collection - Laravel 8.x.
+- **Point 2**: Covers MVC separation of concerns, routing pipelines, and database abstraction.
+- **Point 3**: Modern ecosystems: Laravel 11/PHP 8.3, React 19, and Node.js LTS runtimes.
+
+
+> [!NOTE]
+> **Modern Framework Landscape (2026)**
+> Web engineering patterns have evolved: Laravel now utilizes PHP 8.2+ typed properties, Vite asset bundling, and strict Eloquent typing, while Node.js LTS supports native `fetch` and ESM modules out of the box.
+
+
+---
+
+Hello world! Welcome to “TechBlog” and Today we are going to make dynamic address collection form through drop down input.
+
+rnWell, in this context I have some observations as a developer for you. why we do so with an address field. We can take input as a whole or separately, by a text input box easily rather why we are creating such a complex mechanism.
+
+rnWe do so, because of analytics, for example if we take input through text box there might differently spelling of same district, or might user have mistaken in any point of time. In that case, it is difficult to find out the sales or demographics analytics for big organization or company. Hence this concept dynamic load of demographic data is useful with 100% accuracy
+
+rnrn## View on Youtube:
+
+rn[embedyt] https://www.youtube.com/watch?v=JQ_Vbyg2scw[/embedyt]rn## Database Structure:
+
+rn```
+-- --------------------------------------------------------rnrn--rn-- Table structure for table `geo_locations`rn--rnrnCREATE TABLE `geo_locations` (rn  `id` int NOT NULL,rn  `name` varchar(100) NOT NULL,rn  `parent_id` int DEFAULT NULL,rn  `external_id` varchar(10) DEFAULT NULL,rn  `location_type` varchar(20) NOT NULL,rn  `pin` varchar(10) DEFAULT NULLrn) ENGINE=InnoDB DEFAULT CHARSET=latin1;rnrn----------------------------------------------------------
+```rnDownload Database [SQL file Here](https://www.youtube.com/redirect?event=video_description&redir_token=QUFFLUhqbWlOMDJjdlE5aTRWS1FIVktQZWd3TFJHemdZd3xBQ3Jtc0tsQ3JoXzRsNlNmWU83dlotcU1Fb1ZVdmROZzJaenpsTkw4ckRXb0FvZlhGWGFvbnRSa1RWdmptX0VJVTVXbUVlOEU5VVhSN1FhaWZmbFFwSmd0amFXYUI5bGRXMEY1aHJoVUQ3LXNEcjA5dzFHRlB0bw&q=https%3A%2F%2Fdrive.google.com%2Fdrive%2Ffolders%2F1BBbWNHGEB2FUoav3cB5xmRziWQgwF6uh%3Fusp%3Dsharing):rn## Web Routes:
+
+rn```
+Route::get('/', ['as'=>'home', 'uses'=> 'Geolocation@home']);rnrnRoute::post('/district-name', ['as'=>'district', 'uses'=>'Geolocation@getDist']);rnrnRoute::post('/ps-name', ['as'=>'ps', 'uses'=>'Geolocation@getPS']);
+```rn## Controller:
+
+rnBy default Laravel has a default controller, but we are going to create a new controller for me. So, in order to do that, type `php artisan make:controller Geolocation.`rnrnOpen up the controller in code editor, we have to create function home inside Geolocation controller and return your view over here.rn```
+namespace App\Http\Controllers;rnrnuse Illuminate\Http\Request;rnuse Illuminate\Http\Respoce;rnuse Illuminate\Support\Arr;rnuse App\Models\GeoLocations;rnrnrnclass Geolocation extends Controllerrn{rn    //rn    protected $view_path = 'student';rnrn    public function home(){rnrn        //return view of your form.rnrn        $data=[];rn        $data['state']= GeoLocations::where('location_type', 'STATE')->pluck('name','id')->toArray();rn        return view($this->view_path.'.register', compact('data'));rn    }rnrn    public function getDist(Request $request){rn        $data=GeoLocations::where('location_type','DISTRICT')->where('parent_id',$request->id)->select('name', 'id')->get();rn        return json_encode($data);rn    }rnrn    public function getPS(Request $request){rn        $data=GeoLocations::where('location_type','SUBDISTRICT')->where('parent_id',$request->id)->select('name', 'id')->get();rn        return json_encode($data);rn    }    rnrn}
+```rn## Models:
+
+rnNow from database we need to fetch data for dropdown. For that we need a model that construct table collections. So, in order to do that go to terminal and type `php artisan make:model GeoLocations`rn```
+namespace App\Models;rnrnuse Illuminate\Database\Eloquent\Factories\HasFactory;rnuse Illuminate\Database\Eloquent\Model;rnrnclass GeoLocations extends Modelrn{rn    use HasFactory;rn    public $table= "geo_locations";rn    protected $fillable =['id', 'name','parent_id', 'external_id', 'location_type', 'pin'];rn}rn
+```rn## Views:
+
+rn```
+<link rel="stylesheet" href="{{ asset('assets/css/select2.min.css') }}" />rn<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">rn<style>rn    .form-group {rn        margin-top: 15px;rn        padding-top: 45px;rn    }rn</style>rnrn    rn        rn            rn                {!! Form::open(array('url' => '/')) !!} Red mark input are required. rn                    <hr class="hr-16">rn                    {!! Form::label('address', 'Address', ['class' => 'col-sm-1 control-label']) !!}rn                        {!! Form::text('address', null, ["class" => "form-control border-form upper","required"]) !!}{!! Form::label('state', 'State', ['class' => 'col-sm-1 control-label']) !!}rn                        {!! Form::select('state', $data['state'],null, ["class" => "form-control border-form upper","required", "onChange" => "loadDistrict(this);"]) !!}rn                    rn                    {!! Form::label('district', 'District', ['class' => 'col-sm-1 control-label']) !!}rn                        rn                            <select id="district" name="district" class="form-control district" onChange="loadPs(this)" ;>rn                                <option>Select Dist</option>@if(isset($data['district'])) @foreach($data['district'] as $key)rn                                <option selected value="{{$key->id}}">{{$key->name}}</option>@endforeach @endif</select>rn                        {!! Form::label('ps', 'P.S./Sub.Div', ['class' => 'col-sm-1 control-label']) !!}rn                        rn                            <select id="ps" name="ps" class="form-control ps">rn                                <option>Select PS</option>@if(isset($data['ps'])) @foreach($data['ps'] as $key)rn                                <option selected value="{{$key->id}}">{{$key->name}}</option>@endforeach @endif</select>rn                        {!! Form::label('pincode', 'Pincode', ['class' => 'col-sm-1 control-label']) !!}rn                        {!! Form::text('pincode', null, ["class" => "form-control border-form upper","required"]) !!}{!! Form::label('country', 'Country', ['class' => 'col-sm-1 control-label']) !!}rn                        {!! Form::text('country', 'INDIA', ["class" => "form-control border-form upper","required"]) !!}rn                    rn                rn            rn        {!! Form::close() !!}rn    <!-- /.col -->rn
+```rn## Java Scripts:
+
+rn```
+<script type="text/javascript">rn    function loadDistrict($this){rn        $.ajax({rn            type: 'POST',rn            url: '{{ route('district') }}',rn            data: {rn                _token: '{{ csrf_token() }}',rn                id: $this.valuern            },rn            success: function (response) {rn                var data = $.parseJSON(response);rn                if (data.error) {rn                    $.notify(data.message, "warning");rn                } else {rn                	$('.district').html('').append('<option value="0">Select Dist</option>');rn                    $.each(data, function(key,valueObj){rn                        $('.district').append('<option value="'+valueObj.id+'">'+valueObj.name+'</option>');rn                    });rn                }rn            }rn        });rn    }rnrn    function loadPs($this){rn        $.ajax({rn            type: 'POST',rn            url: '{{ route('ps') }}',rn            data: {rn                _token: '{{ csrf_token() }}',rn                id: $this.valuern            },rn            success: function (response) {rn                var data = $.parseJSON(response);rn                if (data.error) {rn                    $.notify(data.message, "warning");rn                } else {rn                    $('.ps').html('').append('<option value="0">Select ps</option>');rn                    $.each(data, function(key,valueObj){rn                        $('.ps').append('<option value="'+valueObj.id+'">'+valueObj.name+'</option>');rn                    });rn                }rn            }rn        });rn    }rn</script>
+```rn## Conclution:
+
+rnFinally, we made a form that collect address from user dynamicaly in laravel.

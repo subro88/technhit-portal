@@ -1,0 +1,149 @@
+---
+title: "How to Install Tomcat 10 on Ubuntu 20.04"
+slug: "how-to-install-tomcat-10-on-ubuntu-20-04"
+date: "2021-05-09"
+category: "linux-server-admin"
+status: "Published"
+summary: "<header class=\"entry-header\">rnrnrnApache Tomcat is an open-source web server with a servlet container for publishing Java-based web applications. Tomcat is developed and maintained by an open co..."
+tags: ["systems-engineering"]
+wordCount: 786
+readTime: 4
+---
+
+## Key Architecture Takeaways
+
+- **Point 1**: Production blueprint for How to Install Tomcat 10 on Ubuntu 20.04 on Linux infrastructure.
+- **Point 2**: Covers root privilege management, daemon supervision via systemd, and secure file operations.
+- **Point 3**: Applies to LTS releases (Ubuntu 24.04/22.04 LTS, Debian 12 Bookworm).
+
+
+> [!NOTE]
+> **Enterprise Compatibility Update (2026 / LTS)**
+> While these fundamentals apply directly to existing deployments, modern installations on Ubuntu 22.04 and 24.04 LTS use `systemd-resolved`, `nftables` for packet filtering, and modern OpenSSH 9+ with Ed25519 cryptography.
+
+
+---
+
+<header class="entry-header">rnrnrnApache Tomcat is an open-source web server with a servlet container for publishing Java-based web applications. Tomcat is developed and maintained by an open community of developers under the auspices of the Apache Software Foundation. To know more about the Apache Tomcat visit the apache official site [http://tomcat.apache.org/](https://tomcat.apache.org/).
+
+rnrnrnrn</header>rnrnThis tutorial will help you to how to install Apache Tomcat 10 on Ubuntu 20.04 LTS Linux systems.
+
+rnrn## Prerequisites
+
+rnA running Ubuntu 20.04 system with shell access of root or sudo privileged account access.
+
+rnrn## Watch on Youtube:
+
+rn[embedyt] https://www.youtube.com/watch?v=aE6FQcTc-X0[/embedyt]rn## Step 1 – Install Java
+
+rnYou must have JRE (Java runtime environment) installed on your system. Tomcat 10 required to have JRE 8 or higher version installed on your system. Use the following command to install OpenJDK to fulfill the requirements.
+
+rnrn```
+sudo apt update  rnsudo apt install default-jdk
+```rnCheck the current active Java version:
+
+rnrn```
+java -version
+```rn[![Install Tomcat](https://www.technhit.in/wp-content/uploads/2021/05/screen1.png)](https://www.technhit.in/wp-content/uploads/2021/05/screen1.png)
+
+rnrn## Step 2 – Create Tomcat User
+
+rnWe recommended to run Tomcat server with a dedicated user account. Create a new user, which is recommended for security purposes mainly for production deployments.
+
+rnTo create a new account, type:
+
+rnrn```
+sudo useradd -m -d /opt/tomcat -U -s /bin/false tomcat
+```rnThe above command will create a user and group with the name “`tomcat`” in your system.
+
+rnrn## Step 3 – Install Tomcat 10
+
+rnThe Apache Tomcat development team releases the latest version of Tomcat from time to time. So it will be good to check to download the latest Tomcat version from the [official download server](https://tomcat.apache.org/download-10.cgi). Use the below command to download Tomcat 10.
+
+rnrn```
+wget https://mirrors.estointernet.in/apache/tomcat/tomcat-10/v10.0.5/bin/apache-tomcat-10.0.5.tar.gz
+```rnOnce the download completed, extract the downloaded archive and copy all content to the tomcat home directory.
+
+rnrn```
+sudo tar xzvf apache-tomcat-10.0.5.tar.gz -C /opt/tomcat --strip-components=1
+```rnNext, set the proper file permissions.
+
+rnrn```
+sudo chown -R tomcat:tomcat /opt/tomcat/ rnsudo chmod -R u+x /opt/tomcat/bin
+```rnYou have now the latest Tomcat application on your system.
+
+rnrn## Step 4 – Create Tomcat User
+
+rnNow, configure your tomcat with user accounts to secure access to admin/manager pages. To do this, edit **conf/tomcat-users.xml** file in your editor and paste the following code inside <tomcat-users> </tomcat-users> tags. We recommend changing the password in the below configuration with high secured password.
+
+rnrn```
+sudo nano /opt/tomcat/conf/tomcat-users.xml
+```rnAdd the following values. Make sure to change the password for admin and manager access.
+
+rnrn```
+<!-- user manager can access only manager section -->rn<role rolename="manager-gui" />rn<user username="manager" password="Your_Password" roles="manager-gui" />rnrn<!-- user admin can access manager and admin section both -->rn<role rolename="admin-gui" />rn<user username="admin" password="Your_Password" roles="manager-gui,admin-gui" />rn
+```rnSave file and close.
+
+rnrn## Step 5 – Enable Remote Tomcat Access
+
+rnThe default Tomcat manager and host-manager applications are accessible for localhost only. To allow access these pages from the remote system, you need to modify the following configuration files.
+
+rnYou can either allow specific remote system or allow all. Edit the `context.xml` file for the manager and host manager application:
+
+rnrn```
+sudo nano /opt/tomcat/webapps/manager/META-INF/context.xml
+```rnComment out the section added for IP address restriction to allow connections from anywhere.
+
+rnrn```
+<Context antiResourceLocking="false" privileged="true" >rn  <CookieProcessor className="org.apache.tomcat.util.http.Rfc6265CookieProcessor"rn                   sameSiteCookies="strict" />rn  `<!--` <Valve className="org.apache.catalina.valves.RemoteAddrValve" allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1" /> `-->` ... </Context>
+```rnSimilarly edit `context.xml` for host-manager application in the text editor:
+
+rnrn```
+sudo nano /opt/tomcat/webapps/host-manager/META-INF/context.xml
+```rnComment out the same section to allow connections from anywhere.
+
+rnrn```
+<Context antiResourceLocking="false" privileged="true" >rn  <CookieProcessor className="org.apache.tomcat.util.http.Rfc6265CookieProcessor"rn                   sameSiteCookies="strict" />rn  <!--<Valve className="org.apache.catalina.valves.RemoteAddrValve"rn         allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1" /> -->rn  ...rn</Context>rn
+```rnSave all files and close them.
+
+rnrn## Step 6 – Create a Tomcat Systemd Unit File
+
+rnTomcat provides bash scripts to start, stop service. But, to make it simpler, create a startup script to manage Tomcat as systemd service. Let’s create a tomcat.service file with the following content:
+
+rnrn```
+sudo nano /etc/systemd/system/tomcat.service
+```rn```
+[Unit]rnDescription=TomcatrnAfter=network.targetrnrn[Service]rnType=forkingrnrnUser=tomcatrnGroup=tomcatrnrnEnvironment="JAVA_HOME=/usr/lib/jvm/java-1.11.0-openjdk-amd64"rnEnvironment="JAVA_OPTS=-Djava.security.egd=file:///dev/urandom"rnEnvironment="CATALINA_BASE=/opt/tomcat"rnEnvironment="CATALINA_HOME=/opt/tomcat"rnEnvironment="CATALINA_PID=/opt/tomcat/temp/tomcat.pid"rnEnvironment="CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseParallelGC"rnrnExecStart=/opt/tomcat/bin/startup.shrnExecStop=/opt/tomcat/bin/shutdown.shrnrn[Install]rnWantedBy=multi-user.targetrn
+```rnReload the systemd daemon service to load newly create files.
+
+rnrn```
+sudo systemctl daemon-reload
+```rnNow, start the Tomcat application for the first time.
+
+rnrn```
+sudo systemctl start tomcat.service
+```rnNext, enable the tomcat service to auto start for subsequent system boots. This is more important for the production deployments.
+
+rnrn```
+sudo systemctl enable tomcat.service
+```rnAs of now, the tomcat application is running on your system. You can verify the service status by executing the command as below. Make sure the status is showing “`active (running)`“.
+
+rnrn```
+sudo systemctl status tomcat.service
+```rn[![Tomcate10](https://www.technhit.in/wp-content/uploads/2021/05/screen2.png)](https://www.technhit.in/wp-content/uploads/2021/05/screen2.png)
+
+rnrn## Step 7 – Access the Tomcat Web Interface
+
+rnThe default Tomcat server runs on port 8080. As you have configured Tomcat on your system, you can access the web interface from your system. You can access tomcat interfaces by entering your server’s IP address or a domain name pointed to that server, followed by port 8080 in your browser:
+
+rnrn```
+http://localhost:8080/rn
+```rnYou will see the page like below:
+
+rn[![Tomcat](https://www.technhit.in/wp-content/uploads/2021/05/screen3.png)](https://www.technhit.in/wp-content/uploads/2021/05/screen3.png)
+
+rnrn## Conclusion
+
+rnYou have a running Tomcat server on the Ubuntu 20.04 system.
+
+rnrn

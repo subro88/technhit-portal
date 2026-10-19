@@ -1,0 +1,79 @@
+---
+title: "How To Use SSHFS to Mount Remote File Systems Over SSH"
+slug: "how-to-use-sshfs-to-mount-remote-file-systems-over-ssh"
+date: "2016-12-25"
+category: "linux-server-admin"
+status: "Published"
+summary: "SSHFS (Secure SHell File System) use to mount the remote file system and interact with remote directories and files on a local machine using secure file transfer protocol (SFTP)."
+tags: ["Ubuntu", "sshfs"]
+wordCount: 600
+readTime: 3
+---
+
+## Key Architecture Takeaways
+
+- **Point 1**: Production blueprint for How To Use SSHFS to Mount Remote File Systems Over SSH on Linux infrastructure.
+- **Point 2**: Covers root privilege management, daemon supervision via systemd, and secure file operations.
+- **Point 3**: Applies to LTS releases (Ubuntu 24.04/22.04 LTS, Debian 12 Bookworm).
+
+
+> [!NOTE]
+> **Enterprise Compatibility Update (2026 / LTS)**
+> While these fundamentals apply directly to existing deployments, modern installations on Ubuntu 22.04 and 24.04 LTS use `systemd-resolved`, `nftables` for packet filtering, and modern OpenSSH 9+ with Ed25519 cryptography.
+
+
+---
+
+SSHFS (Secure SHell File System) use to mount the remote file system and interact with remote directories and files on a local machine using secure file transfer protocol (SFTP).
+
+rnIn many cases, we fall in difficulties to transfer files to and from a remote system. Especially a development usage scenario where you are coding apps remotely and find yourself uploading a script repeatedly to your server to test. This can become quite a hassle in a very short period of time. In most of the cases, we are using FTP or SFTP for that, but there is a way called SSHFS for System Administrator, Web Developer and those users who want to mount remote file system for development purpose and regular use over and over. Without login each time to remote server. This article may helpful for them.
+
+rnrn## Step 1: Install SSHFS Client
+
+rn#### On Ubuntu/Debian
+
+rnSSHFS is a Linux-based software you have to install it first. For Ubuntu and Debian apt-get
+
+rnrn```
+technhit@ubuntu$ sudo apt-get updaterntechnhit@ubuntu$ sudo apt-get install sshfsrnrn
+```rn#### On Redhat
+
+rnFor RHEL use yum installer to instal sshfs.
+
+rnrn```
+ technhit@rhel$ yum install sshfs
+```rn####  On Windows
+
+rnTo install SSHFS in Windows you will need to grab the latest win-sshfs package from the google code repository. A direct download link can be found below. After you have downloaded the package, double-click to launch the installer. You may be prompted to download additional files if so the installer will download the dot NET Framework 4.0 and install it for you.
+
+rn[https://github.com/Foreveryone-cz/win-sshfs/releases/download/1.6.1/WinSSHFS-1.6.1.13-devel.msi](https://github.com/Foreveryone-cz/win-sshfs/releases/download/1.6.1/WinSSHFS-1.6.1.13-devel.msi)
+
+rnrn## Step 2: Creating SSHFS Mount Directory
+
+rnAfter installing SSHFS package you need to create mount directory where the file system to be mounted. In order to do that we create a mount point on /mnt/remote in our local system.
+
+rnrn```
+ $ sudo mkdir /mnt/remote                        [for RHEL remove sudo]rn
+```rn##  Step 3: Mounting Remote Filesystem with SSHFS
+
+rn After creating you mount point directory run the following command to mount your remote directory. In my case I have ***/home/technhit ***on ***Ip 192.168.152.55*** (*Replace with your remote IP*) at my remote system which will be mounted on ***/mnt/remote*** in my local system.
+
+rnrn```
+# sshfs technhit@192.168.152.55:/home/technhit/ /mnt/remotern$ sudo sshfs -o allow_other tecmint@192.168.152.55:/home/technhit/ /mnt/remote [for Ubuntu]
+```rn[![sshfs](https://www.technhit.in/wp-content/uploads/2016/12/sshfs.gif)](https://www.technhit.in/wp-content/uploads/2016/12/sshfs.gif)rnrn[![mounted fs](https://www.technhit.in/wp-content/uploads/2016/12/sshfs3.gif)](https://www.technhit.in/wp-content/uploads/2016/12/sshfs3.gif)rnrnIf your remote server configured with ssh key authentication. You need to specify the path of your ssh key file to sshfs .rn```
+# sshfs -o IdentityFile=~/.ssh/id_rsa technhit@192.168.152.55:/home/technhit/ /mnt/remote    [For RHEL]rn$ sudo sshfs -o allow_other,IdentityFile=~/.ssh/id_rsa technhit@192.168.152.55:/home/technhit/ /mnt/remote  [For Ubuntu]
+```rnNow you can work with files on your remote server as if it were a physical device attached to your local machine. For instance, if you move to the /mnt/remote directory on your local machine you can create a file locally and the file will appear on your remote server. Similarly, you can copy files into the /mnt/remote folder and this will be uploaded to your remote server in the background.
+
+rnrn## Step 4: Checking Mount Point with df -hT Command
+
+rn```
+ $ df-hT
+```rn[![df -hT](https://www.technhit.in/wp-content/uploads/2016/12/sshfs2.gif)](https://www.technhit.in/wp-content/uploads/2016/12/sshfs2.gif)rn## Step 5: Permanently Mounting the Remote File System
+
+rnSSHFS also allows for setting up permanent mount points to remote file systems. This would set a mount point that would persist through restarts of both your local machine and droplets. In order to set up a permanent mount point, we will need to edit the `/etc/fstab` file on the local machine to automatically mount the file system each time the system is booted.
+
+rnFirst we need to edit the `/etc/fstab` file with a text editor.rn```
+# nano /etc/fstab rn$ sudo nano /etc/fstab                        [For Ubuntu]rnrn
+```rnPut the following line at the end of fstab file.rn```
+ sshfs#technhit@192.168.182.50:/home/technhit/ /mnt/remote
+```rn[![fstab](https://www.technhit.in/wp-content/uploads/2016/12/sshfs5.gif)](https://www.technhit.in/wp-content/uploads/2016/12/sshfs5.gif)rnrn
