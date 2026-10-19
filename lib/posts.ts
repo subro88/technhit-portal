@@ -81,6 +81,10 @@ export const CURATED_CATEGORY_IMAGES: Record<string, string[]> = {
     "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=800&q=80",
     "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80",
     "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1563986768609-322da13575f3?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1510519138197-06072488823a?auto=format&fit=crop&w=800&q=80",
   ],
   "clustering-virtualization": [
     "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=800&q=80",
@@ -104,17 +108,24 @@ export const CURATED_CATEGORY_IMAGES: Record<string, string[]> = {
   ],
 };
 
+function isValidImageUrl(url: string | undefined): boolean {
+  if (!url) return false;
+  if (url.includes("wp-content/uploads")) return false; // Filter obsolete 404 WordPress paths
+  return url.startsWith("http://") || url.startsWith("https://") || url.startsWith("/images/");
+}
+
 export function resolvePostImage(data: any, content: string, category: string, slug: string): string {
-  if (data.image) return data.image;
-  if (data.coverImage) return data.coverImage;
-  if (data.thumbnail) return data.thumbnail;
+  if (isValidImageUrl(data.image)) return data.image;
+  if (isValidImageUrl(data.coverImage)) return data.coverImage;
+  if (isValidImageUrl(data.thumbnail)) return data.thumbnail;
   if (data.youtubeId) return `https://i.ytimg.com/vi/${data.youtubeId}/hqdefault.jpg`;
 
-  // Check markdown image in content
-  const imgMatch = content.match(/!\[.*?\]\((https?:\/\/[^\s\)]+|\/[^\s\)]+)\)/i) ||
-                   content.match(/<img[^>]+src=["'](https?:\/\/[^"'>]+|\/[^"'>]+)["']/i);
-  if (imgMatch && imgMatch[1]) {
-    return imgMatch[1];
+  // Check markdown image in content (excluding legacy wp-content paths)
+  const imgMatches = content.matchAll(/!\[.*?\]\((https?:\/\/[^\s\)]+|\/[^\s\)]+)\)/gi);
+  for (const match of imgMatches) {
+    if (isValidImageUrl(match[1])) {
+      return match[1];
+    }
   }
 
   // Fallback to deterministic category-themed image

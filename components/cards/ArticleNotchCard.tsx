@@ -1,4 +1,6 @@
-import React from "react";
+"use client";
+
+import React, { useState } from "react";
 import Link from "next/link";
 import { ArrowRight, Terminal } from "lucide-react";
 import type { Post } from "@/lib/posts";
@@ -36,6 +38,12 @@ export function ArticleNotchCard({
             src={post.image}
             alt={post.title}
             loading="lazy"
+            onError={(e) => {
+              const target = e.currentTarget;
+              if (target.src !== "https://images.unsplash.com/photo-1629654297299-c8506221ca97?auto=format&fit=crop&w=800&q=80") {
+                target.src = "https://images.unsplash.com/photo-1629654297299-c8506221ca97?auto=format&fit=crop&w=800&q=80";
+              }
+            }}
             className="w-full h-full object-cover filter grayscale contrast-125 brightness-75 group-hover:scale-105 group-hover:brightness-90 transition-transform duration-700"
           />
         ) : (
