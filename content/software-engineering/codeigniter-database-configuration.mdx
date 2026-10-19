@@ -71,7 +71,6 @@ Chose any database from above for your application as per your application requi
  'failover' => array(),
  'save_queries' => TRUE
 );
-
 ```
 
 As we see above code snippet there are lots of parameters uses in **DB config** as an array(). We need not change all those parameters. You can leave those parameters its default value, except* hostname, username, password, database* and *dbdriver.*
@@ -113,7 +112,6 @@ As we see above code snippet there are lots of parameters uses in **DB config** 
  'save_queries' => TRUE
  
 );
-
 ```
 
  On above snippet, you notice that ***db_debug*** is set to FALSE. If your application is in a production environment then, it is recommended to set FALSE because of security issue. The ***db_debug*** determines whether database errors should be displayed or not.
@@ -177,7 +175,6 @@ $db['conn2'] = array(
  'save_queries' => TRUE
  
 );
-
 ```
 
 **$query_builder** --

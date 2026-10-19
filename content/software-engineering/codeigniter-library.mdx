@@ -52,7 +52,6 @@ class Mycontroller extends CI_Controller {
  //$this->load->library('class_name');
  $this->load->library('form_validation');
  }
-
 ```
 
 Once initialized you can use it as per guidelines of the corresponding library.
@@ -70,7 +69,6 @@ class Mycontroller extends CI_Controller {
  //$this->load->library(array('class1','class2','class3'));
  $this->load->library(array('email', 'table'));
  }
-
 ```
 
 If your library entirely used in your application then it is best practice to load the following libraries using [autoload method](https://www.technhit.in/codeigniter-basic-configuration-using-auto-load/). Open ***application/config/autoload.php***. and set your libraries as following:
@@ -95,7 +93,6 @@ If your library entirely used in your application then it is best practice to lo
 */
 
 $autoload['libraries'] = array('database', 'form_validation', 'session','parser');
-
 ```
 
 [<

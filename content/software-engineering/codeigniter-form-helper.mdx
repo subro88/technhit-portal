@@ -41,7 +41,6 @@ Open application/config/autoload.php and configure it as given below
 
 ```bash
  $autoload['helper'] = array('form');
-
 ```
 
 ## Load Form Helper Using Load Method:
@@ -50,7 +49,6 @@ We can load the "Form Helper" using load method at your controller as follows.
 
 ```bash
 $this->load->helper('form');
-
 ```
 
 ##  Syntax to define a form in Codeigniter:
@@ -93,14 +91,12 @@ For Example:
 
 ```bash
 echo form_open('email/send', 'class="email" id="myform"');
-
 ```
 
 The above example creates following HTML Tag.
 
 ```bash
  <form method="post" accept-charset="utf-8" action="http://example.com/index.php/email/send" class="email" id="mform">
-
 ```
 
 ## **Function with descritpion of Form Helper:**
@@ -150,14 +146,12 @@ Example of form_label( ) function is given below :-
 
 ```bash
 echo form_label('Employee Email-ID');
-
 ```
 
 The above code will produce the following HTML tag:-
 
 ```bash
 <label>Employee Email-ID</label>
-
 ```
 
 ### Form Input Text
@@ -175,14 +169,12 @@ Example of text fields using form_input( ) function is given below:-
 'placeholder' => 'Please Enter Name'
 );
 echo form_input($data_name);
-
 ```
 
 The above code will produce the following HTML tag:-
 
 ```bash
 <input type="text" name="emp_name" value="" id="emp_name_id" placeholder="Please Enter Name"  />
-
 ```
 
 Form Input with Read-only permission:-
@@ -199,14 +191,12 @@ An example of input field with read-only permission is given below:-
 'readonly' => 'readonly'
 );
 echo form_input($data_name);
-
 ```
 
 The above code will produce the following HTML tag:-
 
 ```bash
 <input type="text" name="emp_name" value="" id="emp_name_id" value="John" readonly="readonly" />
-
 ```
 
 ### Form Input Email
@@ -223,14 +213,12 @@ $data_email = array(
 'placeholder' => 'Please Enter Email'
 );
 echo form_input($data_email);
-
 ```
 
 The above code will produce the following HTML tag :-
 
 ```bash
 <input type="email" name="emp_email" value="" id="emp_email_id" placeholder="Please Enter Email"  />
-
 ```
 
 ### Form Password
@@ -246,14 +234,12 @@ $data_password = array(
 'placeholder' => 'Please Enter Password'
 );
 echo form_password($data_password);
-
 ```
 
 The above code will produce the following HTML tag:-
 
 ```bash
 <input type="password" name="password" value="" id="password_id" placeholder="Please Enter Password"  />
-
 ```
 
 ### Form Input Hidden
@@ -266,14 +252,12 @@ Example of single hidden field using form_hidden( ) function is given below :-
 
 ```bash
 form_hidden('employee_name', 'John');
-
 ```
 
 The above code will produce the following HTML tag:-
 
 ```bash
 <input type="hidden" name="employee_name" value="John" />
-
 ```
 
 To create multiple hidden fields we have to pass an associative array in which each index will act as name and their related value act as value for the hidden fields.
@@ -286,7 +270,6 @@ $data_hidden = array(
 'employee_id' => '555'
 );
 echo form_hidden($data);
-
 ```
 
 The above code will produce the following HTML tag :-
@@ -294,7 +277,6 @@ The above code will produce the following HTML tag :-
 ```bash
 <input type="hidden" name="employee_name" value="John" />
 <input type="hidden" name="employee_id" value="555" />
-
 ```
 
 ### Form Radio Button
@@ -316,7 +298,6 @@ $data_radio2 = array(
 );
 echo form_radio($data_radio1);
 echo form_radio($data_radio2);
-
 ```
 
 The above code will produce the following HTML tag :-
@@ -324,7 +305,6 @@ The above code will produce the following HTML tag :-
 ```bash
 <input type="radio" name="emp_marital_status" value="Unmarried" checked="checked"  />
 <input type="radio" name="emp_marital_status" value="Married"  />
-
 ```
 
 ### Form Dropdown
@@ -339,7 +319,6 @@ $data_gender = array(
 'Female' => 'Female'
 );
 echo form_dropdown('select', $data_gender, 'Male');
-
 ```
 
 The above code will produce the following HTML tag :-
@@ -349,7 +328,6 @@ The above code will produce the following HTML tag :-
 <option value="Male" selected="selected">Male</option>
 <option value="Female">Female</option>
 </select>
-
 ```
 
 For detailed information about form_dropdown( ) function  in codeigniter read our article  [CodeIgniter form dropdown](https://www.formget.com/codeigniter-form-dropdown/).
@@ -375,7 +353,6 @@ $data_checkbox2 = array(
 
 echo form_checkbox($data_checkbox1);
 echo form_checkbox($data_checkbox2);
-
 ```
 
 The above code will produce the following HTML tag :-
@@ -383,7 +360,6 @@ The above code will produce the following HTML tag :-
 ```bash
 <input type="checkbox" name="qualification[]" value="Graduation" />
 <input type="checkbox" name="qualification[]" value="Post Graduation" />
-
 ```
 
 ### Form Textarea
@@ -399,14 +375,12 @@ $data_textarea = array(
 'cols' => 50
 );
 echo form_textarea($data_textarea);
-
 ```
 
 The above code will produce the following HTML tag :-
 
 ```bash
 <textarea name="textarea" cols="50" rows="10" ></textarea>
-
 ```
 
 ### From Fieldset
@@ -423,7 +397,6 @@ $data_fieldset = array(
 echo form_fieldset('Personal Detail', $data_fieldset);
 echo "<p>Write your details here</p>";
 echo form_fieldset_close();
-
 ```
 
 The above code will produce the following HTML tag :-
@@ -433,7 +406,6 @@ The above code will produce the following HTML tag :-
 <legend>Personal Detail</legend>
 <p>Write your details here</p>
 </fieldset>
-
 ```
 
 ### File Upload
@@ -448,14 +420,12 @@ $data_upload = array(
 'name' => 'file_upload'
 );
 echo form_upload($data_upload);
-
 ```
 
 The above code will produce the following HTML tag :-
 
 ```bash
 <input type="file" name="file_upload" value="" />
-
 ```
 
 ### Form Submit
@@ -466,14 +436,12 @@ Example of form_submit( ) function is given below :-
 
 ```bash
 <?php echo form_submit('submit', 'Submit'); ?>
-
 ```
 
 The above code will produce the following HTML tag :-
 
 ```bash
 <input type="submit" name="submit" value="Submit"  />
-
 ```
 
 ### Form Reset
@@ -484,14 +452,12 @@ Example of form_reset( ) function is given below :-
 
 ```bash
 <?php echo form_reset('reset', 'Reset'); ?>
-
 ```
 
 The above code will produce the following HTML tag :
 
 ```bash
 <input type="reset" name="reset" value="Reset" />
-
 ```
 
 ### Form Close
@@ -502,14 +468,12 @@ Example of form_close( ) function is given below :-
 
 ```bash
 <?php echo form_close( ); ?>
-
 ```
 
 The above code will produce the following HTML tag:
 
 ```bash
 </form>
-
 ```
 
 Let's have a look at some other functions which are used to set values in different tags.
@@ -521,7 +485,6 @@ Example :-
 
 ```bash
 <input type="text" name="country" value="<?php echo set_value('country', 'India'); ?>"  />
-
 ```
 
 - **set_select( ) **function help you to create a select field and also allow you to set a default value for the select field. The first parameter contains the name of the select field, the second parameter contains values for each item and third parameter allow us to set default item.
@@ -534,7 +497,6 @@ Example :-
 <option value="1-5 years" <?php echo set_select('experience', '1-5 years'); ?> >1-5 years</option>
 <option value="above 5 years" <?php echo set_select('experience', 'above 5 years'); ?> >above 5 years</option>
 </select>
-
 ```
 
 - **set_checkbox( ) **function help you to create a checkbox and also allowed you to set a default value. The first parameter contains the name of the checkbox, second parameter contain its values and third parameter allow us to set a default value.
@@ -544,7 +506,6 @@ Example :-
 ```bash
 <input type="checkbox" name="Graduate" value="Graduate" <?php echo set_checkbox('quralification', 'Graduate', TRUE); ?> />
 <input type="checkbox" name="Post_Graduate" value="Post_Graduate" <?php echo set_checkbox('qualification', 'Post_Graduate'); ?> />
-
 ```
 
 - **set_radio( ) **function help you to create radio buttons and also allowed you to set a default value. The first parameter contains the name of a radio button, second parameter contain its values and third parameter allow us to set a default value.
@@ -554,7 +515,6 @@ Example :-
 ```bash
 <input type="radio" name="gender" value="Male" <?php echo set_radio('gender', 'Male', TRUE); ?> />
 <input type="radio" name="gender" value="Female" <?php echo set_radio('gender', 'Female'); ?> />
-
 ```
 
 Now, let's use the above-mentioned functions and create a form which will help you to understand the functionality of each function more clearly.
@@ -568,14 +528,12 @@ Before we start coding, we have to make following changes in the configuration f
 
 ```bash
 $config['base_url'] = 'http://localhost/form_helper/';
-
 ```
 
 - Now  open 'application/config/autoload.php' file and load form helper library as given below
 
 ```bash
 $autoload['helper'] = array('url','file','form');
-
 ```
 
 Now make a file name **form.php **in 'application/controller' folder of CodeIgniter and write the codes given below inside form.php:-

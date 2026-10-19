@@ -37,7 +37,6 @@ SSHFS is a Linux-based software you have to install it first. For Ubuntu and Deb
 ```bash
 technhit@ubuntu$ sudo apt-get update
 technhit@ubuntu$ sudo apt-get install sshfs
-
 ```
 
 #### On Redhat
@@ -46,7 +45,6 @@ For RHEL use yum installer to instal sshfs.
 
 ```bash
  technhit@rhel$ yum install sshfs
-
 ```
 
 ####  On Windows
@@ -61,7 +59,6 @@ After installing SSHFS package you need to create mount directory where the file
 
 ```bash
  $ sudo mkdir /mnt/remote                        [for RHEL remove sudo]
-
 ```
 
 ##  Step 3: Mounting Remote Filesystem with SSHFS
@@ -72,7 +69,6 @@ After installing SSHFS package you need to create mount directory where the file
 
 # sshfs technhit@192.168.152.55:/home/technhit/ /mnt/remote
 $ sudo sshfs -o allow_other tecmint@192.168.152.55:/home/technhit/ /mnt/remote [for Ubuntu]
-
 ```
 
 [![sshfs](https://www.technhit.in/wp-content/uploads/2016/12/sshfs.gif)](https://www.technhit.in/wp-content/uploads/2016/12/sshfs.gif)
@@ -85,7 +81,6 @@ If your remote server configured with ssh key authentication. You need to specif
 
 # sshfs -o IdentityFile=~/.ssh/id_rsa technhit@192.168.152.55:/home/technhit/ /mnt/remote    [For RHEL]
 $ sudo sshfs -o allow_other,IdentityFile=~/.ssh/id_rsa technhit@192.168.152.55:/home/technhit/ /mnt/remote  [For Ubuntu]
-
 ```
 
 Now you can work with files on your remote server as if it were a physical device attached to your local machine. For instance, if you move to the /mnt/remote directory on your local machine you can create a file locally and the file will appear on your remote server. Similarly, you can copy files into the /mnt/remote folder and this will be uploaded to your remote server in the background.
@@ -94,7 +89,6 @@ Now you can work with files on your remote server as if it were a physical devic
 
 ```bash
  $ df-hT
-
 ```
 
 [![df -hT](https://www.technhit.in/wp-content/uploads/2016/12/sshfs2.gif)](https://www.technhit.in/wp-content/uploads/2016/12/sshfs2.gif)
@@ -109,14 +103,12 @@ First we need to edit the `/etc/fstab` file with a text editor.
 
 # nano /etc/fstab 
 $ sudo nano /etc/fstab                        [For Ubuntu]
-
 ```
 
 Put the following line at the end of fstab file.
 
 ```bash
  sshfs#technhit@192.168.182.50:/home/technhit/ /mnt/remote
-
 ```
 
 [![fstab](https://www.technhit.in/wp-content/uploads/2016/12/sshfs5.gif)](https://www.technhit.in/wp-content/uploads/2016/12/sshfs5.gif)

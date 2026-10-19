@@ -38,7 +38,6 @@ $config['index_page']="index.php"
 //replace with the below code
  
 $config['index_page']=""
-
 ```
 
 **Step:-2** Go to your CodeIgniter directory and create .htaccess
@@ -50,7 +49,6 @@ Your_website_root_dir/
   |->system/
   |->.htaccess <------Create this file 
   |->index.php
-
 ```
 
 **Step:-3** Write below code in .htaccess file
@@ -64,7 +62,6 @@ Your_website_root_dir/
    RewriteRule ^(.*)$ index.php/$1 [L]
 
 </IfModule>
-
 ```
 
 The above code checks requested file*(-f)* with the specified name in the browser exist, or the directory*(-d)* in the browser exist. If does not exists then proceed to the rewrite rule below.
@@ -77,7 +74,6 @@ $config['uri_protocol']="AUTO"
 
 //replace with the below code 
 $config['uri_protocol']="REQUEST_URI"
-
 ```
 
  This will work on all apache based web server but in wamp server, it does not work because rewrite_module by default disabled so we have need to enable it.

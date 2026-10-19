@@ -60,7 +60,6 @@ Controllers are the core of your application because they determine how HTTP req
       }
   }
 ?>
-
 ```
 
 ### Explanation of above Code:
@@ -97,7 +96,6 @@ Views are the simple or complex HTML templates, which can be called by the contr
    </body>
  
 </html>
-
 ```
 
 You can call the above view from the controller, the syntax of loading a view is:
@@ -108,7 +106,6 @@ You can call the above view from the controller, the syntax of loading a view is
 
 $this->load->view("you_directory_name/example") // For specified directory 
                                                 //under view directory
-
 ```
 
 ###  Let's see how to call the view from the controller:
@@ -124,7 +121,6 @@ $this->load->view("you_directory_name/example") // For specified directory
       
   }
 ?>
-
 ```
 
 ## **Models:**
@@ -146,7 +142,6 @@ Now that you know what a Model is and what it's used for, we can take a look at 
         }
      }
 ?>
-
 ```
 
 ###  Loading a Model
@@ -155,35 +150,30 @@ A model is loaded from Controller functions. Loading a model takes just one line
 
 ```bash
  $this->load->model('model_name');
-
 ```
 
  In this instance, you should replace model_name with the name of your model. If your model is located in a sub-folder, you would load the model as follows:
 
 ```bash
  $this->load->model('sub_folder/model_name');
-
 ```
 
 Once loaded, you access your model functions by using the global object with the same name as your model name.
 
 ```bash
  $this->model_name->function_name();
-
 ```
 
 You can assign a new name for your Model object by passing it to the second parameter of the loading function.
 
 ```bash
  $this->load->model('model_name', 'different_name');
-
 ```
 
 Now you would call your model functions as follows:
 
 ```bash
  $this->different_name->function_name();
-
 ```
 
 **Here's an example of a controller calling a model and serving a view.**
@@ -198,7 +188,6 @@ Now you would call your model functions as follows:
     }
  }
 ?>
-
 ```
 
 Now modify your example view file to show user data:
@@ -231,7 +220,6 @@ Now modify your example view file to show user data:
    </body>
  
 </html>
-
 ```
 
 Thanks for reading this tutorial. Hope this is helpful for you. If you have any query, please leave a reply.

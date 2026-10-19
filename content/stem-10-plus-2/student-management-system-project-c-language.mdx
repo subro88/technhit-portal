@@ -44,7 +44,6 @@ This project can improve understanding of mouse operation. For storing informati
 #include<dos.h>
 #include<stdlib.h>
 #include<alloc.h>
-
 ```
 
 ### **Global Variables for Mouse pointer:**
@@ -52,7 +51,6 @@ This project can improve understanding of mouse operation. For storing informati
 ```c
 //============= Variable For Mouse x,y Coordinets, Buttons Value====//
 int mx, my, mouse_button,mouse_button2, maxx, maxy ;
-
 ```
 
 In order to store coordinates of mouse pointer we use *mx* and *my *variable. To store responses of mouse buttons we are using *mouse_button* for left click and *mouse_button2* for right click.  The variables *maxx* and *maxy* are used for storing maximum resolution fo your screen.
@@ -93,7 +91,6 @@ long int size1=sizeof(m); //declear size of structure//
 long int size2=sizeof(r);
 
 FILE *f1,*f2; //declear file stream for opening files//
-
 ```
 
 ### Function Prototypes used in SMS:
@@ -111,7 +108,6 @@ void form1(void); // Function 6 For Display Front Page //
 void help(void); // Function 7 For Display Help File //
 void list (void); // Function 8 For Display All Student In List Format//
 void result(void); // Function 9 For Display All Result Of Student With Registration No. //
-
 ```
 
 ### #Main function:
@@ -154,7 +150,6 @@ void main()
  }
  form1(); // Calling Function 6 //
  }
-
 ```
 
 ### [![Student Management System](https://www.technhit.in/wp-content/uploads/2016/11/install-phpmyadmin.gif)](https://www.technhit.in/wp-content/uploads/2016/11/install-phpmyadmin.gif)
@@ -210,7 +205,6 @@ void add()
  form1();
 
 }
-
 ```
 
 ### [![Add students](https://www.technhit.in/wp-content/uploads/2016/11/sms2.png)](https://www.technhit.in/wp-content/uploads/2016/11/sms2.png)
@@ -377,7 +371,6 @@ void edit()
  form1();
 
 }
-
 ```
 
 ### [![edit](https://www.technhit.in/wp-content/uploads/2016/11/sms3.png)](https://www.technhit.in/wp-content/uploads/2016/11/sms3.png)
@@ -455,7 +448,6 @@ void find()
  }
 
 }
-
 ```
 
 ### [![find](https://www.technhit.in/wp-content/uploads/2016/11/sms4.png)](https://www.technhit.in/wp-content/uploads/2016/11/sms4.png)
@@ -686,7 +678,6 @@ void find()
  form1();
 
 }
-
 ```
 
 ### [![delete](https://www.technhit.in/wp-content/uploads/2016/11/sms5.png)](https://www.technhit.in/wp-content/uploads/2016/11/sms5.png)
@@ -774,7 +765,6 @@ void find()
  }
  form1();
 }
-
 ```
 
 ### [![marks](https://www.technhit.in/wp-content/uploads/2016/11/sms6.png)](https://www.technhit.in/wp-content/uploads/2016/11/sms6.png)
@@ -814,7 +804,6 @@ void find()
  fclose(f1);
  form1();
 }
-
 ```
 
 ### # Function for List students:
@@ -878,7 +867,6 @@ void find()
  fclose(f1);
  form1();
 }
-
 ```
 
 ### [![list](https://www.technhit.in/wp-content/uploads/2016/11/sms7.png)](https://www.technhit.in/wp-content/uploads/2016/11/sms7.png)
@@ -932,7 +920,6 @@ void find()
  getch();
  form1();
 }
-
 ```
 
 ### [![list marks](https://www.technhit.in/wp-content/uploads/2016/11/sms8.png)](https://www.technhit.in/wp-content/uploads/2016/11/sms8.png)
@@ -1018,7 +1005,6 @@ get_position()
  mouse_button2=o.x.bx & 2;
  return 0;
 }
-
 ```
 
 ### # Full Project in together:
@@ -2075,5 +2061,4 @@ get_position()
  mouse_button2=o.x.bx & 2;
  return 0;
 }
-
 ```

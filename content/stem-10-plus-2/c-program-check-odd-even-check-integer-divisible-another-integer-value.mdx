@@ -52,7 +52,6 @@ int main()
    getch();            //This function holds your screen to see result.
    return 0;
 }
-
 ```
 
 ## Find odd or even using conditional operator
@@ -72,7 +71,6 @@ int main()
 
    return 0;
 }
-
 ```
 
 ## C program to check odd or even without using bitwise or modulus operator
@@ -94,7 +92,6 @@ int main()
 
    return 0;
 }
-
 ```
 
 In C programming language when we divide two integers we get an integer result, For example, the result of 10/3 will be 3. So we can take advantage of this and may use it to find whether the number is odd or even. Consider an integer n we can first divide by 2 and then multiply it by 2 if the result is the original number then the number is even otherwise the number is odd. For example 11/2 = 5, 5*2 = 10 (which is not equal to eleven), now consider 12/2 = 6 and 6*2 = 12 (same as original number). These are some logic which may help you in finding if a number is odd or not.
@@ -115,7 +112,6 @@ main()
    a%2 == 0 ? printf("Even number\n") : printf("Odd number\n");
    return 0;
 }
-
 ```
 
 We can use bitwise AND (&) operator to check odd or even, as an example consider binary of 7 (0111) when we perform 7 & 1 the result will be one and you may observe that the least significant bit of every odd number is 1, so ( odd_number & 1 ) will be one always and also ( even_number & 1 ) is zero.
@@ -140,7 +136,6 @@ int main()
 
    return 0;
 }
-
 ```
 
 ### **To check the given no. is even or odd without using the % operator**
@@ -160,7 +155,6 @@ main()
 
   return 0;
 }
-
 ```
 
 ### **To check the given no. is divisible by 3 and also divisible by 5 (Using bitwise and operator) **
@@ -184,7 +178,6 @@ main()
      }
      return 0;
   }
-
 ```
 
 Output

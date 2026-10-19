@@ -54,14 +54,12 @@ FROM:
 PermitRootLogin prohibit-password
 TO:
 PermitRootLogin yes
-
 ```
 
 Once you have made the above configuration then save the file, And finally, you will need to restart the ssh daemon in order for the changes to take effect using the command below.
 
 ```bash
  $ service ssh restart
-
 ```
 
 After the ssh service is restarted, you should now be able to login through SSH using your root account and password.

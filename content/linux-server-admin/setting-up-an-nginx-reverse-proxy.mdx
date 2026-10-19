@@ -78,14 +78,12 @@ We will begin by updating the local package index to reflect the latest upstream
 
 ```bash
 sudo apt update
-
 ```
 
 [![](https://www.technhit.in/wp-content/uploads/2019/09/apt-update.png)](https://www.technhit.in/wp-content/uploads/2019/09/apt-update.png)
 
 ```bash
 sudo apt install apache2
-
 ```
 
 [![](https://www.technhit.in/wp-content/uploads/2019/09/install-apache-2.png)](https://www.technhit.in/wp-content/uploads/2019/09/install-apache-2.png)
@@ -102,7 +100,6 @@ The first thing we have to do is configure our Apache vhost to listen on *localh
 
 ```bash
 sudo nano /etc/apache2/ports.conf
-
 ```
 
 ... and modify the *NameVirtualHost* and *Listen* lines for port *80* to use port *8080*:
@@ -126,21 +123,18 @@ sudo nano /etc/apache2/ports.conf
  <IfModule mod_gnutls.c>
   Listen 443
  </IfModule>
-
 ```
 
 Next open the vhost configuration file (e.g. */etc/apache2/sites-available/000-default.conf*)...
 
 ```bash
 nano /etc/apache2/sites-available/000-default.conf
-
 ```
 
 ... and change the *<VirtualHost>* line to use the IP address *127.0.0.1* and the port *8080*:
 
 ```bash
 <VirtualHost 127.0.0.1:8080>[...]
-
 ```
 
 We will configure Nginx as a transparent proxy, i.e., it will pass on the original user's IP address in a field called *X-Forwarded-For* to the backend Apache. Of course, the backend Apache should log the original user's IP address in their access logs instead of the IP address of Nginx (*127.0.0.1*). There are two ways to achieve this:
@@ -152,21 +146,18 @@ sudo nano /etc/apache2/apache2.conf
 
 ```bash
 [...]#LogFormat "%h %l %u %t \"%r\" %>s %O \"%{Referer}i\" \"%{User-Agent}i\"" combinedLogFormat "%{X-Forwarded-For}i %l %u %t \"%r\" %>s %b \"%{Referer}i\" \"%{User-Agent}i\"" combined[...]
-
 ```
 
 2) On Debian/Ubuntu, we can install the Apache module *libapache2-mod-rpaf* which takes care of logging the correct IP address:
 
 ```bash
 sudo apt install libapache2-mod-rpaf
-
 ```
 
 After all these changes, restart Apache:
 
 ```bash
 sudo service apache2 restart
-
 ```
 
 ## #Step 3: Configuring Nginx
@@ -175,7 +166,6 @@ If Nginx isn't already installed, install it as follows:
 
 ```bash
 sudo apt install nginx
-
 ```
 
 Create its system startup links and make sure it is started:
@@ -183,7 +173,6 @@ Create its system startup links and make sure it is started:
 ```bash
 sudo systemctl enable nginx.service
 sudo service nginx restart
-
 ```
 
 It should now be listening on port *80*.
@@ -198,7 +187,6 @@ proxy_set_header Host $http_host;
  proxy_set_header X-Real-IP $remote_addr;
  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
  proxy_set_header X-Forwarded-Proto $scheme;
-
 ```
 
 As we will include that file later on in the proxy part of our nginx vhost for *example.com*, you might want to add further proxy directives to that file if you like, e.g. as follows:
@@ -219,7 +207,6 @@ As we will include that file later on in the proxy part of our nginx vhost for *
  proxy_temp_file_write_size 256k;
  proxy_max_temp_file_size 0;
  proxy_read_timeout 300;
-
 ```
 
 Now modify the *default* vhost for Nginx - make sure it uses the same document root as the Apache vhost for *example.com* (e.g. */var/www/html*) so that Nginx can deliver static files directly without passing the request to Apache:
@@ -246,7 +233,6 @@ server {
         include /etc/nginx/proxy_params;
       }
  }
-
 ```
 
 This is a very simple configuration which would proxy all requests to Apache.
@@ -255,7 +241,6 @@ Reload Nginx for the changes to take effect:
 
 ```bash
 sudo service nginx reload
-
 ```
 
 Finally, we will test the Nginx configuration and restart Nginx:
@@ -263,7 +248,6 @@ Finally, we will test the Nginx configuration and restart Nginx:
 ```bash
 sudo nginx -t
 sudo systemctl restart nginx
-
 ```
 
 You can now type the server hostname or the IP *10.0.50.57* into your browser, and you should see the apache default web site, but this time delivered through Nginx.
@@ -276,7 +260,6 @@ Also, you can test it with curl:
 
 ```bash
 curl -I 10.0.50.57
-
 ```
 
 [![](https://www.technhit.in/wp-content/uploads/2019/09/install-nginx-serve-page-cli.png)](https://www.technhit.in/wp-content/uploads/2019/09/install-nginx-serve-page-cli.png)
@@ -286,5 +269,4 @@ curl -I 10.0.50.57
 ## #Conclusion
 
 Nginx is fast and popular web server with low memory usage that can act as web server and reverse proxy for HTTP and HTTPS protocol. Nginx reverse proxy for apache is a setup that uses Nginx as front end, and apache as back end.
-
 ```

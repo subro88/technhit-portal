@@ -52,7 +52,6 @@ CREATE TABLE `geo_locations` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 ----------------------------------------------------------
-
 ```
 
 Download Database [SQL file Here](https://www.youtube.com/redirect?event=video_description&redir_token=QUFFLUhqbWlOMDJjdlE5aTRWS1FIVktQZWd3TFJHemdZd3xBQ3Jtc0tsQ3JoXzRsNlNmWU83dlotcU1Fb1ZVdmROZzJaenpsTkw4ckRXb0FvZlhGWGFvbnRSa1RWdmptX0VJVTVXbUVlOEU5VVhSN1FhaWZmbFFwSmd0amFXYUI5bGRXMEY1aHJoVUQ3LXNEcjA5dzFHRlB0bw&q=https%3A%2F%2Fdrive.google.com%2Fdrive%2Ffolders%2F1BBbWNHGEB2FUoav3cB5xmRziWQgwF6uh%3Fusp%3Dsharing):
@@ -65,7 +64,6 @@ Route::get('/', ['as'=>'home', 'uses'=> 'Geolocation@home']);
 Route::post('/district-name', ['as'=>'district', 'uses'=>'Geolocation@getDist']);
 
 Route::post('/ps-name', ['as'=>'ps', 'uses'=>'Geolocation@getPS']);
-
 ```
 
 ## Controller:
@@ -107,7 +105,6 @@ class Geolocation extends Controller
     }    
 
 }
-
 ```
 
 ## Models:
@@ -126,7 +123,6 @@ class GeoLocations extends Model
     public $table= "geo_locations";
     protected $fillable =['id', 'name','parent_id', 'external_id', 'location_type', 'pin'];
 }
-
 ```
 
 ## Views:
@@ -192,7 +188,6 @@ class GeoLocations extends Model
 {!! Form::close() !!}
 
     <!-- /.col -->
-
 ```
 
 ## Java Scripts:
@@ -243,7 +238,6 @@ class GeoLocations extends Model
         });
     }
 </script>
-
 ```
 
 ## Conclution:

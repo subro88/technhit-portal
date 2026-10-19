@@ -43,7 +43,6 @@ scp uses by default the port 22, and connect via an encrypted connection or secu
 
 ```bash
 scp /path/to/source-file user@host:/path/to/destination-folder/
-
 ```
 
 Assume that we have a file test.txt in local directory <tt>/home/technhit/test.txt </tt>and want to copy to the destination server root@192.168.182.50 in tmp directory.
@@ -54,7 +53,6 @@ Assume that we have a file test.txt in local directory <tt>/home/technhit/test.t
 
 ```bash
  scp user@host:/path/to/source-file /path/to/destination-folder
-
 ```
 
 Assume that we similarly have a test2.txt file on the remote server `/tmp/test2.txt` and copy to the local system.
@@ -67,14 +65,12 @@ Assume that we similarly have a test2.txt file on the remote server `/tmp/test2.
 
 ```bash
  scp user1@server1:/path/to/file user2@server2:/path/to/folder/
-
 ```
 
 Let's assume that we have two remote server one is ***root@192.168.182.50**  *and another is*** technhit@192.168.182.51 ***and operating ***scp*** through our local system.
 
 ```bash
  scp technhit@192.168.182.51:/home/technhit/test3.txt root@192.168.182.50:/tmp/
-
 ```
 
 **Copy multiple files with one command**
@@ -83,28 +79,24 @@ We can copy multiple files using scp, file names followed by space with each.
 
 ```bash
  scp file1.txt file2.txt file3.txt technhit@192.168.182.51:/home/technhit/
-
 ```
 
 #### **Copy files using wildcards:**
 
 ```bash
  scp /path/to/folder/*.ext user@server:/path/to/folder/
-
 ```
 
 For example,  we want to copy all .txt file from `/home/technhit` to `/tmp/ `directory of host 192.168.182.50
 
 ```bash
  scp /home/technhit/*.txt root@192.168.182.50:/tmp/
-
 ```
 
 **Copy a directory and all its contents to a remote server**
 
 ```bash
  scp -rp /path/to/source-directoy user@server:/path/to/destination-directory/
-
 ```
 
 - -r means recursive
@@ -115,7 +107,6 @@ The above syntax copy entire directory with its associative file information. On
 
 ```bash
  scp -rp /home/technhit/ root@192.168.182.50:/tmp/
-
 ```
 
 [![scp](https://www.technhit.in/wp-content/uploads/2017/01/scp4.png)](https://www.technhit.in/wp-content/uploads/2017/01/scp4.png)
@@ -136,7 +127,6 @@ The SFTP server function is enabled by default in Ubuntu, but if it is not enabl
 
 ```bash
 sftp user@hostnmane
-
 ```
 
 [![sftp](https://www.technhit.in/wp-content/uploads/2017/01/sftp.png)](https://www.technhit.in/wp-content/uploads/2017/01/sftp.png)

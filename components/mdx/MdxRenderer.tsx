@@ -67,26 +67,54 @@ function CodeBlock({ code, lang }: { code: string; lang: string }) {
   );
 }
 
-// Inline Markdown Parser for bold, italic, code, links, images
+// Inline Markdown Parser for linked images, images, links, code, bold, italic
 function parseInline(text: string): React.ReactNode {
   const tokens = [];
   let remaining = text;
   let keyIdx = 0;
 
   while (remaining.length > 0) {
-    // 1. Markdown Image: ![alt](url)
+    // 1. Linked Image: [![alt](src)](href)
+    const linkedImgMatch = remaining.match(/^\[!\[([^\]]*)\]\(([^)]+)\)\]\(([^)]+)\)/);
+    if (linkedImgMatch) {
+      tokens.push(
+        <a
+          key={`linked-img-${keyIdx++}`}
+          href={linkedImgMatch[3]}
+          target="_blank"
+          rel="noopener noreferrer"
+          className="block my-6 group"
+        >
+          <img
+            src={linkedImgMatch[2]}
+            alt={linkedImgMatch[1]}
+            className="rounded-xl border border-cyber-border group-hover:border-cyber-cyan/50 shadow-xl max-w-full h-auto mx-auto transition-all"
+            loading="lazy"
+          />
+          {linkedImgMatch[1] && (
+            <span className="block text-center text-xs text-zinc-500 group-hover:text-cyber-cyan mt-1.5 font-mono transition-colors">
+              {linkedImgMatch[1]}
+            </span>
+          )}
+        </a>
+      );
+      remaining = remaining.slice(linkedImgMatch[0].length);
+      continue;
+    }
+
+    // 2. Standalone Markdown Image: ![alt](url)
     const imgMatch = remaining.match(/^!\[([^\]]*)\]\(([^)]+)\)/);
     if (imgMatch) {
       tokens.push(
-        <span key={`img-${keyIdx++}`} className="block my-4">
+        <span key={`img-${keyIdx++}`} className="block my-6">
           <img
             src={imgMatch[2]}
             alt={imgMatch[1]}
-            className="rounded-lg border border-cyber-border shadow-lg max-w-full h-auto mx-auto"
+            className="rounded-xl border border-cyber-border shadow-xl max-w-full h-auto mx-auto"
             loading="lazy"
           />
           {imgMatch[1] && (
-            <span className="block text-center text-xs text-zinc-500 mt-1 font-mono">
+            <span className="block text-center text-xs text-zinc-500 mt-1.5 font-mono">
               {imgMatch[1]}
             </span>
           )}
@@ -96,7 +124,7 @@ function parseInline(text: string): React.ReactNode {
       continue;
     }
 
-    // 2. Markdown Link: [text](url)
+    // 3. Markdown Link: [text](url)
     const linkMatch = remaining.match(/^\[([^\]]+)\]\(([^)]+)\)/);
     if (linkMatch) {
       tokens.push(
@@ -114,7 +142,7 @@ function parseInline(text: string): React.ReactNode {
       continue;
     }
 
-    // 3. Inline Code: `code`
+    // 4. Inline Code: `code`
     const codeMatch = remaining.match(/^`([^`]+)`/);
     if (codeMatch) {
       tokens.push(
@@ -129,7 +157,7 @@ function parseInline(text: string): React.ReactNode {
       continue;
     }
 
-    // 4. Bold: **text**
+    // 5. Bold: **text**
     const boldMatch = remaining.match(/^\*\*([^*]+)\*\*/);
     if (boldMatch) {
       tokens.push(
@@ -141,7 +169,7 @@ function parseInline(text: string): React.ReactNode {
       continue;
     }
 
-    // 5. Italic: *text*
+    // 6. Italic: *text*
     const italicMatch = remaining.match(/^\*([^*]+)\*/);
     if (italicMatch) {
       tokens.push(
@@ -153,7 +181,7 @@ function parseInline(text: string): React.ReactNode {
       continue;
     }
 
-    // 6. Regular plain text chunk up to next special char
+    // 7. Regular plain text chunk up to next special char
     const nextSpecial = remaining.search(/[!\[`*]/);
     if (nextSpecial === -1) {
       tokens.push(remaining);
@@ -177,8 +205,16 @@ export default function MdxRenderer({ content }: MdxRendererProps) {
   // Strip YAML frontmatter if present
   const cleanBody = normalized.replace(/^---[\s\S]*?---\n*/, "").trim();
 
+  // Extract all code blocks first into placeholders to prevent blank lines inside code blocks from breaking fences
+  const codeBlocks: { lang: string; code: string }[] = [];
+  const withPlaceholders = cleanBody.replace(/```([a-zA-Z0-9_-]*)\n([\s\S]*?)\n```/g, (_, lang, code) => {
+    const token = `__CODE_BLOCK_${codeBlocks.length}__`;
+    codeBlocks.push({ lang: lang || "SHELL", code: code.trim() });
+    return `\n\n${token}\n\n`;
+  });
+
   // Split into structural blocks by double newlines
-  const blocks = cleanBody.split(/\n{2,}/);
+  const blocks = withPlaceholders.split(/\n{2,}/);
 
   return (
     <div className="prose max-w-none space-y-6 text-[var(--fg,#d4d4d8)] leading-relaxed">
@@ -186,7 +222,16 @@ export default function MdxRenderer({ content }: MdxRendererProps) {
         const trimmed = block.trim();
         if (!trimmed) return null;
 
-        // 1. TerminalBlock Custom Component
+        // 1. CodeBlock via Placeholder
+        const codeTokenMatch = trimmed.match(/^__CODE_BLOCK_(\d+)__$/);
+        if (codeTokenMatch) {
+          const cb = codeBlocks[parseInt(codeTokenMatch[1], 10)];
+          if (cb) {
+            return <CodeBlock key={idx} code={cb.code} lang={cb.lang} />;
+          }
+        }
+
+        // 2. TerminalBlock Custom Component
         const termMatch = trimmed.match(/<TerminalBlock\s+([^>]+)\/>/);
         if (termMatch) {
           const attrs = termMatch[1];
@@ -196,7 +241,7 @@ export default function MdxRenderer({ content }: MdxRendererProps) {
           return <TerminalBlock key={idx} command={cmd} title={title} os={os} />;
         }
 
-        // 2. YouTubeEmbed Custom Component
+        // 3. YouTubeEmbed Custom Component
         const ytMatch = trimmed.match(/<YouTubeEmbed\s+([^>]+)\/>/);
         if (ytMatch) {
           const attrs = ytMatch[1];
@@ -205,7 +250,7 @@ export default function MdxRenderer({ content }: MdxRendererProps) {
           return <YouTubeEmbed key={idx} videoId={vidId} title={title} />;
         }
 
-        // 3. ArchitectureDiagram
+        // 4. ArchitectureDiagram
         const diagMatch = trimmed.match(/<ArchitectureDiagram\s+([^>]+)\/>/);
         if (diagMatch) {
           const attrs = diagMatch[1];
@@ -214,7 +259,7 @@ export default function MdxRenderer({ content }: MdxRendererProps) {
           return <ArchitectureDiagram key={idx} type={type} title={title} />;
         }
 
-        // 4. MathFormulaBlock
+        // 5. MathFormulaBlock
         const mathMatch = trimmed.match(/<MathFormulaBlock\s+([^>]+)\/>/);
         if (mathMatch) {
           const attrs = mathMatch[1];
@@ -256,13 +301,13 @@ export default function MdxRenderer({ content }: MdxRendererProps) {
           );
         }
 
-        // 5. ConfigDiff
+        // 6. ConfigDiff
         const diffMatch = trimmed.match(/<ConfigDiff\s+filename="([^"]+)"\s+diffText="([^"]+)"\s*\/>/);
         if (diffMatch) {
           return <ConfigDiff key={idx} filename={diffMatch[1]} diffText={diffMatch[2]} />;
         }
 
-        // 6. InfoBox
+        // 7. InfoBox
         const infoMatch = trimmed.match(/<InfoBox(?:\s+title="([^"]+)")?(?:\s+type="([^"]+)")?>([\s\S]*?)<\/InfoBox>/);
         if (infoMatch) {
           return (
@@ -272,12 +317,12 @@ export default function MdxRenderer({ content }: MdxRendererProps) {
           );
         }
 
-        // 7. Horizontal Rule
+        // 8. Horizontal Rule
         if (trimmed === "---" || trimmed === "***" || trimmed === "<hr />" || trimmed === "<hr>") {
           return <hr key={idx} className="my-8 border-cyber-border" />;
         }
 
-        // 8. GitHub Callout Alerts: > [!NOTE], > [!TIP], > [!WARNING], > [!IMPORTANT]
+        // 9. GitHub Callout Alerts: > [!NOTE], > [!TIP], > [!WARNING], > [!IMPORTANT]
         if (trimmed.startsWith(">")) {
           const lines = trimmed.split("\n").map((l) => l.replace(/^>\s?/, "").trim());
           const firstLine = lines[0] || "";
@@ -323,15 +368,6 @@ export default function MdxRenderer({ content }: MdxRendererProps) {
               </div>
             </div>
           );
-        }
-
-        // 9. Markdown Fenced Code Blocks: ```lang ... ```
-        if (trimmed.startsWith("```")) {
-          const lines = trimmed.split("\n");
-          const firstLine = lines[0].replace("```", "").trim();
-          const lastLineIdx = lines.length - 1;
-          const code = lines.slice(1, lines[lastLineIdx].startsWith("```") ? lastLineIdx : lines.length).join("\n");
-          return <CodeBlock key={idx} code={code} lang={firstLine} />;
         }
 
         // 10. Headings: #, ##, ###, ####
@@ -403,7 +439,15 @@ export default function MdxRenderer({ content }: MdxRendererProps) {
           );
         }
 
-        // 13. Standard Paragraph with inline formatting
+        // 13. Fallback for standalone ``` if unclosed
+        if (trimmed.startsWith("```")) {
+          const lines = trimmed.split("\n");
+          const firstLine = lines[0].replace("```", "").trim();
+          const code = lines.slice(1).join("\n").replace(/```$/, "").trim();
+          return <CodeBlock key={idx} code={code} lang={firstLine} />;
+        }
+
+        // 14. Standard Paragraph with inline formatting
         return (
           <p key={idx} className="text-base sm:text-[16px] text-zinc-300 leading-relaxed font-sans my-3">
             {parseInline(trimmed)}

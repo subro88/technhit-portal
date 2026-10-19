@@ -67,7 +67,6 @@ The Ubuntu 16.04 LTS repositories come with version 5.7 of MySQL, go to terminal
 
 ```bash
 $sudo apt install mysql-server
-
 ```
 
 Rest of article we assumed that, you have setup two identical nodes running MySQL, which can talk to each other over a private network, and that the nodes have the above IPs:
@@ -83,7 +82,6 @@ In the file **/etc/mysql/mysql.conf.d/mysqld.cnf** uncomment or set the followin
 bind-address = 10.0.50.54 
 server-id = 1 
 log_bin = /var/log/mysql/mysql-bin.log
-
 ```
 
 - **Restart The MySQL Server.**
@@ -92,7 +90,6 @@ log_bin = /var/log/mysql/mysql-bin.log
 
 ```bash
  $ sudo service mysql restart
-
 ```
 
 We need a user that connects to the master. This account generally used in the slave when the slave connects to master. The account needs `REPLICATION SLAVE`privilege. Here we're using the username.`replica.`
@@ -109,7 +106,6 @@ mysql> GRANT REPLICATION SLAVE ON *.* TO 'replica'@'10.0.50.55';
 Query OK, 0 rows affected (0.00 sec)
 
 mysql> FLUSH TABLES WITH READ LOCK; Query OK, 0 rows affected (0.00 sec)
-
 ```
 
 <blockquote> 
@@ -127,21 +123,18 @@ mysql> SHOW MASTER STATUS;
 | mysql-bin.000001 | 674      |              |                  |                   |
 +------------------+----------+--------------+------------------+-------------------+
 1 row in set (0.00 sec)
-
 ```
 
 - **Dump the All database of Master**
 
 ```bash
  $ mysqldump -u root -p --all-databases --master-data > dbdump.sql
-
 ```
 
 - **Unlock Master Database**
 
 ```bash
  mysql> UNLOCK TABLES;
-
 ```
 
 - **Copy Dumped database to Slave Computer**
@@ -150,7 +143,6 @@ Here we are using scp command to copy the database to slave computer.
 
 ```bash
  $ scp dbdump.sql 10.0.50.55:/tmp
-
 ```
 
 **Step 2:--- Setup MySQL Slave Configuration: **
@@ -171,7 +163,6 @@ Similarly like master, In the file **/etc/mysql/mysql.conf.d/mysqld.cnf** uncomm
 bind-address = 10.0.50.55
 server-id = 2
 log_bin = /var/log/mysql/mysql-bin.log
-
 ```
 
 Similar to master set bind-address, server id (here we use id 2 this time). Though binary log is optional. But it is good practice to set the log for future reference in case it acts as a master in future.
@@ -181,7 +172,6 @@ Similar to master set bind-address, server id (here we use id 2 this time). Thou
 
 ```bash
 $ sudo service mysql restart
-
 ```
 
 - **Import Dump Database to Slave**
@@ -190,7 +180,6 @@ Now it's time to import the master dump database to the slave which we stored ea
 
 ```bash
 $ mysql -u root -p < /tmp/dbdump.sql
-
 ```
 
 - **Set Slave to Communicate Master Database**
@@ -212,7 +201,6 @@ mysql> CHANGE MASTER TO
  -> MASTER_LOG_FILE='mysql-bin.000001',
  -> MASTER_LOG_POS=674;
 Query OK, 0 rows affected, 2 warnings (0.01 sec)
-
 ```
 
 Change the above blue marked parameter as per your value.
@@ -220,7 +208,6 @@ Change the above blue marked parameter as per your value.
 ```bash
 mysql> START SLAVE;
 Query OK, 0 rows affected (0.00 sec)
-
 ```
 
 Now your slave is ready to sync with the master database. Whichever changes occur in master database slaves accept a reply from the master and update the slave.
@@ -229,7 +216,6 @@ You can show slave status using the following command.
 
 ```bash
 mysql> SHOW SLAVE STATUS\G
-
 ```
 
 ## Extended Setup for Master-Master MySQL Replication:
@@ -253,7 +239,6 @@ Query OK, 0 rows affected (0.00 sec)
 
 mysql> GRANT REPLICATION SLAVE ON *.* TO 'master'@'10.0.50.54';
 Query OK, 0 rows affected (0.00 sec)
-
 ```
 
 - **View Log Position**
@@ -268,7 +253,6 @@ mysql> SHOW MASTER STATUS;
 | mysql-bin.000004 | 154      |              |                  |                   |
 +------------------+----------+--------------+------------------+-------------------+
 1 row in set (0.00 sec)
-
 ```
 
 Note down the above information for future use.
@@ -298,7 +282,6 @@ Query OK, 0 rows affected, 2 warnings (0.01 sec)
 ```bash
 mysql> START SLAVE;
 Query OK, 0 rows affected (0.00 sec)
-
 ```
 
 Now your both Server ready to talk each other. This mode is known as master-master replication mode.

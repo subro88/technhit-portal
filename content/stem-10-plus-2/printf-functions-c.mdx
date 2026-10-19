@@ -347,7 +347,6 @@ Print formatted data to stdout device. It's writing the C string pointed by form
 
 ```c
  int printf ( const char * format, ... );
-
 ```
 
 ### parameters:
@@ -380,14 +379,12 @@ void main()
    getch();
    
 }
-
 ```
 
 Output
 
 ```c
 The value of total is = 1511
-
 ```
 
 ### program #2
@@ -410,7 +407,6 @@ void main()
    getch();
    
 }
-
 ```
 
 Output:
@@ -419,7 +415,6 @@ Output:
 The value of total is = 1511
 The value of total is = 235
 The value of total is = 12
-
 ```
 
 Here we change the format specifier %d to %4d, as a result, you will see the alignment will change.
@@ -447,7 +442,6 @@ void main()
    getch();
    
 }
-
 ```
 
 Output:
@@ -461,7 +455,6 @@ The value of total is =   12
 The value of total is = 1511
 The value of total is = 0235
 The value of total is = 0012
-
 ```
 
 As we discuss earlier format specifier should be same as the argument. In this program we have 3 format specifier in respect of 4 arguments as a result the last argument is ignored. See bellow program.
@@ -485,7 +478,6 @@ void main()
    getch();
    
 }
-
 ```
 
 Output:
@@ -494,7 +486,6 @@ Output:
 The value of total is = 1511
 The value of total is = 235
 The value of total is = 12
-
 ```
 
 ## cprintf**():**
@@ -505,7 +496,6 @@ Unlike printf function, cprintf take argument same as printf function. And appli
 
 ```c
  int cprintf(const char *format[, argument, ...]);
-
 ```
 
 ### parameters:
@@ -540,7 +530,6 @@ int main(void)
  getch();
  return 0;
 }
-
 ```
 
 ### program #6
@@ -563,7 +552,6 @@ int main(void)
 
  return 0;
 }
-
 ```
 
 ### program #7
@@ -583,7 +571,6 @@ main()
    getch();
    return 0;
 }
-
 ```
 
 Output:
@@ -600,7 +587,6 @@ Sometimes we need a complete string with a changeable section for example if you
 
 ```c
 int sprintf ( char * str, const char * format, ... );
-
 ```
 
 ### parameters:
@@ -641,7 +627,6 @@ int main(void)
  getch();
  return 0;
 }
-
 ```
 
 Output:
@@ -658,7 +643,6 @@ This function writes formatted data to a file stream. fprintf uses all format sp
 
 ```c
 int fprintf ( FILE * stream, const char * format, ... );
-
 ```
 
 ### parameters:
@@ -698,7 +682,6 @@ int main(void)
  fclose(stream);
  return 0;
 }
-
 ```
 
 If you are working with the file then you have to need the fprintf function for file operation. On above program, a file stream opens dummy file as write mode then fprintf  writes variable values to file stream. If you haven't set any path for the file then it created in the present directory where the program runs from.
@@ -715,7 +698,6 @@ In any case, arg should have been initialized by va_start at some point before t
 
 ```c
 int vprintf ( const char * format, va_list arg );
-
 ```
 
 ### parameters:
@@ -757,7 +739,6 @@ int main ()
 
  return 0;
 }
-
 ```
 
 Output:
@@ -777,7 +758,6 @@ In any case, arg should have been initialized by va_start at some point before t
 
 ```c
 int vsprintf (char * str, const char * format, va_list arg );
-
 ```
 
 ### parameters:
@@ -828,7 +808,6 @@ int main ()
  }
  return 0;
 }
-
 ```
 
 In this example, if the file myfile.txt does not exist, prior is called to show an error message similar to:

@@ -57,7 +57,6 @@ The key's randomart image is:
 |  + .  o * o   . |
 |   . .. . . ...  |
 +----[SHA256]-----+
-
 ```
 
 As you see above we do not set the path, let it be the default (*/root/.ssh/id_rsa* ). and we do not set any passphrase. That means using that key files anyone can log in (eg. root on the target machine) and have the same level of access of the user and no password will be asked when the client tries to connect to the servers. Protecting the keys with password means that every time the user tries to connect to a server using those keys, the password for decrypting it will be asked.
@@ -70,7 +69,6 @@ After creating keys on the client, you have to install public key (*id_rsa.pub*)
 mkdir ~/.ssh
 
 chmod 700 ~/.ssh
-
 ```
 
 ### Step 3 -**-**
@@ -81,7 +79,6 @@ Now log in to your client computer and simply adds the contents of client's `~/.
 scp /home/technhit/.ssh/id_rsa.pub technhit@123.63.218.18:/home/technhit/ .ssh/authorized_keys
 technhit@123.63.218.18's password:
 id_rsa.pub          100%                     397 0.4KB/s 00:00
-
 ```
 
 ### Step 4--
@@ -98,7 +95,6 @@ Welcome to Ubuntu 16.04 LTS (GNU/Linux 4.4.0-62-generic x86_64)
 4 updates are security updates.
 
 Last login: Sat Feb 18 17:25:25 2017 from 47.11.7.236
-
 ```
 
 We logged in successfully.

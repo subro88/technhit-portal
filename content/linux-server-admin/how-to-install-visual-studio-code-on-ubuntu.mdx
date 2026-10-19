@@ -44,28 +44,24 @@ Update the packages index and install the dependencies by running the following 
 ```bash
 sudo apt update
 sudo apt install software-properties-common
-
 ```
 
 ### Import the Microsoft GPG key using the following wget command :
 
 ```bash
 wget -q https://packages.microsoft.com/keys/microsoft.asc -O- | sudo apt-key add -
-
 ```
 
 ### And enable the Visual Studio Code repository by typing:
 
 ```bash
 sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
-
 ```
 
 ### Once the apt repository is enabled, install the Visual Studio Code package:
 
 ```bash
 sudo apt install code
-
 ```
 
 When a new version is released you can update the VS Code package through your desktop standard Software Update tool or by running the following commands in your terminal:
@@ -89,7 +85,6 @@ To install the VS Code snap, open your terminal (`Ctrl+Alt+T`) and run the follo
 
 ```bash
 sudo snap install --classic code
-
 ```
 
 That's it. VS Code has been installed on your Ubuntu machine.

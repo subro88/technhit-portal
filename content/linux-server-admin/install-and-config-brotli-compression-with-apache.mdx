@@ -48,21 +48,18 @@ Go ahead and open terminal type :
 
 ```bash
 sudo apt install brotli 
-
 ```
 
 So, after install Brotli, enable the module in Apache.
 
 ```bash
 sudo a2enmod brotli 
-
 ```
 
 Now You need to restart Apache2 in order to make module effective.
 
 ```bash
 sudo systemctl restart apache2 
-
 ```
 
 Now, open up Apache Vhost config file. go ahead and type `nano /etc/apache2/site-available/<your config file>`.
@@ -90,7 +87,6 @@ Inside your config file place cursor after directory tag and put an If Module.
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
-
 ```
 
 Inside If Module add output filter type Brotli Compress, and then put your file type you want to compress. So, here is put html, css, Js etc.
@@ -99,14 +95,12 @@ After that save the configuration and exit. And again, restart the Apache servic
 
 ```bash
 sudo systemctl restart apache2 
-
 ```
 
 Now open up the browser and load the page in another tab, it will be bit faster than previous. You could check whether your Brotli Compressor work or not, using Curl command. So, open a local terminal and type the following command.
 
 ```bash
 curl -I -H 'Accept-Encoding: br' http://myapp1.com 
-
 ```
 
 You can see the output that content encoding Brotli is working fine for me.
@@ -120,7 +114,6 @@ Vary: Accept-Encoding
 Content-Encoding: br
 Content-Length: 1
 Content-Type: text/html; charset=UTF-8
-
 ```
 
 So, guys hope this article helpful to you, Thank you.

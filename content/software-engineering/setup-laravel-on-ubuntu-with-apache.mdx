@@ -52,7 +52,6 @@ Let's open up a Terminal and do first thing first update your package list using
 
 ```bash
 sudo apt update
-
 ```
 
 After updating your package list install apache webserver. So, go ahead and type sudo apt install apache2 then hit the enter key. Press y key to proceed. You can also setup laravel with Nginx instead of the apache web server. Click Here
@@ -60,7 +59,6 @@ After updating your package list install apache webserver. So, go ahead and type
 ```bash
 sudo apt install apache2
 systemctl status apache2
-
 ```
 
 [![laravel ubuntu apache](https://www.technhit.in/wp-content/uploads/2020/11/laravel-ubuntu-apache.png)](https://www.technhit.in/wp-content/uploads/2020/11/laravel-ubuntu-apache.png)
@@ -70,7 +68,6 @@ If the Apache server not running then use the following command to start apache 
 ```bash
 systemctl start apache2
 systemctl enable apache2
-
 ```
 
 Now open up the web browser and type localhost to see the default apache webpage is serving or not.
@@ -81,14 +78,12 @@ Get back to the terminal and it's time to install PHP. Also, you can Checkout th
 
 ```bash
 sudo apt install libapache2-mod-php php php-common php-xml php-gd php-opcache php-mbstring php-tokenizer php-json php-bcmath php-zip unzip
-
 ```
 
 You can check your PHP version using it.
 
 ```bash
 php -- version
-
 ```
 
 [![php version](https://www.technhit.in/wp-content/uploads/2020/11/php-version.png)](https://www.technhit.in/wp-content/uploads/2020/11/php-version.png)
@@ -98,7 +93,6 @@ Now go ahead and make tweak changes in PHP ini file and set cgi.fix_pathinfo set
 ```bash
 cd /etc/php/7.4/apache2
 sudo nano php.ini
-
 ```
 
 Press ctrl+w and search for the word "cgi.fix" the uncomment the line and set it to 0.
@@ -107,7 +101,6 @@ Press ctrl+w and search for the word "cgi.fix" the uncomment the line and set it
 ...
 cgi.fix_pathinfo=0
 ...
-
 ```
 
 Press Ctrl + x then y to Save and Exit.
@@ -116,7 +109,6 @@ Now Restart The apache service.
 
 ```bash
 systemctl restart apache2
-
 ```
 
 ## **Step 3 - Install Composer PHP Packages Management**
@@ -127,14 +119,12 @@ Now it's time to install the composer package manager go ahead and download and 
 sudo apt install curl
 curl -sS https://getcomposer.org/installer | php
 sudo mv composer.phar /usr/local/bin/composer
-
 ```
 
 You can check your installed composer version by typing the composer - version.
 
 ```bash
 composer --version
-
 ```
 
 Here you can see my version is 2.8.4
@@ -147,14 +137,12 @@ Now install Laravel Framework using composer, just type composer global require 
 
 ```bash
 composer global require laravel/installer
-
 ```
 
 As you had seen above image, all packages have been installed on the '~/.config/composer' directory. Next, we need to add the 'bin' directory to the PATH environment through the ~/.bashrc configuration. So Now Edit the ~/.bashrc configuration using nano command.
 
 ```bash
 nano ~/.bashrc
-
 ```
 
 And add the following line at the end of the file.
@@ -163,28 +151,24 @@ And add the following line at the end of the file.
 ...
 export PATH="$HOME/.config/composer/vendor/bin:$PATH"
 ...
-
 ```
 
 Now reload your bashrc configuration using the source command.
 
 ```bash
 source ~/.bashrc
-
 ```
 
 Now echo $PATH. It will return your "Bin" directory path for the Composer package.
 
 ```bash
 echo $PATH
-
 ```
 
 The 'bin' directory for the composer packages has been added to the $PATH environment variable. And as a result, you can use the command 'laravel' to start and create a new project. Now go ahead and type Laravel new then your project name to start a new Laravel project.
 
 ```bash
 laravel new myapp1
-
 ```
 
 This will take a while to download all dependencies required by Laravel.
@@ -197,7 +181,6 @@ First, add your project directory to www-data group use the following command
 
 ```bash
 sudo chgrp -R www-data /home/techblog/myapp1
-
 ```
 
  -R flag is recursive, Recursive means all subdirectory and files under your project directory become changed to the "www-data" group.
@@ -206,7 +189,6 @@ Also, you need to change access permission 775 of the storage directory under yo
 
 ```bash
 sudo chmod -R 775 /home/techblog/myapp1/storage
-
 ```
 
 Now create an apache vhost configuration go to the following directory and create a vhost config file using nano file editor.
@@ -214,7 +196,6 @@ Now create an apache vhost configuration go to the following directory and creat
 ```bash
 cd /etc/apache2/sites-available/
 sudo nano myapp1.com.conf
-
 ```
 
 And paste the following line inside the file.
@@ -237,28 +218,24 @@ And paste the following line inside the file.
 </VirtualHost>
 
 //All Red colored text must be changed as per your//
-
 ```
 
 To learn more about Vhost configuration click here [How to configure Apache Virtual Host on Ubuntu.](https://www.technhit.in/configure-apache-virtual-host-ubuntu-16-04-lts/) Now enable mod rewrite for apache2 just type
 
 ```bash
 sudo a2enmod rewrite.
-
 ```
 
 Now enable your site, just type
 
 ```bash
 sudo a2ensite myapp1.com.conf.
-
 ```
 
 Finally, Restart the apache service, type
 
 ```bash
 systemctl restart apache2
-
 ```
 
 As you are in a local environment you need a local dns resolver for your site. Go ahead and edit /etc/hosts file, add a dns record for your site then save the file.
@@ -270,7 +247,6 @@ sudo nano /etc/hosts
 ...
 127.0.0.1   myapp1.com
 ...
-
 ```
 
 Now get back to the web browser and open a tab then type your project hostname.

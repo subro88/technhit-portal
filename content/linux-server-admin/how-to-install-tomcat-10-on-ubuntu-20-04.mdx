@@ -40,14 +40,12 @@ You must have JRE (Java runtime environment) installed on your system. Tomcat 10
 ```bash
 sudo apt update  
 sudo apt install default-jdk
-
 ```
 
 Check the current active Java version:
 
 ```bash
 java -version
-
 ```
 
 [![Install Tomcat](https://www.technhit.in/wp-content/uploads/2021/05/screen1.png)](https://www.technhit.in/wp-content/uploads/2021/05/screen1.png)
@@ -60,7 +58,6 @@ To create a new account, type:
 
 ```bash
 sudo useradd -m -d /opt/tomcat -U -s /bin/false tomcat
-
 ```
 
 The above command will create a user and group with the name "`tomcat`" in your system.
@@ -71,14 +68,12 @@ The Apache Tomcat development team releases the latest version of Tomcat from ti
 
 ```bash
 wget https://mirrors.estointernet.in/apache/tomcat/tomcat-10/v10.0.5/bin/apache-tomcat-10.0.5.tar.gz
-
 ```
 
 Once the download completed, extract the downloaded archive and copy all content to the tomcat home directory.
 
 ```bash
 sudo tar xzvf apache-tomcat-10.0.5.tar.gz -C /opt/tomcat --strip-components=1
-
 ```
 
 Next, set the proper file permissions.
@@ -86,7 +81,6 @@ Next, set the proper file permissions.
 ```bash
 sudo chown -R tomcat:tomcat /opt/tomcat/ 
 sudo chmod -R u+x /opt/tomcat/bin
-
 ```
 
 You have now the latest Tomcat application on your system.
@@ -97,7 +91,6 @@ Now, configure your tomcat with user accounts to secure access to admin/manager 
 
 ```bash
 sudo nano /opt/tomcat/conf/tomcat-users.xml
-
 ```
 
 Add the following values. Make sure to change the password for admin and manager access.
@@ -110,7 +103,6 @@ Add the following values. Make sure to change the password for admin and manager
 <!-- user admin can access manager and admin section both -->
 <role rolename="admin-gui" />
 <user username="admin" password="Your_Password" roles="manager-gui,admin-gui" />
-
 ```
 
 Save file and close.
@@ -123,7 +115,6 @@ You can either allow specific remote system or allow all. Edit the `context.xml`
 
 ```bash
 sudo nano /opt/tomcat/webapps/manager/META-INF/context.xml
-
 ```
 
 Comment out the section added for IP address restriction to allow connections from anywhere.
@@ -133,14 +124,12 @@ Comment out the section added for IP address restriction to allow connections fr
   <CookieProcessor className="org.apache.tomcat.util.http.Rfc6265CookieProcessor"
                    sameSiteCookies="strict" />
   `<!--` <Valve className="org.apache.catalina.valves.RemoteAddrValve" allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1" /> `-->` ... </Context>
-
 ```
 
 Similarly edit `context.xml` for host-manager application in the text editor:
 
 ```bash
 sudo nano /opt/tomcat/webapps/host-manager/META-INF/context.xml
-
 ```
 
 Comment out the same section to allow connections from anywhere.
@@ -153,7 +142,6 @@ Comment out the same section to allow connections from anywhere.
          allow="127\.\d+\.\d+\.\d+|::1|0:0:0:0:0:0:0:1" /> -->
   ...
 </Context>
-
 ```
 
 Save all files and close them.
@@ -188,35 +176,30 @@ ExecStop=/opt/tomcat/bin/shutdown.sh
 
 [Install]
 WantedBy=multi-user.target
-
 ```
 
 Reload the systemd daemon service to load newly create files.
 
 ```bash
 sudo systemctl daemon-reload
-
 ```
 
 Now, start the Tomcat application for the first time.
 
 ```bash
 sudo systemctl start tomcat.service
-
 ```
 
 Next, enable the tomcat service to auto start for subsequent system boots. This is more important for the production deployments.
 
 ```bash
 sudo systemctl enable tomcat.service
-
 ```
 
 As of now, the tomcat application is running on your system. You can verify the service status by executing the command as below. Make sure the status is showing "`active (running)`".
 
 ```bash
 sudo systemctl status tomcat.service
-
 ```
 
 [![Tomcate10](https://www.technhit.in/wp-content/uploads/2021/05/screen2.png)](https://www.technhit.in/wp-content/uploads/2021/05/screen2.png)
@@ -227,7 +210,6 @@ The default Tomcat server runs on port 8080. As you have configured Tomcat on yo
 
 ```bash
 http://localhost:8080/
-
 ```
 
 You will see the page like below:

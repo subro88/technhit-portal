@@ -46,7 +46,6 @@ So, let's open the terminal do update your package list using the apt update com
 
 ```bash
 sudo apt update
-
 ```
 
 After updating the package list open up a web browser and type [https://plex.tv](https://plex.tv) then scroll down below in get started section click on the get plex link. It will take you to the download page.
@@ -61,7 +60,6 @@ Get back to your terminal and type the following command.
 
 ```bash
 wget https://downloads.plex.tv/plex-media-server-new/1.20.1.3252-a78fef9a9/debian/plexmediaserver_1.20.1.3252-a78fef9a9_amd64.deb
-
 ```
 
 [![Img3](https://www.technhit.in/wp-content/uploads/2020/10/plexTVdownload1.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVdownload1.png)
@@ -72,7 +70,6 @@ Now install the package using dpkg command.
 
 ```bash
 Sudo dpkg -I plexmediaserver_1.20.1.3252-xxxxxxx
-
 ```
 
 [![Img3](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling1.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling1.png)
@@ -83,7 +80,6 @@ After completing the installation, you can see the service status. Whether plex 
 
 ```bash
 systemctl status plexmediaserver.service
-
 ```
 
 [![Img3](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling2.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling2.png)
@@ -96,14 +92,12 @@ By enabling the official Plex repo, you can update Plex on Ubuntu with apt packa
 
 ```bash
 sudo dpkg -L plex media server
-
 ```
 
 Now open the following source list file and uncomment the line to get updates from Plex.
 
 ```bash
 sudo nano /etc/apt/sources.list.d/plexmediaserver.list
-
 ```
 
 [![Img3](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling3.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling3.png)
@@ -112,14 +106,12 @@ Also, you need to add the plex public key.
 
 ```bash
 wget -q https://downloads.plex.tv/plex-keys/PlexSign.key -O - | sudo apt-key add -
-
 ```
 
 Now you can able to update your plex package list type command:
 
 ```bash
  sudo apt update.
-
 ```
 
 Here you can see plex repo has been added to your source list.
@@ -130,7 +122,6 @@ Now you can view the plex server web access port by using netstat command.
 
 ```bash
 sudo netstat -lnpt | grep Plex
-
 ```
 
 [![Img3](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling5.png)](https://www.technhit.in/wp-content/uploads/2020/10/plexTVinstalling5.png)
@@ -155,14 +146,12 @@ Note that if your Plex is installed on a remote Ubuntu 20.04 server, you need to
 
 ```bash
 ssh <REMOTE IP ADDRESS> -L 8888:localhost:32400
-
 ```
 
 Then you can access Plex web interface via the following URL.
 
 ```bash
 http://localhost:8888/web
-
 ```
 
 </blockquote>

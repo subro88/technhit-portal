@@ -60,7 +60,6 @@ Let's go and login to our Nginx remote server.  type
 
 ```bash
 ssh root@103.10.208.52    Your Public IP
-
 ```
 
 It asking for add fingerprint first time, here we go and type in yes and put the server password
@@ -69,14 +68,12 @@ Always, the first thing is first to do update your package list. Go ahead and ty
 
 ```bash
 sudo apt update
-
 ```
 
 Now, we need to install Nginx, Let's move and type
 
 ```bash
 sudo apt install nginx
-
 ```
 
 And hit enter key.
@@ -85,7 +82,6 @@ After installing Nginx, you could check it perfectly running or not by using the
 
 ```bash
 sudo service nginx status.
-
 ```
 
 My Nginx server running.
@@ -101,7 +97,6 @@ Now enable Nginx service at boot, go ahead and type
 ```bash
 sudo systemctl enable nginx.service
 sudo service nginx restart.
-
 ```
 
 ## **Step 02: Config Proxy Parameters **
@@ -110,7 +105,6 @@ Now we are going to edit the Proxy params file. Go ahead and type
 
 ```bash
 sudo nano /etc/nginx/proxy_params
-
 ```
 
 And add the following lines at the end as proxy parameters for better performance.
@@ -126,7 +120,6 @@ And add the following lines at the end as proxy parameters for better performanc
  proxy_temp_file_write_size 256k;
  proxy_max_temp_file_size 0;
  proxy_read_timeout 300;
-
 ```
 
 ## **Step 03: Config Nginx Virtual Host **
@@ -135,7 +128,6 @@ Now you need to modify the default vhost file of Nginx, go ahead and type
 
 ```bash
 sudo nano /etc/nginx/sites-available/default
-
 ```
 
 Scroll down a little bit here you will find the virtual host configuration. Uncomment the lines. After that, move to the server name section the name of your first application server. In my case, I gonna given it app1.technhit.in.
@@ -179,14 +171,12 @@ server {
       }
  }
 ...
-
 ```
 
 You need to change the server name and server IP (red marked) as per yours. After that, you need to save the config file and restart the Nginx server.
 
 ```bash
 sudo service nginx restart
-
 ```
 
 ## **Step 04: Setup DNS Record**
@@ -195,7 +185,6 @@ Now you need to add a DNS record to your name server pointing to your Public IP 
 
 ```bash
 sudo nano /etc/hosts
-
 ```
 
 and add the record.
@@ -203,7 +192,6 @@ and add the record.
 ```bash
 103.10.208.52   app1.technhit.in
 103.10.208.52   app2.technhit.in
-
 ```
 
 For Windows client edit C:\Windows\System32\drivers\etc\hosts file. And add the records.

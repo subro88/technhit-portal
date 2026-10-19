@@ -51,14 +51,12 @@ You need a MySQL server and php-mysql module. Go ahead and execute following com
 
 ```bash
  sudo apt install mysql-server, php-mysql
-
 ```
 
 After installation completed check the mysql service running or not by using
 
 ```bash
 service mysql status
-
 ```
 
 [![Laravel MySQL](https://www.technhit.in/wp-content/uploads/2020/12/screen1.png)](https://www.technhit.in/wp-content/uploads/2020/12/screen1.png)
@@ -67,14 +65,12 @@ Yea it's running. If you found it's not running then start the service.
 
 ```bash
 sudo systemctl start mysql
-
 ```
 
 Now run the MySQL secure installation script to improve the security of your database and remove unwanted database and users that comes with by default.
 
 ```bash
 sudo mysql_secure_installation
-
 ```
 
 Here I am going to choose the medium strength password and set the password. Then re-enter the password again. Accept it. And follow the question and answer it.
@@ -94,7 +90,6 @@ CREATE USER 'techblog'@'localhost' IDENTIFIED BY 'Techblog@2020';
 GRANT ALL PRIVILEGES ON *.* TO 'techblog'@'localhost' ;
 FLUSH PRIVILEGES; 
 EXIT;
-
 ```
 
 [![create database](https://www.technhit.in/wp-content/uploads/2020/12/screen3.png)](https://www.technhit.in/wp-content/uploads/2020/12/screen3.png)And make sure to change** username password** as per yours. After that flush the privilege. Now exit from MySQL prompt by typing exit command.
@@ -106,35 +101,30 @@ Move to your application directory. Here we are going to create basic authentica
 ```bash
 cd /home/techblog/myapp1
 composer require Laravel/ui
-
 ```
 
 [![Laravel MySQL Connection composer ui](https://www.technhit.in/wp-content/uploads/2020/12/screen4.png)](https://www.technhit.in/wp-content/uploads/2020/12/screen4.png)Now install auth functionality to your application, here I am going to use vue js framework for front end. So you can choose angular, react also
 
 ```bash
 php artisan ui vue --auth
-
 ```
 
 You can see that authentication scaffolding generated. Also, you need to run the npm install and run dev in order to make it fully functional with compiling all js and CSS files. Npm stands for Node package manager It puts modules in place so that node can find them, and manages dependency conflicts intelligently. If npm not installed in your system then first install npm:
 
 ```bash
 sudo apt install npm
-
 ```
 
 Just go ahead and type npm install. It will install all required dependency script automatically.
 
 ```bash
 npm install
-
 ```
 
 After that use npm run dev command to compile all js and css file for your application.
 
 ```bash
 npm run dev
-
 ```
 
 ## *Step4-Config your application with database information and test the connection.*
@@ -147,7 +137,6 @@ Get back to the terminal and try to migrate the tables which we created at the t
 
 ```bash
 php artisan migrate
-
 ```
 
 [![Laravel MySQL Connection](https://www.technhit.in/wp-content/uploads/2020/12/screen6.png)](https://www.technhit.in/wp-content/uploads/2020/12/screen6.png)You can see inside MySQL database just open MySQL prompt open up your database and then show tables. Here you can see the database schema successfully migrated.

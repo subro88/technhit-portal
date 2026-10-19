@@ -62,7 +62,6 @@ First thing is first, do update your package list. Go ahead and type
 
 ```bash
  sudo apt update
-
 ```
 
 ### Step-2) Install Apache HTTP Server
@@ -71,14 +70,12 @@ After updating the package list, you need to be installed apache into your syste
 
 ```bash
 sudo apt install apache2
-
 ```
 
 After installing Apache, you could check it perfectly running or not by using the service command
 
 ```bash
  service apache2 status
-
 ```
 
 ### Step-3) Creating User for Virtual Host
@@ -88,7 +85,6 @@ After installing Apache, you could check it perfectly running or not by using th
 ```bash
 sudo useradd -m userA
 sudo useradd -m userB
-
 ```
 
 Here the flag -m will Create the user's home directory if it does not exist. Now create a directory named public_html inside each user's directory. Go ahead and type
@@ -96,7 +92,6 @@ Here the flag -m will Create the user's home directory if it does not exist. Now
 ```bash
 sudo mkdir /home/userA/public_html
 sudo mkdir /home/userB/public_html
-
 ```
 
 Now we have a public_html directory under each user's directory.
@@ -107,7 +102,6 @@ Now you need to put some markup text inside public_html to identify your virtual
 
 ```bash
 sudo nano /home/userA/public_html/index.html
-
 ```
 
 And put this markup text and save the file.
@@ -121,7 +115,6 @@ And put this markup text and save the file.
       <h1>Hello! There welcome to abc.com page</h1>
    </body>
 </html>
-
 ```
 
 And similarly, do the same for user B.
@@ -138,7 +131,6 @@ sudo nano /home/userA/public_html/index.html
  <h1>Hello! There welcome to xyz.com page</h1>
  </body>
 </html>
-
 ```
 
 Now each user had their index file ready to serve over apache.
@@ -149,7 +141,6 @@ Now it's time to create vhost config file for each user, go ahead and type
 
 ```bash
 sudo nano /etc/apache2/site-available/abc.com.conf.
-
 ```
 
 So, now you need to tell apache about your vhost and its configuration. Actually, these are called tags and directives.
@@ -168,7 +159,6 @@ So, now you need to tell apache about your vhost and its configuration. Actually
  ErrorLog ${APACHE_LOG_DIR}/error.log
  CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
-
 ```
 
 So, roughly this is a standard Virtual Host structure which I made here, and my recommendation is first to understand your needs and then place the configuration. Do not blindly copy-paste from any tutorial in your production server. This can bring disaster at any time.
@@ -194,7 +184,6 @@ Require all granted
  ErrorLog ${APACHE_LOG_DIR}/error.log
  CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
-
 ```
 
 So, after all this stuff you need to enable your sites. Go ahead and type
@@ -202,14 +191,12 @@ So, after all this stuff you need to enable your sites. Go ahead and type
 ```bash
 sudo a2ensite abc.com
 sudo a2ensite xyz.com
-
 ```
 
 And finally restart the apache, type
 
 ```bash
 sudo systemctl restart apache2.
-
 ```
 
 ### Step-6) Add Local DNS Resolver
@@ -218,7 +205,6 @@ Now, one last thing you needed is that a local DNS resolver as we are in a local
 
 ```bash
 sudo nano /etc/hosts
-
 ```
 
 And add the following lines at the end
@@ -226,7 +212,6 @@ And add the following lines at the end
 ```bash
 127.0.0.1   abc.com
 127.0.0.1   xyz.com
-
 ```
 
 ### Step-7) Test your Virtual Host

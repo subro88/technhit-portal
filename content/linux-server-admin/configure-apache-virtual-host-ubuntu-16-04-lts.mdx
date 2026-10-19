@@ -39,7 +39,6 @@ First of all, you need Linux box or VPS ubuntu 16.04. After that install, [LAMP 
 ```bash
 $ sudo apt-get update
 $ sudo apt-get install apache2
-
 ```
 
 After completing above you can proceed for Vhost configuration.
@@ -51,7 +50,6 @@ Creating a user and directory for the domain
 ```bash
 $ sudo useradd -m abc
 $ sudo mkdir /home/abc/public_html
-
 ```
 
 Create another user and its directory.
@@ -59,7 +57,6 @@ Create another user and its directory.
 ```bash
 $ sudo useradd -m xyz
 $ sudo mkdir /home/xyz/public_html
-
 ```
 
 ## Step 2: Adding a demo page for each domain:
@@ -82,7 +79,6 @@ $ sudo nano /home/abc/public_html/index.html
 
   </body>
 </html>
-
 ```
 
 Similarly, create XYZ demo page.
@@ -103,14 +99,12 @@ $ sudo nano /home/xyz/public_html/index.html
 
   </body>
 </html>
-
 ```
 
 ## Step 3: Create and Configure Vhost file for each domain:
 
 ```bash
   $ sudo nano /etc/apache2/sites-available/abc.com.conf
-
 ```
 
 Insert the following line to abc vhost file.
@@ -131,14 +125,12 @@ Insert the following line to abc vhost file.
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
-
 ```
 
 Similarly, create XYZ vhost file.
 
 ```bash
  $ sudo nano /etc/apache2/sites-available/xyz.com.conf
-
 ```
 
 Now copy and past the following:
@@ -159,7 +151,6 @@ Now copy and past the following:
     ErrorLog ${APACHE_LOG_DIR}/error.log
     CustomLog ${APACHE_LOG_DIR}/access.log combined
 </VirtualHost>
-
 ```
 
 ## Step 4: Enable the New Virtual Host Files
@@ -167,14 +158,12 @@ Now copy and past the following:
 ```bash
 $ sudo a2ensite abc.com.conf
 $ sudo a2ensite xyz.com.conf
-
 ```
 
 When you are finished, you need to restart Apache to make these changes take effect:
 
 ```bash
 $ sudo service apache2 restart
-
 ```
 
 ## Step 5: Adding Domain information to local Host file:
@@ -186,7 +175,6 @@ Add following line to the end of hosts file
 
 127.0.0.1   abc.com
 127.0.0.1   xyz.com
-
 ```
 
 ## Step 6: Test your Virtual Hosts:
@@ -198,7 +186,6 @@ Open Command prompt and type ***notepad*** ***C:/windows/system32/Driver/etc/hos
 ```bash
 192.168.182.50  abc.com
 192.168.182.50  xyz.com
-
 ```
 
 Eventually, open a browser then type your domain name to test whether its working or not.
@@ -292,5 +279,4 @@ sudo sed -i -e '1i\'"127.0.0.1 $vuser" $f2
 
 fi
 #End of Script
-
 ```
