@@ -14,6 +14,7 @@ export interface PostMetadata {
   wordCount?: number;
   readTime?: number;
   tags?: string[];
+  image?: string;
   author?: {
     name: string;
     avatar?: string;
@@ -72,6 +73,61 @@ export const CATEGORIES = [
   },
 ] as const;
 
+export const CURATED_CATEGORY_IMAGES: Record<string, string[]> = {
+  "linux-server-admin": [
+    "https://images.unsplash.com/photo-1629654297299-c8506221ca97?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1518770660439-4636190af475?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?auto=format&fit=crop&w=800&q=80",
+  ],
+  "clustering-virtualization": [
+    "https://images.unsplash.com/photo-1544197150-b99a580bb7a8?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1597852074816-d933c7d2b988?auto=format&fit=crop&w=800&q=80",
+  ],
+  "local-ai-inference": [
+    "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1677442136019-21780efad99a?auto=format&fit=crop&w=800&q=80",
+  ],
+  "stem-10-plus-2": [
+    "https://images.unsplash.com/photo-1635070041078-e363dbe005cb?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1509228468518-180dd4864904?auto=format&fit=crop&w=800&q=80",
+  ],
+  "video-companions": [
+    "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=800&q=80",
+  ],
+  "software-engineering": [
+    "https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80",
+    "https://images.unsplash.com/photo-1517694712202-14dd9538aa97?auto=format&fit=crop&w=800&q=80",
+  ],
+};
+
+export function resolvePostImage(data: any, content: string, category: string, slug: string): string {
+  if (data.image) return data.image;
+  if (data.coverImage) return data.coverImage;
+  if (data.thumbnail) return data.thumbnail;
+  if (data.youtubeId) return `https://i.ytimg.com/vi/${data.youtubeId}/hqdefault.jpg`;
+
+  // Check markdown image in content
+  const imgMatch = content.match(/!\[.*?\]\((https?:\/\/[^\s\)]+|\/[^\s\)]+)\)/i) ||
+                   content.match(/<img[^>]+src=["'](https?:\/\/[^"'>]+|\/[^"'>]+)["']/i);
+  if (imgMatch && imgMatch[1]) {
+    return imgMatch[1];
+  }
+
+  // Fallback to deterministic category-themed image
+  const pool = CURATED_CATEGORY_IMAGES[category] || CURATED_CATEGORY_IMAGES["linux-server-admin"];
+  let hash = 0;
+  for (let i = 0; i < slug.length; i++) {
+    hash = (hash << 5) - hash + slug.charCodeAt(i);
+    hash |= 0;
+  }
+  const index = Math.abs(hash) % pool.length;
+  return pool[index];
+}
+
 export function getAllPosts(): Post[] {
   const posts: Post[] = [];
 
@@ -94,19 +150,23 @@ export function getAllPosts(): Post[] {
 
       const wordCount = content.replace(/^---[\s\S]*?---/, "").trim().split(/\s+/).length;
       const readTime = Math.ceil(wordCount / 200);
+      const slug = data.slug || file.replace(/\.mdx?$/, "");
+      const category = (data.category || catDir.name) as PostMetadata["category"];
+      const image = resolvePostImage(data, content, category, slug);
 
       posts.push({
         id: file.replace(/\.mdx?$/, ""),
-        slug: data.slug || file.replace(/\.mdx?$/, ""),
+        slug,
         title: data.title || "Untitled Article",
         date: data.date || new Date().toISOString().split("T")[0],
-        category: (data.category || catDir.name) as PostMetadata["category"],
+        category,
         status: (data.status || "Published") as "Published" | "Draft",
         summary: data.summary || "",
         youtubeId: data.youtubeId || "",
         wordCount,
         readTime,
         tags: data.tags || [],
+        image,
         author: data.author || {
           name: "TechNHIT Engineering",
           role: "Systems Architect",
