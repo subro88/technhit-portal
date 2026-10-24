@@ -45,6 +45,41 @@ export function DualModeArticleView({ post, children }: DualModeArticleViewProps
   // Drill data
   const drillData: LearningDrillData = generateLearningDrill(post);
 
+  // Extract Table of Contents from post markdown
+  const tocItems = React.useMemo(() => {
+    const matches = post.content?.match(/^##\s+(.+)$/gm) || [];
+    const items: { id: string; title: string }[] = [];
+
+    for (const m of matches) {
+      const raw = m.replace(/^##\s+/, "").trim();
+      if (!raw || raw.toLowerCase().startsWith("see on youtube")) continue;
+
+      const id = raw
+        .toLowerCase()
+        .replace(/^\d+[\.\)]\s*/, "")
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/^-|-$/g, "");
+
+      const title = raw.replace(/^\d+[\.\)]\s*/, "");
+      if (id && !items.some((i) => i.id === id)) {
+        items.push({ id, title: title.toLowerCase() });
+      }
+    }
+
+    if (items.length < 2) {
+      return [
+        { id: "key-architecture-takeaways", title: "key architecture takeaways" },
+        { id: "prerequisites", title: "prerequisites & baseline" },
+        { id: "core-implementation", title: "core implementation" },
+        { id: "verification-hardening", title: "verification & hardening" },
+      ];
+    }
+
+    return items;
+  }, [post.content]);
+
+  const [activeHeading, setActiveHeading] = useState<string>(tocItems[0]?.id || "");
+
   // Read cleared stages from operative store
   const [clearedStages, setClearedStages] = useState<string[]>([]);
 
@@ -77,6 +112,30 @@ export function DualModeArticleView({ post, children }: DualModeArticleViewProps
     return () => window.removeEventListener("scroll", handleScroll);
   }, [mode]);
 
+  // Live Scroll-Spy for Table of Contents
+  useEffect(() => {
+    if (mode !== "blog" || tocItems.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (entry.isIntersecting) {
+            setActiveHeading(entry.target.id);
+            break;
+          }
+        }
+      },
+      { rootMargin: "0px 0px -60% 0px", threshold: 0.1 }
+    );
+
+    tocItems.forEach((item) => {
+      const el = document.getElementById(item.id);
+      if (el) observer.observe(el);
+    });
+
+    return () => observer.disconnect();
+  }, [mode, tocItems]);
+
   const handleSwitchMode = (targetMode: "blog" | "learning") => {
     playHapticSound("click");
     setMode(targetMode);
@@ -87,6 +146,15 @@ export function DualModeArticleView({ post, children }: DualModeArticleViewProps
       url.searchParams.delete("mode");
     }
     router.replace(url.pathname + url.search, { scroll: false });
+  };
+
+  const handleTocClick = (e: React.MouseEvent, id: string) => {
+    e.preventDefault();
+    const el = document.getElementById(id);
+    if (el) {
+      el.scrollIntoView({ behavior: "smooth" });
+      setActiveHeading(id);
+    }
   };
 
   const stageKeys = ["recon", "motive", "debate", "field", "debrief", "exam"];
@@ -166,109 +234,234 @@ export function DualModeArticleView({ post, children }: DualModeArticleViewProps
       </header>
 
       {/* Main Container */}
-      <main className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12">
+      <main className="w-full">
         {mode === "blog" ? (
           /* ================= BLOG MODE ================= */
-          <div className="space-y-12 animate-fadeIn max-w-4xl mx-auto">
-            {/* Header Telemetry */}
-            <header className="space-y-6 pb-8 border-b border-zinc-800">
-              <div className="flex flex-wrap items-center gap-3 font-mono text-xs text-zinc-400">
-                <span className="px-2.5 py-0.5 bg-[#FF5400]/10 text-[#FF5400] border border-[#FF5400]/30 font-bold uppercase tracking-wider text-[11px]">
-                  {post.category.toUpperCase().replace(/-/g, " ")}
-                </span>
-                <span>•</span>
-                <span className="flex items-center gap-1.5">
-                  <Calendar className="w-3.5 h-3.5 text-zinc-500" />
-                  <span>{post.date}</span>
-                </span>
-                <span>•</span>
-                <span className="flex items-center gap-1.5">
-                  <Clock className="w-3.5 h-3.5 text-zinc-500" />
-                  <span>{post.readTime} MIN READ</span>
-                </span>
+          <div className="space-y-12 animate-fadeIn">
+            {/* Top Full-Bleed Cinematic Hero Section */}
+            <section className="relative h-[88vh] min-h-[560px] overflow-hidden mb-12">
+              <div className="absolute inset-0 will-change-transform">
+                <img
+                  src={
+                    post.image ||
+                    "https://images.unsplash.com/photo-1558494949-ef010cbdcc31?auto=format&fit=crop&w=1600&q=80"
+                  }
+                  alt={post.title}
+                  className="w-full h-full object-cover filter grayscale contrast-125 brightness-[0.35]"
+                />
               </div>
+              <div className="absolute inset-0 bg-gradient-to-t from-[#07090e] via-[#07090e]/50 to-[#07090e]/80" />
+              <div className="absolute inset-0 bg-gradient-to-r from-[#07090e]/90 via-[#07090e]/40 to-transparent" />
 
-              <h1 className="font-display text-4xl sm:text-6xl text-zinc-100 leading-[1.05] tracking-wide">
-                {post.title}
-              </h1>
+              {/* Hero Center Display Content */}
+              <div className="relative z-10 h-full max-w-7xl mx-auto px-5 sm:px-8 flex flex-col justify-center pb-16">
+                <div className="flex items-center gap-3 mb-5">
+                  <span className="w-2.5 h-2.5 rotate-45 bg-[#FF5400]" />
+                  <span className="text-[11px] md:text-xs font-mono font-bold tracking-[0.32em] text-zinc-400 uppercase">
+                    FIELD MANUAL N°01 — {post.category.replace(/-/g, " ")}
+                  </span>
+                </div>
 
-              <p className="text-zinc-400 text-base sm:text-lg font-body leading-relaxed max-w-3xl">
-                {post.summary}
-              </p>
+                <h1 className="font-display text-zinc-100 leading-[0.88] tracking-wide text-5xl sm:text-7xl md:text-8xl lg:text-9xl uppercase max-w-5xl">
+                  {post.title}
+                </h1>
 
-              {/* YouTube Companion Banner if available */}
-              {post.youtubeId && (
-                <div className="bg-[#0d1117] border border-zinc-800 p-4 notch-corner flex flex-col sm:flex-row items-center justify-between gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 bg-red-600/20 text-red-500 flex items-center justify-center rounded shrink-0">
-                      <Youtube className="w-6 h-6" />
-                    </div>
-                    <div className="font-mono text-xs">
-                      <div className="text-zinc-200 font-bold">YOUTUBE COMPANION WALKTHROUGH</div>
-                      <div className="text-zinc-500 text-[11px]">Watch step-by-step video on @TechBlogTutorial</div>
-                    </div>
-                  </div>
-                  <a
-                    href={`https://www.youtube.com/watch?v=${post.youtubeId}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-mono text-xs font-bold uppercase tracking-wider transition-colors shrink-0"
+                <p className="mt-6 max-w-2xl text-sm md:text-base leading-relaxed text-zinc-300 font-body">
+                  {post.summary}
+                </p>
+
+                <div className="mt-9 flex flex-wrap items-center gap-4">
+                  <button
+                    onClick={() => handleSwitchMode("learning")}
+                    className="pulse-cta bg-[#FF5400] text-black font-display text-xl tracking-[0.14em] px-8 py-3.5 hover:bg-amber-400 transition-colors"
                   >
-                    WATCH VIDEO
+                    ENTER LEARNING MODE →
+                  </button>
+                  <a
+                    href="#manual-content"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      document.getElementById("manual-content")?.scrollIntoView({ behavior: "smooth" });
+                    }}
+                    className="border border-zinc-700 text-zinc-300 font-display text-xl tracking-[0.14em] px-8 py-3.5 hover:border-[#FF5400] hover:text-[#FF5400] transition-colors"
+                  >
+                    READ THE MANUAL ↓
                   </a>
                 </div>
-              )}
 
-              {/* In-Article Callout: Jump into Learning Mode */}
-              <div className="p-6 bg-gradient-to-r from-zinc-950 via-[#0d1117] to-zinc-950 border border-amber-500/40 notch-corner flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl">
-                <div className="space-y-1 text-center sm:text-left">
-                  <div className="flex items-center justify-center sm:justify-start gap-2 font-mono text-xs text-amber-400 font-bold uppercase tracking-widest">
-                    <Zap className="w-4 h-4 fill-current" />
-                    <span>INTERACTIVE GAMIFIED DRILL AVAILABLE</span>
-                  </div>
-                  <p className="text-zinc-300 text-sm font-body">
-                    Master this architecture with our 6-stage hands-on drill: concept cards, live packet simulator, debate scenarios, and certification exam.
-                  </p>
+                <div className="mt-10 flex items-center gap-6 text-[10px] md:text-[11px] font-mono tracking-[0.24em] text-zinc-500 font-semibold">
+                  <span>{String(tocItems.length).padStart(2, "0")} CHAPTERS</span>
+                  <span className="w-px h-4 bg-zinc-800" />
+                  <span>{post.readTime} MIN READ</span>
+                  <span className="w-px h-4 bg-zinc-800" />
+                  <span className="hidden sm:inline">EST. 60 FPS</span>
+                  <span className="hidden sm:inline w-px h-4 bg-zinc-800" />
+                  <span className="hidden sm:inline">NO LIBRARIES HARMED</span>
                 </div>
-
-                <button
-                  onClick={() => handleSwitchMode("learning")}
-                  className="pulse-cta bg-[#FF5400] hover:bg-amber-500 text-black font-display text-lg tracking-wider px-7 py-3 transition-colors shrink-0 flex items-center gap-2"
-                >
-                  <span>ENTER LEARNING MODE →</span>
-                </button>
               </div>
-            </header>
 
-            {/* Markdown Body Content */}
-            <article className="prose prose-invert prose-zinc max-w-none text-zinc-300 font-body leading-relaxed space-y-6">
-              {children}
-            </article>
-
-            {/* Bottom Training Ground CTA */}
-            <div className="my-14 border border-[#FF5400]/40 bg-gradient-to-br from-[#FF5400]/15 via-zinc-950 to-zinc-950 p-8 sm:p-10 notch-corner space-y-4">
-              <div className="font-mono text-xs text-[#FF5400] font-bold uppercase tracking-widest">
-                TRAINING GROUND // REPS UNDER THE BAR
+              {/* Marquee Ticker at bottom of hero */}
+              <div className="absolute bottom-0 inset-x-0 z-10 border-t border-zinc-800 bg-[#07090e]/85 backdrop-blur-sm">
+                <div className="py-3 text-zinc-400 overflow-hidden font-mono text-xs uppercase tracking-widest" aria-hidden="true">
+                  <div className="flex whitespace-nowrap">
+                    <div className="flex items-center shrink-0 animate-marquee">
+                      {[
+                        "MOTION IS MEANING",
+                        "SCROLL IS STORY",
+                        "60 FPS OR NOTHING",
+                        "TRANSFORM & OPACITY ONLY",
+                        "OBSERVE, DON'T LISTEN",
+                        "GRAIN OVER GLOSS",
+                        "RESPECT REDUCED MOTION",
+                        "SHIP THE FEELING",
+                      ].map((phrase, pIdx) => (
+                        <span key={pIdx} className="flex items-center shrink-0">
+                          <span className="px-6 font-display text-lg tracking-[0.18em] text-zinc-300">{phrase}</span>
+                          <span className="w-2 h-2 rotate-45 bg-[#FF5400] inline-block shrink-0" />
+                        </span>
+                      ))}
+                    </div>
+                    <div className="flex items-center shrink-0 animate-marquee" aria-hidden="true">
+                      {[
+                        "MOTION IS MEANING",
+                        "SCROLL IS STORY",
+                        "60 FPS OR NOTHING",
+                        "TRANSFORM & OPACITY ONLY",
+                        "OBSERVE, DON'T LISTEN",
+                        "GRAIN OVER GLOSS",
+                        "RESPECT REDUCED MOTION",
+                        "SHIP THE FEELING",
+                      ].map((phrase, pIdx) => (
+                        <span key={`dup-${pIdx}`} className="flex items-center shrink-0">
+                          <span className="px-6 font-display text-lg tracking-[0.18em] text-zinc-300">{phrase}</span>
+                          <span className="w-2 h-2 rotate-45 bg-[#FF5400] inline-block shrink-0" />
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
-              <h2 className="font-display text-3xl sm:text-5xl text-zinc-100 tracking-wide leading-tight">
-                READING IS REPS. NOW GO UNDER THE BAR.
-              </h2>
-              <p className="text-zinc-400 text-sm sm:text-base font-body leading-relaxed max-w-2xl">
-                Internalize the exact mechanisms in this guide through our 6-stage drill. Flip cards, calibrate bandwidth sliders, judge architectural proposals, test commands in the terminal, and certify your knowledge with official XP and badges.
-              </p>
-              <div className="pt-2">
-                <button
-                  onClick={() => handleSwitchMode("learning")}
-                  className="pulse-cta bg-[#FF5400] hover:bg-amber-500 text-black font-display text-xl tracking-wider px-9 py-4 transition-colors"
-                >
-                  START THE 6-STAGE DRILL →
-                </button>
+            </section>
+
+            {/* Desktop 2-Column Section: Sticky Rail + Content */}
+            <div id="manual-content" className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+              <div className="lg:grid lg:grid-cols-[220px_minmax(0,1fr)] lg:gap-14">
+                {/* Left Sticky Rail */}
+                <aside className="hidden lg:block">
+                  <div className="sticky top-24 pt-8">
+                    <p className="text-[10px] font-bold tracking-[0.3em] text-zinc-500 mb-4 font-mono">
+                      CONTENTS
+                    </p>
+                    <nav className="flex flex-col">
+                      {tocItems.map((item, idx) => {
+                        const isActive = activeHeading === item.id;
+                        return (
+                          <a
+                            key={item.id}
+                            href={`#${item.id}`}
+                            onClick={(e) => handleTocClick(e, item.id)}
+                            className={`group flex items-baseline gap-2.5 py-1.5 text-[13px] transition-colors ${
+                              isActive ? "text-[#FF5400]" : "text-zinc-500 hover:text-zinc-200"
+                            }`}
+                          >
+                            <span
+                              className={`font-display text-sm ${
+                                isActive ? "text-[#FF5400]" : "text-[#4a4a4a] group-hover:text-zinc-400"
+                              }`}
+                            >
+                              {String(idx + 1).padStart(2, "0")}
+                            </span>
+                            <span className="leading-tight line-clamp-1">{item.title}</span>
+                          </a>
+                        );
+                      })}
+                    </nav>
+                    <button
+                      onClick={() => handleSwitchMode("learning")}
+                      className="mt-8 w-full border border-[#FF5400]/50 text-[#FF5400] font-display tracking-[0.14em] text-lg px-4 py-2.5 hover:bg-[#FF5400] hover:text-black transition-colors"
+                    >
+                      TRAIN IT →
+                    </button>
+                  </div>
+                </aside>
+
+                {/* Right Article Body */}
+                <div className="min-w-0 space-y-10 pb-16">
+                  {/* YouTube Companion Banner if available */}
+                  {post.youtubeId && (
+                    <div className="bg-[#0d1117] border border-zinc-800 p-4 notch-corner flex flex-col sm:flex-row items-center justify-between gap-4">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-red-600/20 text-red-500 flex items-center justify-center rounded shrink-0">
+                          <Youtube className="w-6 h-6" />
+                        </div>
+                        <div className="font-mono text-xs">
+                          <div className="text-zinc-200 font-bold">YOUTUBE COMPANION WALKTHROUGH</div>
+                          <div className="text-zinc-500 text-[11px]">Watch step-by-step video on @TechBlogTutorial</div>
+                        </div>
+                      </div>
+                      <a
+                        href={`https://www.youtube.com/watch?v=${post.youtubeId}`}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-4 py-2 bg-red-600 hover:bg-red-500 text-white font-mono text-xs font-bold uppercase tracking-wider transition-colors shrink-0"
+                      >
+                        WATCH VIDEO
+                      </a>
+                    </div>
+                  )}
+
+                  {/* Interactive Drill Alert Callout */}
+                  <div className="p-6 bg-gradient-to-r from-zinc-950 via-[#0d1117] to-zinc-950 border border-amber-500/40 notch-corner flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl">
+                    <div className="space-y-1 text-center sm:text-left">
+                      <div className="flex items-center justify-center sm:justify-start gap-2 font-mono text-xs text-amber-400 font-bold uppercase tracking-widest">
+                        <Zap className="w-4 h-4 fill-current" />
+                        <span>INTERACTIVE GAMIFIED DRILL AVAILABLE</span>
+                      </div>
+                      <p className="text-zinc-300 text-sm font-body">
+                        Master this architecture with our 6-stage hands-on drill: concept cards, live packet simulator, debate scenarios, and certification exam.
+                      </p>
+                    </div>
+
+                    <button
+                      onClick={() => handleSwitchMode("learning")}
+                      className="pulse-cta bg-[#FF5400] hover:bg-amber-500 text-black font-display text-lg tracking-wider px-7 py-3 transition-colors shrink-0 flex items-center gap-2"
+                    >
+                      <span>ENTER LEARNING MODE →</span>
+                    </button>
+                  </div>
+
+                  {/* Markdown Body Content */}
+                  <article className="prose prose-invert prose-zinc max-w-none text-zinc-300 font-body leading-relaxed space-y-6">
+                    {children}
+                  </article>
+
+                  {/* Bottom Training Ground CTA */}
+                  <div className="my-14 border border-[#FF5400]/40 bg-gradient-to-br from-[#FF5400]/15 via-zinc-950 to-zinc-950 p-8 sm:p-10 notch-corner space-y-4">
+                    <div className="font-mono text-xs text-[#FF5400] font-bold uppercase tracking-widest">
+                      TRAINING GROUND // REPS UNDER THE BAR
+                    </div>
+                    <h2 className="font-display text-3xl sm:text-5xl text-zinc-100 tracking-wide leading-tight">
+                      READING IS REPS. NOW GO UNDER THE BAR.
+                    </h2>
+                    <p className="text-zinc-400 text-sm sm:text-base font-body leading-relaxed max-w-2xl">
+                      Internalize the exact mechanisms in this guide through our 6-stage drill. Flip cards, calibrate bandwidth sliders, judge architectural proposals, test commands in the terminal, and certify your knowledge with official XP and badges.
+                    </p>
+                    <div className="pt-2">
+                      <button
+                        onClick={() => handleSwitchMode("learning")}
+                        className="pulse-cta bg-[#FF5400] hover:bg-amber-500 text-black font-display text-xl tracking-wider px-9 py-4 transition-colors"
+                      >
+                        START THE 6-STAGE DRILL →
+                      </button>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           </div>
         ) : (
           /* ================= LEARNING MODE ================= */
-          <div className="space-y-10 animate-fadeIn">
+          <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 space-y-10 animate-fadeIn">
             {/* Operative Gamification HUD */}
             <OperativeHud
               slug={post.slug}

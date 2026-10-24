@@ -70,7 +70,7 @@ export function Stage1Recon({ slug, cards, onCompleteStage }: Stage1ReconProps) 
       </div>
 
       {/* 3D Concept Cards Grid */}
-      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-8">
         {cards.map((card, idx) => {
           const isFlipped = !!flippedCards[card.id];
           const hasAwarded = !!awardedCards[card.id];
@@ -79,7 +79,9 @@ export function Stage1Recon({ slug, cards, onCompleteStage }: Stage1ReconProps) 
             <div
               key={card.id}
               onClick={() => handleCardClick(card.id)}
-              className="perspective-1000 h-[260px] cursor-pointer group"
+              className={`perspective-1000 min-h-[320px] h-[320px] sm:h-[330px] cursor-pointer group relative transition-all ${
+                isFlipped ? "z-30 shadow-[0_0_25px_rgba(255,84,0,0.25)]" : "z-10"
+              }`}
               role="button"
               tabIndex={0}
               aria-label={`Concept card: ${card.title}`}
@@ -96,9 +98,9 @@ export function Stage1Recon({ slug, cards, onCompleteStage }: Stage1ReconProps) 
                 }`}
               >
                 {/* Front Face */}
-                <div className="absolute inset-0 backface-hidden bg-[#0d1117] border border-zinc-800 group-hover:border-amber-500/70 p-6 flex flex-col justify-between transition-colors shadow-lg notch-corner">
+                <div className="absolute inset-0 backface-hidden bg-[#0d1117] border border-zinc-800 group-hover:border-amber-500/70 p-5 sm:p-6 flex flex-col justify-between transition-colors shadow-lg notch-corner overflow-hidden">
                   <div>
-                    <div className="flex items-center justify-between font-mono text-[11px] text-zinc-500 mb-4">
+                    <div className="flex items-center justify-between font-mono text-[11px] text-zinc-500 mb-3">
                       <span className="text-[#FF5400] tracking-widest font-bold">
                         {String(idx + 1).padStart(2, "0")} / {card.tag}
                       </span>
@@ -129,13 +131,13 @@ export function Stage1Recon({ slug, cards, onCompleteStage }: Stage1ReconProps) 
                 </div>
 
                 {/* Back Face */}
-                <div className="absolute inset-0 backface-hidden rotate-y-180 bg-zinc-950 border border-amber-500/80 p-6 flex flex-col justify-between shadow-2xl notch-corner">
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between font-mono text-[10px] text-amber-400 tracking-widest">
+                <div className="absolute inset-0 backface-hidden rotate-y-180 bg-zinc-950 border border-amber-500/80 p-5 flex flex-col justify-between shadow-2xl notch-corner overflow-hidden">
+                  <div className="space-y-2.5 overflow-y-auto slim-scroll max-h-[220px]">
+                    <div className="flex items-center justify-between font-mono text-[10px] text-amber-400 tracking-widest border-b border-zinc-800 pb-2">
                       <span>{card.tag} SPECIFICATION</span>
                       <span className="text-emerald-400 font-bold">DECODED</span>
                     </div>
-                    <p className="text-zinc-200 text-xs sm:text-sm font-body leading-relaxed">
+                    <p className="text-zinc-200 text-xs font-body leading-relaxed">
                       {card.definition}
                     </p>
                     <div className="bg-[#0d1117] border border-zinc-800 p-2.5 rounded-sm">
@@ -148,7 +150,7 @@ export function Stage1Recon({ slug, cards, onCompleteStage }: Stage1ReconProps) 
                     </div>
                   </div>
 
-                  <div className="flex items-center justify-between font-mono text-[10px] text-zinc-500 border-t border-zinc-800 pt-2">
+                  <div className="flex items-center justify-between font-mono text-[10px] text-zinc-500 border-t border-zinc-800 pt-2.5 mt-2 shrink-0">
                     <span className="tracking-widest uppercase">CLICK TO FLIP BACK</span>
                     <RefreshCw className="w-3 h-3 text-zinc-400" />
                   </div>

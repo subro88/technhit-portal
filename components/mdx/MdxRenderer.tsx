@@ -379,16 +379,27 @@ export default function MdxRenderer({ content }: MdxRendererProps) {
           );
         }
         if (trimmed.startsWith("## ")) {
+          const rawText = trimmed.replace("## ", "").trim();
+          const cleanId = rawText
+            .toLowerCase()
+            .replace(/^\d+[\.\)]\s*/, "")
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-|-$/g, "");
           return (
-            <h2 key={idx} className="text-xl sm:text-2xl font-semibold font-mono text-zinc-100 tracking-tight pt-5 pb-2">
-              {parseInline(trimmed.replace("## ", ""))}
+            <h2 id={cleanId} key={idx} className="scroll-mt-24 text-xl sm:text-2xl font-semibold font-mono text-zinc-100 tracking-tight pt-8 pb-2">
+              {parseInline(rawText)}
             </h2>
           );
         }
         if (trimmed.startsWith("### ")) {
+          const rawText = trimmed.replace("### ", "").trim();
+          const cleanId = rawText
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, "-")
+            .replace(/^-|-$/g, "");
           return (
-            <h3 key={idx} className="text-lg sm:text-xl font-medium font-mono text-cyber-cyan tracking-tight pt-4">
-              {parseInline(trimmed.replace("### ", ""))}
+            <h3 id={cleanId} key={idx} className="scroll-mt-24 text-lg sm:text-xl font-medium font-mono text-cyber-cyan tracking-tight pt-5">
+              {parseInline(rawText)}
             </h3>
           );
         }
