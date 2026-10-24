@@ -13,6 +13,14 @@ import RiemannSumVisualizer from "@/components/math/RiemannSumVisualizer";
 import EpsilonDeltaExplorer from "@/components/math/EpsilonDeltaExplorer";
 import ProofStepThrough from "@/components/math/ProofStepThrough";
 import WorkedExampleCard from "@/components/math/WorkedExampleCard";
+import Callout from "@/components/mdx/Callout";
+import CodeTabs from "@/components/mdx/CodeTabs";
+import Steps, { Step } from "@/components/mdx/Steps";
+import Bookmark from "@/components/mdx/Bookmark";
+import MediaLightbox from "@/components/mdx/MediaLightbox";
+import FileTree from "@/components/mdx/FileTree";
+import Kbd from "@/components/mdx/Kbd";
+import MetricCard, { MetricGrid } from "@/components/mdx/MetricCard";
 import { Check, Copy, Info, Lightbulb, AlertTriangle, ShieldAlert } from "lucide-react";
 
 interface MdxRendererProps {
@@ -67,7 +75,58 @@ function CodeBlock({ code, lang }: { code: string; lang: string }) {
   );
 }
 
-// Inline Markdown Parser for linked images, images, links, code, bold, italic
+// ASCII / Indented Bullet Directory Tree Parser
+function parseAsciiTree(text: string) {
+  const lines = text.split("\n").filter((l) => l.trim().length > 0);
+  const rootItems: any[] = [];
+  const stack: { depth: number; item: any }[] = [];
+
+  for (const line of lines) {
+    const indentMatch = line.match(/^(\s*)/);
+    const indent = indentMatch ? indentMatch[1].length : 0;
+    const clean = line.trim().replace(/^[-*•]\s+/, "");
+
+    let comment: string | undefined;
+    let mainText = clean;
+    const commentIdx = clean.indexOf("//");
+    if (commentIdx !== -1) {
+      comment = clean.substring(commentIdx + 2).trim();
+      mainText = clean.substring(0, commentIdx).trim();
+    }
+
+    const highlight = mainText.includes("[highlight]") || mainText.includes("(highlight)");
+    const name = mainText.replace(/\[highlight\]|\(highlight\)/g, "").trim();
+    const isFolder = name.endsWith("/") || (!name.includes(".") && !name.includes("file"));
+
+    const item: any = {
+      name,
+      type: isFolder ? "folder" : "file",
+      highlight,
+      comment,
+      children: isFolder ? [] : undefined,
+    };
+
+    while (stack.length > 0 && stack[stack.length - 1].depth >= indent) {
+      stack.pop();
+    }
+
+    if (stack.length === 0) {
+      rootItems.push(item);
+    } else {
+      const parent = stack[stack.length - 1].item;
+      if (!parent.children) parent.children = [];
+      parent.children.push(item);
+    }
+
+    if (isFolder) {
+      stack.push({ depth: indent, item });
+    }
+  }
+
+  return rootItems;
+}
+
+// Inline Markdown Parser for linked images, images, links, code, bold, italic, kbd
 function parseInline(text: string): React.ReactNode {
   const tokens = [];
   let remaining = text;
@@ -142,7 +201,15 @@ function parseInline(text: string): React.ReactNode {
       continue;
     }
 
-    // 4. Inline Code: `code`
+    // 4. Inline Keycap: <Kbd>key</Kbd> or <kbd>key</kbd>
+    const kbdMatch = remaining.match(/^<(?:Kbd|kbd)>([^<]+)<\/(?:Kbd|kbd)>/i);
+    if (kbdMatch) {
+      tokens.push(<Kbd key={`kbd-${keyIdx++}`}>{kbdMatch[1]}</Kbd>);
+      remaining = remaining.slice(kbdMatch[0].length);
+      continue;
+    }
+
+    // 5. Inline Code: `code`
     const codeMatch = remaining.match(/^`([^`]+)`/);
     if (codeMatch) {
       tokens.push(
@@ -157,7 +224,7 @@ function parseInline(text: string): React.ReactNode {
       continue;
     }
 
-    // 5. Bold: **text**
+    // 6. Bold: **text**
     const boldMatch = remaining.match(/^\*\*([^*]+)\*\*/);
     if (boldMatch) {
       tokens.push(
@@ -169,7 +236,7 @@ function parseInline(text: string): React.ReactNode {
       continue;
     }
 
-    // 6. Italic: *text*
+    // 7. Italic: *text*
     const italicMatch = remaining.match(/^\*([^*]+)\*/);
     if (italicMatch) {
       tokens.push(
@@ -181,8 +248,8 @@ function parseInline(text: string): React.ReactNode {
       continue;
     }
 
-    // 7. Regular plain text chunk up to next special char
-    const nextSpecial = remaining.search(/[!\[`*]/);
+    // 8. Regular plain text chunk up to next special char
+    const nextSpecial = remaining.search(/[!\[`<*]/);
     if (nextSpecial === -1) {
       tokens.push(remaining);
       break;
@@ -314,6 +381,168 @@ export default function MdxRenderer({ content }: MdxRendererProps) {
             <InfoBox key={idx} title={infoMatch[1] || "Notice"} type={(infoMatch[2] as any) || "note"}>
               {infoMatch[3]?.trim()}
             </InfoBox>
+          );
+        }
+
+        // 7b. Callout Component
+        const calloutMatch = trimmed.match(/<Callout(?:\s+type="([^"]+)")?(?:\s+title="([^"]+)")?>([\s\S]*?)<\/Callout>/);
+        if (calloutMatch) {
+          return (
+            <Callout
+              key={idx}
+              type={(calloutMatch[1] as any) || "info"}
+              title={calloutMatch[2]}
+            >
+              {parseInline(calloutMatch[3]?.trim())}
+            </Callout>
+          );
+        }
+
+        // 7c. CodeTabs Component
+        const codeTabsBlockMatch = trimmed.match(/<CodeTabs(?:\s+defaultTab=\{?(\d+)\}?)?>([\s\S]*?)<\/CodeTabs>/);
+        if (codeTabsBlockMatch) {
+          const defTab = codeTabsBlockMatch[1] ? parseInt(codeTabsBlockMatch[1], 10) : 0;
+          const rawInner = codeTabsBlockMatch[2];
+          const tabMatches = [...rawInner.matchAll(/<Tab\s+label="([^"]+)"(?:\s+lang="([^"]+)")?(?:\s+filename="([^"]+)")?>([\s\S]*?)<\/Tab>/g)];
+          const tabs = tabMatches.map((m) => {
+            let code = m[4].trim();
+            const cbMatch = code.match(/__CODE_BLOCK_(\d+)__/);
+            let lang = m[2];
+            if (cbMatch) {
+              const cb = codeBlocks[parseInt(cbMatch[1], 10)];
+              if (cb) {
+                code = cb.code;
+                lang = lang || cb.lang;
+              }
+            }
+            return {
+              label: m[1],
+              lang: lang || "bash",
+              filename: m[3],
+              code: code.replace(/^```[a-z]*\n?/i, "").replace(/\n?```$/i, "").trim(),
+            };
+          });
+          return <CodeTabs key={idx} tabs={tabs} defaultTab={defTab} />;
+        }
+
+        // 7d. Steps & Step Component
+        const stepsMatch = trimmed.match(/<Steps>([\s\S]*?)<\/Steps>/);
+        if (stepsMatch) {
+          const inner = stepsMatch[1];
+          const stepMatches = [...inner.matchAll(/<Step\s+title="([^"]+)"(?:\s+badge="([^"]+)")?(?:\s+number="([^"]+)")?>([\s\S]*?)<\/Step>/g)];
+          return (
+            <Steps key={idx}>
+              {stepMatches.map((sm, sIdx) => {
+                let stepContent = sm[4].trim();
+                const cbMatch = stepContent.match(/__CODE_BLOCK_(\d+)__/);
+                if (cbMatch) {
+                  const cb = codeBlocks[parseInt(cbMatch[1], 10)];
+                  if (cb) {
+                    return (
+                      <Step key={sIdx} title={sm[1]} badge={sm[2]} number={sm[3] || String(sIdx + 1).padStart(2, "0")}>
+                        <CodeBlock code={cb.code} lang={cb.lang} />
+                      </Step>
+                    );
+                  }
+                }
+                return (
+                  <Step key={sIdx} title={sm[1]} badge={sm[2]} number={sm[3] || String(sIdx + 1).padStart(2, "0")}>
+                    {parseInline(stepContent)}
+                  </Step>
+                );
+              })}
+            </Steps>
+          );
+        }
+
+        // 7e. Bookmark Component
+        const bookmarkMatch = trimmed.match(/<Bookmark\s+([^>]+)\/>/);
+        if (bookmarkMatch) {
+          const attrs = bookmarkMatch[1];
+          const url = (attrs.match(/url="([^"]+)"/) || [])[1] || "#";
+          const title = (attrs.match(/title="([^"]+)"/) || [])[1] || url;
+          const description = (attrs.match(/description="([^"]+)"/) || [])[1];
+          const domain = (attrs.match(/domain="([^"]+)"/) || [])[1];
+          const image = (attrs.match(/image="([^"]+)"/) || [])[1];
+          const badge = (attrs.match(/badge="([^"]+)"/) || [])[1] || "REFERENCE";
+          return (
+            <Bookmark
+              key={idx}
+              url={url}
+              title={title}
+              description={description}
+              domain={domain}
+              image={image}
+              badge={badge}
+            />
+          );
+        }
+
+        // 7f. MediaLightbox Component
+        const mediaMatch = trimmed.match(/<MediaLightbox\s+([^>]+)\/>/);
+        if (mediaMatch) {
+          const attrs = mediaMatch[1];
+          const src = (attrs.match(/src="([^"]+)"/) || [])[1] || "";
+          const alt = (attrs.match(/alt="([^"]+)"/) || [])[1] || "Diagram";
+          const caption = (attrs.match(/caption="([^"]+)"/) || [])[1];
+          return <MediaLightbox key={idx} src={src} alt={alt} caption={caption} />;
+        }
+
+        // 7g. FileTree Component
+        const fileTreeMatch = trimmed.match(/<FileTree(?:\s+title="([^"]+)")?(?:\s+rootPath="([^"]+)")?>([\s\S]*?)<\/FileTree>/);
+        if (fileTreeMatch) {
+          const title = fileTreeMatch[1] || "DIRECTORY STRUCTURE";
+          const rootPath = fileTreeMatch[2] || "/etc/";
+          const items = parseAsciiTree(fileTreeMatch[3].trim());
+          return <FileTree key={idx} title={title} rootPath={rootPath} items={items} />;
+        }
+
+        // 7h. MetricCard and MetricGrid Components
+        const metricGridMatch = trimmed.match(/<MetricGrid>([\s\S]*?)<\/MetricGrid>/);
+        if (metricGridMatch) {
+          const inner = metricGridMatch[1];
+          const cardMatches = [...inner.matchAll(/<MetricCard\s+([^>]+)\/>/g)];
+          return (
+            <MetricGrid key={idx}>
+              {cardMatches.map((cm, cIdx) => {
+                const attrs = cm[1];
+                const value = (attrs.match(/value="([^"]+)"/) || [])[1] || "0";
+                const label = (attrs.match(/label="([^"]+)"/) || [])[1] || "Metric";
+                const delta = (attrs.match(/delta="([^"]+)"/) || [])[1];
+                const trend = ((attrs.match(/trend="([^"]+)"/) || [])[1] as any) || "up";
+                const accent = ((attrs.match(/accent="([^"]+)"/) || [])[1] as any) || "amber";
+                return (
+                  <MetricCard
+                    key={cIdx}
+                    value={value}
+                    label={label}
+                    delta={delta}
+                    trend={trend}
+                    accent={accent}
+                  />
+                );
+              })}
+            </MetricGrid>
+          );
+        }
+
+        const singleMetricMatch = trimmed.match(/<MetricCard\s+([^>]+)\/>/);
+        if (singleMetricMatch) {
+          const attrs = singleMetricMatch[1];
+          const value = (attrs.match(/value="([^"]+)"/) || [])[1] || "0";
+          const label = (attrs.match(/label="([^"]+)"/) || [])[1] || "Metric";
+          const delta = (attrs.match(/delta="([^"]+)"/) || [])[1];
+          const trend = ((attrs.match(/trend="([^"]+)"/) || [])[1] as any) || "up";
+          const accent = ((attrs.match(/accent="([^"]+)"/) || [])[1] as any) || "amber";
+          return (
+            <MetricCard
+              key={idx}
+              value={value}
+              label={label}
+              delta={delta}
+              trend={trend}
+              accent={accent}
+            />
           );
         }
 

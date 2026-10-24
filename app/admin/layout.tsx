@@ -48,6 +48,13 @@ export default async function AdminLayout({
             <span>MDX STUDIO</span>
           </Link>
           <Link
+            href="/admin/mdx-generator"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-zinc-900 hover:bg-zinc-800 text-amber-400 border border-amber-500/40 transition-colors cursor-pointer shadow-md font-bold"
+          >
+            <Activity className="w-3.5 h-3.5 text-[#FF5400]" />
+            <span>MDX GENERATOR</span>
+          </Link>
+          <Link
             href="/admin/login"
             className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyber-850 hover:bg-red-950/40 hover:text-red-400 text-zinc-400 border border-cyber-border transition-colors cursor-pointer"
           >

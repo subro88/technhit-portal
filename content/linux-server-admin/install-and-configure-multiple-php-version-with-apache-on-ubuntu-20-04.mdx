@@ -29,11 +29,21 @@ readTime: 4
 
 When managing production servers for hosting multiple web applications, legacy monoliths often require older runtimes (e.g., PHP 5.6 or 7.4) while newer microservices demand modern versions (PHP 8.2 / 8.3). Managing these conflicting runtimes on a single server without virtualization overhead requires dedicated PHP-FPM UNIX sockets mapped per VirtualHost.
 
+<MetricGrid>
+  <MetricCard value="0 MB" label="VIRTUALIZATION OVERHEAD" delta="Bare Metal FastCGI" trend="neutral" accent="amber" />
+  <MetricCard value="100%" label="RUNTIME ISOLATION" delta="Independent FPM Pools" trend="up" accent="cyan" />
+  <MetricCard value="< 1 ms" label="IPC SOCKET LATENCY" delta="UNIX Domain Sockets" trend="down" accent="emerald" />
+</MetricGrid>
+
 ## Prerequisites & Baseline Setup
 
 - One Linux server running Ubuntu 20.04 / 22.04 / 24.04 LTS or Debian 12.
 - A user account with `sudo` administrative privileges.
 - Network connectivity with ports 80 (HTTP) and 443 (HTTPS) open.
+
+<Callout type="info" title="Zero Overhead Architecture">
+UNIX domain sockets bypass TCP network stack processing entirely, providing up to 25% lower request latency compared to loopback TCP sockets (`127.0.0.1:9000`).
+</Callout>
 
 ## Step 1: Install Apache and mod_fcgid
 
@@ -54,6 +64,10 @@ sudo add-apt-repository -y ppa:ondrej/php
 sudo apt update 
 sudo apt install -y php5.6 php5.6-fpm php7.4 php7.4-fpm
 ```
+
+<Callout type="warning" title="PHP-FPM Socket Permissions">
+Verify that each PHP pool configuration in `/etc/php/<version>/fpm/pool.d/www.conf` sets `listen.owner = www-data` and `listen.group = www-data`. If permissions mismatch, Apache will fail with `503 Service Unavailable`.
+</Callout>
 
 Verify that both PHP-FPM daemons are actively running:
 
@@ -78,15 +92,22 @@ echo "<?php phpinfo(); ?>" | sudo tee /var/www/php56-app/index.php
 echo "<?php phpinfo(); ?>" | sudo tee /var/www/php74-app/index.php
 ```
 
+<FileTree title="SERVER FILESYSTEM & SOCKET HIERARCHY" rootPath="/var/run/php/">
+- php5.6-fpm.sock (highlight) // UNIX domain socket pool
+- php7.4-fpm.sock (highlight) // UNIX domain socket pool
+- www/
+  - php56-app/
+    - index.php
+  - php74-app/
+    - index.php
+</FileTree>
+
 ## Step 4: Configure VirtualHosts with UNIX Sockets
 
-Create the VirtualHost configuration for the PHP 5.6 site:
+Switch between the two site configurations below to inspect how each VirtualHost binds to its respective PHP socket:
 
-```bash
-sudo nano /etc/apache2/sites-available/php56.example.com.conf
-```
-
-```apache
+<CodeTabs defaultTab={0}>
+  <Tab label="PHP 5.6 VirtualHost" lang="apache" filename="/etc/apache2/sites-available/php56.example.com.conf">
 <VirtualHost *:80>
     ServerName php56.example.com
     DocumentRoot /var/www/php56-app
@@ -99,15 +120,8 @@ sudo nano /etc/apache2/sites-available/php56.example.com.conf
         SetHandler "proxy:unix:/var/run/php/php5.6-fpm.sock|fcgi://localhost"
     </FilesMatch>
 </VirtualHost>
-```
-
-Next, configure the VirtualHost for the PHP 7.4 site:
-
-```bash
-sudo nano /etc/apache2/sites-available/php74.example.com.conf
-```
-
-```apache
+  </Tab>
+  <Tab label="PHP 7.4 VirtualHost" lang="apache" filename="/etc/apache2/sites-available/php74.example.com.conf">
 <VirtualHost *:80>
     ServerName php74.example.com
     DocumentRoot /var/www/php74-app
@@ -120,7 +134,8 @@ sudo nano /etc/apache2/sites-available/php74.example.com.conf
         SetHandler "proxy:unix:/var/run/php/php7.4-fpm.sock|fcgi://localhost"
     </FilesMatch>
 </VirtualHost>
-```
+  </Tab>
+</CodeTabs>
 
 Activate both sites and restart Apache:
 
@@ -141,4 +156,13 @@ curl -H "Host: php74.example.com" http://127.0.0.1/ | grep "PHP Version"
 ```
 
 Each VirtualHost will independently execute through its designated PHP-FPM socket pool without runtime collision.
+
+<Bookmark
+  url="https://launchpad.net/~ondrej/+archive/ubuntu/php"
+  title="Ondřej Surý PHP PPA for Debian & Ubuntu"
+  description="Official production Debian & Ubuntu packaging repository for modern and legacy PHP runtimes with FPM socket modules."
+  domain="launchpad.net"
+  badge="OFFICIAL REPO"
+  image="https://images.unsplash.com/photo-1555066931-4365d14bab8c?auto=format&fit=crop&w=800&q=80"
+/>
 
