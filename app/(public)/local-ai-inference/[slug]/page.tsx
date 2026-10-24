@@ -1,6 +1,6 @@
 import React from "react";
 import { notFound } from "next/navigation";
-import { getPostBySlug } from "@/lib/posts";
+import { getPostBySlug, getPostsByCategory } from "@/lib/posts";
 import MdxRenderer from "@/components/mdx/MdxRenderer";
 import TechArticleJsonLd from "@/components/seo/TechArticleJsonLd";
 import VideoJsonLd from "@/components/seo/VideoJsonLd";
@@ -39,6 +39,8 @@ export default async function LocalAiArticlePage({ params }: Props) {
     notFound();
   }
 
+  const recentPosts = getPostsByCategory("local-ai-inference").slice(0, 5);
+
   const articleUrl = `https://technhit.in/local-ai-inference/${post.slug}`;
 
   return (
@@ -63,7 +65,7 @@ export default async function LocalAiArticlePage({ params }: Props) {
       )}
 
       {/* Dual Mode View: Blog Mode & Gamified 6-Stage Learning Mode */}
-      <DualModeArticleView post={post}>
+      <DualModeArticleView post={post} recentPosts={recentPosts}>
         <MdxRenderer content={post.content} />
       </DualModeArticleView>
     </>

@@ -29,10 +29,11 @@ import {
 
 interface DualModeArticleViewProps {
   post: Post;
+  recentPosts?: Post[];
   children: React.ReactNode;
 }
 
-export function DualModeArticleView({ post, children }: DualModeArticleViewProps) {
+export function DualModeArticleView({ post, recentPosts, children }: DualModeArticleViewProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -77,6 +78,18 @@ export function DualModeArticleView({ post, children }: DualModeArticleViewProps
 
     return items;
   }, [post.content]);
+
+  // Section recent posts ticker (defaulting to current post if none provided)
+  const basePosts = React.useMemo(() => {
+    return recentPosts && recentPosts.length > 0 ? recentPosts : [post];
+  }, [recentPosts, post]);
+
+  // Ensure enough items (at least 6-8) for a seamless 100% loop across 4k/ultrawide displays
+  const tickerPosts = React.useMemo(() => {
+    return basePosts.length < 5
+      ? [...basePosts, ...basePosts, ...basePosts]
+      : [...basePosts, ...basePosts];
+  }, [basePosts]);
 
   const [activeHeading, setActiveHeading] = useState<string>(tocItems[0]?.id || "");
 
@@ -300,43 +313,81 @@ export function DualModeArticleView({ post, children }: DualModeArticleViewProps
                 </div>
               </div>
 
-              {/* Marquee Ticker at bottom of hero with synchronized hover pause */}
-              <div className="absolute bottom-0 inset-x-0 z-10 border-t border-zinc-800 bg-[#07090e]/85 backdrop-blur-sm marquee-parent cursor-default">
-                <div className="py-3 text-zinc-400 overflow-hidden font-mono text-xs uppercase tracking-widest" aria-hidden="true">
+              {/* Marquee Ticker at bottom of hero with recent 5 section posts */}
+              <div className="absolute bottom-0 inset-x-0 z-10 border-t border-zinc-800 bg-[#07090e]/90 backdrop-blur-sm marquee-parent">
+                <div className="py-2.5 sm:py-3 text-zinc-400 overflow-hidden font-mono text-xs uppercase tracking-widest">
                   <div className="flex whitespace-nowrap">
+                    {/* Primary Interactive Track */}
                     <div className="flex items-center shrink-0 animate-marquee">
-                      {[
-                        "MOTION IS MEANING",
-                        "SCROLL IS STORY",
-                        "60 FPS OR NOTHING",
-                        "TRANSFORM & OPACITY ONLY",
-                        "OBSERVE, DON'T LISTEN",
-                        "GRAIN OVER GLOSS",
-                        "RESPECT REDUCED MOTION",
-                        "SHIP THE FEELING",
-                      ].map((phrase, pIdx) => (
-                        <span key={pIdx} className="flex items-center shrink-0">
-                          <span className="px-6 font-display text-lg tracking-[0.18em] text-zinc-300">{phrase}</span>
-                          <span className="w-2 h-2 rotate-45 bg-[#FF5400] inline-block shrink-0" />
-                        </span>
-                      ))}
+                      {tickerPosts.map((p, pIdx) => {
+                        const isCurrent = p.slug === post.slug;
+                        const itemNum = String((pIdx % basePosts.length) + 1).padStart(2, "0");
+                        return (
+                          <Link
+                            key={pIdx}
+                            href={`/${p.category}/${p.slug}`}
+                            className="flex items-center shrink-0 group/item transition-colors px-6 py-1 cursor-pointer"
+                          >
+                            {isCurrent ? (
+                              <span className="font-mono text-[9px] sm:text-[10px] tracking-widest text-black bg-[#FF5400] px-2 py-0.5 rounded-xs mr-3 font-bold flex items-center gap-1.5 shadow-[0_0_8px_rgba(255,84,0,0.5)]">
+                                <span className="w-1.5 h-1.5 rounded-full bg-black animate-ping" />
+                                NOW READING
+                              </span>
+                            ) : (
+                              <span className="font-mono text-[10px] sm:text-[11px] tracking-widest text-zinc-500 group-hover/item:text-amber-400 mr-2.5 transition-colors">
+                                {itemNum} //
+                              </span>
+                            )}
+                            <span
+                              className={`font-display text-base sm:text-lg tracking-[0.12em] uppercase transition-colors ${
+                                isCurrent
+                                  ? "text-amber-400 font-bold"
+                                  : "text-zinc-300 group-hover/item:text-amber-400"
+                              }`}
+                            >
+                              {p.title}
+                            </span>
+                            <span className="ml-6 w-2 h-2 rotate-45 bg-[#FF5400] inline-block shrink-0 opacity-75 group-hover/item:scale-125 group-hover/item:rotate-90 transition-all duration-300" />
+                          </Link>
+                        );
+                      })}
                     </div>
+
+                    {/* Cloned Duplicate Track for Seamless Loop */}
                     <div className="flex items-center shrink-0 animate-marquee" aria-hidden="true">
-                      {[
-                        "MOTION IS MEANING",
-                        "SCROLL IS STORY",
-                        "60 FPS OR NOTHING",
-                        "TRANSFORM & OPACITY ONLY",
-                        "OBSERVE, DON'T LISTEN",
-                        "GRAIN OVER GLOSS",
-                        "RESPECT REDUCED MOTION",
-                        "SHIP THE FEELING",
-                      ].map((phrase, pIdx) => (
-                        <span key={`dup-${pIdx}`} className="flex items-center shrink-0">
-                          <span className="px-6 font-display text-lg tracking-[0.18em] text-zinc-300">{phrase}</span>
-                          <span className="w-2 h-2 rotate-45 bg-[#FF5400] inline-block shrink-0" />
-                        </span>
-                      ))}
+                      {tickerPosts.map((p, pIdx) => {
+                        const isCurrent = p.slug === post.slug;
+                        const itemNum = String((pIdx % basePosts.length) + 1).padStart(2, "0");
+                        return (
+                          <Link
+                            key={`dup-${pIdx}`}
+                            href={`/${p.category}/${p.slug}`}
+                            tabIndex={-1}
+                            className="flex items-center shrink-0 group/item transition-colors px-6 py-1 cursor-pointer"
+                          >
+                            {isCurrent ? (
+                              <span className="font-mono text-[9px] sm:text-[10px] tracking-widest text-black bg-[#FF5400] px-2 py-0.5 rounded-xs mr-3 font-bold flex items-center gap-1.5 shadow-[0_0_8px_rgba(255,84,0,0.5)]">
+                                <span className="w-1.5 h-1.5 rounded-full bg-black animate-ping" />
+                                NOW READING
+                              </span>
+                            ) : (
+                              <span className="font-mono text-[10px] sm:text-[11px] tracking-widest text-zinc-500 group-hover/item:text-amber-400 mr-2.5 transition-colors">
+                                {itemNum} //
+                              </span>
+                            )}
+                            <span
+                              className={`font-display text-base sm:text-lg tracking-[0.12em] uppercase transition-colors ${
+                                isCurrent
+                                  ? "text-amber-400 font-bold"
+                                  : "text-zinc-300 group-hover/item:text-amber-400"
+                              }`}
+                            >
+                              {p.title}
+                            </span>
+                            <span className="ml-6 w-2 h-2 rotate-45 bg-[#FF5400] inline-block shrink-0 opacity-75 group-hover/item:scale-125 group-hover/item:rotate-90 transition-all duration-300" />
+                          </Link>
+                        );
+                      })}
                     </div>
                   </div>
                 </div>
