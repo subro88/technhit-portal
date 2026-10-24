@@ -4,8 +4,7 @@ import { getPostBySlug } from "@/lib/posts";
 import MdxRenderer from "@/components/mdx/MdxRenderer";
 import TechArticleJsonLd from "@/components/seo/TechArticleJsonLd";
 import VideoJsonLd from "@/components/seo/VideoJsonLd";
-import Link from "next/link";
-import { Code2, Calendar, Clock, ArrowLeft, Layers } from "lucide-react";
+import DualModeArticleView from "@/components/article/DualModeArticleView";
 import type { Metadata } from "next";
 
 interface Props {
@@ -43,7 +42,7 @@ export default async function SoftwareEngineeringArticlePage({ params }: Props) 
   const articleUrl = `https://technhit.in/software-engineering/${post.slug}`;
 
   return (
-    <article className="max-w-4xl mx-auto space-y-8">
+    <>
       {/* JSON-LD Schemas */}
       <TechArticleJsonLd
         title={post.title}
@@ -64,61 +63,11 @@ export default async function SoftwareEngineeringArticlePage({ params }: Props) 
         />
       )}
 
-      {/* Back Link */}
-      <div>
-        <Link
-          href="/software-engineering"
-          className="inline-flex items-center gap-1.5 text-xs font-mono text-zinc-400 hover:text-cyber-cyan transition-colors"
-        >
-          <ArrowLeft className="w-3.5 h-3.5" />
-          <span>BACK TO SOFTWARE ENGINEERING TRACK</span>
-        </Link>
-      </div>
-
-      {/* Header */}
-      <header className="space-y-4 pb-6 border-b border-cyber-border">
-        <div className="flex flex-wrap items-center gap-2 text-xs font-mono">
-          <span className="px-2.5 py-0.5 rounded bg-cyber-cyan/10 text-cyber-cyan border border-cyber-cyan/30">
-            FULL STACK & WEB SYSTEMS
-          </span>
-          <span className="text-zinc-500">•</span>
-          <span className="flex items-center gap-1 text-zinc-400">
-            <Calendar className="w-3.5 h-3.5" />
-            <span>{post.date}</span>
-          </span>
-          <span className="text-zinc-500">•</span>
-          <span className="flex items-center gap-1 text-zinc-400">
-            <Clock className="w-3.5 h-3.5" />
-            <span>{post.readTime} MIN READ</span>
-          </span>
-        </div>
-
-        <h1 className="text-2xl sm:text-4xl font-extrabold font-mono text-zinc-100 tracking-tight leading-tight">
-          {post.title}
-        </h1>
-
-        <p className="text-base text-zinc-400 font-sans leading-relaxed">
-          {post.summary}
-        </p>
-
-        {post.tags && post.tags.length > 0 && (
-          <div className="flex flex-wrap gap-2 pt-2">
-            {post.tags.map((tag) => (
-              <span
-                key={tag}
-                className="px-2 py-0.5 rounded bg-zinc-800/80 text-zinc-400 border border-zinc-700 text-xs font-mono"
-              >
-                #{tag}
-              </span>
-            ))}
-          </div>
-        )}
-      </header>
-
-      {/* Content */}
-      <div className="prose prose-invert prose-cyan max-w-none">
+      {/* Dual Mode View: Blog Mode & Gamified 6-Stage Learning Mode */}
+      <DualModeArticleView post={post}>
         <MdxRenderer content={post.content} />
-      </div>
-    </article>
+      </DualModeArticleView>
+    </>
   );
 }
+
