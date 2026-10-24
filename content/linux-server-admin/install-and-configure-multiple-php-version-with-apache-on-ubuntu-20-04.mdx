@@ -25,70 +25,68 @@ readTime: 4
 
 ---
 
-# Hi, Friends welcome to TechNHIT. In this article you will learn how to install and Configure Multiple PHP Version with Apache on Ubuntu 20.04
+## Why Multi-PHP Isolation is Vital
 
-It's very common when you working with Servers for Hosting web application, you needed multiple PHP version for the deferent web application as per their requirements and you have to manage these multiple requirements in a single server in a cost-effective way. Configuring multiple PHP in a single server makes you happy in this sense.
+When managing production servers for hosting multiple web applications, legacy monoliths often require older runtimes (e.g., PHP 5.6 or 7.4) while newer microservices demand modern versions (PHP 8.2 / 8.3). Managing these conflicting runtimes on a single server without virtualization overhead requires dedicated PHP-FPM UNIX sockets mapped per VirtualHost.
 
-***So, in order to do this entire job perquisite, and environment I used.***
+## Prerequisites & Baseline Setup
 
- 	
-- One Linux Box / VM / Container having Ubuntu 20.04LTS
- 	
-- IP 10.0.50.51 (Local IP), I am doing this test in a local environment. You can replace it with Public IP for the production server.
+- One Linux server running Ubuntu 20.04 / 22.04 / 24.04 LTS or Debian 12.
+- A user account with `sudo` administrative privileges.
+- Network connectivity with ports 80 (HTTP) and 443 (HTTPS) open.
 
-## **Let's go and logon to the system, and follow the steps. **
+## Step 1: Install Apache and mod_fcgid
 
-### Step 1) installing the Apache Server.
-
-After updating the package list do install apache and modfcgid by typing the following command.
+Update your apt package cache and install Apache along with the FastCGI daemon module:
 
 ```bash
 sudo apt update
-sudo apt install apache2 libapache2-mod-fcgid
+sudo apt install -y apache2 libapache2-mod-fcgid
 ```
 
-### Step 2) installing PHP and PHP FPM
+## Step 2: Install Multiple PHP-FPM Pools
+
+Add the Ondřej Surý PHP repository to access all historical and modern PHP versions:
 
 ```bash
-sudo apt install software-properties-common
-sudo add-apt-repository ppa:ondrej/php
+sudo apt install -y software-properties-common
+sudo add-apt-repository -y ppa:ondrej/php
 sudo apt update 
-sudo apt install php5.6 php5.6-fpm
-sudo apt install php7.4 php7.4-fpm
+sudo apt install -y php5.6 php5.6-fpm php7.4 php7.4-fpm
 ```
 
-we are using PHP 5.6 and PHP 7.4 to configure with the Apache webserver. And we will use PHP FPM and FastCGI as an API
+Verify that both PHP-FPM daemons are actively running:
 
-### Step 3) Configuring PHP with apache.
+```bash
+sudo systemctl status php5.6-fpm
+sudo systemctl status php7.4-fpm
+```
 
-Now enable few modules that required for the configuration of multiple PHP versions with Apache. These modules are necessary to integrate PHP FPM and FastCGI with the Apache server.
+## Step 3: Configure FastCGI and Proxy Modules
+
+Enable the required proxy modules in Apache to communicate with UNIX sockets:
 
 ```bash
 sudo a2enmod actions fcgid alias proxy_fcgi
 ```
 
-Now configure websites on your Apache server, for testing purpose we are going to create two application directories for both PHP version to test the configuration.
+Create isolated application document roots for testing both runtimes:
 
 ```bash
-sudo mkdir /var/www/php56-app
-sudo mkdir /var/www/php74-app
+sudo mkdir -p /var/www/php56-app /var/www/php74-app
+echo "<?php phpinfo(); ?>" | sudo tee /var/www/php56-app/index.php
+echo "<?php phpinfo(); ?>" | sudo tee /var/www/php74-app/index.php
 ```
 
-Now create a file named index.php in each directory and push this phpinfo() HTML tag.
+## Step 4: Configure VirtualHosts with UNIX Sockets
 
-```bash
-echo "<?php phpinfo(); ?>" > /var/www/php56-app/index.php
-echo "<?php phpinfo(); ?>" > /var/www/php74-app/index.php
-```
-
-phpinfo() basically tales you about a brief of PHP information like version, module, server API, etc.
-
-Now create an apache virtual host file and configure the required PHP version inside it. Go ahead and create the following host file under site available directory. Put the following configuration and tell the set handler to use your desire PHP fpm sock file.
+Create the VirtualHost configuration for the PHP 5.6 site:
 
 ```bash
 sudo nano /etc/apache2/sites-available/php56.example.com.conf
+```
 
-```bash
+```apache
 <VirtualHost *:80>
     ServerName php56.example.com
     DocumentRoot /var/www/php56-app
@@ -98,20 +96,18 @@ sudo nano /etc/apache2/sites-available/php56.example.com.conf
         Require all granted
     </Directory>
     <FilesMatch \.php$>
-        
-
-# Apache 2.4.10+ can proxy to unix socket
         SetHandler "proxy:unix:/var/run/php/php5.6-fpm.sock|fcgi://localhost"
     </FilesMatch>
 </VirtualHost>
 ```
 
-Similarly, create vhost for PHP 7.4 and configure the set handler
+Next, configure the VirtualHost for the PHP 7.4 site:
 
 ```bash
 sudo nano /etc/apache2/sites-available/php74.example.com.conf
+```
 
-```bash
+```apache
 <VirtualHost *:80>
     ServerName php74.example.com
     DocumentRoot /var/www/php74-app
@@ -126,47 +122,23 @@ sudo nano /etc/apache2/sites-available/php74.example.com.conf
 </VirtualHost>
 ```
 
-Now enable both virtual hosts using following command a2ensite
+Activate both sites and restart Apache:
 
 ```bash
 sudo a2ensite php56.example.com
 sudo a2ensite php74.example.com
-```
-
-After making all the changes restart Apache to reload new settings changes
-
-```bash
-sudo systemctl reload apache2
+sudo apache2ctl configtest
 sudo systemctl restart apache2
 ```
 
-### Step 4) Finally, Test Your Setup.
+## Step 5: Verify Multi-PHP Routing
 
-Now as we are in a local environment your system needs a local resolver to resolve the host. In order to do that in Linux system edit /etc/hosts file and put the following DNS resolver.
-
-```bash
-sudo nano /etc/hosts
-```
-
-Add following entry to the end of file
+Test both endpoints locally or by adding DNS host mappings to `/etc/hosts`:
 
 ```bash
-10.0.50.51/<your IP>/localhost   php74.example.com
-10.0.50.51/<your IP>/localhost   php56.example.com
+curl -H "Host: php56.example.com" http://127.0.0.1/ | grep "PHP Version"
+curl -H "Host: php74.example.com" http://127.0.0.1/ | grep "PHP Version"
 ```
 
-For windows system edit host file in following path "C:\Windows\System32\drivers\etc"
+Each VirtualHost will independently execute through its designated PHP-FPM socket pool without runtime collision.
 
-Now go ahead and open a web browser and test both URL.
-
-http://php74.example.com
-
-[![screen1](https://www.technhit.in/wp-content/uploads/2020/08/screen1.png)](https://www.technhit.in/wp-content/uploads/2020/08/screen1.png)
-
-http://php56.example.com
-
-[![screen2](https://www.technhit.in/wp-content/uploads/2020/08/screen2.png)](https://www.technhit.in/wp-content/uploads/2020/08/screen2.png)
-
-Now your server able to handle multiple PHP versions as per your application requirements.
-
-Hope this article helpful to you. Please like and share this. Leave a comment if you have any questions.  Thank you.

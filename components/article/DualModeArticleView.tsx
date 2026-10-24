@@ -239,7 +239,7 @@ export function DualModeArticleView({ post, children }: DualModeArticleViewProps
           /* ================= BLOG MODE ================= */
           <div className="space-y-12 animate-fadeIn">
             {/* Top Full-Bleed Cinematic Hero Section */}
-            <section className="relative h-[88vh] min-h-[560px] overflow-hidden mb-12">
+            <section className="relative min-h-[600px] h-auto lg:min-h-[88vh] overflow-hidden mb-12 flex flex-col justify-between">
               <div className="absolute inset-0 will-change-transform">
                 <img
                   src={
@@ -253,24 +253,24 @@ export function DualModeArticleView({ post, children }: DualModeArticleViewProps
               <div className="absolute inset-0 bg-gradient-to-t from-[#07090e] via-[#07090e]/50 to-[#07090e]/80" />
               <div className="absolute inset-0 bg-gradient-to-r from-[#07090e]/90 via-[#07090e]/40 to-transparent" />
 
-              {/* Hero Center Display Content */}
-              <div className="relative z-10 h-full max-w-7xl mx-auto px-5 sm:px-8 flex flex-col justify-center pb-16">
-                <div className="flex items-center gap-3 mb-5">
+              {/* Hero Center Display Content with Top Header Clearance */}
+              <div className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-8 flex flex-col justify-center pt-16 sm:pt-20 pb-28 min-h-[520px] flex-1">
+                <div className="flex items-center gap-3 mb-4 sm:mb-5">
                   <span className="w-2.5 h-2.5 rotate-45 bg-[#FF5400]" />
                   <span className="text-[11px] md:text-xs font-mono font-bold tracking-[0.32em] text-zinc-400 uppercase">
                     FIELD MANUAL N°01 — {post.category.replace(/-/g, " ")}
                   </span>
                 </div>
 
-                <h1 className="font-display text-zinc-100 leading-[0.88] tracking-wide text-5xl sm:text-7xl md:text-8xl lg:text-9xl uppercase max-w-5xl">
+                <h1 className="font-display text-zinc-100 leading-[0.92] tracking-wide text-4xl sm:text-6xl md:text-7xl lg:text-[5.5rem] uppercase max-w-5xl break-words">
                   {post.title}
                 </h1>
 
-                <p className="mt-6 max-w-2xl text-sm md:text-base leading-relaxed text-zinc-300 font-body">
+                <p className="mt-5 sm:mt-6 max-w-2xl text-sm md:text-base leading-relaxed text-zinc-300 font-body">
                   {post.summary}
                 </p>
 
-                <div className="mt-9 flex flex-wrap items-center gap-4">
+                <div className="mt-8 sm:mt-9 flex flex-wrap items-center gap-4">
                   <button
                     onClick={() => handleSwitchMode("learning")}
                     className="pulse-cta bg-[#FF5400] text-black font-display text-xl tracking-[0.14em] px-8 py-3.5 hover:bg-amber-400 transition-colors"
@@ -289,7 +289,7 @@ export function DualModeArticleView({ post, children }: DualModeArticleViewProps
                   </a>
                 </div>
 
-                <div className="mt-10 flex items-center gap-6 text-[10px] md:text-[11px] font-mono tracking-[0.24em] text-zinc-500 font-semibold">
+                <div className="mt-8 sm:mt-10 flex items-center gap-6 text-[10px] md:text-[11px] font-mono tracking-[0.24em] text-zinc-500 font-semibold">
                   <span>{String(tocItems.length).padStart(2, "0")} CHAPTERS</span>
                   <span className="w-px h-4 bg-zinc-800" />
                   <span>{post.readTime} MIN READ</span>
@@ -300,8 +300,8 @@ export function DualModeArticleView({ post, children }: DualModeArticleViewProps
                 </div>
               </div>
 
-              {/* Marquee Ticker at bottom of hero */}
-              <div className="absolute bottom-0 inset-x-0 z-10 border-t border-zinc-800 bg-[#07090e]/85 backdrop-blur-sm">
+              {/* Marquee Ticker at bottom of hero with synchronized hover pause */}
+              <div className="absolute bottom-0 inset-x-0 z-10 border-t border-zinc-800 bg-[#07090e]/85 backdrop-blur-sm marquee-parent cursor-default">
                 <div className="py-3 text-zinc-400 overflow-hidden font-mono text-xs uppercase tracking-widest" aria-hidden="true">
                   <div className="flex whitespace-nowrap">
                     <div className="flex items-center shrink-0 animate-marquee">

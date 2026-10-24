@@ -629,7 +629,7 @@ input[type="range"].field-slider.green:active::-webkit-slider-thumb {
 .animate-marquee {
   animation: marquee 28s linear infinite;
 }
-.animate-marquee:hover {
+.marquee-parent:hover .animate-marquee {
   animation-play-state: paused;
 }
 
