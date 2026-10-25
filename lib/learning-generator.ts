@@ -76,7 +76,7 @@ export interface LearningDrillData {
   badgeName: string;
   badgeDescription: string;
   architectureDiagram?: {
-    type: "reverse-proxy" | "cluster" | "network" | "stem" | "php-fpm" | "kernel-firewall" | "ssh-handshake" | "apache-vhost";
+    type: "reverse-proxy" | "cluster" | "network" | "stem" | "php-fpm" | "kernel-firewall" | "ssh-handshake" | "apache-vhost" | "system-telemetry";
     title: string;
   };
   reconCards: ReconCard[];
@@ -1812,6 +1812,292 @@ const APACHE_VHOST_DRILL: LearningDrillData = {
   ],
 };
 
+const SYSTEM_MONITORING_DRILL: LearningDrillData = {
+  slug: "top-5-system-monitoring-tools-inux",
+  title: "Top 5 System Monitoring Tools on Linux",
+  category: "linux-server-admin",
+  badgeName: "Linux Telemetry & SRE Specialist",
+  badgeDescription: "Mastered Linux kernel performance observation, process profiling, swap/disk bottlenecks, and real-time telemetry.",
+  architectureDiagram: {
+    type: "system-telemetry",
+    title: "Linux Kernel Telemetry Extraction & SRE Observation Architecture",
+  },
+  reconCards: [
+    {
+      id: "rc-1",
+      tag: "VFS SUBSYSTEM",
+      title: "THE /PROC ENGINE",
+      subtitle: "Virtual Memory Metrics",
+      definition: "Linux monitoring tools read pseudo-files in /proc (/proc/stat, /proc/meminfo, /proc/diskstats) generated on-the-fly by the Linux kernel with zero disk I/O overhead.",
+      seenInProd: "Used by top, htop, btop, and node_exporter for sub-millisecond metrics.",
+    },
+    {
+      id: "rc-2",
+      tag: "PROCESS PROFILING",
+      title: "BTOP & HTOP",
+      subtitle: "Interactive TUI Analysis",
+      definition: "btop and htop provide interactive per-core CPU graphs, memory pressure maps, tree-based parent-child process views, and real-time in-terminal signal sending (SIGTERM/SIGKILL).",
+      seenInProd: "Primary first-responder tool when incident alarms fire on Linux nodes.",
+    },
+    {
+      id: "rc-3",
+      tag: "STORAGE BOTTLENECKS",
+      title: "IOTOP & IOSTAT",
+      subtitle: "Block Device Latency",
+      definition: "iostat surfaces device %util and await latency, while iotop traces exactly which process PID is thrashing the NVMe/SATA bus using kernel taskstats accounting.",
+      seenInProd: "Detects rogue database queries and unbuffered log loops that freeze IO queues.",
+    },
+    {
+      id: "rc-4",
+      tag: "SCHEDULER & SWAP",
+      title: "VMSTAT",
+      subtitle: "Virtual Memory & Runqueue",
+      definition: "vmstat reports runqueue threads waiting for CPU (r), processes in uninterruptible sleep (b), swap in/out (si/so), and context switch frequency (cs).",
+      seenInProd: "High 'b' indicates storage bottlenecks; high 'si/so' signals active RAM starvation.",
+    },
+    {
+      id: "rc-5",
+      tag: "SOCKET & DESCRIPTOR AUDIT",
+      title: "SS & LSOF",
+      subtitle: "Open Descriptors & Ports",
+      definition: "In Linux 'everything is a file'. lsof uncovers deleted files holding disk space and open sockets, while 'ss -tulnp' replaces netstat for fast TCP socket inspection.",
+      seenInProd: "Diagnoses 'no space left on device' caused by unlinked open log files.",
+    },
+    {
+      id: "rc-6",
+      tag: "CONTINUOUS TELEMETRY",
+      title: "PROMETHEUS NODE_EXPORTER",
+      subtitle: "Cluster-Wide Time-Series",
+      definition: "Prometheus node_exporter exposes hundreds of Linux hardware and OS metrics over HTTP (/metrics) for long-term storage, trending analysis, and automated PagerDuty alerts.",
+      seenInProd: "Standard cloud-native SRE monitoring daemon across Kubernetes and bare-metal nodes.",
+    },
+  ],
+  motive: {
+    headline: "BLIND GUESSING DURING OUTAGES VS. PINPOINT TELEMETRY METRICS",
+    subheadline: "When a server grinds to a halt under load, guessing whether the issue is CPU starvation, memory leak, NVMe queue saturation, or TCP socket exhaustion wastes hours. Modern telemetry pinpoints the bottleneck in seconds.",
+    uncompressedBytes: 3600,
+    compressedBytes: 30,
+    savingsPercentage: 99,
+    explanation: "System telemetry provides instantaneous, conclusive visibility into kernel subsystems, transforming chaotic incident triage into deterministic SRE remediation.",
+    networkProfiles: [
+      { name: "Production Incident Triage", speedKbps: 100000, uncompressedTimeMs: 3600000, compressedTimeMs: 30000 },
+      { name: "Prometheus Metric Scrape (15s)", speedKbps: 1000000, uncompressedTimeMs: 12, compressedTimeMs: 3 },
+      { name: "Local Terminal TUI Refresh (1s)", speedKbps: 10000000, uncompressedTimeMs: 1, compressedTimeMs: 0 },
+    ],
+  },
+  debateStatements: [
+    {
+      id: "ds-1",
+      scenario: "Disk Space Exhaustion with Unlinked Open Files",
+      proposedAction: "Reboot the entire server immediately when df shows 100% full but du shows 20% usage.",
+      isValid: false,
+      explanation: "FLAWED: The discrepancy indicates a deleted log file is still being held open by a running process. Use 'lsof +L1' to find the PID holding the unlinked file and gracefully restart the process without rebooting.",
+      badgeTag: "STORAGE_DIAGNOSTICS",
+    },
+    {
+      id: "ds-2",
+      scenario: "High Load Average with Low CPU Usage",
+      proposedAction: "Assume the CPU is broken and upgrade to a larger processor immediately.",
+      isValid: false,
+      explanation: "INCORRECT: High load average with low CPU percentage signifies processes stuck in uninterruptible disk sleep (state 'D'). Use 'iotop' or 'vmstat' to inspect disk await latency and I/O bottlenecks.",
+      badgeTag: "KERNEL_SCHEDULER",
+    },
+    {
+      id: "ds-3",
+      scenario: "Socket Inspection Command Selection",
+      proposedAction: "Use 'ss -tulnp' instead of legacy 'netstat' on modern Linux systems.",
+      isValid: true,
+      explanation: "BEST PRACTICE: 'netstat' slowly iterates through /proc/net, causing performance lag on servers with thousands of sockets. 'ss' uses kernel Netlink sockets to return socket telemetry instantly.",
+      badgeTag: "NETWORK_TELEMETRY",
+    },
+    {
+      id: "ds-4",
+      scenario: "Killing Runaway Processes",
+      proposedAction: "Always send SIGKILL (-9) immediately to any process using over 80% CPU.",
+      isValid: false,
+      explanation: "DANGEROUS: SIGKILL immediately halts execution without allowing the process to flush write buffers, complete open database transactions, or remove lock files. Always send SIGTERM (-15) first.",
+      badgeTag: "PROCESS_LIFECYCLE",
+    },
+    {
+      id: "ds-5",
+      scenario: "Swap Space vs Out-Of-Memory (OOM)",
+      proposedAction: "Monitor 'si' and 'so' in vmstat to detect active thrashing rather than just looking at total swap used.",
+      isValid: true,
+      explanation: "EXCELLENT: Having data in swap is harmless if it represents cold, inactive pages. Real performance degradation occurs when 'si' (swap-in) and 'so' (swap-out) numbers are continuously high, indicating thrashing.",
+      badgeTag: "MEMORY_ANALYSIS",
+    },
+    {
+      id: "ds-6",
+      scenario: "Continuous Monitoring Architecture",
+      proposedAction: "Deploy Prometheus node_exporter with Grafana dashboards for baseline monitoring alongside CLI TUIs for live triage.",
+      isValid: true,
+      explanation: "ENTERPRISE SRE STANDARD: Time-series dashboards show historical trends and trigger alerts, while CLI TUIs (btop, iotop) allow deep, immediate troubleshooting when connected via SSH.",
+      badgeTag: "OBSERVABILITY_ARCHITECTURE",
+    },
+  ],
+  simulator: {
+    headline: "LINUX SYSTEM TELEMETRY & BOTTLENECK DIAGNOSIS SIMULATOR",
+    description: "Step through virtual memory audits, disk queue tracing, socket inspection, and Prometheus node_exporter polling.",
+    defaultHost: "http://127.0.0.1:9100/metrics",
+    terminalSteps: [
+      {
+        id: "step-1",
+        title: "Inspect Overall Load & Memory Pressure via vmstat",
+        description: "Sample kernel virtual memory, runqueue tasks (r), and blocked I/O tasks (b).",
+        command: "vmstat 1 3",
+        output: "procs -----------memory---------- ---swap-- -----io---- -system-- ------cpu-----\n r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st\n 1  0      0 842104 124312 3421980    0    0     1    12  142  210  4  2 94  0  0\n 0  0      0 842080 124312 3421980    0    0     0     0  135  198  1  1 98  0  0\n 0  0      0 842080 124312 3421980    0    0     0     4  138  202  2  1 97  0  0",
+      },
+      {
+        id: "step-2",
+        title: "Trace Disk I/O Bandwidth & Storage Utilization via iostat",
+        description: "Measure NVMe block throughput, await latency, and queue saturation percentage.",
+        command: "iostat -xz 1 2",
+        output: "Linux 6.8.0-48-generic (technhit-node01) \nDevice            r/s     w/s     rkB/s     wkB/s   rrqm/s   wrqm/s  %rrqm  %wrqm  r_await  w_await   aqu-sz  rareq-sz  wareq-sz  svctm  %util\nnvme0n1          0.00   14.00      0.00    128.00     0.00     2.00   0.00  12.50     0.00     0.18     0.00      0.00      9.14   0.08   0.12",
+      },
+      {
+        id: "step-3",
+        title: "Audit Active Listening Network Sockets via ss",
+        description: "Parse in-kernel Netlink tables to list listening TCP sockets and owning PIDs.",
+        command: "ss -tulnp",
+        output: "Netid  State   Recv-Q  Send-Q   Local Address:Port   Peer Address:Port  Process\ntcp    LISTEN  0       511            0.0.0.0:80          0.0.0.0:*      users:((\"nginx\",pid=1042,fd=6))\ntcp    LISTEN  0       511            0.0.0.0:443         0.0.0.0:*      users:((\"nginx\",pid=1042,fd=7))\ntcp    LISTEN  0       128            0.0.0.0:22          0.0.0.0:*      users:((\"sshd\",pid=890,fd=3))",
+      },
+      {
+        id: "step-4",
+        title: "Detect Unlinked Open Files Consuming Disk Space via lsof",
+        description: "Find deleted log files still held open by un-restarted processes.",
+        command: "lsof +L1",
+        output: "COMMAND    PID     USER   FD   TYPE DEVICE SIZE/OFF NLINK   NODE NAME\nnginx     1042 www-data    4w   REG  259,1 524288000     0 124501 /var/log/nginx/access.log (deleted)",
+      },
+      {
+        id: "step-5",
+        title: "Identify Top Memory & CPU Consumers via ps formatting",
+        description: "List the top processes sorted by CPU and memory consumption.",
+        command: "ps -eo pid,ppid,user,%cpu,%mem,cmd --sort=-%cpu | head -n 6",
+        output: "    PID    PPID USER     %CPU %MEM CMD\n   1042       1 www-data  4.2  1.8 nginx: worker process\n   2311       1 root      2.1  3.4 node_exporter\n    890       1 root      0.2  0.4 /usr/sbin/sshd -D\n      1       0 root      0.0  0.2 /sbin/init\n   3102    3090 admin     0.0  0.3 -bash",
+      },
+      {
+        id: "step-6",
+        title: "Verify Prometheus Metrics Exporter HTTP Endpoint",
+        description: "Query the cluster node_exporter daemon for raw time-series telemetry.",
+        command: "curl -s http://127.0.0.1:9100/metrics | grep -E '^node_cpu_seconds_total|^node_memory_MemAvailable_bytes' | head -n 4",
+        output: "node_cpu_seconds_total{cpu=\"0\",mode=\"idle\"} 14892.41\nnode_cpu_seconds_total{cpu=\"0\",mode=\"system\"} 124.89\nnode_cpu_seconds_total{cpu=\"0\",mode=\"user\"} 289.12\nnode_memory_MemAvailable_bytes 4268412928",
+      },
+    ],
+    defaultPayloadBytes: 250000,
+    compressedPayloadBytes: 45000,
+    responseHeaders: {
+      "HTTP/1.1": "200 OK",
+      "Content-Type": "text/plain; version=0.0.4; charset=utf-8",
+      "X-Telemetry-Source": "node_exporter-1.7.0",
+      "X-Scrape-Duration-Seconds": "0.0032",
+    },
+  },
+  debriefRules: [
+    {
+      id: "rule-1",
+      number: "01",
+      title: "USE SS INSTEAD OF NETSTAT",
+      rule: "Always use 'ss -tulnp' to audit listening ports and sockets; netstat is deprecated and causes CPU stalls on busy production servers.",
+      antiPattern: "Relying on legacy netstat commands in automated health checks.",
+    },
+    {
+      id: "rule-2",
+      number: "02",
+      title: "DISTINGUISH SWAP USE FROM ACTIVE THRASHING",
+      rule: "Check 'si' and 'so' in vmstat. Inactive pages sitting in swap are harmless; high continuous swap in/out rates indicate memory exhaustion.",
+      antiPattern: "Panicking and disabling swap entirely when swap usage is non-zero.",
+    },
+    {
+      id: "rule-3",
+      number: "03",
+      title: "CHECK UNLINKED FILES WITH LSOF",
+      rule: "When df shows 100% full but du cannot find large files, run 'lsof +L1' to locate deleted logs held open by running processes.",
+      antiPattern: "Rebooting the server immediately without discovering which daemon leaked file descriptors.",
+    },
+    {
+      id: "rule-4",
+      number: "04",
+      title: "GRACEFUL SIGNALS BEFORE FORCE KILL",
+      rule: "Always attempt graceful termination with SIGTERM (kill -15) before resorting to non-interceptable SIGKILL (kill -9).",
+      antiPattern: "Issuing 'killall -9' on database daemons, causing table corruption.",
+    },
+    {
+      id: "rule-5",
+      number: "05",
+      title: "COMBINE PULL TIME-SERIES WITH TUI TOOLS",
+      rule: "Rely on Prometheus and Grafana for long-term telemetry trends, and dive in with btop/htop for real-time live terminal triage.",
+      antiPattern: "Operating production servers with zero continuous time-series metrics.",
+    },
+  ],
+  quiz: [
+    {
+      id: "q-1",
+      scenario: "The disk partition on your server reports 100% utilization in 'df -h', but 'du -sh /*' only accounts for 20GB of a 100GB drive.",
+      question: "Which command reveals deleted files that are still holding disk space because a process has them open?",
+      options: [
+        "lsof +L1",
+        "rm -rf /tmp",
+        "iostat -m",
+        "fsck -y /",
+      ],
+      correctIndex: 0,
+      explanation: "'lsof +L1' searches for open files with a link count of less than 1 (unlinked/deleted). As long as a running process holds the file descriptor open, the kernel does not reclaim the disk blocks.",
+    },
+    {
+      id: "q-2",
+      scenario: "Your server has a load average of 18.0 on a 4-core machine, but 'top' reports that CPU idle is at 92%.",
+      question: "What is the most probable cause of this performance bottleneck?",
+      options: [
+        "Processes are waiting in uninterruptible disk sleep (I/O wait state 'D') due to storage saturation or hung NFS/NVMe queues.",
+        "The server's network cable is unplugged.",
+        "The CPU fan is spinning too slowly.",
+        "The RAM is operating in single-channel mode.",
+      ],
+      correctIndex: 0,
+      explanation: "Linux load average accounts for both runnable threads (CPU-bound) and threads in uninterruptible sleep (state 'D', usually waiting on disk or network storage I/O). Low CPU with high load points directly to an I/O bottleneck.",
+    },
+    {
+      id: "q-3",
+      scenario: "You need to determine whether a Linux server is currently thrashing due to severe physical memory exhaustion.",
+      question: "Which fields in 'vmstat 1' indicate active swap thrashing?",
+      options: [
+        "si (swap in) and so (swap out)",
+        "us (user CPU) and sy (system CPU)",
+        "in (interrupts) and cs (context switches)",
+        "buff and cache",
+      ],
+      correctIndex: 0,
+      explanation: "Active paging of memory pages to and from the disk swap space is reflected in 'si' (swap-in) and 'so' (swap-out). Non-zero continuous values indicate active thrashing and severe memory starvation.",
+    },
+    {
+      id: "q-4",
+      scenario: "Which modern terminal utility provides interactive per-core CPU utilization, GPU metrics, disk read/write trees, and process termination directly in the terminal?",
+      question: "What is the modern successor to top and htop?",
+      options: [
+        "btop",
+        "traceroute",
+        "grep",
+        "strace",
+      ],
+      correctIndex: 0,
+      explanation: "btop is a modern C++ terminal resource monitor that visualizes CPU per-core usage, memory, disk, network, and process trees with responsive graphical bars in the terminal.",
+    },
+    {
+      id: "q-5",
+      scenario: "You are setting up cluster-wide observability across 50 Linux servers to detect performance anomalies over 30 days.",
+      question: "Which architecture is the cloud-native industry standard?",
+      options: [
+        "Deploy Prometheus node_exporter on each node, scraped by Prometheus server and visualized with Grafana dashboards.",
+        "Run 'top' in a tmux session on every server.",
+        "Redirect 'vmstat' output into a text file and email it weekly.",
+        "Install Webmin on every server.",
+      ],
+      correctIndex: 0,
+      explanation: "Prometheus node_exporter exports system telemetry as standardized Prometheus time-series metrics over HTTP, allowing centralized scraping, Grafana dashboards, and automated alert manager triggers.",
+    },
+  ],
+};
+
 // Generic Drill Generator for all other technical posts
 export function generateLearningDrill(post: Post): LearningDrillData {
   if (post.slug === "install-and-config-brotli-compression-with-apache") {
@@ -1834,6 +2120,9 @@ export function generateLearningDrill(post: Post): LearningDrillData {
     post.slug === "configure-apache-virtual-host-ubuntu-16-04-lts"
   ) {
     return APACHE_VHOST_DRILL;
+  }
+  if (post.slug === "top-5-system-monitoring-tools-inux") {
+    return SYSTEM_MONITORING_DRILL;
   }
 
   const cleanTitle = post.title.replace(/^\[.*?\]/, "").trim();

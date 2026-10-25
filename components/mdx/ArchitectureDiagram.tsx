@@ -4,7 +4,7 @@ import React from "react";
 import { Layers, Network, Cpu, Shield, Database, Server } from "lucide-react";
 
 interface ArchitectureDiagramProps {
-  type?: "cluster" | "network" | "stem" | "reverse-proxy" | "php-fpm" | "kernel-firewall" | "ssh-handshake" | "apache-vhost";
+  type?: "cluster" | "network" | "stem" | "reverse-proxy" | "php-fpm" | "kernel-firewall" | "ssh-handshake" | "apache-vhost" | "system-telemetry";
   title?: string;
 }
 
@@ -425,6 +425,69 @@ export default function ArchitectureDiagram({
               MULTI-TENANT ISOLATION:
             </span>
             <span>Independent DocumentRoots, segregated log streams, and strict POSIX 0750 permissions ensure complete tenant isolation on a single public IP.</span>
+          </div>
+        </div>
+      )}
+
+      {type === "system-telemetry" && (
+        <div className="py-2 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-center">
+            {/* Layer 1: Kernel Subsystems */}
+            <div className="p-3.5 rounded-xl bg-cyber-900 border border-zinc-800 text-center font-mono">
+              <div className="w-8 h-8 rounded-lg bg-zinc-800 text-amber-400 flex items-center justify-center mx-auto mb-2 border border-zinc-700">
+                <Cpu className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-zinc-100 block">KERNEL STATS</span>
+              <span className="text-[10px] text-zinc-400 mt-0.5 block">/proc & /sys VFS</span>
+              <div className="mt-2.5 pt-2 border-t border-zinc-800 text-[9px] text-zinc-500">
+                Meminfo · Stat · Net
+              </div>
+            </div>
+
+            {/* Layer 2: Interactive TUI Analyzers */}
+            <div className="p-3.5 rounded-xl bg-[#0d1117] border border-cyan-500/60 text-center font-mono shadow-[0_0_15px_rgba(0,245,212,0.1)]">
+              <div className="w-8 h-8 rounded-lg bg-cyan-950/60 text-[#00f5d4] flex items-center justify-center mx-auto mb-2 border border-[#00f5d4]/40">
+                <Layers className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-white block">INTERACTIVE TUI</span>
+              <span className="text-[10px] text-cyan-400/90 mt-0.5 block">btop / htop</span>
+              <div className="mt-2.5 pt-2 border-t border-zinc-800 text-[9px] text-zinc-300">
+                Per-Core & PID Tree
+              </div>
+            </div>
+
+            {/* Layer 3: I/O & Socket Specialists */}
+            <div className="p-3.5 rounded-xl bg-[#0d1117] border border-emerald-500/60 text-center font-mono shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+              <div className="w-8 h-8 rounded-lg bg-emerald-950/60 text-emerald-400 flex items-center justify-center mx-auto mb-2 border border-emerald-500/40">
+                <Database className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-white block">I/O & SOCKETS</span>
+              <span className="text-[10px] text-emerald-400/90 mt-0.5 block">iotop / ss / vmstat</span>
+              <div className="mt-2.5 pt-2 border-t border-zinc-800 text-[9px] text-zinc-300">
+                Swap · Disk · TCP Queues
+              </div>
+            </div>
+
+            {/* Layer 4: Cluster Time-Series Ingestion */}
+            <div className="p-3.5 rounded-xl bg-cyber-900 border border-purple-500/50 text-center font-mono">
+              <div className="w-8 h-8 rounded-lg bg-purple-950/60 text-purple-400 flex items-center justify-center mx-auto mb-2 border border-purple-500/40">
+                <Server className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-zinc-100 block">SRE METRICS</span>
+              <span className="text-[10px] text-purple-400/90 mt-0.5 block">Node Exporter</span>
+              <div className="mt-2.5 pt-2 border-t border-zinc-800 text-[9px] text-zinc-500">
+                Prometheus & Grafana
+              </div>
+            </div>
+          </div>
+
+          {/* Telemetry Guarantee Banner */}
+          <div className="p-3 rounded-lg bg-zinc-900/60 border border-zinc-800 text-[11px] font-mono text-zinc-400 flex flex-wrap items-center justify-between gap-2">
+            <span className="text-zinc-300 font-bold flex items-center gap-1.5">
+              <Cpu className="w-3.5 h-3.5 text-[#00f5d4]" />
+              ZERO OBSERVABILITY OVERHEAD:
+            </span>
+            <span>Linux performance tools read virtual filesystem counters from RAM (/proc, /sys), creating sub-0.1% CPU overhead during production diagnostic sampling.</span>
           </div>
         </div>
       )}
