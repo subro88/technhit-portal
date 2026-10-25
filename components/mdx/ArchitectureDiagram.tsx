@@ -4,7 +4,7 @@ import React from "react";
 import { Layers, Network, Cpu, Shield, Database, Server } from "lucide-react";
 
 interface ArchitectureDiagramProps {
-  type?: "cluster" | "network" | "stem" | "reverse-proxy" | "php-fpm" | "kernel-firewall" | "ssh-handshake" | "apache-vhost" | "system-telemetry";
+  type?: "cluster" | "network" | "stem" | "reverse-proxy" | "php-fpm" | "kernel-firewall" | "ssh-handshake" | "apache-vhost" | "system-telemetry" | "sshfs-fuse";
   title?: string;
 }
 
@@ -488,6 +488,69 @@ export default function ArchitectureDiagram({
               ZERO OBSERVABILITY OVERHEAD:
             </span>
             <span>Linux performance tools read virtual filesystem counters from RAM (/proc, /sys), creating sub-0.1% CPU overhead during production diagnostic sampling.</span>
+          </div>
+        </div>
+      )}
+
+      {type === "sshfs-fuse" && (
+        <div className="py-2 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-center">
+            {/* Stage 1: Local Application */}
+            <div className="p-3.5 rounded-xl bg-cyber-900 border border-zinc-800 text-center font-mono">
+              <div className="w-8 h-8 rounded-lg bg-zinc-800 text-cyan-400 flex items-center justify-center mx-auto mb-2 border border-zinc-700">
+                <Layers className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-zinc-100 block">LOCAL APP / IDE</span>
+              <span className="text-[10px] text-zinc-400 mt-0.5 block">POSIX Syscalls</span>
+              <div className="mt-2.5 pt-2 border-t border-zinc-800 text-[9px] text-zinc-500">
+                read() · write() · open()
+              </div>
+            </div>
+
+            {/* Stage 2: Linux FUSE Kernel VFS */}
+            <div className="p-3.5 rounded-xl bg-[#0d1117] border border-cyan-500/60 text-center font-mono shadow-[0_0_15px_rgba(0,245,212,0.1)]">
+              <div className="w-8 h-8 rounded-lg bg-cyan-950/60 text-[#00f5d4] flex items-center justify-center mx-auto mb-2 border border-[#00f5d4]/40">
+                <Cpu className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-white block">FUSE DRIVER</span>
+              <span className="text-[10px] text-cyan-400/90 mt-0.5 block">/dev/fuse VFS</span>
+              <div className="mt-2.5 pt-2 border-t border-zinc-800 text-[9px] text-zinc-300">
+                Userspace Bridging
+              </div>
+            </div>
+
+            {/* Stage 3: SSHFS SFTP Tunnel */}
+            <div className="p-3.5 rounded-xl bg-[#0d1117] border border-emerald-500/60 text-center font-mono shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+              <div className="w-8 h-8 rounded-lg bg-emerald-950/60 text-emerald-400 flex items-center justify-center mx-auto mb-2 border border-emerald-500/40">
+                <Shield className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-white block">SSH/SFTP TUNNEL</span>
+              <span className="text-[10px] text-emerald-400/90 mt-0.5 block">AES-256-GCM / Port 22</span>
+              <div className="mt-2.5 pt-2 border-t border-zinc-800 text-[9px] text-zinc-300">
+                _netdev,reconnect
+              </div>
+            </div>
+
+            {/* Stage 4: Remote Storage Backend */}
+            <div className="p-3.5 rounded-xl bg-cyber-900 border border-purple-500/50 text-center font-mono">
+              <div className="w-8 h-8 rounded-lg bg-purple-950/60 text-purple-400 flex items-center justify-center mx-auto mb-2 border border-purple-500/40">
+                <Database className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-zinc-100 block">REMOTE FS</span>
+              <span className="text-[10px] text-purple-400/90 mt-0.5 block">Remote NVMe / ZFS</span>
+              <div className="mt-2.5 pt-2 border-t border-zinc-800 text-[9px] text-zinc-500">
+                sftp-server Subsystem
+              </div>
+            </div>
+          </div>
+
+          {/* FUSE Security Legend */}
+          <div className="p-3 rounded-lg bg-zinc-900/60 border border-zinc-800 text-[11px] font-mono text-zinc-400 flex flex-wrap items-center justify-between gap-2">
+            <span className="text-zinc-300 font-bold flex items-center gap-1.5">
+              <Shield className="w-3.5 h-3.5 text-emerald-400" />
+              NETWORK FILESYSTEM RESILIENCE:
+            </span>
+            <span>Always mount with '_netdev,reconnect,ServerAliveInterval=15' to ensure transient network drops automatically reconnect without hanging local IDE processes.</span>
           </div>
         </div>
       )}
