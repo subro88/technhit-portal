@@ -4,7 +4,7 @@ import React from "react";
 import { Layers, Network, Cpu, Shield, Database, Server } from "lucide-react";
 
 interface ArchitectureDiagramProps {
-  type?: "cluster" | "network" | "stem" | "reverse-proxy" | "php-fpm" | "kernel-firewall";
+  type?: "cluster" | "network" | "stem" | "reverse-proxy" | "php-fpm" | "kernel-firewall" | "ssh-handshake";
   title?: string;
 }
 
@@ -295,6 +295,60 @@ export default function ArchitectureDiagram({
               ATOMIC EVALUATION ADVANTAGE:
             </span>
             <span>Nftables uses an internal in-kernel bytecode virtual machine, evaluating stateful rules in &lt; 0.2 microseconds per packet.</span>
+          </div>
+        </div>
+      )}
+
+      {type === "ssh-handshake" && (
+        <div className="py-2 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+            {/* Node 1: Client Workstation */}
+            <div className="p-4 rounded-xl bg-cyber-900 border border-zinc-800 text-center font-mono relative group hover:border-zinc-700 transition-colors">
+              <div className="w-8 h-8 rounded-lg bg-zinc-800 text-emerald-400 flex items-center justify-center mx-auto mb-2 border border-zinc-700">
+                <Shield className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-zinc-100 block">CLIENT WORKSTATION</span>
+              <span className="text-[10px] text-zinc-400 mt-1 block">~/.ssh/id_ed25519 (0600)</span>
+              <div className="mt-3 pt-2.5 border-t border-zinc-800/80 text-[10px] text-emerald-400 flex items-center justify-center gap-1.5">
+                <span>Private Key Kept Local</span>
+              </div>
+            </div>
+
+            {/* Node 2: Cryptographic Handshake Tunnel */}
+            <div className="p-4 rounded-xl bg-[#0d1117] border border-[#00f5d4]/60 text-center font-mono relative shadow-[0_0_20px_rgba(0,245,212,0.12)]">
+              <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-[#00f5d4] text-black font-bold text-[9px] tracking-wider uppercase">
+                ASYMMETRIC CHALLENGE
+              </div>
+              <div className="w-8 h-8 rounded-lg bg-cyan-950/60 text-[#00f5d4] flex items-center justify-center mx-auto mb-2 border border-[#00f5d4]/40">
+                <Network className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-white block">Curve25519 ECDH</span>
+              <span className="text-[10px] text-zinc-400 mt-1 block">Server sends random nonce</span>
+              <div className="mt-3 pt-2.5 border-t border-zinc-800 text-[10px] text-[#00f5d4] flex items-center justify-center gap-1.5 font-bold">
+                <span>Client signs with Private Key</span>
+              </div>
+            </div>
+
+            {/* Node 3: Hardened OpenSSH Server */}
+            <div className="p-4 rounded-xl bg-cyber-900 border border-purple-500/50 text-center font-mono">
+              <div className="w-8 h-8 rounded-lg bg-purple-950/60 text-purple-400 flex items-center justify-center mx-auto mb-2 border border-purple-500/40">
+                <Server className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-zinc-100 block">OPENSSH DAEMON</span>
+              <span className="text-[10px] text-zinc-400 mt-1 block">~/.ssh/authorized_keys (0600)</span>
+              <div className="mt-3 pt-2.5 border-t border-zinc-800/80 text-[10px] text-purple-400 flex items-center justify-center gap-1.5">
+                <span>Signature Verified · PTY Spawned</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Security Guarantee Banner */}
+          <div className="p-3 rounded-lg bg-zinc-900/60 border border-zinc-800 text-[11px] font-mono text-zinc-400 flex flex-wrap items-center justify-between gap-2">
+            <span className="text-zinc-300 font-bold flex items-center gap-1.5">
+              <Shield className="w-3.5 h-3.5 text-emerald-400" />
+              ZERO-SECRET TRANSMISSION:
+            </span>
+            <span>Your private key is NEVER sent across the wire. The server only evaluates your cryptographic digital signature against the public key in authorized_keys.</span>
           </div>
         </div>
       )}

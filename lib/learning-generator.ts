@@ -76,7 +76,7 @@ export interface LearningDrillData {
   badgeName: string;
   badgeDescription: string;
   architectureDiagram?: {
-    type: "reverse-proxy" | "cluster" | "network" | "stem" | "php-fpm" | "kernel-firewall";
+    type: "reverse-proxy" | "cluster" | "network" | "stem" | "php-fpm" | "kernel-firewall" | "ssh-handshake";
     title: string;
   };
   reconCards: ReconCard[];
@@ -1238,6 +1238,293 @@ const KERNEL_HARDENING_DRILL: LearningDrillData = {
   ],
 };
 
+const SSH_KEY_DRILL: LearningDrillData = {
+  slug: "configure-ssh-key-authentication",
+  title: "Configure SSH Key Authentication",
+  category: "linux-server-admin",
+  badgeName: "SSH Cryptography Engineer",
+  badgeDescription: "Mastered Ed25519 asymmetric cryptography, zero-password authentication, and hardened sshd_config parameters.",
+  architectureDiagram: {
+    type: "ssh-handshake",
+    title: "OpenSSH Asymmetric Challenge-Response & Encrypted Tunnel Architecture",
+  },
+  reconCards: [
+    {
+      id: "rc-1",
+      tag: "CRYPTOGRAPHY",
+      title: "ED25519 VS RSA",
+      subtitle: "Modern Elliptic Curve Standard",
+      definition: "Ed25519 uses Curve25519 elliptic curve cryptography yielding compact 68-character keys with 128-bit security level, resistant to side-channel timing attacks and significantly faster than legacy 2048-bit RSA.",
+      seenInProd: "Standard default in modern OpenSSH (8.5+). Generated via 'ssh-keygen -t ed25519'.",
+    },
+    {
+      id: "rc-2",
+      tag: "AUTHENTICATION",
+      title: "ASYMMETRIC CHALLENGE",
+      subtitle: "Zero-Secret Transmission Protocol",
+      definition: "The private key never leaves the client workstation. During handshake, the server issues a random challenge nonce; the client signs it with its private key, and the server validates the signature against authorized_keys.",
+      seenInProd: "Defined by RFC 4252 SSH Authentication Protocol over Curve25519 ECDH key exchange.",
+    },
+    {
+      id: "rc-3",
+      tag: "FILESYSTEM PERMISSIONS",
+      title: "STRICT MODES",
+      subtitle: "POSIX 0700 & 0600 Integrity",
+      definition: "OpenSSH 'StrictModes yes' causes the daemon to reject public keys if ~/.ssh is writable by group/others (must be 0700) or authorized_keys is writable by others (must be 0600).",
+      seenInProd: "chmod 700 ~/.ssh && chmod 600 ~/.ssh/authorized_keys prevents untrusted user injection.",
+    },
+    {
+      id: "rc-4",
+      tag: "DAEMON HARDENING",
+      title: "PASSWORD DISABLEMENT",
+      subtitle: "Immunity to Brute-Force",
+      definition: "Setting 'PasswordAuthentication no' and 'KbdInteractiveAuthentication no' completely eliminates automated dictionary scanning and brute-force botnets across port 22.",
+      seenInProd: "Drops internet-facing authentication failures from 50,000/day to zero.",
+    },
+    {
+      id: "rc-5",
+      tag: "ROOT PRIVILEGE",
+      title: "ROOT PROHIBIT-PASSWORD",
+      subtitle: "Account Attribution & Sudo",
+      definition: "'PermitRootLogin prohibit-password' forbids password login for root, while 'PermitRootLogin no' forces engineers to authenticate as named users and elevate via sudo with full audit trails.",
+      seenInProd: "Enforced by CIS Linux Benchmarks and SOC2 compliance standards.",
+    },
+    {
+      id: "rc-6",
+      tag: "KEY DISTRIBUTION",
+      title: "SSH-COPY-ID",
+      subtitle: "Safe Atomic Key Appending",
+      definition: "'ssh-copy-id -i ~/.ssh/id_ed25519.pub user@host' safely appends the public key to remote authorized_keys and enforces 0600 permissions without overwriting existing colleagues' keys.",
+      seenInProd: "Avoids fatal 'scp' mistakes that overwrite authorized_keys and lock out team members.",
+    },
+  ],
+  motive: {
+    headline: "PASSWORD BRUTE-FORCE INVASIONS VS. ED25519 MATHEMATICAL IMMUNITY",
+    subheadline: "Internet-exposed SSH ports with password authentication absorb tens of thousands of automated botnet probes daily. Ed25519 asymmetric cryptography renders password attacks obsolete.",
+    uncompressedBytes: 250000,
+    compressedBytes: 0,
+    savingsPercentage: 100,
+    explanation: "An Ed25519 key has 128 bits of security equivalent to 3072-bit RSA. Brute-forcing a single key requires 2^128 operations—computationally impossible with modern supercomputers.",
+    networkProfiles: [
+      { name: "Botnet Dictionary Flood (10k req/sec)", speedKbps: 10000, uncompressedTimeMs: 250, compressedTimeMs: 0 },
+      { name: "Public Cloud Ingress (1 Gbps)", speedKbps: 1000000, uncompressedTimeMs: 15, compressedTimeMs: 0 },
+      { name: "Datacenter Bastion VPC (10 Gbps)", speedKbps: 10000000, uncompressedTimeMs: 2, compressedTimeMs: 0 },
+    ],
+  },
+  debateStatements: [
+    {
+      id: "ds-1",
+      scenario: "Cryptographic Key Algorithm",
+      proposedAction: "Generate a 1024-bit RSA key without a passphrase because smaller keys connect with less latency.",
+      isValid: false,
+      explanation: "FLAWED: 1024-bit RSA is cryptographically broken and disabled in modern OpenSSH. Ed25519 produces compact, ultra-fast 256-bit keys with superior tamper-resistance.",
+      badgeTag: "CRYPTOGRAPHY",
+    },
+    {
+      id: "ds-2",
+      scenario: "Public Key Distribution",
+      proposedAction: "Use 'scp ~/.ssh/id_ed25519.pub user@server:~/.ssh/authorized_keys' to install your key.",
+      isValid: false,
+      explanation: "CATASTROPHIC: Using scp directly overwrites the entire authorized_keys file, instantly revoking all existing admin access. Always use 'ssh-copy-id' or 'cat >> ~/.ssh/authorized_keys'.",
+      badgeTag: "CLUSTER_ACCESS",
+    },
+    {
+      id: "ds-3",
+      scenario: "Disabling Password Authentication",
+      proposedAction: "Disable PasswordAuthentication in /etc/ssh/sshd_config and reload ssh while keeping your active terminal open.",
+      isValid: true,
+      explanation: "BEST PRACTICE: Always keep your existing authenticated shell session open when modifying sshd. Open a second terminal window to test public key login before closing the master session.",
+      badgeTag: "FAIL_SAFE",
+    },
+    {
+      id: "ds-4",
+      scenario: "Strict Modes & Permissions",
+      proposedAction: "Run 'chmod 777 ~/.ssh' so automated deployment tools and web scripts never encounter permission denied errors.",
+      isValid: false,
+      explanation: "CRITICAL FAILURE: OpenSSH StrictModes checks directory permissions. If ~/.ssh has write permissions for group or others, the sshd daemon rejects the key and denies connection.",
+      badgeTag: "POSIX_SECURITY",
+    },
+    {
+      id: "ds-5",
+      scenario: "Private Key Passphrase Protection",
+      proposedAction: "Encrypt the private key with a strong passphrase and cache it in ssh-agent during the desktop session.",
+      isValid: true,
+      explanation: "VALID DEFENSE-IN-DEPTH: Encrypting the private key at rest with AES-256 prevents key theft if your workstation or backups are compromised.",
+      badgeTag: "ENDPOINT_DEFENSE",
+    },
+    {
+      id: "ds-6",
+      scenario: "Direct Root Login Policy",
+      proposedAction: "Set PermitRootLogin no and require all system operators to log in as named users with sudo privileges.",
+      isValid: true,
+      explanation: "AUDIT COMPLIANCE: Direct root login prevents attribution of actions. Logging in as individual users creates an immutable audit trail in auth.log.",
+      badgeTag: "LEAST_PRIVILEGE",
+    },
+  ],
+  simulator: {
+    headline: "ED25519 KEYPAIR GENERATION & SSHD HARDENING SIMULATOR",
+    description: "Execute client-side Ed25519 key generation, distribute the public key, enforce strict permissions, and harden the OpenSSH daemon.",
+    defaultHost: "ssh://admin@10.10.10.50:22",
+    terminalSteps: [
+      {
+        id: "step-1",
+        title: "Generate High-Entropy Ed25519 Keypair on Client",
+        description: "Create a modern elliptic curve keypair with an identifying administrative comment.",
+        command: "ssh-keygen -t ed25519 -C 'admin@nhit.in' -f ~/.ssh/id_ed25519",
+        output: "Generating public/private ed25519 key pair.\nYour identification has been saved in /home/admin/.ssh/id_ed25519\nYour public key has been saved in /home/admin/.ssh/id_ed25519.pub\nThe key fingerprint is:\nSHA256:7uK+qX8yM9NpZ1bL6vT2wR4eA8sD3fG5hJ0kC1mE4oA admin@nhit.in\nThe key's randomart image is:\n+--[ED25519 256]--+\n|     .o+o. .     |\n|      .o=..      |\n|       +oo.      |\n|     .+ +oo      |\n|    .o =So o     |\n|   .  o B * .    |\n|  . .  + O o     |\n| . o o  = B      |\n|  Eoo .+=X+      |\n+----[SHA256]-----+",
+      },
+      {
+        id: "step-2",
+        title: "Install Public Key to Remote Host via ssh-copy-id",
+        description: "Safely append the public key to authorized_keys without overwriting existing keys.",
+        command: "ssh-copy-id -i ~/.ssh/id_ed25519.pub admin@10.10.10.50",
+        output: "/usr/bin/ssh-copy-id: INFO: Source of key(s) to be installed: \"/home/admin/.ssh/id_ed25519.pub\"\n/usr/bin/ssh-copy-id: INFO: attempting to log in with the new key(s), to filter out any that are already installed\n/usr/bin/ssh-copy-id: INFO: 1 key(s) remain to be installed -- confirming with password\nadmin@10.10.10.50's password:\n\nNumber of key(s) added: 1\n\nNow try logging into the machine, with:   \"ssh 'admin@10.10.10.50'\"",
+      },
+      {
+        id: "step-3",
+        title: "Audit Remote POSIX Directory & File Permissions",
+        description: "Verify that remote ~/.ssh is 0700 and authorized_keys is 0600.",
+        command: "ssh admin@10.10.10.50 'ls -ld ~/.ssh && ls -l ~/.ssh/authorized_keys'",
+        output: "drwx------ 2 admin admin 4096 Oct 25 10:00 /home/admin/.ssh\n-rw------- 1 admin admin  104 Oct 25 10:00 /home/admin/.ssh/authorized_keys",
+      },
+      {
+        id: "step-4",
+        title: "Harden OpenSSH Daemon to Terminate Password Authentication",
+        description: "Create an immutable configuration drop-in file disabling password login and root password auth.",
+        command: "ssh admin@10.10.10.50 \"sudo tee /etc/ssh/sshd_config.d/99-hardened.conf << 'EOF'\nPasswordAuthentication no\nKbdInteractiveAuthentication no\nPubkeyAuthentication yes\nPermitRootLogin prohibit-password\nMaxAuthTries 3\nEOF\"",
+        output: "PasswordAuthentication no\nKbdInteractiveAuthentication no\nPubkeyAuthentication yes\nPermitRootLogin prohibit-password\nMaxAuthTries 3",
+      },
+      {
+        id: "step-5",
+        title: "Validate sshd Configuration Syntax and Reload Service",
+        description: "Perform syntax verification before reloading the OpenSSH daemon.",
+        command: "ssh admin@10.10.10.50 'sudo sshd -t && sudo systemctl reload ssh'",
+        output: "[Configuration Syntax OK]\nsshd.service: Reloaded OpenSSH server daemon.",
+      },
+      {
+        id: "step-6",
+        title: "Verify Public Key Authentication in Verbose Diagnostic Mode",
+        description: "Confirm authentication succeeds exclusively using the Ed25519 publickey signature.",
+        command: "ssh -v -i ~/.ssh/id_ed25519 admin@10.10.10.50 'echo AUTH_SUCCESS && uname -a'",
+        output: "OpenSSH_9.6p1 Ubuntu-3ubuntu13, OpenSSL 3.0.13\ndebug1: Authentications that can continue: publickey\ndebug1: Offering public key: /home/admin/.ssh/id_ed25519 ED25519 SHA256:7uK+qX8yM9NpZ1bL6vT2wR4eA8sD3fG5hJ0kC1mE4oA explicit\ndebug1: Server accepts key: /home/admin/.ssh/id_ed25519 ED25519 SHA256:7uK+qX8yM9NpZ1bL6vT2wR4eA8sD3fG5hJ0kC1mE4oA\nAuthenticated to 10.10.10.50 ([10.10.10.50]:22) using \"publickey\".\nAUTH_SUCCESS\nLinux 6.8.0-48-generic #48-Ubuntu SMP PREEMPT_DYNAMIC x86_64 GNU/Linux",
+      },
+    ],
+    defaultPayloadBytes: 250000,
+    compressedPayloadBytes: 0,
+    responseHeaders: {
+      "SSH-Protocol": "SSH-2.0-OpenSSH_9.6p1",
+      "Kex-Algorithm": "curve25519-sha256",
+      "Hostkey-Type": "ssh-ed25519",
+      "Cipher": "chacha20-poly1305@openssh.com",
+      "Authentication": "publickey (Ed25519 Signature Verified)",
+    },
+  },
+  debriefRules: [
+    {
+      id: "rule-1",
+      number: "01",
+      title: "USE ED25519 AS MODERN DEFAULT",
+      rule: "Always generate Ed25519 keys ('ssh-keygen -t ed25519') rather than legacy RSA, benefiting from shorter keys, speed, and elliptic curve security.",
+      antiPattern: "Using 1024-bit or 2048-bit RSA keys with default empty passphrases.",
+    },
+    {
+      id: "rule-2",
+      number: "02",
+      title: "ATOMIC KEY DISTRIBUTION",
+      rule: "Distribute public keys using 'ssh-copy-id' or append mode ('cat >> ~/.ssh/authorized_keys') to never overwrite existing keys.",
+      antiPattern: "Using scp to blindly copy public keys directly as 'authorized_keys'.",
+    },
+    {
+      id: "rule-3",
+      number: "03",
+      title: "STRICT PERMISSIONS DISCIPLINE",
+      rule: "Ensure ~/.ssh is chmod 0700 and authorized_keys is chmod 0600. Group or world write permissions trigger immediate SSH rejection.",
+      antiPattern: "Running 'chmod -R 777 ~/.ssh' to debug permission errors.",
+    },
+    {
+      id: "rule-4",
+      number: "04",
+      title: "ALWAYS TEST BEFORE DISCONNECTING",
+      rule: "Keep your active administrative terminal open when updating sshd_config. Test new logins in a separate window before disconnecting.",
+      antiPattern: "Restarting sshd, closing the terminal, and discovering you locked yourself out.",
+    },
+    {
+      id: "rule-5",
+      number: "05",
+      title: "DROP PASSWORD AUTHENTICATION",
+      rule: "Disable 'PasswordAuthentication' in sshd_config once keys are installed to eliminate 100% of automated botnet dictionary attacks.",
+      antiPattern: "Leaving password authentication enabled indefinitely on internet-facing ports.",
+    },
+  ],
+  quiz: [
+    {
+      id: "q-1",
+      scenario: "You generated a new Ed25519 keypair and ran ssh-copy-id to your remote server, but SSH returns 'Permission denied (publickey)'.",
+      question: "Which of the following is the most likely cause?",
+      options: [
+        "The server's /etc/hosts file is empty.",
+        "Remote directory ~/.ssh has permissions 0775 or ~/.ssh/authorized_keys has 0664, violating StrictModes.",
+        "Ed25519 keys require a running Apache server on the remote host.",
+        "You forgot to restart the client computer after generating the key.",
+      ],
+      correctIndex: 1,
+      explanation: "OpenSSH StrictModes automatically denies key authentication if ~/.ssh or authorized_keys are writable by group or other users (e.g. 0775 or 0664). They must be 0700 and 0600.",
+    },
+    {
+      id: "q-2",
+      scenario: "A junior sysadmin executed 'scp ~/.ssh/id_ed25519.pub user@server:~/.ssh/authorized_keys'.",
+      question: "What is the critical risk associated with this action?",
+      options: [
+        "The public key file will be deleted on the client machine.",
+        "All existing authorized keys on the server were overwritten, locking out any colleagues whose keys were previously installed.",
+        "The server CPU will spike to 100% usage.",
+        "The Linux kernel will revert to iptables.",
+      ],
+      correctIndex: 1,
+      explanation: "Using scp to write to authorized_keys replaces the file entirely instead of appending. Any previously installed team public keys are lost.",
+    },
+    {
+      id: "q-3",
+      scenario: "You want to completely protect an internet-exposed server from automated password dictionary botnets.",
+      question: "Which directive must be set in /etc/ssh/sshd_config?",
+      options: [
+        "PasswordAuthentication no",
+        "AllowUsers all",
+        "Port 80",
+        "StrictModes no",
+      ],
+      correctIndex: 0,
+      explanation: "Setting 'PasswordAuthentication no' instructs sshd to reject any password-based authentication attempts, accepting only authorized cryptographic keys.",
+    },
+    {
+      id: "q-4",
+      scenario: "During an SSH key exchange, which component of the keypair is transmitted across the network to the server?",
+      question: "How does the server verify identity without seeing the private key?",
+      options: [
+        "The private key is sent encrypted with SSL.",
+        "The server sends a challenge nonce; the client creates a cryptographic digital signature using its private key, which the server verifies with the public key.",
+        "The client sends a hash of the root password.",
+        "The server reads the private key directly from client RAM.",
+      ],
+      correctIndex: 1,
+      explanation: "The private key never leaves the client. The client uses its private key to sign an ephemeral challenge nonce issued by the server, proving ownership without revealing the secret.",
+    },
+    {
+      id: "q-5",
+      scenario: "You need to verify sshd_config syntax on Ubuntu 24.04 before reloading the daemon.",
+      question: "Which command runs a dry-run syntax check?",
+      options: [
+        "sudo sshd -t",
+        "sudo systemctl test ssh",
+        "sudo ssh --verify-config",
+        "sudo ssh-keygen -t sshd",
+      ],
+      correctIndex: 0,
+      explanation: "'sudo sshd -t' validates the configuration files and outputs syntax errors without restarting or reloading the running SSH daemon.",
+    },
+  ],
+};
+
 // Generic Drill Generator for all other technical posts
 export function generateLearningDrill(post: Post): LearningDrillData {
   if (post.slug === "install-and-config-brotli-compression-with-apache") {
@@ -1251,6 +1538,9 @@ export function generateLearningDrill(post: Post): LearningDrillData {
   }
   if (post.slug === "hardening-linux-kernel-sysctl-nftables") {
     return KERNEL_HARDENING_DRILL;
+  }
+  if (post.slug === "configure-ssh-key-authentication") {
+    return SSH_KEY_DRILL;
   }
 
   const cleanTitle = post.title.replace(/^\[.*?\]/, "").trim();
