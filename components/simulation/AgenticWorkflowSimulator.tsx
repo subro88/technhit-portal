@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import type { Post } from "@/lib/posts";
 import { playHapticSound, awardOperativeXp } from "@/lib/operative-store";
 import { ClusterFailoverVisualizer } from "@/components/simulation/ClusterFailoverVisualizer";
+import { K3sWorkflowSimulator } from "@/components/simulation/K3sWorkflowSimulator";
 import {
   Terminal,
   Play,
@@ -46,6 +47,10 @@ interface LogEntry {
 }
 
 export function AgenticWorkflowSimulator({ post }: AgenticWorkflowSimulatorProps) {
+  if (post.slug === "running-micro-clusters-at-the-edge-k3s-arm-nodes") {
+    return <K3sWorkflowSimulator post={post} />;
+  }
+
   const [activeTab, setActiveTab] = useState<"pipeline" | "mdx">("pipeline");
   const [currentStep, setCurrentStep] = useState<number>(0);
   const [simState, setSimState] = useState<"idle" | "running" | "fencing" | "approval" | "completed">("idle");
