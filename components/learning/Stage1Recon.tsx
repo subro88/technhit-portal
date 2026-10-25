@@ -11,7 +11,7 @@ interface Stage1ReconProps {
   slug: string;
   cards: ReconCard[];
   architectureDiagram?: {
-    type: "reverse-proxy" | "cluster" | "network" | "stem";
+    type: "reverse-proxy" | "cluster" | "network" | "stem" | "php-fpm";
     title: string;
   };
   onCompleteStage: () => void;

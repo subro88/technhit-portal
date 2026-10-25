@@ -4,7 +4,7 @@ import React from "react";
 import { Layers, Network, Cpu, Shield, Database, Server } from "lucide-react";
 
 interface ArchitectureDiagramProps {
-  type?: "cluster" | "network" | "stem" | "reverse-proxy";
+  type?: "cluster" | "network" | "stem" | "reverse-proxy" | "php-fpm";
   title?: string;
 }
 
@@ -153,6 +153,85 @@ export default function ArchitectureDiagram({
               SECURITY ADVANTAGE:
             </span>
             <span>Origin Apache port 8080 is blocked from external WAN; only localhost socket accepted.</span>
+          </div>
+        </div>
+      )}
+
+      {type === "php-fpm" && (
+        <div className="py-2 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+            {/* Node 1: Ingress Apache */}
+            <div className="p-4 rounded-xl bg-cyber-900 border border-zinc-800 text-center font-mono relative">
+              <div className="w-8 h-8 rounded-lg bg-zinc-800 text-amber-400 flex items-center justify-center mx-auto mb-2 border border-zinc-700">
+                <Server className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-zinc-100 block">APACHE 2.4 EVENT MPM</span>
+              <span className="text-[10px] text-zinc-400 mt-1 block">VirtualHost Domain Dispatcher</span>
+              <div className="mt-3 pt-2.5 border-t border-zinc-800/80 text-[10px] text-zinc-500">
+                <span>mod_proxy_fcgi Handler</span>
+              </div>
+            </div>
+
+            {/* Node 2: FastCGI Dispatch Pipeline */}
+            <div className="p-4 rounded-xl bg-[#0d1117] border border-cyan-500/50 text-center font-mono relative shadow-[0_0_20px_rgba(0,245,212,0.1)]">
+              <div className="w-8 h-8 rounded-lg bg-cyan-950/60 text-[#00f5d4] flex items-center justify-center mx-auto mb-2 border border-[#00f5d4]/40">
+                <Network className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-white block">UNIX DOMAIN SOCKETS</span>
+              <span className="text-[10px] text-cyan-400/90 mt-1 block">Zero TCP Loopback Overhead</span>
+              <div className="mt-3 pt-2.5 border-t border-zinc-800 text-[10px] text-zinc-400 text-left space-y-1 bg-zinc-950/60 p-2 rounded">
+                <div className="truncate text-zinc-300">SetHandler &quot;proxy:unix:/run/...&quot;</div>
+                <div className="truncate text-zinc-300">Isolated Process Trees</div>
+              </div>
+            </div>
+
+            {/* Node 3: Multi-PHP Daemon Pools */}
+            <div className="space-y-2.5">
+              <div className="p-2.5 rounded-lg bg-cyber-900 border border-rose-500/40 font-mono text-left">
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="font-bold text-rose-400">PHP 7.4-FPM</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-rose-500/10 text-rose-300 border border-rose-500/30">
+                    Legacy Core
+                  </span>
+                </div>
+                <div className="text-[10px] text-zinc-400 font-mono truncate mt-0.5">
+                  unix:/run/php/php7.4-fpm.sock
+                </div>
+              </div>
+
+              <div className="p-2.5 rounded-lg bg-cyber-900 border border-cyan-500/40 font-mono text-left">
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="font-bold text-cyan-400">PHP 8.1-FPM</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/30">
+                    Stable LTS
+                  </span>
+                </div>
+                <div className="text-[10px] text-zinc-400 font-mono truncate mt-0.5">
+                  unix:/run/php/php8.1-fpm.sock
+                </div>
+              </div>
+
+              <div className="p-2.5 rounded-lg bg-cyber-900 border border-emerald-500/40 font-mono text-left">
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="font-bold text-emerald-400">PHP 8.3-FPM</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+                    JIT Next-Gen
+                  </span>
+                </div>
+                <div className="text-[10px] text-zinc-400 font-mono truncate mt-0.5">
+                  unix:/run/php/php8.3-fpm.sock
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Isolation Banner */}
+          <div className="p-3 rounded-lg bg-zinc-900/60 border border-zinc-800 text-[11px] font-mono text-zinc-400 flex flex-wrap items-center justify-between gap-2">
+            <span className="text-zinc-300 font-bold flex items-center gap-1.5">
+              <Cpu className="w-3.5 h-3.5 text-amber-400" />
+              PROCESS ISOLATION GUARANTEE:
+            </span>
+            <span>If a PHP 7.4 legacy script crashes or exhausts memory, PHP 8.1 and 8.3 daemons remain completely unaffected.</span>
           </div>
         </div>
       )}

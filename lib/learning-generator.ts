@@ -76,7 +76,7 @@ export interface LearningDrillData {
   badgeName: string;
   badgeDescription: string;
   architectureDiagram?: {
-    type: "reverse-proxy" | "cluster" | "network" | "stem";
+    type: "reverse-proxy" | "cluster" | "network" | "stem" | "php-fpm";
     title: string;
   };
   reconCards: ReconCard[];
@@ -659,6 +659,296 @@ const NGINX_REVERSE_PROXY_DRILL: LearningDrillData = {
   ],
 };
 
+// Handcrafted Flagship Drill for Multiple PHP Versions with Apache
+const MULTI_PHP_DRILL: LearningDrillData = {
+  slug: "install-and-configure-multiple-php-version-with-apache-on-ubuntu-20-04",
+  title: "Install and Configure Multiple PHP Version with Apache on Ubuntu 20.04",
+  category: "linux-server-admin",
+  badgeName: "Multi-PHP Runtime Architect",
+  badgeDescription: "Mastered Ondřej Surý PPA repository deployment, PHP-FPM Unix domain socket pool tuning, and Apache mod_proxy_fcgi VirtualHost isolation.",
+  architectureDiagram: {
+    type: "php-fpm",
+    title: "Apache FastCGI & Multi-PHP FPM Domain Socket Mesh",
+  },
+  reconCards: [
+    {
+      id: "rc-1",
+      tag: "CORE RUNTIME",
+      title: "PHP-FPM ARCHITECTURE",
+      subtitle: "FastCGI Process Manager",
+      definition: "An advanced FastCGI daemon for PHP featuring master-worker process pooling, dynamic worker scaling, slow-log tracing, and independent memory management.",
+      seenInProd: "Runs as systemd services: 'php7.4-fpm.service', 'php8.1-fpm.service', 'php8.3-fpm.service'.",
+    },
+    {
+      id: "rc-2",
+      tag: "IPC HIGH SPEED",
+      title: "UNIX DOMAIN SOCKETS",
+      subtitle: "Zero TCP/IP Stack Overhead",
+      definition: "Bidirectional inter-process communication channels residing in the Linux VFS (/run/php/*.sock), completely bypassing the kernel TCP network stack for maximum throughput.",
+      seenInProd: "Specified as 'unix:/run/php/php8.1-fpm.sock' inside VirtualHost configuration files.",
+    },
+    {
+      id: "rc-3",
+      tag: "APACHE DISPATCH",
+      title: "MOD_PROXY_FCGI",
+      subtitle: "Protocol Translation Engine",
+      definition: "The Apache module that translates incoming HTTP client requests into FastCGI protocol frames and routes them directly to the designated PHP-FPM socket.",
+      seenInProd: "Enabled via 'sudo a2enmod proxy proxy_fcgi' with 'SetHandler proxy:unix:...' in VirtualHost blocks.",
+    },
+    {
+      id: "rc-4",
+      tag: "REPOSITORY ANCHOR",
+      title: "ONDŘEJ SURÝ PPA",
+      subtitle: "Canonical Debian/Ubuntu PHP Source",
+      definition: "The definitive repository maintained by Ondřej Surý (Debian PHP team lead) providing cleanly partitioned, co-installable PHP versions from 5.6 to 8.4.",
+      seenInProd: "Added via 'sudo add-apt-repository ppa:ondrej/php' on Ubuntu/Debian production servers.",
+    },
+    {
+      id: "rc-5",
+      tag: "APACHE MPM EVOLUTION",
+      title: "EVENT MPM OVER PREFORK",
+      subtitle: "Thread-Safe Async Architecture",
+      definition: "Because PHP code execution is offloaded outside Apache into FPM daemons, Apache can safely switch from memory-heavy prefork to asynchronous event MPM, saving ~80% RAM.",
+      seenInProd: "Activated via 'sudo a2dismod mpm_prefork && sudo a2enmod mpm_event'.",
+    },
+    {
+      id: "rc-6",
+      tag: "PERFORMANCE JIT",
+      title: "OPCACHE & JIT ENGINE",
+      subtitle: "Pre-compiled Bytecode Optimization",
+      definition: "Caches precompiled PHP script bytecode directly in shared RAM and compiles hot loops to native x86_64 machine code via JIT in PHP 8.1+, avoiding parse penalties on every hit.",
+      seenInProd: "Configured in '/etc/php/X.Y/fpm/conf.d/10-opcache.ini' with 'opcache.enable=1'.",
+    },
+  ],
+  motive: {
+    headline: "LEGACY MONOLITH MIGRATION DEADLOCK: ZERO-DOWNTIME MULTI-RUNTIME ISOLATION",
+    subheadline: "Enterprise crisis: Upgrading system PHP breaks legacy core applications, while refusing to upgrade blocks modern high-speed frameworks. Running multi-PHP FPM resolves this deadlock completely.",
+    uncompressedBytes: 490000,
+    compressedBytes: 94000,
+    savingsPercentage: 80.8,
+    explanation: "Decoupling PHP execution from the Apache core process allows distinct VirtualHosts to execute different PHP runtimes simultaneously on the same hardware with 100% process isolation and 4x greater concurrency.",
+    networkProfiles: [
+      { name: "3G Mobile (750 Kbps, 150ms RTT)", speedKbps: 750, uncompressedTimeMs: 3400, compressedTimeMs: 480 },
+      { name: "4G LTE (15 Mbps, 45ms RTT)", speedKbps: 15000, uncompressedTimeMs: 380, compressedTimeMs: 72 },
+      { name: "Fiber Gigabit (1 Gbps, 8ms RTT)", speedKbps: 1000000, uncompressedTimeMs: 28, compressedTimeMs: 3 },
+    ],
+  },
+  debateStatements: [
+    {
+      id: "ds-1",
+      scenario: "Co-existence of Multiple mod_php Modules",
+      proposedAction: "Enable both 'libapache2-mod-php7.4' and 'libapache2-mod-php8.1' simultaneously inside Apache using 'a2enmod'.",
+      isValid: false,
+      explanation: "FLAWED ARCHITECTURE: Apache cannot load two distinct mod_php shared objects into its binary address space at the same time. The MPM module will segfault or crash on startup. Multi-PHP strictly requires FastCGI / PHP-FPM.",
+      badgeTag: "BINARY_CONFLICT",
+    },
+    {
+      id: "ds-2",
+      scenario: "FastCGI Socket Connection Protocol",
+      proposedAction: "Route Apache traffic to PHP-FPM using Unix domain sockets ('unix:/run/php/php8.1-fpm.sock') instead of TCP loopback ('127.0.0.1:9000').",
+      isValid: true,
+      explanation: "VALID ARCHITECTURE: Unix domain sockets operate directly within the kernel virtual filesystem, bypassing network buffer allocations, TCP handshakes, and local port exhaustion under high load.",
+      badgeTag: "SOCKET_IPC",
+    },
+    {
+      id: "ds-3",
+      scenario: "Apache MPM Selection After FPM Migration",
+      proposedAction: "Keep Apache running on 'mpm_prefork' after migrating all VirtualHosts to PHP-FPM.",
+      isValid: false,
+      explanation: "FLAWED: mpm_prefork was only mandatory because mod_php was not thread-safe. With PHP-FPM handling execution, Apache should immediately switch to 'mpm_event' for modern asynchronous multithreading and 80% RAM savings.",
+      badgeTag: "MPM_MODERNIZATION",
+    },
+    {
+      id: "ds-4",
+      scenario: "Granular VirtualHost Runtime Assignment",
+      proposedAction: "Specify the target PHP version inside each VirtualHost block using a <FilesMatch \\.php$> container.",
+      isValid: true,
+      explanation: "VALID ARCHITECTURE: Wrapping SetHandler inside <FilesMatch \\.php$> guarantees that only PHP script extensions are routed to the socket, while images, CSS, and static assets are served directly by Apache.",
+      badgeTag: "VHOST_SCOPING",
+    },
+    {
+      id: "ds-5",
+      scenario: "Configuration Reload Strategy",
+      proposedAction: "Run 'sudo systemctl restart apache2' whenever modifying a 'php.ini' value in /etc/php/8.1/fpm/php.ini.",
+      isValid: false,
+      explanation: "FLAWED: Apache does not parse FPM php.ini files. Only the specific FPM daemon needs to be reloaded ('sudo systemctl reload php8.1-fpm'). Restarting Apache drops active client web connections unnecessarily.",
+      badgeTag: "DAEMON_ISOLATION",
+    },
+    {
+      id: "ds-6",
+      scenario: "Security and Process Isolation",
+      proposedAction: "Configure separate FPM pools with distinct system users and groups for client sites hosted on the same server.",
+      isValid: true,
+      explanation: "VALID: Creating dedicated pool files (/etc/php/8.1/fpm/pool.d/client1.conf) with unique 'user = client1' and 'group = client1' prevents compromised scripts on one site from accessing files on another site.",
+      badgeTag: "LEAST_PRIVILEGE",
+    },
+  ],
+  simulator: {
+    headline: "MULTI-PHP FASTCGI DEPLOYMENT & SOCKET VALIDATION TERMINAL",
+    description: "Add Ondřej Surý PPA, install PHP 7.4 & 8.1 FPM runtimes, switch Apache to Event MPM, verify Unix domain sockets, and test VirtualHost domain routing via cURL.",
+    defaultHost: "http://10.0.50.57",
+    terminalSteps: [
+      {
+        id: "step-1",
+        title: "Add Ondřej Surý Canonical PHP PPA",
+        description: "Register the trusted repository for co-installable PHP binaries on Ubuntu.",
+        command: "sudo add-apt-repository -y ppa:ondrej/php && sudo apt update",
+        output: "Hit:1 http://archive.ubuntu.com/ubuntu focal InRelease\nGet:2 http://ppa.launchpad.net/ondrej/php/ubuntu focal InRelease [24.6 kB]\nFetched 24.6 kB in 1s (21.4 kB/s)\nReading package lists... Done",
+      },
+      {
+        id: "step-2",
+        title: "Install PHP 7.4 & 8.1 FPM Runtimes",
+        description: "Deploy legacy and modern FPM daemons alongside Apache FastCGI modules.",
+        command: "sudo apt install -y php7.4-fpm php8.1-fpm libapache2-mod-fcgid",
+        output: "Setting up php7.4-fpm (7.4.33-12+ubuntu20.04.1+deb.sury.org+1) ...\nCreated symlink /etc/systemd/system/multi-user.target.wants/php7.4-fpm.service.\nSetting up php8.1-fpm (8.1.30-1+ubuntu20.04.1+deb.sury.org+1) ...\nCreated symlink /etc/systemd/system/multi-user.target.wants/php8.1-fpm.service.\n[OK] Both FPM daemons initialized.",
+      },
+      {
+        id: "step-3",
+        title: "Switch Apache to Event MPM & Enable FastCGI Proxy",
+        description: "Deactivate blocking prefork and activate asynchronous event MPM with proxy_fcgi.",
+        command: "sudo a2dismod mpm_prefork && sudo a2enmod mpm_event proxy proxy_fcgi",
+        output: "Module mpm_prefork disabled.\nEnabling module mpm_event.\nEnabling module proxy.\nEnabling module proxy_fcgi.\nTo activate the new configuration, you need to run:\n  systemctl restart apache2",
+      },
+      {
+        id: "step-4",
+        title: "Verify Active Unix Domain Sockets",
+        description: "Confirm that both PHP-FPM daemons have mounted their IPC socket endpoints in /run/php/.",
+        command: "ls -la /run/php/php*-fpm.sock",
+        output: "srw-rw---- 1 www-data www-data 0 Oct 25 09:30 /run/php/php7.4-fpm.sock\nsrw-rw---- 1 www-data www-data 0 Oct 25 09:30 /run/php/php8.1-fpm.sock",
+      },
+      {
+        id: "step-5",
+        title: "Validate Apache Configuration Integrity",
+        description: "Run syntax check on VirtualHost socket handlers before reloading service.",
+        command: "sudo apache2ctl configtest",
+        output: "Syntax OK",
+      },
+      {
+        id: "step-6",
+        title: "Test VirtualHost Runtime Routing via cURL",
+        description: "Query both virtual host domains to verify independent PHP versions are returned.",
+        command: "curl -s http://app74.local/info.php | grep -i 'php version' | head -n 1 && curl -s http://app81.local/info.php | grep -i 'php version' | head -n 1",
+        output: "<tr><td class=\"e\">PHP Version </td><td class=\"v\">7.4.33</td></tr>\n<tr><td class=\"e\">PHP Version </td><td class=\"v\">8.1.30</td></tr>",
+      },
+    ],
+    defaultPayloadBytes: 380000,
+    compressedPayloadBytes: 68000,
+    responseHeaders: {
+      "HTTP/1.1": "200 OK",
+      "Server": "Apache/2.4.58 (Ubuntu)",
+      "Date": "Sun, 25 Oct 2026 09:30:00 GMT",
+      "Content-Type": "text/html; charset=UTF-8",
+      "X-Powered-By": "PHP/8.1.30",
+      "Connection": "Keep-Alive",
+      "Keep-Alive": "timeout=5, max=100",
+    },
+  },
+  debriefRules: [
+    {
+      id: "rule-1",
+      number: "01",
+      title: "NEVER LOAD MULTIPLE MOD_PHP IN THE SAME APACHE PROCESS",
+      rule: "Apache cannot link two distinct mod_php shared libraries. Always use FastCGI / PHP-FPM to decouple runtime versions into isolated external daemons.",
+      antiPattern: "Attempting 'a2enmod php7.4' and 'a2enmod php8.1' simultaneously.",
+    },
+    {
+      id: "rule-2",
+      number: "02",
+      title: "PREFER UNIX DOMAIN SOCKETS OVER LOOPBACK TCP PORTS",
+      rule: "Route requests via 'proxy:unix:/run/php/phpX.Y-fpm.sock|fcgi://localhost' to eliminate network buffer overhead and prevent local port exhaustion.",
+      antiPattern: "Binding FPM pools to 127.0.0.1:9000, 9001 on high-traffic nodes.",
+    },
+    {
+      id: "rule-3",
+      number: "03",
+      title: "ALWAYS MIGRATE APACHE TO EVENT MPM",
+      rule: "Once mod_php is eliminated, immediately disable mpm_prefork and enable mpm_event to reclaim 80% RAM and enable asynchronous HTTP/2 multiplexing.",
+      antiPattern: "Leaving Apache on blocking mpm_prefork after adopting PHP-FPM.",
+    },
+    {
+      id: "rule-4",
+      number: "04",
+      title: "SCOPE RUNTIMES USING <FILESMATCH \\.PHP$>",
+      rule: "Confine SetHandler proxy directives strictly to PHP script extensions within the VirtualHost so static assets are served directly from disk without touching FPM.",
+      antiPattern: "Applying SetHandler globally across the entire VirtualHost root.",
+    },
+    {
+      id: "rule-5",
+      number: "05",
+      title: "RELOAD FPM DAEMONS INDEPENDENTLY OF APACHE",
+      rule: "Execute 'sudo systemctl reload phpX.Y-fpm' when updating php.ini or pool settings. Do not restart Apache, preserving zero-downtime uptime for active clients.",
+      antiPattern: "Restarting apache2.service for PHP configuration changes.",
+    },
+  ],
+  quiz: [
+    {
+      id: "q-1",
+      scenario: "A junior administrator attempts to enable both 'php7.4' and 'php8.1' inside Apache using 'sudo a2enmod php7.4 && sudo a2enmod php8.1'.",
+      question: "What is the technical outcome when restarting Apache?",
+      options: [
+        "Apache automatically creates two worker pools and round-robins requests.",
+        "Apache fails to start with a symbol collision error because two conflicting PHP C-libraries cannot be linked into the same memory space.",
+        "Apache silently ignores PHP 7.4 and defaults all VirtualHosts to PHP 8.1.",
+        "The Linux kernel terminates both modules with an SELinux violation.",
+      ],
+      correctIndex: 1,
+      explanation: "mod_php embeds the entire PHP interpreter directly into Apache worker processes. Loading two distinct mod_php shared libraries causes symbol collisions and immediate daemon crash. PHP-FPM is required.",
+    },
+    {
+      id: "q-2",
+      scenario: "You are benchmarking Apache performance against an API receiving 10,000 requests per minute.",
+      question: "Why does connecting to PHP-FPM via Unix domain sockets (/run/php/php8.1-fpm.sock) outperform TCP 127.0.0.1:9000?",
+      options: [
+        "Unix domain sockets bypass TCP protocol headers, checksums, and network queue buffers, running entirely within kernel VFS memory.",
+        "TCP sockets on Linux are throttled by default to 100 requests per second.",
+        "Unix domain sockets automatically compress PHP output with Brotli.",
+        "TCP connections require root privileges on Linux.",
+      ],
+      correctIndex: 0,
+      explanation: "Unix domain sockets avoid TCP handshake overhead, port exhaustion (ephemeral port allocation limits), and checksum calculations, providing lower latency and higher throughput for local IPC.",
+    },
+    {
+      id: "q-3",
+      scenario: "After migrating your Apache server from mod_php to PHP-FPM, you want to optimize memory utilization and concurrency.",
+      question: "Which Apache Multi-Processing Module (MPM) should you activate?",
+      options: [
+        "mpm_worker",
+        "mpm_prefork",
+        "mpm_event",
+        "mpm_single",
+      ],
+      correctIndex: 2,
+      explanation: "mpm_event is the modern asynchronous event-driven MPM for Apache. Because PHP execution is handled externally by FPM, Apache workers can safely use asynchronous threads, handling thousands of connections with minimal RAM.",
+    },
+    {
+      id: "q-4",
+      scenario: "You have increased 'memory_limit' to 512M in /etc/php/8.1/fpm/php.ini for a memory-intensive data processing app.",
+      question: "Which command applies this new configuration without dropping existing web traffic?",
+      options: [
+        "sudo systemctl restart apache2",
+        "sudo systemctl reload php8.1-fpm",
+        "sudo killall -9 php",
+        "sudo service php-fpm restart-all",
+      ],
+      correctIndex: 1,
+      explanation: "'sudo systemctl reload php8.1-fpm' sends a graceful USR2 signal to the PHP-FPM master process, which reloads configuration files and recycles worker processes as they finish active requests without touching Apache.",
+    },
+    {
+      id: "q-5",
+      scenario: "You need to configure an Apache VirtualHost for legacy.example.com to use PHP 7.4 via FastCGI.",
+      question: "Which configuration block correctly forwards .php files to the PHP 7.4 socket?",
+      options: [
+        "<FilesMatch \\.php$>\n    SetHandler \"proxy:unix:/run/php/php7.4-fpm.sock|fcgi://localhost\"\n</FilesMatch>",
+        "AddHandler application/x-httpd-php74 .php",
+        "ProxyPass / http://localhost/php7.4/",
+        "PHPIniDir /etc/php/7.4/apache2/php.ini",
+      ],
+      correctIndex: 0,
+      explanation: "The '<FilesMatch \\.php$> SetHandler \"proxy:unix:/run/php/php7.4-fpm.sock|fcgi://localhost\" </FilesMatch>' directive tells Apache mod_proxy_fcgi to route any request ending in .php to the specified Unix domain socket.",
+    },
+  ],
+};
+
 // Generic Drill Generator for all other technical posts
 export function generateLearningDrill(post: Post): LearningDrillData {
   if (post.slug === "install-and-config-brotli-compression-with-apache") {
@@ -666,6 +956,9 @@ export function generateLearningDrill(post: Post): LearningDrillData {
   }
   if (post.slug === "setting-up-an-nginx-reverse-proxy") {
     return NGINX_REVERSE_PROXY_DRILL;
+  }
+  if (post.slug === "install-and-configure-multiple-php-version-with-apache-on-ubuntu-20-04") {
+    return MULTI_PHP_DRILL;
   }
 
   const cleanTitle = post.title.replace(/^\[.*?\]/, "").trim();
