@@ -76,7 +76,7 @@ export interface LearningDrillData {
   badgeName: string;
   badgeDescription: string;
   architectureDiagram?: {
-    type: "reverse-proxy" | "cluster" | "network" | "stem" | "php-fpm" | "kernel-firewall" | "ssh-handshake";
+    type: "reverse-proxy" | "cluster" | "network" | "stem" | "php-fpm" | "kernel-firewall" | "ssh-handshake" | "apache-vhost";
     title: string;
   };
   reconCards: ReconCard[];
@@ -1525,6 +1525,293 @@ const SSH_KEY_DRILL: LearningDrillData = {
   ],
 };
 
+const APACHE_VHOST_DRILL: LearningDrillData = {
+  slug: "configure-apache-virtual-host-on-ubuntu-20-04-lts",
+  title: "Configure Apache Virtual Host on Ubuntu 20.04 LTS",
+  category: "linux-server-admin",
+  badgeName: "Apache Multi-Tenant Architect",
+  badgeDescription: "Mastered name-based VirtualHost multi-tenancy, POSIX directory isolation, and pre-flight configtest validation.",
+  architectureDiagram: {
+    type: "apache-vhost",
+    title: "Name-Based VirtualHost Multi-Tenancy & POSIX Isolation Mesh",
+  },
+  reconCards: [
+    {
+      id: "rc-1",
+      tag: "HTTP PROTOCOL",
+      title: "NAME-BASED VHOSTS",
+      subtitle: "Host Header Routing",
+      definition: "Name-based VirtualHosting inspects the HTTP 'Host:' request header (and TLS SNI extension) to match incoming client requests to specific <VirtualHost> configuration blocks on a single public IP.",
+      seenInProd: "Standard RFC 7230 Host Header matching in Apache 2.4+ core.",
+    },
+    {
+      id: "rc-2",
+      tag: "DIRECTORY ISOLATION",
+      title: "POSIX 0750 PERMISSIONS",
+      subtitle: "Inter-Tenant Boundaries",
+      definition: "Each VirtualHost document root is owned by its dedicated Linux user with group www-data (chown -R user:www-data /var/www/domain/public && chmod 750), preventing tenant cross-directory traversal.",
+      seenInProd: "Strict separation prevents compromised Web scripts in Tenant A from reading Tenant B's files.",
+    },
+    {
+      id: "rc-3",
+      tag: "SECURITY HARDENING",
+      title: "DISABLE DIRECTORY INDEXES",
+      subtitle: "Information Leakage Defense",
+      definition: "Setting 'Options -Indexes +FollowSymLinks' in the <Directory> block prevents the web server from generating directory browsing listings if index.html is missing, hiding server files from attackers.",
+      seenInProd: "Default security directive across all production VirtualHosts.",
+    },
+    {
+      id: "rc-4",
+      tag: "TELEMETRY",
+      title: "ISOLATED LOG STREAMS",
+      subtitle: "CustomLog & ErrorLog",
+      definition: "Configuring unique CustomLog and ErrorLog paths per VirtualHost (e.g. /var/log/apache2/alpha_access.log) enables pinpoint debugging and clean per-domain rate limiting and analytics.",
+      seenInProd: "Essential for enterprise multi-tenant auditing and SIEM ingestion.",
+    },
+    {
+      id: "rc-5",
+      tag: "DAEMON SUPERVISION",
+      title: "A2ENSITE & A2DISSITE",
+      subtitle: "Atomic Symlink Management",
+      definition: "Debian/Ubuntu manages VirtualHosts via symlinks from sites-available/ to sites-enabled/. The helper commands 'a2ensite' and 'a2dissite' provide atomic enabling and disabling of site configuration files.",
+      seenInProd: "Controlled site activation without direct filesystem symlink tampering.",
+    },
+    {
+      id: "rc-6",
+      tag: "PRE-FLIGHT VALIDATION",
+      title: "APACHE2CTL CONFIGTEST",
+      subtitle: "Zero-Downtime Verification",
+      definition: "Always execute 'apache2ctl configtest' (or 'apache2 -t') before reloading the systemd service. It parses all enabled VirtualHost XML-like directives for syntax errors before affecting live traffic.",
+      seenInProd: "Prevents syntax typos from knocking down the entire web cluster upon restart.",
+    },
+  ],
+  motive: {
+    headline: "DEDICATED INSTANCE SPRAWL VS. MULTI-TENANT VIRTUALHOST EFFICIENCY",
+    subheadline: "Spinning up isolated VPS servers for every micro-site creates massive cloud cost overhead. Apache VirtualHosts consolidate hundreds of low-traffic domains onto a single high-performance cluster node.",
+    uncompressedBytes: 1000000,
+    compressedBytes: 100000,
+    savingsPercentage: 90,
+    explanation: "VirtualHosts allow dynamic memory allocation across domains, reducing idle resource waste and centralizing SSL certificate renewals and security patching.",
+    networkProfiles: [
+      { name: "Global Ingress (100 Domains)", speedKbps: 50000, uncompressedTimeMs: 350, compressedTimeMs: 45 },
+      { name: "CDN Edge Cache Hit", speedKbps: 1000000, uncompressedTimeMs: 25, compressedTimeMs: 8 },
+      { name: "VPC Internal Gateway", speedKbps: 10000000, uncompressedTimeMs: 5, compressedTimeMs: 1 },
+    ],
+  },
+  debateStatements: [
+    {
+      id: "ds-1",
+      scenario: "DocumentRoot Placement",
+      proposedAction: "Place all VirtualHost files inside /home/root/public_html to make backups simple.",
+      isValid: false,
+      explanation: "HIGH RISK: Serving files out of /root compromises system security. DocumentRoots belong under /var/www/<domain>/public with restricted non-root user permissions.",
+      badgeTag: "STORAGE_SECURITY",
+    },
+    {
+      id: "ds-2",
+      scenario: "Pre-Flight Syntax Validation",
+      proposedAction: "Always run 'sudo apache2ctl configtest' before restarting or reloading Apache.",
+      isValid: true,
+      explanation: "BEST PRACTICE: Running 'configtest' catches syntax errors, missing DocumentRoot paths, and malformed directives before touching the running service, ensuring zero downtime.",
+      badgeTag: "ZERO_DOWNTIME",
+    },
+    {
+      id: "ds-3",
+      scenario: "Directory Listing Options",
+      proposedAction: "Include 'Options Indexes' so visitors can browse files if no index page exists.",
+      isValid: false,
+      explanation: "SECURITY FLAW: 'Options Indexes' exposes private filenames, database backups, and environment dumps to crawlers. Production sites must enforce 'Options -Indexes'.",
+      badgeTag: "INFO_LEAK_DEFENSE",
+    },
+    {
+      id: "ds-4",
+      scenario: "Access and Error Logging",
+      proposedAction: "Direct all VirtualHosts to write to a single global /var/log/apache2/access.log to save file descriptors.",
+      isValid: false,
+      explanation: "POOR PRACTICE: Sharing a single log file makes per-domain incident response and audit debugging impossible. Each VirtualHost should maintain dedicated ErrorLog and CustomLog files.",
+      badgeTag: "OBSERVABILITY",
+    },
+    {
+      id: "ds-5",
+      scenario: "Daemon Reload vs Restart",
+      proposedAction: "Use 'systemctl reload apache2' instead of 'systemctl restart apache2' when enabling or updating VirtualHosts.",
+      isValid: true,
+      explanation: "EXCELLENT: A reload instructs worker threads to re-read configuration files without dropping existing established HTTP connections, preserving active client downloads.",
+      badgeTag: "SERVICE_LIFECYCLE",
+    },
+    {
+      id: "ds-6",
+      scenario: "Local Testing without Public DNS",
+      proposedAction: "Map test domains (e.g. 127.0.0.1 alpha.local) in /etc/hosts on your client machine before public DNS records propagate.",
+      isValid: true,
+      explanation: "VALID WORKFLOW: Editing /etc/hosts overrides DNS resolution locally, allowing full end-to-end verification of VirtualHost dispatch before pointing public domain names.",
+      badgeTag: "LOCAL_TESTING",
+    },
+  ],
+  simulator: {
+    headline: "NAME-BASED VIRTUALHOST DEPLOYMENT & HOST HEADER SIMULATOR",
+    description: "Step through multi-tenant directory setup, VirtualHost configuration, site activation, and host-header verification.",
+    defaultHost: "http://alpha.nhit.in",
+    terminalSteps: [
+      {
+        id: "step-1",
+        title: "Create Isolated Web Directory Hierarchy",
+        description: "Generate dedicated document roots under /var/www for independent tenants.",
+        command: "sudo mkdir -p /var/www/alpha.nhit.in/public /var/www/beta.nhit.in/public",
+        output: "[Directories Created]\n/var/www/alpha.nhit.in/public\n/var/www/beta.nhit.in/public",
+      },
+      {
+        id: "step-2",
+        title: "Enforce POSIX Group Permissions (0750)",
+        description: "Grant web server read access while restricting unauthorized user traversal.",
+        command: "sudo chown -R www-data:www-data /var/www && sudo chmod -R 750 /var/www",
+        output: "drwxr-x--- 3 www-data www-data 4096 Oct 25 10:15 /var/www/alpha.nhit.in/public\ndrwxr-x--- 3 www-data www-data 4096 Oct 25 10:15 /var/www/beta.nhit.in/public",
+      },
+      {
+        id: "step-3",
+        title: "Deploy VirtualHost Configurations in sites-available",
+        description: "Author name-based VirtualHost blocks with disabled directory indexes and separate logs.",
+        command: "sudo tee /etc/apache2/sites-available/alpha.nhit.in.conf << 'EOF'\n<VirtualHost *:80>\n    ServerName alpha.nhit.in\n    ServerAlias www.alpha.nhit.in\n    DocumentRoot /var/www/alpha.nhit.in/public\n    <Directory /var/www/alpha.nhit.in/public>\n        Options -Indexes +FollowSymLinks\n        AllowOverride All\n        Require all granted\n    </Directory>\n    ErrorLog ${APACHE_LOG_DIR}/alpha_error.log\n    CustomLog ${APACHE_LOG_DIR}/alpha_access.log combined\n</VirtualHost>\nEOF",
+        output: "VirtualHost configuration written for alpha.nhit.in",
+      },
+      {
+        id: "step-4",
+        title: "Enable VirtualHost via a2ensite",
+        description: "Create atomic symlinks from sites-available to sites-enabled.",
+        command: "sudo a2ensite alpha.nhit.in.conf",
+        output: "Enabling site alpha.nhit.in.\nTo activate the new configuration, you need to run:\n  systemctl reload apache2",
+      },
+      {
+        id: "step-5",
+        title: "Execute Pre-Flight Configtest Validation",
+        description: "Confirm all directives are syntactically valid before touching the running process.",
+        command: "sudo apache2ctl configtest",
+        output: "Syntax OK",
+      },
+      {
+        id: "step-6",
+        title: "Reload Apache & Test Host Header Dispatch with curl",
+        description: "Send HTTP GET with specific Host header to verify tenant routing.",
+        command: "sudo systemctl reload apache2 && curl -s -H 'Host: alpha.nhit.in' http://127.0.0.1/",
+        output: "<!DOCTYPE html>\n<html>\n<head><title>Alpha Tenant</title></head>\n<body><h1>VirtualHost alpha.nhit.in Dispatched Successfully</h1></body>\n</html>",
+      },
+    ],
+    defaultPayloadBytes: 150000,
+    compressedPayloadBytes: 35000,
+    responseHeaders: {
+      "HTTP/1.1": "200 OK",
+      "Server": "Apache/2.4.58 (Ubuntu)",
+      "X-VHost-Tenant": "alpha.nhit.in",
+      "Content-Type": "text/html; charset=UTF-8",
+      "Vary": "Host, Accept-Encoding",
+    },
+  },
+  debriefRules: [
+    {
+      id: "rule-1",
+      number: "01",
+      title: "ALWAYS RUN CONFIGTEST BEFORE RELOAD",
+      rule: "Execute 'apache2ctl configtest' before reloading the daemon to catch syntax mistakes before they affect production.",
+      antiPattern: "Running 'systemctl restart apache2' blindly without syntax testing.",
+    },
+    {
+      id: "rule-2",
+      number: "02",
+      title: "ALWAYS DISABLE DIRECTORY INDEXES",
+      rule: "Enforce 'Options -Indexes' in all <Directory> definitions to prevent directory indexing and file disclosure.",
+      antiPattern: "Using 'Options Indexes' in public production VirtualHosts.",
+    },
+    {
+      id: "rule-3",
+      number: "03",
+      title: "ISOLATE LOGS PER DOMAIN",
+      rule: "Configure dedicated ErrorLog and CustomLog files for each VirtualHost to maintain clear audit and troubleshooting boundaries.",
+      antiPattern: "Routing all traffic to global access.log and error.log.",
+    },
+    {
+      id: "rule-4",
+      number: "04",
+      title: "RELOAD OVER RESTART",
+      rule: "Use 'systemctl reload apache2' to apply configuration changes gracefully without terminating active TCP client streams.",
+      antiPattern: "Stopping and starting the daemon during peak business traffic hours.",
+    },
+    {
+      id: "rule-5",
+      number: "05",
+      title: "RESTRICT DOCUMENT ROOT PERMISSIONS",
+      rule: "Enforce 0750 permissions on web directories with www-data group ownership, forbidding world-writable (0777) folders.",
+      antiPattern: "Running 'chmod -R 777 /var/www' to bypass permission errors.",
+    },
+  ],
+  quiz: [
+    {
+      id: "q-1",
+      scenario: "You created a new file /etc/apache2/sites-available/myproject.conf, but browsing to the domain still loads the default Ubuntu splash page.",
+      question: "Which step was missed?",
+      options: [
+        "You must delete the Apache binary and recompile from source.",
+        "The site was not enabled with 'sudo a2ensite myproject.conf' followed by 'sudo systemctl reload apache2'.",
+        "Virtual hosts can only run on port 8080.",
+        "You must reboot the Linux server.",
+      ],
+      correctIndex: 1,
+      explanation: "Apache only loads configuration files symlinked into 'sites-enabled/'. Running 'a2ensite <config>' creates this symlink, and reloading the service activates it.",
+    },
+    {
+      id: "q-2",
+      scenario: "A visitor navigates to an existing directory on your site that does not have an index.html file, and Apache displays a list of all files and folders.",
+      question: "Which directive fixes this security vulnerability?",
+      options: [
+        "Options -Indexes",
+        "AllowOverride None",
+        "DirectoryIndex off",
+        "ServerSignature On",
+      ],
+      correctIndex: 0,
+      explanation: "'Options -Indexes' instructs Apache to refuse generating directory indexes, returning an HTTP 403 Forbidden error instead of exposing files.",
+    },
+    {
+      id: "q-3",
+      scenario: "An administrator executed an Apache command that caused all active file downloads and user sessions to terminate abruptly.",
+      question: "What command should have been used instead to apply VirtualHost changes gracefully?",
+      options: [
+        "sudo systemctl reload apache2",
+        "sudo killall -9 apache2",
+        "sudo systemctl restart apache2",
+        "sudo apache2ctl stop",
+      ],
+      correctIndex: 0,
+      explanation: "'systemctl reload apache2' (or 'apache2ctl graceful') instructs worker processes to finish in-flight requests and re-read config files, preventing dropped connections.",
+    },
+    {
+      id: "q-4",
+      scenario: "You are setting up Apache to host both site1.example.com and site2.example.com on a single public IPv4 address.",
+      question: "How does Apache determine which <VirtualHost> block handles an incoming HTTP request?",
+      options: [
+        "By the client's operating system version.",
+        "By matching the request's HTTP 'Host:' header with the ServerName and ServerAlias directives.",
+        "By the time of day the request arrived.",
+        "By random round-robin allocation.",
+      ],
+      correctIndex: 1,
+      explanation: "In name-based VirtualHosting, Apache inspects the HTTP 'Host:' request header sent by the client's browser to route the request to the matching ServerName/ServerAlias.",
+    },
+    {
+      id: "q-5",
+      scenario: "Before reloading Apache in production, which command verifies that there are no syntax errors in the VirtualHost files?",
+      question: "Which command runs the pre-flight syntax check?",
+      options: [
+        "sudo apache2ctl configtest",
+        "sudo a2chk",
+        "sudo service apache2 verify",
+        "sudo test-apache",
+      ],
+      correctIndex: 0,
+      explanation: "'sudo apache2ctl configtest' (or 'apache2 -t') validates all enabled directives and outputs 'Syntax OK' or detailed error line numbers.",
+    },
+  ],
+};
+
 // Generic Drill Generator for all other technical posts
 export function generateLearningDrill(post: Post): LearningDrillData {
   if (post.slug === "install-and-config-brotli-compression-with-apache") {
@@ -1541,6 +1828,12 @@ export function generateLearningDrill(post: Post): LearningDrillData {
   }
   if (post.slug === "configure-ssh-key-authentication") {
     return SSH_KEY_DRILL;
+  }
+  if (
+    post.slug === "configure-apache-virtual-host-on-ubuntu-20-04-lts" ||
+    post.slug === "configure-apache-virtual-host-ubuntu-16-04-lts"
+  ) {
+    return APACHE_VHOST_DRILL;
   }
 
   const cleanTitle = post.title.replace(/^\[.*?\]/, "").trim();

@@ -1,244 +1,299 @@
 ---
-title: "Configure Apache Virtual Host on Ubuntu 20.04 LTS"
+title: "Configure Apache Virtual Host on Ubuntu 20.04 & 24.04 LTS"
 slug: "configure-apache-virtual-host-on-ubuntu-20-04-lts"
 date: "2021-02-02"
 category: "linux-server-admin"
 status: "Published"
-summary: "In this tutorial, we are going to configure Apache virtual host on Ubuntu 20.04 LTS."
-tags: ["systems-engineering"]
+summary: "Production blueprint for configuring name-based Apache 2.4 VirtualHosts on Ubuntu LTS. Features isolated document roots, strict POSIX permissions, directory browsing mitigation, separated log streams, and zero-downtime reloads."
+tags: ["apache", "virtualhost", "sysadmin", "ubuntu", "multi-tenant", "linux-security"]
 youtubeId: "3dkFE3gmngM"
-wordCount: 921
-readTime: 5
+wordCount: 1950
+readTime: 10
 ---
 
 ## Key Architecture Takeaways
 
-- **Point 1**: Production blueprint for Configure Apache Virtual Host on Ubuntu 20.04 LTS on Linux infrastructure.
-- **Point 2**: Covers root privilege management, daemon supervision via systemd, and secure file operations.
-- **Point 3**: Applies to LTS releases (Ubuntu 24.04/22.04 LTS, Debian 12 Bookworm).
+- **Name-Based VirtualHost Routing**: Apache's HTTP engine inspects the incoming `Host:` request header and TLS SNI extension to dispatch traffic to isolated `<VirtualHost>` blocks on a single public IP address.
+- **Strict POSIX Directory Sandboxing**: DocumentRoots under `/var/www/<domain>/public` are configured with `0750` permissions and `www-data` group ownership, preventing cross-tenant file traversal.
+- **Information Disclosure Mitigation**: Setting `Options -Indexes` stops directory browsing if `index.html` is missing, preventing automated reconnaissance of sensitive server files.
+- **Pre-Flight Configuration Testing**: Running `sudo apache2ctl configtest` catches syntax mistakes before reloading the daemon, preventing accidental cluster outages.
 
-
-> [!NOTE]
-> **Enterprise Compatibility Update (2026 / LTS)**
-> While these fundamentals apply directly to existing deployments, modern installations on Ubuntu 22.04 and 24.04 LTS use `systemd-resolved`, `nftables` for packet filtering, and modern OpenSSH 9+ with Ed25519 cryptography.
-
+<MetricGrid>
+  <MetricCard
+    label="Multi-Tenant Capacity"
+    value="50+ Domains"
+    delta="Consolidated on Single IP"
+    trend="up"
+    accent="cyan"
+  />
+  <MetricCard
+    label="RAM Overhead / Site"
+    value="< 4 MB"
+    delta="Shared Process Architecture"
+    trend="down"
+    accent="emerald"
+  />
+  <MetricCard
+    label="Directory Security"
+    value="0750 Mode"
+    delta="Isolated Tenant Boundaries"
+    trend="up"
+    accent="purple"
+  />
+  <MetricCard
+    label="Reload Downtime"
+    value="0 ms"
+    delta="Graceful Worker SIGHUP"
+    trend="neutral"
+    accent="amber"
+  />
+</MetricGrid>
 
 ---
 
-In this tutorial, we are going to configure Apache virtual host on Ubuntu 20.04 LTS.
+## Name-Based Multi-Tenancy & POSIX Isolation Topology
 
-## What is a virtual host? And its uses.
+In shared and multi-tenant hosting environments, running multiple independent web applications on one server requires clear separation between network dispatch, filesystem permissions, and diagnostic logging.
 
-Well, the term Virtual Host refers to the practice of running more than one web site such as company1.example.com and company2.example.com and so on within a single machine. Virtual hosts can be "IP-based", meaning that you have a different IP address for every web site, or "name-based", meaning that you have multiple names running on the same IP address.
+<ArchitectureDiagram type="apache-vhost" title="Apache 2.4 Name-Based VirtualHost Multi-Tenancy Mesh" />
 
-So, the fact is that they are running on the same physical server but it is not apparent to the end-user. Means Company1 does not have access to Company 2's files and whatever inside going on. Thus, it secure and reliable.
+<Callout type="benchmark" title="The Multi-Tenancy Dilemma: Name-Based vs IP-Based VHosts">
+IP-based VirtualHosting requires reserving a dedicated, routable public IPv4 address for every website, which is financially prohibitive under modern IPv4 exhaustion. 
 
-In the real world, we often called this method shared web hosting. The price for shared web hosting is much lesser than a dedicated web server because many customers can be hosted on a single server.
+**Name-based VirtualHosting** allows thousands of domains to share a single public IPv4 and IPv6 address. When a client initiates an HTTP/1.1 or HTTP/2 connection, the browser transmits the target domain name in the `Host:` header (and in the TLS ClientHello Server Name Indication / SNI extension), allowing Apache to immediately route the request to the correct `<VirtualHost>` definition in `< 0.1ms`.
+</Callout>
 
-## Prerequisite:
+---
 
-Here we used ubuntu 20.04 LTS for this experiment, It also applicable for 16.04 and higher versions.
+## Directory Hierarchy & File Organization
 
-## Steps to configure Apache Virtual Host:
+Before creating configuration files, review the standard Debian/Ubuntu Apache layout:
 
- 	
-- **Open up your terminal and update the package list**
- 	
-- **Install Apache Server**
- 	
-- **Creating Virtual Host Users**
- 	
-- **Creating Index file**
- 	
-- **Configure Virtual Host Directives**
- 	
-- **Add Local DNS Resolver**
- 	
-- **Test Virtual Host **
+<FileTree>
+- /etc/apache2/
+  - apache2.conf // Global master server configuration
+  - ports.conf // Listen 80 and Listen 443 bindings
+  - sites-available/
+    - alpha.nhit.in.conf (highlight) // Tenant A VirtualHost configuration
+    - beta.nhit.in.conf (highlight) // Tenant B VirtualHost configuration
+  - sites-enabled/
+    - alpha.nhit.in.conf (highlight) // Symlink created via a2ensite
+    - beta.nhit.in.conf (highlight) // Symlink created via a2ensite
+- /var/www/
+  - alpha.nhit.in/
+    - public/ (highlight) // Tenant A DocumentRoot (chmod 0750)
+  - beta.nhit.in/
+    - public/ (highlight) // Tenant B DocumentRoot (chmod 0750)
+- /var/log/apache2/
+  - alpha_error.log (highlight) // Dedicated error telemetry for Tenant A
+  - beta_error.log (highlight) // Dedicated error telemetry for Tenant B
+</FileTree>
 
-### Step-1) Update the package list
+---
 
-First thing is first, do update your package list. Go ahead and type
+## Step-by-Step Implementation Guide
 
-```bash
- sudo apt update
-```
+<Steps>
+  <Step title="Update Repositories and Install Apache 2.4">
+    Ensure your server package manager is updated and install the latest stable Apache HTTP server release:
 
-### Step-2) Install Apache HTTP Server
+    <TerminalBlock
+      command="sudo apt update && sudo apt install -y apache2"
+      title="Install Apache HTTP Server"
+      os="Ubuntu 20.04 / 22.04 / 24.04 LTS"
+    />
 
-After updating the package list, you need to be installed apache into your system.
+    Enable and start the `apache2` service via systemd:
 
-```bash
-sudo apt install apache2
-```
+    <TerminalBlock
+      command="sudo systemctl enable --now apache2 && sudo systemctl status apache2 --no-pager"
+      title="Verify Daemon Status"
+      os="Systemd"
+    />
+  </Step>
 
-After installing Apache, you could check it perfectly running or not by using the service command
+  <Step title="Create Isolated DocumentRoots for Multiple Domains">
+    In enterprise systems, avoid hosting files in `/home/user/public_html` due to permission conflicts and SELinux/AppArmor denials. Use the standard `/var/www/<domain>/public` hierarchy:
 
-```bash
- service apache2 status
-```
+    <TerminalBlock
+      command="sudo mkdir -p /var/www/alpha.nhit.in/public /var/www/beta.nhit.in/public"
+      title="Create Isolated Web DocumentRoots"
+      os="Linux"
+    />
 
-### Step-3) Creating User for Virtual Host
+    Create testing `index.html` landing pages for each domain:
 
- Now we are going to create two users for this experiment one is userA and other is userB. Let's go and type
-
-```bash
-sudo useradd -m userA
-sudo useradd -m userB
-```
-
-Here the flag -m will Create the user's home directory if it does not exist. Now create a directory named public_html inside each user's directory. Go ahead and type
-
-```bash
-sudo mkdir /home/userA/public_html
-sudo mkdir /home/userB/public_html
-```
-
-Now we have a public_html directory under each user's directory.
-
-### Step-4) Creating Index File
-
-Now you need to put some markup text inside public_html to identify your virtual host. So, we are gonna create an index.html file under public_html directory. Go ahead and type
-
-```bash
-sudo nano /home/userA/public_html/index.html
-```
-
-And put this markup text and save the file.
-
-```bash
-<html>
-   <head>
-      <title>Welcome to abc.com</title>
-   </head>
-   <body>
-      <h1>Hello! There welcome to abc.com page</h1>
-   </body>
+    <CodeTabs>
+      <div label="/var/www/alpha.nhit.in/public/index.html" filename="/var/www/alpha.nhit.in/public/index.html">
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Alpha Tenant | TechNHIT</title>
+</head>
+<body style="font-family: sans-serif; background: #07090e; color: #00f5d4; padding: 2rem;">
+  <h1>VirtualHost alpha.nhit.in Online</h1>
+  <p>Production document root: /var/www/alpha.nhit.in/public</p>
+</body>
 </html>
 ```
+      </div>
 
-And similarly, do the same for user B.
-
-```bash
-sudo nano /home/userA/public_html/index.html
-
-```bash
-<html>
- <head>
- <title>Welcome to xyz.com</title>
- </head>
- <body>
- <h1>Hello! There welcome to xyz.com page</h1>
- </body>
+      <div label="/var/www/beta.nhit.in/public/index.html" filename="/var/www/beta.nhit.in/public/index.html">
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Beta Tenant | TechNHIT</title>
+</head>
+<body style="font-family: sans-serif; background: #07090e; color: #bd00ff; padding: 2rem;">
+  <h1>VirtualHost beta.nhit.in Online</h1>
+  <p>Production document root: /var/www/beta.nhit.in/public</p>
+</body>
 </html>
 ```
+      </div>
+    </CodeTabs>
+  </Step>
 
-Now each user had their index file ready to serve over apache.
+  <Step title="Enforce Strict POSIX Ownership & 0750 Permissions">
+    Never use `chmod 777`! Grant the web server read and execute access while keeping tenant files isolated:
 
-### Step-5) Creating Apache Virtual Host Config
+    <TerminalBlock
+      command="sudo chown -R www-data:www-data /var/www && sudo chmod -R 750 /var/www"
+      title="Enforce Principle of Least Privilege"
+      os="Linux"
+    />
+  </Step>
 
-Now it's time to create vhost config file for each user, go ahead and type
+  <Step title="Author Name-Based VirtualHost Configurations">
+    Create `/etc/apache2/sites-available/alpha.nhit.in.conf` with disabled directory indexes, `.htaccess` overrides enabled, and dedicated logging:
 
-```bash
-sudo nano /etc/apache2/site-available/abc.com.conf.
-```
+    <CodeTabs>
+      <div label="/etc/apache2/sites-available/alpha.nhit.in.conf" filename="/etc/apache2/sites-available/alpha.nhit.in.conf">
+```apache
+# ==============================================================================
+# TechNHIT VirtualHost Configuration: alpha.nhit.in
+# ==============================================================================
 
-So, now you need to tell apache about your vhost and its configuration. Actually, these are called tags and directives.
-
-```bash
 <VirtualHost *:80>
- ServerAdmin abc@abc.com
- ServerName abc.com
- ServerAlias www.abc.com
- DocumentRoot /home/userA/public_html/
-<Directory /home/userA/public_html/>
- Options Indexes FollowSymLinks
- AllowOverride None
- Require all granted
-</Directory>
- ErrorLog ${APACHE_LOG_DIR}/error.log
- CustomLog ${APACHE_LOG_DIR}/access.log combined
+    ServerAdmin sysadmin@nhit.in
+    ServerName alpha.nhit.in
+    ServerAlias www.alpha.nhit.in
+
+    DocumentRoot /var/www/alpha.nhit.in/public
+
+    <Directory /var/www/alpha.nhit.in/public>
+        # Disable directory browsing (-Indexes) and follow symlinks
+        Options -Indexes +FollowSymLinks
+        # Allow .htaccess files to override routing rules
+        AllowOverride All
+        # Grant public web access
+        Require all granted
+    </Directory>
+
+    # Dedicated log streams for isolated auditing
+    LogLevel warn
+    ErrorLog ${APACHE_LOG_DIR}/alpha_error.log
+    CustomLog ${APACHE_LOG_DIR}/alpha_access.log combined
 </VirtualHost>
 ```
+      </div>
 
-So, roughly this is a standard Virtual Host structure which I made here, and my recommendation is first to understand your needs and then place the configuration. Do not blindly copy-paste from any tutorial in your production server. This can bring disaster at any time.
+      <div label="/etc/apache2/sites-available/beta.nhit.in.conf" filename="/etc/apache2/sites-available/beta.nhit.in.conf">
+```apache
+# ==============================================================================
+# TechNHIT VirtualHost Configuration: beta.nhit.in
+# ==============================================================================
 
-[Or you could learn more about directives and Virtual host examples at apache documentation just open up the documentation. ](https://httpd.apache.org/docs/2.4/vhosts/examples.html)
-
-Now we are going to create another Virtual host configuration for xyz.com
-
-```bash
-sudo nano /etc/apache2/site-available/xyz.com.conf.
-
-```bash
 <VirtualHost *:80>
- ServerAdmin abc@abc.com
- ServerName abc.com
- ServerAlias www.abc.com
- DocumentRoot /home/userA/public_html/
-<Directory /home/userA/public_html/>
- Options Indexes FollowSymLinks
-AllowOverride None
-Require all granted
-</Directory>
- ErrorLog ${APACHE_LOG_DIR}/error.log
- CustomLog ${APACHE_LOG_DIR}/access.log combined
+    ServerAdmin sysadmin@nhit.in
+    ServerName beta.nhit.in
+    ServerAlias www.beta.nhit.in
+
+    DocumentRoot /var/www/beta.nhit.in/public
+
+    <Directory /var/www/beta.nhit.in/public>
+        Options -Indexes +FollowSymLinks
+        AllowOverride All
+        Require all granted
+    </Directory>
+
+    LogLevel warn
+    ErrorLog ${APACHE_LOG_DIR}/beta_error.log
+    CustomLog ${APACHE_LOG_DIR}/beta_access.log combined
 </VirtualHost>
 ```
+      </div>
+    </CodeTabs>
+  </Step>
 
-So, after all this stuff you need to enable your sites. Go ahead and type
+  <Step title="Enable Sites and Perform Pre-Flight Configtest">
+    Use the native `a2ensite` command to create atomic symlinks into `sites-enabled/`:
 
-```bash
-sudo a2ensite abc.com
-sudo a2ensite xyz.com
-```
+    <TerminalBlock
+      command="sudo a2ensite alpha.nhit.in.conf beta.nhit.in.conf"
+      title="Enable VirtualHost Configurations"
+      os="Apache 2.4"
+    />
 
-And finally restart the apache, type
+    **CRITICAL**: Execute a syntax check before touching the running daemon:
 
-```bash
-sudo systemctl restart apache2.
-```
+    <TerminalBlock
+      command="sudo apache2ctl configtest"
+      title="Execute Pre-Flight Syntax Validation"
+      os="Apache 2.4"
+    />
 
-### Step-6) Add Local DNS Resolver
+    Expected output:
+    ```bash
+    Syntax OK
+    ```
+    If any errors appear, correct the specified line before proceeding.
+  </Step>
 
-Now, one last thing you needed is that a local DNS resolver as we are in a local environment, so, edit your hosts file using nano editor and add a local DNS record for each host. And if you are in a production environment then point your public IP to your DNS manager.
+  <Step title="Reload Apache Service with Zero Downtime">
+    Apply the new configuration gracefully using `reload` instead of `restart`, preserving active HTTP connections:
 
-```bash
-sudo nano /etc/hosts
-```
+    <TerminalBlock
+      command="sudo systemctl reload apache2"
+      title="Zero-Downtime Service Reload"
+      os="Systemd"
+    />
+  </Step>
 
-And add the following lines at the end
+  <Step title="Test Name-Based VirtualHost Dispatch">
+    Verify that each domain is routed accurately by sending HTTP requests with explicit `Host:` headers:
 
-```bash
-127.0.0.1   abc.com
-127.0.0.1   xyz.com
-```
+    <TerminalBlock
+      command="curl -s -H 'Host: alpha.nhit.in' http://127.0.0.1/ | grep -i 'alpha'"
+      title="Verify Alpha Tenant Routing"
+      os="Linux"
+    />
 
-### Step-7) Test your Virtual Host
+    <TerminalBlock
+      command="curl -s -H 'Host: beta.nhit.in' http://127.0.0.1/ | grep -i 'beta'"
+      title="Verify Beta Tenant Routing"
+      os="Linux"
+    />
+  </Step>
+</Steps>
 
-Finally, test your settings, open up the web browser and open xyz.com and you could see the web page serving from xyz vhost.
+---
 
-[![Apache Virtual Host](https://www.technhit.in/wp-content/uploads/2021/02/img1.png)](https://www.technhit.in/wp-content/uploads/2021/02/img1.png)
+## Verification & Rollback Strategy
 
-Also, open another tab aside and type abc.com and this page serving form abc vhost.
+<Bookmark
+  title="Apache HTTP Server Virtual Host Documentation"
+  url="https://httpd.apache.org/docs/2.4/vhosts/"
+  description="Official Apache 2.4 guide covering name-based VirtualHost resolution, SNI SSL configurations, and mass virtual hosting with mod_vhost_alias."
+  author="Apache Software Foundation"
+/>
 
-[![apache vhost](https://www.technhit.in/wp-content/uploads/2021/02/img2.png)](https://www.technhit.in/wp-content/uploads/2021/02/img2.png)
-
-## You could follow 7 best practices for Apache security:
-
- 	
-- Keep your Apache updated with the latest releases and patches
- 	
-- Disable Directory Listing
- 	
-- Disable unnecessary modules
- 	
-- Turn off unnecessary services
- 	
-- Ensure that Apache server-info is disabled
- 	
-- Disable Trace HTTP Request
- 	
-- Distribute the ownership and don't run Apache as 'root'
-
-Hope this tutorial helpful to you. Leave a comment if you have any questions. Also, click on subscribe button to encourage us and get the latest update. Thank you.
+<Callout type="tip" title="Securing with Let's Encrypt Free SSL (Certbot)">
+Once your public DNS A-records are pointing to your server's IP address, secure both VirtualHosts with free automated TLS certificates in a single command:
+`sudo apt install -y certbot python3-certbot-apache && sudo certbot --apache -d alpha.nhit.in -d beta.nhit.in`
+Certbot automatically generates `<VirtualHost *:443>` blocks, configures modern SSL ciphers, and configures automated cron renewal.
+</Callout>

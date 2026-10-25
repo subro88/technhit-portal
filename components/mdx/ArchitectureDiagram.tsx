@@ -4,7 +4,7 @@ import React from "react";
 import { Layers, Network, Cpu, Shield, Database, Server } from "lucide-react";
 
 interface ArchitectureDiagramProps {
-  type?: "cluster" | "network" | "stem" | "reverse-proxy" | "php-fpm" | "kernel-firewall" | "ssh-handshake";
+  type?: "cluster" | "network" | "stem" | "reverse-proxy" | "php-fpm" | "kernel-firewall" | "ssh-handshake" | "apache-vhost";
   title?: string;
 }
 
@@ -349,6 +349,82 @@ export default function ArchitectureDiagram({
               ZERO-SECRET TRANSMISSION:
             </span>
             <span>Your private key is NEVER sent across the wire. The server only evaluates your cryptographic digital signature against the public key in authorized_keys.</span>
+          </div>
+        </div>
+      )}
+
+      {type === "apache-vhost" && (
+        <div className="py-2 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+            {/* Stage 1: Ingress HTTP/1.1 & HTTP/2 Requests */}
+            <div className="p-4 rounded-xl bg-cyber-900 border border-zinc-800 text-center font-mono">
+              <div className="w-8 h-8 rounded-lg bg-zinc-800 text-cyan-400 flex items-center justify-center mx-auto mb-2 border border-zinc-700">
+                <Network className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-zinc-100 block">HTTP CLIENT INGRESS</span>
+              <span className="text-[10px] text-zinc-400 mt-1 block">Shared Port 80 / 443</span>
+              <div className="mt-3 pt-2.5 border-t border-zinc-800 text-[9px] text-zinc-400 space-y-1">
+                <div>Host: alpha.nhit.in</div>
+                <div>Host: beta.nhit.in</div>
+              </div>
+            </div>
+
+            {/* Stage 2: Apache SNI & Host Header Router */}
+            <div className="p-4 rounded-xl bg-[#0d1117] border border-cyan-500/60 text-center font-mono shadow-[0_0_20px_rgba(0,245,212,0.12)]">
+              <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-[#00f5d4] text-black font-bold text-[9px] tracking-wider uppercase">
+                NAME-BASED DISPATCH
+              </div>
+              <div className="w-8 h-8 rounded-lg bg-cyan-950/60 text-[#00f5d4] flex items-center justify-center mx-auto mb-2 border border-[#00f5d4]/40">
+                <Server className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-white block">APACHE 2.4 CORE</span>
+              <span className="text-[10px] text-cyan-400/90 mt-1 block">ServerName & ServerAlias</span>
+              <div className="mt-3 pt-2.5 border-t border-zinc-800 text-[10px] text-zinc-300">
+                <span>Atomic VHost Routing</span>
+              </div>
+            </div>
+
+            {/* Stage 3: Isolated VirtualHosts */}
+            <div className="space-y-3">
+              <div className="p-3 rounded-lg bg-cyber-900 border border-emerald-500/40 font-mono text-left">
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="font-bold text-emerald-400">alpha.nhit.in</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+                    DocRoot 0750
+                  </span>
+                </div>
+                <div className="text-[10px] text-zinc-400 font-mono truncate mt-0.5">
+                  /var/www/alpha/public
+                </div>
+                <div className="text-[9px] text-zinc-500 mt-1">
+                  User: alpha:www-data · alpha_error.log
+                </div>
+              </div>
+
+              <div className="p-3 rounded-lg bg-cyber-900 border border-purple-500/40 font-mono text-left">
+                <div className="flex items-center justify-between text-[11px]">
+                  <span className="font-bold text-purple-400">beta.nhit.in</span>
+                  <span className="text-[9px] px-1.5 py-0.5 rounded bg-purple-500/10 text-purple-300 border border-purple-500/30">
+                    DocRoot 0750
+                  </span>
+                </div>
+                <div className="text-[10px] text-zinc-400 font-mono truncate mt-0.5">
+                  /var/www/beta/public
+                </div>
+                <div className="text-[9px] text-zinc-500 mt-1">
+                  User: beta:www-data · beta_error.log
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* VHost Multi-Tenancy Legend */}
+          <div className="p-3 rounded-lg bg-zinc-900/60 border border-zinc-800 text-[11px] font-mono text-zinc-400 flex flex-wrap items-center justify-between gap-2">
+            <span className="text-zinc-300 font-bold flex items-center gap-1.5">
+              <Shield className="w-3.5 h-3.5 text-amber-400" />
+              MULTI-TENANT ISOLATION:
+            </span>
+            <span>Independent DocumentRoots, segregated log streams, and strict POSIX 0750 permissions ensure complete tenant isolation on a single public IP.</span>
           </div>
         </div>
       )}
