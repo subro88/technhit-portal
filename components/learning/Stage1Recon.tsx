@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import type { ReconCard } from "@/lib/learning-generator";
+import type { ReconCard, LearningDrillData } from "@/lib/learning-generator";
 import { awardOperativeXp, markStageComplete, playHapticSound } from "@/lib/operative-store";
 import { RefreshCw, CheckCircle2, ArrowRight, Zap, Eye } from "lucide-react";
 
@@ -10,10 +10,7 @@ import ArchitectureDiagram from "@/components/mdx/ArchitectureDiagram";
 interface Stage1ReconProps {
   slug: string;
   cards: ReconCard[];
-  architectureDiagram?: {
-    type: "reverse-proxy" | "cluster" | "network" | "stem" | "php-fpm" | "kernel-firewall" | "ssh-handshake" | "apache-vhost" | "system-telemetry" | "sshfs-fuse" | "ssh-file-transfer" | "tomcat-servlet" | "lamp-stack" | "root-privilege" | "remote-ide" | "hypervisor-guest" | "media-pipeline";
-    title: string;
-  };
+  architectureDiagram?: LearningDrillData["architectureDiagram"];
   onCompleteStage: () => void;
 }
 

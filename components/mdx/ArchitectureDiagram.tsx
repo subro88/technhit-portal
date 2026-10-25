@@ -1,9 +1,62 @@
 "use client";
 
-import { Layers, Network, Cpu, Shield, Database, Server, Lock, Key, Terminal, Code2, MonitorPlay, Film, HardDrive, AlertTriangle, UserCheck, ShieldAlert } from "lucide-react";
+import { useState } from "react";
+import {
+  Layers,
+  Network,
+  Cpu,
+  Shield,
+  Database,
+  Server,
+  Lock,
+  Key,
+  Terminal,
+  Code2,
+  MonitorPlay,
+  Film,
+  HardDrive,
+  AlertTriangle,
+  UserCheck,
+  ShieldAlert,
+  CheckCircle2,
+  XCircle,
+  ArrowRight,
+  RefreshCw,
+  FileCode,
+  GitBranch,
+  Globe,
+  Workflow,
+  Zap,
+  Activity,
+  Check,
+  FolderTree,
+  Bot,
+  Sparkles,
+  ShieldCheck,
+  Radio,
+} from "lucide-react";
 
-interface ArchitectureDiagramProps {
-  type?: "cluster" | "network" | "stem" | "reverse-proxy" | "php-fpm" | "kernel-firewall" | "ssh-handshake" | "apache-vhost" | "system-telemetry" | "sshfs-fuse" | "ssh-file-transfer" | "tomcat-servlet" | "lamp-stack" | "root-privilege" | "remote-ide" | "hypervisor-guest" | "media-pipeline";
+export interface ArchitectureDiagramProps {
+  type?:
+    | "cluster"
+    | "network"
+    | "stem"
+    | "reverse-proxy"
+    | "php-fpm"
+    | "kernel-firewall"
+    | "ssh-handshake"
+    | "apache-vhost"
+    | "system-telemetry"
+    | "sshfs-fuse"
+    | "ssh-file-transfer"
+    | "tomcat-servlet"
+    | "lamp-stack"
+    | "root-privilege"
+    | "remote-ide"
+    | "hypervisor-guest"
+    | "media-pipeline"
+    | "ha-mysql-cluster"
+    | "antigravity-workflow";
   title?: string;
 }
 
@@ -11,6 +64,9 @@ export default function ArchitectureDiagram({
   type = "cluster",
   title = "Architecture Topology",
 }: ArchitectureDiagramProps) {
+  const [haState, setHaState] = useState<"normal" | "failover">("normal");
+  const [agentStage, setAgentStage] = useState<number>(0);
+
   return (
     <div className="my-6 rounded-xl bg-cyber-950 border border-cyber-border overflow-hidden shadow-2xl p-6">
       <div className="flex items-center justify-between pb-4 mb-4 border-b border-cyber-border font-mono text-xs">
@@ -988,6 +1044,467 @@ export default function ArchitectureDiagram({
               HARDWARE ACCELERATION PIPELINE:
             </span>
             <span>Delegating 4K HEVC / H.265 transcoding to the GPU VA-API/QuickSync interface via `/dev/dri/renderD128` cuts host CPU utilization from 100% to under 5%, allowing simultaneous multi-stream playback.</span>
+          </div>
+        </div>
+      )}
+
+      {type === "ha-mysql-cluster" && (
+        <div className="py-2 space-y-6">
+          {/* State Mode Switcher */}
+          <div className="flex flex-wrap items-center justify-between gap-3 p-3 rounded-lg bg-cyber-900/90 border border-cyber-border">
+            <div className="flex items-center gap-2">
+              <Radio className="w-4 h-4 text-cyber-cyan animate-pulse" />
+              <span className="font-mono text-xs font-semibold text-zinc-200">
+                ACTIVE-PASSIVE CLUSTER STATE MACHINE:
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                type="button"
+                onClick={() => setHaState("normal")}
+                className={`px-3 py-1 rounded text-xs font-mono font-semibold transition-all ${
+                  haState === "normal"
+                    ? "bg-emerald-500/20 text-emerald-400 border border-emerald-500/50 shadow-[0_0_12px_rgba(16,185,129,0.25)]"
+                    : "bg-cyber-800 text-zinc-400 border border-zinc-700 hover:text-zinc-200"
+                }`}
+              >
+                ● 1. Normal Quorum (db-01 Master)
+              </button>
+              <button
+                type="button"
+                onClick={() => setHaState("failover")}
+                className={`px-3 py-1 rounded text-xs font-mono font-semibold transition-all ${
+                  haState === "failover"
+                    ? "bg-rose-500/20 text-rose-400 border border-rose-500/50 shadow-[0_0_12px_rgba(244,63,94,0.25)]"
+                    : "bg-cyber-800 text-zinc-400 border border-zinc-700 hover:text-zinc-200"
+                }`}
+              >
+                ▲ 2. Node Failure & STONITH Shoot
+              </button>
+            </div>
+          </div>
+
+          {/* Virtual IP Banner */}
+          <div className="relative p-3 rounded-xl bg-[#0d1117] border border-cyan-500/40 font-mono text-center shadow-[0_0_20px_rgba(0,245,212,0.1)]">
+            <div className="text-[10px] text-zinc-400 uppercase tracking-widest mb-1">
+              Cluster Ingress VIP · Gratuitous ARP Broadcast
+            </div>
+            <div className="flex items-center justify-center gap-3">
+              <span className="text-sm font-bold text-cyber-cyan">VIP: 10.10.10.100</span>
+              <span className="text-zinc-500">▶</span>
+              <span
+                className={`px-2.5 py-0.5 rounded text-xs font-bold transition-all ${
+                  haState === "normal"
+                    ? "bg-emerald-950 text-emerald-300 border border-emerald-500/50"
+                    : "bg-cyber-purple/20 text-cyber-purple border border-cyber-purple/50"
+                }`}
+              >
+                {haState === "normal" ? "BOUND TO DB-NODE-01 (eth0:0)" : "FAILOVER TO DB-NODE-02 (eth0:0)"}
+              </span>
+            </div>
+          </div>
+
+          {/* Two Cluster Nodes */}
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-stretch">
+            {/* Node 1 */}
+            <div
+              className={`p-5 rounded-xl bg-cyber-900 border transition-all ${
+                haState === "normal"
+                  ? "border-emerald-500/70 shadow-[0_0_20px_rgba(16,185,129,0.15)]"
+                  : "border-rose-500/70 opacity-80 shadow-[0_0_20px_rgba(244,63,94,0.2)]"
+              }`}
+            >
+              <div className="flex items-center justify-between pb-3 mb-3 border-b border-zinc-800 font-mono">
+                <div className="flex items-center gap-2">
+                  <Server
+                    className={`w-5 h-5 ${haState === "normal" ? "text-emerald-400" : "text-rose-400"}`}
+                  />
+                  <span className="font-bold text-white text-sm">DB-NODE-01</span>
+                  <span className="text-xs text-zinc-400">(10.10.10.11)</span>
+                </div>
+                <span
+                  className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                    haState === "normal"
+                      ? "bg-emerald-900/60 text-emerald-300 border border-emerald-500/50"
+                      : "bg-rose-950 text-rose-300 border border-rose-500/50"
+                  }`}
+                >
+                  {haState === "normal" ? "MASTER / PRIMARY" : "STONITH FENCED (OFFLINE)"}
+                </span>
+              </div>
+
+              <div className="space-y-2.5 font-mono text-xs">
+                <div className="p-2.5 rounded bg-black/40 border border-zinc-800 flex items-center justify-between">
+                  <span className="text-zinc-400 flex items-center gap-1.5">
+                    <Activity className="w-3.5 h-3.5 text-cyan-400" />
+                    Corosync 3 Ring 0:
+                  </span>
+                  <span className={haState === "normal" ? "text-emerald-400 font-bold" : "text-rose-400 font-bold"}>
+                    {haState === "normal" ? "Ring 0 (10.10.10.11) Active" : "Dead (Socket Timeout)"}
+                  </span>
+                </div>
+
+                <div className="p-2.5 rounded bg-black/40 border border-zinc-800 flex items-center justify-between">
+                  <span className="text-zinc-400 flex items-center gap-1.5">
+                    <Radio className="w-3.5 h-3.5 text-purple-400" />
+                    Corosync 3 Ring 1:
+                  </span>
+                  <span className={haState === "normal" ? "text-emerald-400 font-bold" : "text-rose-400 font-bold"}>
+                    {haState === "normal" ? "Ring 1 (10.20.20.11) 0.2ms" : "Dead (Partitioned)"}
+                  </span>
+                </div>
+
+                <div className="p-2.5 rounded bg-black/40 border border-zinc-800 flex items-center justify-between">
+                  <span className="text-zinc-400 flex items-center gap-1.5">
+                    <HardDrive className="w-3.5 h-3.5 text-emerald-400" />
+                    DRBD 9 /dev/drbd0:
+                  </span>
+                  <span className={haState === "normal" ? "text-emerald-400 font-bold" : "text-zinc-500"}>
+                    {haState === "normal" ? "Primary / UpToDate (Protocol C)" : "StandAlone / Unmounted"}
+                  </span>
+                </div>
+
+                <div className="p-2.5 rounded bg-black/40 border border-zinc-800 flex items-center justify-between">
+                  <span className="text-zinc-400 flex items-center gap-1.5">
+                    <Database className="w-3.5 h-3.5 text-blue-400" />
+                    MySQL 8.0 Daemon:
+                  </span>
+                  <span className={haState === "normal" ? "text-emerald-400 font-bold" : "text-rose-400"}>
+                    {haState === "normal" ? "Active (PID 2140, rw)" : "Stopped (Fenced via IPMI)"}
+                  </span>
+                </div>
+              </div>
+            </div>
+
+            {/* Node 2 */}
+            <div
+              className={`p-5 rounded-xl bg-cyber-900 border transition-all ${
+                haState === "failover"
+                  ? "border-emerald-500/70 shadow-[0_0_20px_rgba(16,185,129,0.15)]"
+                  : "border-cyber-purple/50 shadow-[0_0_20px_rgba(189,0,255,0.1)]"
+              }`}
+            >
+              <div className="flex items-center justify-between pb-3 mb-3 border-b border-zinc-800 font-mono">
+                <div className="flex items-center gap-2">
+                  <Server className="w-5 h-5 text-cyber-purple" />
+                  <span className="font-bold text-white text-sm">DB-NODE-02</span>
+                  <span className="text-xs text-zinc-400">(10.10.10.12)</span>
+                </div>
+                <span
+                  className={`px-2 py-0.5 rounded text-[10px] font-bold ${
+                    haState === "failover"
+                      ? "bg-emerald-900/60 text-emerald-300 border border-emerald-500/50"
+                      : "bg-purple-950 text-purple-300 border border-purple-500/50"
+                  }`}
+                >
+                  {haState === "failover" ? "PROMOTED MASTER (ACTIVE)" : "STANDBY / SECONDARY"}
+                </span>
+              </div>
+
+              <div className="space-y-2.5 font-mono text-xs">
+                <div className="p-2.5 rounded bg-black/40 border border-zinc-800 flex items-center justify-between">
+                  <span className="text-zinc-400 flex items-center gap-1.5">
+                    <Activity className="w-3.5 h-3.5 text-cyan-400" />
+                    Corosync 3 Ring 0:
+                  </span>
+                  <span className="text-emerald-400 font-bold">
+                    {haState === "failover" ? "Quorum Leader (Vote 1/1 + QDevice)" : "Ring 0 (10.10.10.12) Active"}
+                  </span>
+                </div>
+
+                <div className="p-2.5 rounded bg-black/40 border border-zinc-800 flex items-center justify-between">
+                  <span className="text-zinc-400 flex items-center gap-1.5">
+                    <Radio className="w-3.5 h-3.5 text-purple-400" />
+                    Corosync 3 Ring 1:
+                  </span>
+                  <span className="text-emerald-400 font-bold">
+                    {haState === "failover" ? "Ring 1 Self-Isolated" : "Ring 1 (10.20.20.12) 0.2ms"}
+                  </span>
+                </div>
+
+                <div className="p-2.5 rounded bg-black/40 border border-zinc-800 flex items-center justify-between">
+                  <span className="text-zinc-400 flex items-center gap-1.5">
+                    <HardDrive className="w-3.5 h-3.5 text-emerald-400" />
+                    DRBD 9 /dev/drbd0:
+                  </span>
+                  <span className="text-emerald-400 font-bold">
+                    {haState === "failover" ? "Primary / UpToDate (Mounted /var/lib/mysql)" : "Secondary / UpToDate (Block Synced)"}
+                  </span>
+                </div>
+
+                <div className="p-2.5 rounded bg-black/40 border border-zinc-800 flex items-center justify-between">
+                  <span className="text-zinc-400 flex items-center gap-1.5">
+                    <Database className="w-3.5 h-3.5 text-blue-400" />
+                    MySQL 8.0 Daemon:
+                  </span>
+                  <span className={haState === "failover" ? "text-emerald-400 font-bold" : "text-zinc-400 font-bold"}>
+                    {haState === "failover" ? "Active (PID 8490, rw Ingress)" : "Inactive (Cold Standby)"}
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Fencing and Interconnect Map */}
+          <div className="p-4 rounded-xl bg-zinc-900/60 border border-zinc-800 font-mono text-xs text-zinc-300 space-y-3">
+            <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
+              <span className="text-cyber-cyan font-bold flex items-center gap-2">
+                <ShieldAlert className="w-4 h-4 text-cyber-cyan" />
+                INTER-NODE REPLICATION & FENCING BUS (10GbE SFP+ DIRECT CROSSOVER):
+              </span>
+              <span className="text-[10px] text-zinc-400">PROTOCOL C · SYNCHRONOUS WRITE BARRIER</span>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 text-[11px]">
+              <div className="p-2.5 rounded bg-black/50 border border-zinc-800">
+                <span className="text-zinc-400 block text-[10px]">COROSYNC TOTEM DUAL-RING</span>
+                <span className="text-emerald-400 font-bold">Redundant Ring 0 + Ring 1</span>
+                <p className="text-[10px] text-zinc-500 mt-1">
+                  Guarantees split-brain prevention by requiring 2 independent physical paths for token circulation.
+                </p>
+              </div>
+              <div className="p-2.5 rounded bg-black/50 border border-zinc-800">
+                <span className="text-zinc-400 block text-[10px]">DRBD 9 SYNCHRONOUS REPLICATION</span>
+                <span className="text-cyan-400 font-bold">Protocol C Zero-Loss Barrier</span>
+                <p className="text-[10px] text-zinc-500 mt-1">
+                  Writes are only acknowledged to MySQL when committed to local NVMe AND peer RAM/disk over 10GbE.
+                </p>
+              </div>
+              <div className="p-2.5 rounded bg-black/50 border border-zinc-800">
+                <span className="text-zinc-400 block text-[10px]">STONITH FENCING MECHANISM</span>
+                <span className="text-rose-400 font-bold">fence_pve / fence_ipmilan</span>
+                <p className="text-[10px] text-zinc-500 mt-1">
+                  If node heartbeats disappear, Pacemaker hard-resets or cuts power via BMC/PVE API before promoting secondary.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {type === "antigravity-workflow" && (
+        <div className="py-2 space-y-6">
+          {/* Header Banner */}
+          <div className="p-4 rounded-xl bg-[#0d1117] border border-cyan-500/40 shadow-[0_0_25px_rgba(0,245,212,0.08)] flex flex-wrap items-center justify-between gap-4 font-mono">
+            <div className="flex items-center gap-3">
+              <div className="w-9 h-9 rounded-lg bg-cyan-950/80 border border-cyan-500/50 flex items-center justify-center text-cyber-cyan shadow-[0_0_12px_rgba(0,245,212,0.3)]">
+                <Workflow className="w-5 h-5" />
+              </div>
+              <div>
+                <span className="text-sm font-bold text-white block">
+                  GOOGLE ANTIGRAVITY MDX AGENTIC WORKFLOW ENGINE
+                </span>
+                <span className="text-[11px] text-zinc-400 block">
+                  Deterministic Recipe Scaffolding · Multi-Agent Orchestration · MCP Tool Runtime · Autonomous Loop
+                </span>
+              </div>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="px-2.5 py-1 rounded bg-black border border-zinc-800 text-[10px] text-zinc-400">
+                FRAMEWORK: <span className="text-cyber-cyan font-bold">NEXT.JS 15 + MDX</span>
+              </span>
+              <span className="px-2.5 py-1 rounded bg-black border border-zinc-800 text-[10px] text-zinc-400">
+                RUNTIME: <span className="text-emerald-400 font-bold">MCP DUAL-STACK</span>
+              </span>
+            </div>
+          </div>
+
+          {/* 4-Stage Horizontal Pipeline Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 items-stretch font-mono">
+            {/* Section 1: Recipe Definition & Task Input */}
+            <div className="p-4 rounded-xl bg-[#0d1117] border border-cyan-500/50 flex flex-col justify-between relative shadow-[0_0_15px_rgba(0,245,212,0.08)]">
+              <div className="absolute -top-2.5 left-4 px-2 py-0.5 rounded-full bg-cyan-950 border border-cyan-500 text-cyan-300 text-[9px] font-bold tracking-wider">
+                STAGE 01
+              </div>
+
+              <div>
+                <div className="flex items-center gap-2 mt-1 mb-2">
+                  <FileCode className="w-4 h-4 text-cyan-400" />
+                  <span className="text-xs font-bold text-white">Recipe Definition & Input</span>
+                </div>
+                <p className="text-[10px] text-zinc-400 mb-3">
+                  Structured prompt scaffolding & Human-in-the-Loop constraints.
+                </p>
+
+                {/* IDE File Snippet */}
+                <div className="rounded-lg bg-black/80 border border-zinc-800 p-2.5 text-[10px] space-y-1 overflow-x-auto text-zinc-300">
+                  <div className="flex items-center justify-between text-[9px] text-zinc-500 pb-1 border-b border-zinc-800 mb-1">
+                    <span className="text-cyan-400 font-semibold">workflow.mdx</span>
+                    <span>YAML + MDX</span>
+                  </div>
+                  <div className="text-purple-400">---</div>
+                  <div><span className="text-zinc-500">name:</span> <span className="text-emerald-300">Auto-Refactor-Test</span></div>
+                  <div><span className="text-zinc-500">tools:</span> <span className="text-cyan-300">[terminal, git, mcp]</span></div>
+                  <div><span className="text-zinc-500">mode:</span> <span className="text-amber-300">learning-drill</span></div>
+                  <div className="text-purple-400">---</div>
+                  <div className="text-blue-400 mt-1">&lt;Task priority=&quot;high&quot;&gt;</div>
+                  <div className="pl-2 text-zinc-400">Deploy HA Cluster</div>
+                  <div className="text-blue-400">&lt;/Task&gt;</div>
+                  <div className="text-emerald-400">&lt;ValidationCriteria /&gt;</div>
+                </div>
+              </div>
+
+              <div className="mt-4 pt-2.5 border-t border-zinc-800/80 text-[9px] text-zinc-400 flex items-center justify-between">
+                <span>mdx-parser</span>
+                <span className="text-cyan-400 font-bold">100% Parsed</span>
+              </div>
+            </div>
+
+            {/* Section 2: Antigravity Agent Orchestration Engine */}
+            <div className="p-4 rounded-xl bg-[#0d1117] border border-purple-500/50 flex flex-col justify-between relative shadow-[0_0_15px_rgba(189,0,255,0.08)]">
+              <div className="absolute -top-2.5 left-4 px-2 py-0.5 rounded-full bg-purple-950 border border-purple-500 text-purple-300 text-[9px] font-bold tracking-wider">
+                STAGE 02
+              </div>
+
+              <div>
+                <div className="flex items-center gap-2 mt-1 mb-2">
+                  <Bot className="w-4 h-4 text-purple-400" />
+                  <span className="text-xs font-bold text-white">Agent Orchestration Engine</span>
+                </div>
+                <p className="text-[10px] text-zinc-400 mb-3">
+                  Central multi-agent processing core with asynchronous scheduling.
+                </p>
+
+                {/* Central Orchestration Node */}
+                <div className="p-2.5 rounded-lg bg-purple-950/20 border border-purple-500/30 text-center mb-2.5">
+                  <div className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-purple-900/60 text-purple-300 text-[10px] font-bold border border-purple-400/30 mb-1">
+                    <Sparkles className="w-3 h-3 text-purple-400" />
+                    Planner Agent (Core)
+                  </div>
+                  <div className="text-[9px] text-zinc-400">Task Decomposition & Context Memory</div>
+                </div>
+
+                {/* Sub-Agents */}
+                <div className="grid grid-cols-2 gap-2 text-[10px]">
+                  <div className="p-2 rounded bg-black/60 border border-zinc-800 text-center">
+                    <Cpu className="w-3.5 h-3.5 text-cyan-400 mx-auto mb-1" />
+                    <span className="text-zinc-200 font-bold block text-[9px]">Executor Agent</span>
+                    <span className="text-zinc-500 text-[8px]">Bash & Code Edit</span>
+                  </div>
+                  <div className="p-2 rounded bg-black/60 border border-zinc-800 text-center">
+                    <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 mx-auto mb-1" />
+                    <span className="text-zinc-200 font-bold block text-[9px]">Reviewer Agent</span>
+                    <span className="text-zinc-500 text-[8px]">Diff & Policy Check</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4 pt-2.5 border-t border-zinc-800/80 text-[9px] text-zinc-400 flex items-center justify-between">
+                <span>Context Window: 200k</span>
+                <span className="text-purple-400 font-bold">Graph Active</span>
+              </div>
+            </div>
+
+            {/* Section 3: Tool Integration & Runtime Execution (MCP) */}
+            <div className="p-4 rounded-xl bg-[#0d1117] border border-blue-500/50 flex flex-col justify-between relative shadow-[0_0_15px_rgba(59,130,246,0.08)]">
+              <div className="absolute -top-2.5 left-4 px-2 py-0.5 rounded-full bg-blue-950 border border-blue-500 text-blue-300 text-[9px] font-bold tracking-wider">
+                STAGE 03
+              </div>
+
+              <div>
+                <div className="flex items-center gap-2 mt-1 mb-2">
+                  <Terminal className="w-4 h-4 text-blue-400" />
+                  <span className="text-xs font-bold text-white">Tool Runtime (MCP Bridge)</span>
+                </div>
+                <p className="text-[10px] text-zinc-400 mb-3">
+                  Model Context Protocol gateway dispatching execution commands.
+                </p>
+
+                {/* Tool Nodes */}
+                <div className="space-y-1.5 text-[9px]">
+                  <div className="p-1.5 rounded bg-black/70 border border-zinc-800 flex items-center justify-between">
+                    <span className="text-zinc-300 flex items-center gap-1.5">
+                      <FolderTree className="w-3 h-3 text-cyan-400" />
+                      VS Code Workspace
+                    </span>
+                    <span className="text-zinc-500">diff gen</span>
+                  </div>
+                  <div className="p-1.5 rounded bg-black/70 border border-zinc-800 flex items-center justify-between">
+                    <span className="text-zinc-300 flex items-center gap-1.5">
+                      <Terminal className="w-3 h-3 text-emerald-400" />
+                      Integrated Terminal
+                    </span>
+                    <span className="text-emerald-400">npm / pytest</span>
+                  </div>
+                  <div className="p-1.5 rounded bg-black/70 border border-zinc-800 flex items-center justify-between">
+                    <span className="text-zinc-300 flex items-center gap-1.5">
+                      <Globe className="w-3 h-3 text-blue-400" />
+                      Web Search / APIs
+                    </span>
+                    <span className="text-blue-400">MCP server</span>
+                  </div>
+                  <div className="p-1.5 rounded bg-black/70 border border-zinc-800 flex items-center justify-between">
+                    <span className="text-zinc-300 flex items-center gap-1.5">
+                      <GitBranch className="w-3 h-3 text-purple-400" />
+                      Git VCS Engine
+                    </span>
+                    <span className="text-purple-400">branch/commit</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-4 pt-2.5 border-t border-zinc-800/80 text-[9px] text-zinc-400 flex items-center justify-between">
+                <span>mcp-bridge</span>
+                <span className="text-blue-400 font-bold">Stdout Ingesting</span>
+              </div>
+            </div>
+
+            {/* Section 4: Autonomous Verification & Feedback Loop */}
+            <div className="p-4 rounded-xl bg-[#0d1117] border border-emerald-500/50 flex flex-col justify-between relative shadow-[0_0_15px_rgba(16,185,129,0.08)]">
+              <div className="absolute -top-2.5 left-4 px-2 py-0.5 rounded-full bg-emerald-950 border border-emerald-500 text-emerald-300 text-[9px] font-bold tracking-wider">
+                STAGE 04
+              </div>
+
+              <div>
+                <div className="flex items-center gap-2 mt-1 mb-2">
+                  <RefreshCw className="w-4 h-4 text-emerald-400" />
+                  <span className="text-xs font-bold text-white">Autonomous Feedback Loop</span>
+                </div>
+                <p className="text-[10px] text-zinc-400 mb-3">
+                  Glowing closed loop evaluating exit codes and runtime output.
+                </p>
+
+                {/* Evaluation Logic Box */}
+                <div className="p-2 rounded bg-black/70 border border-zinc-800 space-y-2 mb-2 text-[9px]">
+                  <div className="flex items-center justify-between pb-1 border-b border-zinc-800 text-zinc-400">
+                    <span>Test Runner &amp; Linter</span>
+                    <span className="text-emerald-400 font-bold">Exit Code: 0</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-rose-400 text-[8px]">
+                    <XCircle className="w-3 h-3 flex-shrink-0" />
+                    <span>Exit != 0 ▶ Auto-Corrects Executor</span>
+                  </div>
+                  <div className="flex items-center gap-1.5 text-emerald-400 text-[8px]">
+                    <CheckCircle2 className="w-3 h-3 flex-shrink-0" />
+                    <span>Exit == 0 ▶ Advances to Output</span>
+                  </div>
+                </div>
+
+                {/* Final Output Node */}
+                <div className="p-2.5 rounded-lg bg-emerald-950/40 border border-emerald-500/50 text-center">
+                  <div className="flex items-center justify-center gap-1.5 text-emerald-300 font-bold text-[10px]">
+                    <Check className="w-3.5 h-3.5 text-emerald-400" />
+                    PR Ready / Artifact Deployed
+                  </div>
+                  <div className="text-[8px] text-zinc-400 mt-0.5">Automated Zero-Regressions Attestation</div>
+                </div>
+              </div>
+
+              <div className="mt-4 pt-2.5 border-t border-zinc-800/80 text-[9px] text-zinc-400 flex items-center justify-between">
+                <span>Loop State: CLOSED</span>
+                <span className="text-emerald-400 font-bold">Verified PASS</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Workflow Footer Legend */}
+          <div className="p-3.5 rounded-lg bg-black/60 border border-zinc-800 font-mono text-[11px] text-zinc-400 flex flex-wrap items-center justify-between gap-3">
+            <span className="text-zinc-200 font-bold flex items-center gap-2">
+              <Zap className="w-4 h-4 text-cyber-cyan" />
+              DETERMINISTIC AGENTIC SCRIPTHOOK:
+            </span>
+            <span className="text-zinc-400">
+              YAML frontmatter defines declarative recipe guardrails while MDX components embed real-time terminal telemetries and architecture topologies.
+            </span>
           </div>
         </div>
       )}

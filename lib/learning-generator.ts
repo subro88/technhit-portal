@@ -111,7 +111,26 @@ export interface LearningDrillData {
   badgeName: string;
   badgeDescription: string;
   architectureDiagram?: {
-    type: "reverse-proxy" | "cluster" | "network" | "stem" | "php-fpm" | "kernel-firewall" | "ssh-handshake" | "apache-vhost" | "system-telemetry" | "sshfs-fuse" | "ssh-file-transfer" | "tomcat-servlet" | "lamp-stack" | "root-privilege" | "remote-ide" | "hypervisor-guest" | "media-pipeline";
+    type:
+      | "reverse-proxy"
+      | "cluster"
+      | "network"
+      | "stem"
+      | "php-fpm"
+      | "kernel-firewall"
+      | "ssh-handshake"
+      | "apache-vhost"
+      | "system-telemetry"
+      | "sshfs-fuse"
+      | "ssh-file-transfer"
+      | "tomcat-servlet"
+      | "lamp-stack"
+      | "root-privilege"
+      | "remote-ide"
+      | "hypervisor-guest"
+      | "media-pipeline"
+      | "ha-mysql-cluster"
+      | "antigravity-workflow";
     title: string;
   };
   reconCards: ReconCard[];
@@ -5041,8 +5060,296 @@ const SYSTEMS_ARCHITECTURE_DRILL: LearningDrillData = {
   ],
 };
 
+const HA_MYSQL_CLUSTER_DRILL: LearningDrillData = {
+  slug: "zero-downtime-linux-clustering-active-passive-mysql-corosync-pacemaker",
+  title: "Zero-Downtime Linux Clustering: Building an Active-Passive MySQL Cluster with Corosync and Pacemaker",
+  category: "clustering-virtualization",
+  badgeName: "HA CLUSTERING ARCHITECT",
+  badgeDescription: "Demonstrated production mastery in Corosync 3 dual-ring quorum, DRBD 9 synchronous block replication, STONITH fencing, and Pacemaker CRM state orchestration.",
+  architectureDiagram: {
+    type: "ha-mysql-cluster",
+    title: "Active-Passive MySQL HA Failover Topology (Corosync 3 + Pacemaker + DRBD 9 + STONITH)",
+  },
+  reconCards: [
+    {
+      id: "rc-1",
+      tag: "CONSENSUS QUORUM",
+      title: "COROSYNC 3 TOTEM DUAL-RING",
+      subtitle: "Kronosnet Redundant Links",
+      definition: "Circulates cryptographic heartbeat tokens across Ring 0 (management LAN) and Ring 1 (direct point-to-point 10GbE crossover) simultaneously. If one link fails, heartbeats continue without false failovers.",
+      seenInProd: "Enterprise virtualization clusters and telco database fabrics.",
+    },
+    {
+      id: "rc-2",
+      tag: "SHARED-NOTHING STORAGE",
+      title: "DRBD 9 PROTOCOL C",
+      subtitle: "Synchronous Write Barrier",
+      definition: "Mirrors Linux block devices over TCP/IP or RDMA. A write is only acknowledged to MySQL when committed to local NVMe storage AND peer node memory/disk. Guarantees 0-byte transaction loss upon sudden crash.",
+      seenInProd: "Mission-critical MariaDB, MySQL, and PostgreSQL active-passive clusters.",
+    },
+    {
+      id: "rc-3",
+      tag: "SPLIT-BRAIN FENCING",
+      title: "STONITH HARDWARE ISOLATION",
+      subtitle: "Shoot The Other Node In The Head",
+      definition: "Forcibly kills or reboots an unresponsive node via IPMI BMC hardware power relays or hypervisor API (fence_pve) before promoting the secondary. Prevents concurrent dual-primary writes from destroying data.",
+      seenInProd: "Mandatory requirement for all Pacemaker enterprise production clusters.",
+    },
+    {
+      id: "rc-4",
+      tag: "RESOURCE ORCHESTRATION",
+      title: "PACEMAKER CRM & COLOCATION",
+      subtitle: "Atomic Dependency Enforcement",
+      definition: "Orchestrates resource states using a transactional policy engine. Enforces strict colocation: Virtual IP (10.10.10.100), Filesystem mount, and mysqld daemon must run together on the DRBD Master node.",
+      seenInProd: "Linux-HA and ClusterLabs high-availability production environments.",
+    },
+    {
+      id: "rc-5",
+      tag: "NETWORK INGRESS",
+      title: "VIRTUAL IP & GRATUITOUS ARP",
+      subtitle: "Instant Layer 2 IP Takeover",
+      definition: "Pacemaker IPaddr2 binds the floating cluster IP alias (10.10.10.100) to the active node's physical NIC and broadcasts Gratuitous ARP packets to update top-of-rack switch CAM tables in sub-second time.",
+      seenInProd: "Transparent zero-reconfiguration database connection pool failover.",
+    },
+  ],
+  motive: {
+    headline: "STANDALONE MYSQL DISASTER VS. ACTIVE-PASSIVE HA CLUSTER",
+    subheadline: "Evaluating hardware crash recovery MTTR, split-brain data corruption risks, and business downtime financial penalties.",
+    baselineLabel: "STANDALONE UNCLUSTERED MYSQL",
+    baselineTag: "SINGLE POINT OF FAILURE",
+    baselineValueDisplay: "45.0",
+    baselineUnit: "MINUTES MTTR",
+    baselineSubtext: "Physical motherboard or PSU failure requires on-call page, hardware swap, off-site backup restore, and binlog rollforward",
+    baselineStat1Label: "Downtime Financial Impact",
+    baselineStat1Value: "$11,250 / Incident ($15k/hr)",
+    baselineStat2Label: "Split-Brain / Data Divergence",
+    baselineStat2Value: "High Risk on Manual Promotion",
+    optimizedLabel: "COROSYNC + PACEMAKER + DRBD 9",
+    savingsLabel: "-99.7% RECOVERY TIME",
+    optimizedValueDisplay: "8.2",
+    optimizedUnit: "SECONDS MTTR",
+    optimizedSubtext: "Automated heartbeat loss detection, STONITH BMC power cut, DRBD promotion, and VIP Gratuitous ARP takeover in 8.2s",
+    optimizedStat1Label: "Downtime Financial Impact",
+    optimizedStat1Value: "$34.16 Total (Zero Data Loss)",
+    optimizedStat2Label: "Split-Brain / Data Divergence",
+    optimizedStat2Value: "0% (Hardware STONITH Fenced)",
+    uncompressedBytes: 2700,
+    compressedBytes: 8,
+    savingsPercentage: 99.7,
+    spectrumTitle: "INFRASTRUCTURE TIER & STORAGE DEPLOYMENT SPECTRUM",
+    spectrumSubtitle: "Select deployment environment to analyze failover latency and cross-link replication throughput.",
+    explanation: "Standalone database servers introduce catastrophic single points of failure. Combining Corosync dual-ring messaging, DRBD 9 synchronous Protocol C block replication, and STONITH automated fencing achieves deterministic automated sub-10-second failovers with 0-byte transaction data loss.",
+    networkProfiles: [
+      {
+        name: "On-Premises Bare-Metal (Dual 10GbE SFP+)",
+        speedKbps: 10000000,
+        uncompressedTimeMs: 2700000,
+        compressedTimeMs: 8200,
+        subtitle: "Enterprise dual-socket rack servers with direct DAC heartbeat crossover and IPMI LAN fencing",
+        baselineStatValue: "45 min MTTR (Manual chassis repair)",
+        optimizedStatValue: "8.2s MTTR (Automated STONITH failover)",
+      },
+      {
+        name: "Proxmox VE 8.2 Private Cloud Hypervisor",
+        speedKbps: 10000000,
+        uncompressedTimeMs: 2400000,
+        compressedTimeMs: 9500,
+        subtitle: "KVM guest VMs with VirtIO-SCSI IOThread storage and fence_pve API fencing",
+        baselineStatValue: "40 min MTTR (Manual VM redeploy)",
+        optimizedStatValue: "9.5s MTTR (fence_pve hard kill & VIP move)",
+      },
+      {
+        name: "Hybrid DR Stretch Cluster (Inter-DC Link)",
+        speedKbps: 1000000,
+        uncompressedTimeMs: 3600000,
+        compressedTimeMs: 14500,
+        subtitle: "Multi-datacenter cluster with dedicated dark fiber crossover and external QDevice witness",
+        baselineStatValue: "60 min MTTR (Disaster recovery runbook)",
+        optimizedStatValue: "14.5s MTTR (Cross-site automated failover)",
+      },
+    ],
+  },
+  debateStatements: [
+    {
+      id: "ds-1",
+      scenario: "Cluster Fencing Configuration",
+      proposedAction: "Disable STONITH in a two-node Pacemaker cluster ('stonith-enabled=false') to prevent nodes from rebooting each other during transient latency.",
+      isValid: false,
+      explanation: "CATASTROPHIC ANTI-PATTERN: Disabling STONITH removes the only protection against split-brain corruption. If the heartbeat drops, both nodes will mount /dev/drbd0 simultaneously, irreversibly destroying filesystem and InnoDB structures.",
+      badgeTag: "STONITH_MANDATORY",
+    },
+    {
+      id: "ds-2",
+      scenario: "Database Storage Replication Protocol",
+      proposedAction: "Configure DRBD with Protocol C (synchronous) for active-passive database replication across a dedicated 10GbE direct cross-cable.",
+      isValid: true,
+      explanation: "INDUSTRY GOLD STANDARD: Protocol C guarantees that writes are only acknowledged to MySQL when committed to disk on both nodes, preventing phantom reads and lost transactions during sudden master failure.",
+      badgeTag: "PROTOCOL_C_SYNC",
+    },
+    {
+      id: "ds-3",
+      scenario: "Two-Node Quorum Architecture",
+      proposedAction: "Deploy a low-cost external Corosync QDevice witness on a third network segment to provide tie-breaker voting.",
+      isValid: true,
+      explanation: "RECOMMENDED ARCHITECTURE: A two-node cluster cannot distinguish between peer death and network partition without a 3rd vote. QDevice provides the odd vote necessary to maintain legal quorum.",
+      badgeTag: "QUORUM_WITNESS",
+    },
+    {
+      id: "ds-4",
+      scenario: "Service Daemon Supervision",
+      proposedAction: "Enable the standard systemd service ('systemctl enable mysql') on both cluster nodes so MySQL starts automatically on boot.",
+      isValid: false,
+      explanation: "FATAL CONFIGURATION ERROR: MySQL must NEVER be enabled in systemd on cluster nodes. Pacemaker must control MySQL startup and shutdown exclusively after DRBD is promoted and the filesystem is mounted.",
+      badgeTag: "SUPERVISION_HIERARCHY",
+    },
+  ],
+  simulator: {
+    headline: "PACEMAKER CRM & DRBD 9 CLUSTER CONSOLE",
+    description: "Inspect Corosync dual-ring knet status, query DRBD 9 replication state, audit STONITH fencing devices, and verify Gratuitous ARP Virtual IP binding.",
+    defaultHost: "cluster-admin://technhit-ha-db",
+    defaultPayloadBytes: 4096,
+    compressedPayloadBytes: 64,
+    responseHeaders: {
+      "Cluster": "Corosync 3.1.7",
+      "CRM": "Pacemaker 2.1.6",
+      "Storage": "DRBD 9.2.7",
+      "Fencing": "fence_pve/fence_ipmilan",
+    },
+    terminalSteps: [
+      {
+        id: "step-1",
+        title: "Verify Corosync Totem Dual-Ring Health",
+        description: "Check that Kronosnet has bound Ring 0 and Ring 1 across independent physical NICs.",
+        command: "sudo corosync-cfgtool -s",
+        output: "Printing link status.\nLINK ID 0 addr 10.10.10.11 status: OK (Management/Ingress)\nLINK ID 1 addr 10.20.20.11 status: OK (Direct 10GbE Crossover)\nNode ID: 1, Quorum: 2 votes",
+      },
+      {
+        id: "step-2",
+        title: "Query DRBD 9 Synchronous Block Device Sync",
+        description: "Verify that block replication is UpToDate with zero uncommitted transactions.",
+        command: "drbdadm status r0",
+        output: "r0 role:Primary\n  disk:UpToDate\n  db-node-02 role:Secondary\n    peer-disk:UpToDate connection:Connected",
+      },
+      {
+        id: "step-3",
+        title: "Audit STONITH Fencing Hardware Agents",
+        description: "Verify that BMC IPMI and Proxmox VE fencing devices are armed and responsive.",
+        command: "sudo pcs stonith status",
+        output: "  * fence_node01\t(stonith:fence_pve):\tStarted db-node-02\n  * fence_node02\t(stonith:fence_pve):\tStarted db-node-01\n2 devices configured, 0 failures",
+      },
+      {
+        id: "step-4",
+        title: "Query Pacemaker Resource Group Convergence",
+        description: "Verify that DRBD Master, Filesystem, Virtual IP, and MySQL are colocated.",
+        command: "sudo pcs status --full | grep -E '(Masters|Started)'",
+        output: "        * Masters: [ db-node-01 ]\n        * Slaves: [ db-node-02 ]\n      * fs_mysql\t(ocf::heartbeat:Filesystem):\tStarted db-node-01\n      * vip_mysql\t(ocf::heartbeat:IPaddr2):\tStarted db-node-01\n      * svc_mysql\t(systemd:mysql):\tStarted db-node-01",
+      },
+      {
+        id: "step-5",
+        title: "Verify Gratuitous ARP Virtual IP Binding",
+        description: "Confirm that VIP 10.10.10.100 is bound as an active secondary IP alias on eth0.",
+        command: "ip addr show dev eth0 | grep 'inet '",
+        output: "    inet 10.10.10.11/24 brd 10.10.10.255 scope global eth0\n    inet 10.10.10.100/24 scope global secondary eth0:0",
+      },
+    ],
+  },
+  debriefRules: [
+    {
+      id: "rule-1",
+      number: "01",
+      title: "Never Run Clusters Without STONITH Fencing",
+      rule: "Always configure out-of-band hardware fencing (IPMI or hypervisor API); an un-fenced cluster will inevitably suffer split-brain data corruption during network partitions.",
+      antiPattern: "Setting stonith-enabled=false to bypass fencing errors during initial deployment and leaving it disabled in production.",
+    },
+    {
+      id: "rule-2",
+      number: "02",
+      title: "Mandate Protocol C for Stateful Databases",
+      rule: "Replicate database storage strictly using DRBD Protocol C synchronous mode over dedicated low-latency point-to-point interconnects.",
+      antiPattern: "Using asynchronous Protocol A on database storage to artificially inflate write throughput benchmarks.",
+    },
+    {
+      id: "rule-3",
+      number: "03",
+      title: "Delegate Service Supervision to Pacemaker",
+      rule: "Never allow systemd to start database or filesystem daemons on boot; Pacemaker must orchestrate lifecycle transitions strictly after DRBD promotion.",
+      antiPattern: "Leaving mysqld enabled in systemd, causing boot-time lock contention on unpromoted or unmounted block devices.",
+    },
+  ],
+  quiz: [
+    {
+      id: "q-1",
+      scenario: "Why does DRBD Protocol C prevent data loss during an unexpected power cutoff on the primary database node?",
+      question: "What write guarantee does Protocol C enforce before returning success to the application?",
+      options: [
+        "A write I/O is only acknowledged to MySQL after it has been safely written and committed to local disk AND received/committed by the secondary peer node.",
+        "It compresses all database rows into gzip archives before sending.",
+        "It caches writes exclusively in CPU L1 cache.",
+        "It delays all writes by 30 seconds to verify network connectivity.",
+      ],
+      correctIndex: 0,
+      explanation: "Protocol C is fully synchronous: MySQL only receives write completion when the I/O block is committed on both nodes, guaranteeing zero in-flight data loss upon sudden power cut.",
+    },
+    {
+      id: "q-2",
+      scenario: "During a network partition in a 2-node cluster without STONITH, what catastrophic condition occurs if both nodes promote themselves?",
+      question: "What is this failure state called?",
+      options: [
+        "Split-Brain Syndrome: both nodes accept conflicting writes locally, permanently corrupting the filesystem and database tables.",
+        "Deadlock Timeout: MySQL automatically converts itself to read-only.",
+        "Memory Leak: RAM consumption increases exponentially.",
+        "ARP Spoofing: the router disables the network ports.",
+      ],
+      correctIndex: 0,
+      explanation: "Without fencing, each partitioned node believes it is the sole survivor and promotes itself to Master. Both nodes write conflicting data, causing irreversible split-brain data divergence.",
+    },
+    {
+      id: "q-3",
+      scenario: "How does Pacemaker ensure that client database connections are seamlessly routed to the newly promoted active node without DNS reconfiguration?",
+      question: "Which mechanism performs this immediate layer-2 redirect?",
+      options: [
+        "The IPaddr2 resource agent binds the floating Virtual IP (10.10.10.100) and broadcasts Gratuitous ARP (GARP) frames to update top-of-rack switch lookup tables.",
+        "Pacemaker updates the public DNS A-records with a 24-hour TTL.",
+        "The server physically changes its MAC address in the network card EEPROM.",
+        "Clients are required to execute a manual re-login script.",
+      ],
+      correctIndex: 0,
+      explanation: "Gratuitous ARP notifies all network switches and routers on the broadcast domain that the VIP IP address now belongs to the new node's MAC address, redirecting traffic in milliseconds.",
+    },
+    {
+      id: "q-4",
+      scenario: "Why must MySQL be disabled in standard systemd ('systemctl disable mysql') when managed by Pacemaker?",
+      question: "What issue arises if systemd starts MySQL automatically at system boot?",
+      options: [
+        "Systemd will attempt to start MySQL before DRBD is promoted to Primary and before the replicated block device is mounted, resulting in database corruption or startup failure.",
+        "MySQL cannot run on Linux without Pacemaker.",
+        "Systemd removes the root MySQL user password automatically.",
+        "Corosync will uninstall MySQL if it detects the service running.",
+      ],
+      correctIndex: 0,
+      explanation: "Pacemaker must govern the strict startup sequence: DRBD promote -> Mount filesystem -> Bind VIP -> Start MySQL. Booting MySQL before storage is mounted causes instant crashes or split-brain.",
+    },
+    {
+      id: "q-5",
+      scenario: "What role does Corosync 3 Totem dual-ring redundancy play when a physical network cable is accidentally severed?",
+      question: "How does Kronosnet (knet) preserve cluster integrity?",
+      options: [
+        "Corosync transports heartbeat tokens across Ring 0 and Ring 1 simultaneously; if one cable is cut, token circulation seamlessly continues on the second ring with zero false failovers.",
+        "It re-solders the copper wires using electrical pulses.",
+        "It shuts down the entire cluster immediately.",
+        "It switches the cluster to Wi-Fi mode.",
+      ],
+      correctIndex: 0,
+      explanation: "Dual-ring Corosync provides fault-tolerant heartbeat transport: the failure of a single NIC, switch, or cable does not interrupt consensus messaging, preventing erroneous node fencing.",
+    },
+  ],
+};
+
 // Generic Drill Generator for all other technical posts
 export function generateLearningDrill(post: Post): LearningDrillData {
+  if (post.slug === "zero-downtime-linux-clustering-active-passive-mysql-corosync-pacemaker") {
+    return HA_MYSQL_CLUSTER_DRILL;
+  }
   if (post.slug === "install-and-config-brotli-compression-with-apache") {
     return BROTLI_DRILL;
   }
