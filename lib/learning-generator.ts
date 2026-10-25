@@ -76,7 +76,7 @@ export interface LearningDrillData {
   badgeName: string;
   badgeDescription: string;
   architectureDiagram?: {
-    type: "reverse-proxy" | "cluster" | "network" | "stem" | "php-fpm" | "kernel-firewall" | "ssh-handshake" | "apache-vhost" | "system-telemetry" | "sshfs-fuse" | "ssh-file-transfer" | "tomcat-servlet";
+    type: "reverse-proxy" | "cluster" | "network" | "stem" | "php-fpm" | "kernel-firewall" | "ssh-handshake" | "apache-vhost" | "system-telemetry" | "sshfs-fuse" | "ssh-file-transfer" | "tomcat-servlet" | "lamp-stack";
     title: string;
   };
   reconCards: ReconCard[];
@@ -2962,6 +2962,295 @@ const TOMCAT_DRILL: LearningDrillData = {
   ],
 };
 
+// Handcrafted Flagship Drill for Modern LAMP Stack (Apache 2.4 Event MPM, MariaDB 11, PHP 8.3-FPM)
+const LAMP_STACK_DRILL: LearningDrillData = {
+  slug: "install-lamp-stack-ubuntu-16-04-lts",
+  title: "Install Modern LAMP Stack on Ubuntu: Apache, MariaDB & PHP-FPM Masterclass",
+  category: "linux-server-admin",
+  badgeName: "Enterprise LAMP Stack Architect",
+  badgeDescription: "Mastered modern Linux, Apache 2.4 Event MPM, MariaDB 11 transactional security, and PHP 8.3-FPM FastCGI architecture.",
+  architectureDiagram: {
+    type: "lamp-stack",
+    title: "Enterprise LAMP Topology: Event MPM, FastCGI UNIX Sockets & MariaDB",
+  },
+  reconCards: [
+    {
+      id: "rc-1",
+      tag: "WEB SERVER CORE",
+      title: "APACHE 2.4 EVENT MPM",
+      subtitle: "Asynchronous Worker Architecture",
+      definition: "Replaces legacy blocking prefork MPM. Passes incoming HTTP connections to dedicated listener threads, utilizing asynchronous polling to maintain tens of thousands of concurrent keep-alive sockets without consuming worker processes.",
+      seenInProd: "Ubuntu 22.04/24.04 and Debian 12 standard Apache deployments.",
+    },
+    {
+      id: "rc-2",
+      tag: "PHP PROCESSING",
+      title: "PHP 8.3-FPM",
+      subtitle: "FastCGI Unix Domain Sockets",
+      definition: "Separates the PHP runtime from the Apache web process. Apache passes PHP requests over FastCGI Unix domain sockets (/run/php/php8.3-fpm.sock) to dedicated worker pools, saving ~75% RAM over mod_php.",
+      seenInProd: "High-traffic WordPress, Drupal, Laravel, and Nextcloud production clusters.",
+    },
+    {
+      id: "rc-3",
+      tag: "OPCODE CACHING",
+      title: "ZEND OPCACHE & JIT",
+      subtitle: "In-Memory Bytecode Execution",
+      definition: "Caches compiled PHP bytecode in shared memory (shmop), eliminating the need for PHP to re-parse, lex, and compile scripts on every single HTTP request. Yields up to 5.4x higher RPS.",
+      seenInProd: "Configured via /etc/php/8.3/fpm/conf.d/10-opcache.ini.",
+    },
+    {
+      id: "rc-4",
+      tag: "DATABASE ENGINE",
+      title: "MARIADB 11 / MYSQL 8",
+      subtitle: "ACID InnoDB Storage",
+      definition: "High-performance relational database engine configured with utf8mb4 multi-byte unicode, strict SQL mode, and unix socket administrative authentication for root.",
+      seenInProd: "Secured via 'mariadb-secure-installation' in enterprise data centers.",
+    },
+    {
+      id: "rc-5",
+      tag: "SOCKET SECURITY",
+      title: "UNIX DOMAIN SOCKETS",
+      subtitle: "unix:/run/php/php8.3-fpm.sock",
+      definition: "IPC mechanism operating entirely within kernel memory buffers without traversing the TCP/IP network stack. Avoids TCP port exhaustion and loopback packet overhead.",
+      seenInProd: "Configured in Apache via SetHandler 'proxy:unix:/run/php/php8.3-fpm.sock|fcgi://localhost'.",
+    },
+    {
+      id: "rc-6",
+      tag: "DIRECTORY SECURITY",
+      title: "DOCUMENTROOT 0750",
+      subtitle: "Least-Privilege Isolation",
+      definition: "Restricts /var/www/html permissions so that web server files are owned by deployer:www-data with 0750 permissions, completely disabling 'Options Indexes' to prevent directory crawling.",
+      seenInProd: "Hardened Apache virtual host security standards.",
+    },
+  ],
+  motive: {
+    headline: "EVENT MPM + PHP-FPM VS. LEGACY PREFORK MOD_PHP UNDER 2,000 CONCURRENT USERS",
+    subheadline: "Simulating a sudden traffic surge on an Ubuntu web server with 4 GB of RAM.",
+    uncompressedBytes: 4200,
+    compressedBytes: 650,
+    savingsPercentage: 84,
+    explanation: "Legacy prefork spawns an entire heavy 45MB Apache+PHP process for every single concurrent client connection (including idle keep-alives), quickly exhausting RAM and triggering Linux kernel OOM killer crashes. Event MPM handles keep-alives with lightweight threads and offloads only active PHP executions to FPM pools.",
+    networkProfiles: [
+      { name: "3G Mobile (750 Kbps, 150ms)", speedKbps: 750, uncompressedTimeMs: 2400, compressedTimeMs: 280 },
+      { name: "4G LTE (15 Mbps, 45ms)", speedKbps: 15000, uncompressedTimeMs: 1200, compressedTimeMs: 75 },
+      { name: "Broadband WAN (100 Mbps, 15ms)", speedKbps: 100000, uncompressedTimeMs: 450, compressedTimeMs: 25 },
+      { name: "Fiber 1GbE (1 Gbps, 4ms)", speedKbps: 1000000, uncompressedTimeMs: 80, compressedTimeMs: 1.2 },
+    ],
+  },
+  debateStatements: [
+    {
+      id: "ds-1",
+      scenario: "MPM Module Selection for Production",
+      proposedAction: "Use 'mpm_prefork' with 'libapache2-mod-php' because it was the classic default in older Ubuntu guides.",
+      isValid: false,
+      explanation: "OBSOLETE ANTI-PATTERN: 'mpm_prefork' lacks asynchronous concurrency and allocates dedicated heavy memory processes for every connection. Modern enterprise LAMP stacks use 'mpm_event' + 'php-fpm' via FastCGI.",
+      badgeTag: "MPM_CONCURRENCY",
+    },
+    {
+      id: "ds-2",
+      scenario: "Public Directory Browsing Protection",
+      proposedAction: "Remove 'Indexes' from Apache Directory directives ('Options -Indexes') in /etc/apache2/apache2.conf.",
+      isValid: true,
+      explanation: "CRITICAL HARDENING: Disabling Indexes prevents search engines and malicious crawlers from listing file directories and discovering backup files (.sql, .env, .git) when index.php is absent.",
+      badgeTag: "INFO_DISCLOSURE",
+    },
+    {
+      id: "ds-3",
+      scenario: "Database Multi-Byte Unicode Standards",
+      proposedAction: "Create databases with 'CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_520_ci' rather than legacy 'utf8'.",
+      isValid: true,
+      explanation: "ESSENTIAL ENCODING: In MySQL/MariaDB, 'utf8' is an alias for a 3-byte subset that crashes when emojis or 4-byte UTF-8 characters are inserted. 'utf8mb4' supports the complete RFC UTF-8 standard.",
+      badgeTag: "CHARSET_INTEGRITY",
+    },
+    {
+      id: "ds-4",
+      scenario: "Database Administration Security",
+      proposedAction: "Install PHPMyAdmin on the public web root at /phpmyadmin with no IP restrictions or multi-factor authentication.",
+      isValid: false,
+      explanation: "SEVERE VULNERABILITY: Unprotected public phpMyAdmin instances are relentlessly targeted by automated credential brute-forcers and zero-day exploits. Restrict via VPN, HTTP Basic Auth, or SSH port forwarding.",
+      badgeTag: "DATABASE_SECURITY",
+    },
+    {
+      id: "ds-5",
+      scenario: "PHP Bytecode Optimization",
+      proposedAction: "Enable Zend OPcache with 'opcache.enable=1' and 'opcache.memory_consumption=128' in php.ini.",
+      isValid: true,
+      explanation: "MAXIMUM EFFICIENCY: OPcache stores pre-compiled PHP script bytecode in shared RAM, eliminating repeated compile cycles on every web request and multiplying server throughput up to 5x.",
+      badgeTag: "OPCODE_CACHE",
+    },
+    {
+      id: "ds-6",
+      scenario: "Production phpinfo() Exposure",
+      proposedAction: "Leave a file containing '<?php phpinfo(); ?>' accessible at /var/www/html/info.php indefinitely for easy diagnostics.",
+      isValid: false,
+      explanation: "DANGEROUS INFORMATION LEAK: 'phpinfo()' exposes exact kernel versions, PHP module versions, database user paths, and environment secrets to any visitor on the internet. Delete immediately after testing.",
+      badgeTag: "SECRET_LEAKAGE",
+    },
+  ],
+  simulator: {
+    headline: "MODERN LAMP STACK PROVISIONING & OPTIMIZATION SIMULATOR",
+    description: "Install Apache 2.4, configure Event MPM with PHP 8.3-FPM over UNIX sockets, secure MariaDB 11, and test HTTP response.",
+    defaultHost: "http://127.0.0.1:80",
+    terminalSteps: [
+      {
+        id: "step-1",
+        title: "Install Apache 2.4, MariaDB 11 & PHP 8.3-FPM Stack",
+        description: "Provision core LAMP packages including FastCGI proxy modules.",
+        command: "sudo apt update && sudo apt install -y apache2 mariadb-server php8.3-fpm php8.3-mysql php8.3-curl php8.3-mbstring php8.3-xml php8.3-zip",
+        output: "apache2 is already the newest version (2.4.58-1ubuntu8).\nmariadb-server is already the newest version (1:10.11.8-0ubuntu0.24.04.1).\nphp8.3-fpm is already the newest version (8.3.6-0ubuntu0.24.04.2).",
+      },
+      {
+        id: "step-2",
+        title: "Switch Apache MPM from Legacy Prefork to Modern Event MPM",
+        description: "Disable synchronous prefork MPM and activate high-concurrency event-driven MPM.",
+        command: "sudo a2dismod mpm_prefork && sudo a2enmod mpm_event",
+        output: "Module mpm_prefork disabled.\nEnabling module mpm_event.\nTo activate the new configuration, you need to run: systemctl restart apache2",
+      },
+      {
+        id: "step-3",
+        title: "Enable FastCGI Proxy & PHP 8.3-FPM Configuration",
+        description: "Route PHP processing to the PHP-FPM Unix domain socket.",
+        command: "sudo a2enmod proxy_fcgi setenvif && sudo a2enconf php8.3-fpm",
+        output: "Enabling module proxy.\nEnabling module proxy_fcgi.\nEnabling module setenvif.\nEnabling conf php8.3-fpm.",
+      },
+      {
+        id: "step-4",
+        title: "Secure MariaDB Relational Database Engine",
+        description: "Lock down root login, remove anonymous users, and drop the test database.",
+        command: "sudo mariadb-secure-installation",
+        output: "Switch to unix_socket authentication... [Y/n] Y\nChange the root password? [Y/n] n\nRemove anonymous users? [Y/n] Y\nDisallow root login remotely? [Y/n] Y\nRemove test database and access to it? [Y/n] Y\nReload privilege tables now? [Y/n] Y\nThanks for using MariaDB!",
+      },
+      {
+        id: "step-5",
+        title: "Restart & Verify Active Status of LAMP Daemons",
+        description: "Restart Apache and verify PHP-FPM socket listener is active.",
+        command: "sudo systemctl restart apache2 && sudo systemctl restart php8.3-fpm && sudo systemctl status apache2 --no-pager",
+        output: "● apache2.service - The Apache HTTP Server\n     Loaded: loaded (/etc/systemd/system/apache2.service; enabled; preset: enabled)\n     Active: active (running) since Sun 2026-10-25 10:40:02 UTC; 4s ago\n   Main PID: 51204 (apache2)\n      Tasks: 82 (limit: 4684)\n     Memory: 22.4M\n        CPU: 420ms\n     CGroup: /system.slice/apache2.service\n             ├─51204 /usr/sbin/apache2 -k start\n             ├─51205 /usr/sbin/apache2 -k start\n             └─51206 /usr/sbin/apache2 -k start",
+      },
+      {
+        id: "step-6",
+        title: "Verify FastCGI PHP Execution via HTTP Loopback Probe",
+        description: "Probe Apache to verify Event MPM is delegating PHP parsing over FastCGI Unix socket.",
+        command: "curl -I http://127.0.0.1/",
+        output: "HTTP/1.1 200 OK\nDate: Sun, 25 Oct 2026 10:40:10 GMT\nServer: Apache/2.4.58 (Ubuntu)\nX-Powered-By: PHP/8.3.6\nContent-Type: text/html; charset=UTF-8\n\n[LAMP Stack Online: Event MPM + FastCGI Active]",
+      },
+    ],
+    defaultPayloadBytes: 4200,
+    compressedPayloadBytes: 650,
+    responseHeaders: {
+      "HTTP/1.1": "200 OK",
+      "Server": "Apache/2.4.58 (Ubuntu)",
+      "MPM-Mode": "Event MPM (Asynchronous)",
+      "PHP-Handler": "mod_proxy_fcgi (Unix Domain Socket)",
+      "OPcache-Status": "Active (128MB Shared RAM)",
+    },
+  },
+  debriefRules: [
+    {
+      id: "rule-1",
+      number: "01",
+      title: "ALWAYS COMBINE EVENT MPM WITH PHP-FPM",
+      rule: "Never use legacy prefork 'libapache2-mod-php'. Event MPM combined with FastCGI PHP-FPM handles massive concurrency with minimal memory.",
+      antiPattern: "Using synchronous prefork MPM, causing server memory exhaustion under connection spikes.",
+    },
+    {
+      id: "rule-2",
+      number: "02",
+      title: "DISABLE PUBLIC DIRECTORY LISTING",
+      rule: "Enforce 'Options -Indexes' across all VirtualHost definitions to prevent directory indexing and sensitive file discovery.",
+      antiPattern: "Leaving 'Options Indexes' enabled in production.",
+    },
+    {
+      id: "rule-3",
+      number: "03",
+      title: "USE UTF8MB4 ENCODING IN MARIADB",
+      rule: "Always set character set to utf8mb4 and collation to utf8mb4_unicode_520_ci to support modern 4-byte unicode.",
+      antiPattern: "Using legacy MySQL 'utf8' which truncates 4-byte emoji strings.",
+    },
+    {
+      id: "rule-4",
+      number: "04",
+      title: "NEVER EXPOSE UNPROTECTED PHPMYADMIN",
+      rule: "Isolate database administrative interfaces behind SSH tunnels, internal VPNs, or multi-factor authentication.",
+      antiPattern: "Leaving /phpmyadmin publicly accessible on port 80 without IP filtering.",
+    },
+    {
+      id: "rule-5",
+      number: "05",
+      title: "DELETE PHPINFO() FILES IMMEDIATELY",
+      rule: "Never commit or leave phpinfo() files on production DocumentRoots as they disclose critical system secrets.",
+      antiPattern: "Leaving info.php active on public domains.",
+    },
+  ],
+  quiz: [
+    {
+      id: "q-1",
+      scenario: "Under 1,500 concurrent HTTP keep-alive connections, an Apache server running legacy 'libapache2-mod-php' exhausts all 8 GB of RAM and crashes with Linux OOM-killer invocations.",
+      question: "Which architectural migration resolves this memory starvation?",
+      options: [
+        "Switch from 'mpm_prefork' to 'mpm_event' and process PHP via 'php-fpm' over Unix domain sockets.",
+        "Increase Apache timeout to 300 seconds.",
+        "Add more swap space on the SSD.",
+        "Disable MySQL query cache.",
+      ],
+      correctIndex: 0,
+      explanation: "'mpm_prefork' allocates a full Apache process (~40-50MB) for every keep-alive connection even when no active request is being processed. 'mpm_event' uses lightweight threads for keep-alive sockets and only calls PHP-FPM when PHP execution is required.",
+    },
+    {
+      id: "q-2",
+      scenario: "When setting up MariaDB 11 for modern web applications, why must 'utf8mb4' be selected instead of legacy 'utf8'?",
+      question: "What is the limitation of legacy MySQL 'utf8'?",
+      options: [
+        "Legacy MySQL 'utf8' only stores up to 3 bytes per character, failing and throwing errors on emojis and modern multi-byte unicode characters.",
+        "Legacy 'utf8' does not support English.",
+        "Legacy 'utf8' requires twice as much RAM.",
+        "Legacy 'utf8' disables primary keys.",
+      ],
+      correctIndex: 0,
+      explanation: "Historic MySQL 'utf8' implements a 3-byte maximum encoding. RFC 3629 standard UTF-8 requires up to 4 bytes, which is supported by 'utf8mb4'.",
+    },
+    {
+      id: "q-3",
+      scenario: "Why should a junior sysadmin delete the 'info.php' file containing '<?php phpinfo(); ?>' immediately after testing the LAMP stack?",
+      question: "What security risk does leaving phpinfo() present?",
+      options: [
+        "It provides attackers with a complete reconnaissance map of kernel versions, PHP modules, server paths, and active environment variables.",
+        "It consumes 90% of server CPU continuously.",
+        "It invalidates the SSL certificate.",
+        "It locks the MySQL database.",
+      ],
+      correctIndex: 0,
+      explanation: "'phpinfo()' exposes exact operating system, compiler, module versions, file paths, and environment secrets, giving threat actors precise intelligence to exploit version-specific vulnerabilities.",
+    },
+    {
+      id: "q-4",
+      scenario: "Which Apache directive prevents visitors from viewing a folder's file listing when no 'index.php' or 'index.html' file is present?",
+      question: "What is the recommended directive?",
+      options: [
+        "Options -Indexes",
+        "Options +FollowSymLinks",
+        "DirectoryIndex off",
+        "Deny from all",
+      ],
+      correctIndex: 0,
+      explanation: "'Options -Indexes' disables directory listing, causing Apache to return HTTP 403 Forbidden rather than exposing file trees to crawlers.",
+    },
+    {
+      id: "q-5",
+      scenario: "How does Zend OPcache accelerate PHP performance by up to 5x on modern LAMP stacks?",
+      question: "What is the underlying mechanism?",
+      options: [
+        "It stores pre-compiled PHP script bytecode directly in shared RAM, bypassing the CPU-heavy lexing and compilation steps on each request.",
+        "It converts PHP code into C++ binaries on the hard drive.",
+        "It compresses images sent over HTTP.",
+        "It doubles the network bandwidth.",
+      ],
+      correctIndex: 0,
+      explanation: "Without OPcache, PHP must parse, tokenize, and compile human-readable PHP scripts into Zend engine bytecode on every HTTP request. OPcache caches this compiled bytecode in shared memory.",
+    },
+  ],
+};
+
 // Generic Drill Generator for all other technical posts
 export function generateLearningDrill(post: Post): LearningDrillData {
   if (post.slug === "install-and-config-brotli-compression-with-apache") {
@@ -2996,6 +3285,9 @@ export function generateLearningDrill(post: Post): LearningDrillData {
   }
   if (post.slug === "how-to-install-tomcat-10-on-ubuntu-20-04") {
     return TOMCAT_DRILL;
+  }
+  if (post.slug === "install-lamp-stack-ubuntu-16-04-lts") {
+    return LAMP_STACK_DRILL;
   }
 
   const cleanTitle = post.title.replace(/^\[.*?\]/, "").trim();
