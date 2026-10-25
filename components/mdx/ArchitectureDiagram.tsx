@@ -1,10 +1,9 @@
 "use client";
 
-import React from "react";
-import { Layers, Network, Cpu, Shield, Database, Server } from "lucide-react";
+import { Layers, Network, Cpu, Shield, Database, Server, Lock, Key, Terminal, Code2, MonitorPlay, Film, HardDrive, AlertTriangle, UserCheck, ShieldAlert } from "lucide-react";
 
 interface ArchitectureDiagramProps {
-  type?: "cluster" | "network" | "stem" | "reverse-proxy" | "php-fpm" | "kernel-firewall" | "ssh-handshake" | "apache-vhost" | "system-telemetry" | "sshfs-fuse" | "ssh-file-transfer" | "tomcat-servlet" | "lamp-stack";
+  type?: "cluster" | "network" | "stem" | "reverse-proxy" | "php-fpm" | "kernel-firewall" | "ssh-handshake" | "apache-vhost" | "system-telemetry" | "sshfs-fuse" | "ssh-file-transfer" | "tomcat-servlet" | "lamp-stack" | "root-privilege" | "remote-ide" | "hypervisor-guest" | "media-pipeline";
   title?: string;
 }
 
@@ -737,6 +736,258 @@ export default function ArchitectureDiagram({
               MODERN EVENT MPM VS LEGACY PREFORK:
             </span>
             <span>Replacing legacy prefork 'libapache2-mod-php' with asynchronous Event MPM and PHP-FPM reduces server memory usage by 75% and handles 10x more concurrent web connections.</span>
+          </div>
+        </div>
+      )}
+
+      {type === "root-privilege" && (
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+            {/* Threat Vector */}
+            <div className="p-3.5 rounded-xl bg-red-950/20 border border-red-500/50 text-center font-mono shadow-[0_0_15px_rgba(239,68,68,0.1)]">
+              <div className="w-8 h-8 rounded-lg bg-red-950/60 text-red-400 flex items-center justify-center mx-auto mb-2 border border-red-500/40">
+                <ShieldAlert className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-red-200 block">EXTERNAL VECTOR</span>
+              <span className="text-[10px] text-red-400/90 mt-0.5 block">Automated Botnet</span>
+              <div className="mt-2.5 pt-2 border-t border-red-900/40 text-[9px] text-red-300">
+                Port 22 SSH Brute-Force
+              </div>
+            </div>
+
+            {/* Perimeter Gatekeeper */}
+            <div className="p-3.5 rounded-xl bg-[#07090e] border border-cyan-500/60 text-center font-mono shadow-[0_0_15px_rgba(0,245,212,0.1)]">
+              <div className="w-8 h-8 rounded-lg bg-cyan-950/60 text-cyan-400 flex items-center justify-center mx-auto mb-2 border border-cyan-500/40">
+                <Shield className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-white block">OPENSSH DAEMON</span>
+              <span className="text-[10px] text-cyan-400/90 mt-0.5 block">sshd_config Hardening</span>
+              <div className="mt-2.5 pt-2 border-t border-zinc-800 text-[9px] text-zinc-300">
+                PermitRootLogin no
+              </div>
+            </div>
+
+            {/* Operative Bastion */}
+            <div className="p-3.5 rounded-xl bg-[#0d1117] border border-emerald-500/60 text-center font-mono shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+              <div className="w-8 h-8 rounded-lg bg-emerald-950/60 text-emerald-400 flex items-center justify-center mx-auto mb-2 border border-emerald-500/40">
+                <UserCheck className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-white block">UNPRIVILEGED USER</span>
+              <span className="text-[10px] text-emerald-400/90 mt-0.5 block">Ed25519 Key Auth</span>
+              <div className="mt-2.5 pt-2 border-t border-zinc-800 text-[9px] text-zinc-300">
+                sudo group membership
+              </div>
+            </div>
+
+            {/* Sudoers Privilege Escalation */}
+            <div className="p-3.5 rounded-xl bg-cyber-900 border border-purple-500/50 text-center font-mono">
+              <div className="w-8 h-8 rounded-lg bg-purple-950/60 text-purple-400 flex items-center justify-center mx-auto mb-2 border border-purple-500/40">
+                <Lock className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-zinc-100 block">SUDO ESCALATION</span>
+              <span className="text-[10px] text-purple-400/90 mt-0.5 block">/etc/sudoers.d/*</span>
+              <div className="mt-2.5 pt-2 border-t border-zinc-800 text-[9px] text-zinc-400">
+                Logged to /var/log/auth.log
+              </div>
+            </div>
+          </div>
+
+          {/* Root Defense Legend */}
+          <div className="p-3 rounded-lg bg-zinc-900/60 border border-zinc-800 text-[11px] font-mono text-zinc-400 flex flex-wrap items-center justify-between gap-2">
+            <span className="text-zinc-300 font-bold flex items-center gap-1.5">
+              <Lock className="w-3.5 h-3.5 text-[#00f5d4]" />
+              ZERO-TRUST LEAST PRIVILEGE:
+            </span>
+            <span>PermitRootLogin=no eliminates 99.8% of automated attacks. Legitimate root operations occur exclusively through verified, audited sudo tickets with user-attribution forensic logging.</span>
+          </div>
+        </div>
+      )}
+
+      {type === "remote-ide" && (
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+            {/* Workstation UI */}
+            <div className="p-3.5 rounded-xl bg-[#07090e] border border-cyan-500/60 text-center font-mono shadow-[0_0_15px_rgba(0,245,212,0.1)]">
+              <div className="w-8 h-8 rounded-lg bg-cyan-950/60 text-cyan-400 flex items-center justify-center mx-auto mb-2 border border-cyan-500/40">
+                <Code2 className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-white block">LOCAL IDE CLIENT</span>
+              <span className="text-[10px] text-cyan-400/90 mt-0.5 block">VS Code / Sublime</span>
+              <div className="mt-2.5 pt-2 border-t border-zinc-800 text-[9px] text-zinc-300">
+                Frontend UI & Themes
+              </div>
+            </div>
+
+            {/* Encrypted Tunnel */}
+            <div className="p-3.5 rounded-xl bg-cyber-900 border border-emerald-500/50 text-center font-mono shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+              <div className="w-8 h-8 rounded-lg bg-emerald-950/60 text-emerald-400 flex items-center justify-center mx-auto mb-2 border border-emerald-500/40">
+                <Key className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-zinc-100 block">SSH TUNNEL</span>
+              <span className="text-[10px] text-emerald-400/90 mt-0.5 block">TCP Port 22 Multiplex</span>
+              <div className="mt-2.5 pt-2 border-t border-zinc-800 text-[9px] text-zinc-400">
+                Port Forwarding + PTY
+              </div>
+            </div>
+
+            {/* Remote Headless Server */}
+            <div className="p-3.5 rounded-xl bg-[#0d1117] border border-purple-500/60 text-center font-mono shadow-[0_0_15px_rgba(189,0,255,0.1)]">
+              <div className="w-8 h-8 rounded-lg bg-purple-950/60 text-purple-400 flex items-center justify-center mx-auto mb-2 border border-purple-500/40">
+                <Server className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-white block">HEADLESS SERVER</span>
+              <span className="text-[10px] text-purple-400/90 mt-0.5 block">~/.vscode-server</span>
+              <div className="mt-2.5 pt-2 border-t border-zinc-800 text-[9px] text-zinc-300">
+                Node.js Engine + LSP + Git
+              </div>
+            </div>
+
+            {/* Remote File System */}
+            <div className="p-3.5 rounded-xl bg-cyber-900 border border-cyan-500/50 text-center font-mono">
+              <div className="w-8 h-8 rounded-lg bg-cyan-950/60 text-cyan-400 flex items-center justify-center mx-auto mb-2 border border-cyan-500/40">
+                <HardDrive className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-zinc-100 block">HOST WORKSPACE</span>
+              <span className="text-[10px] text-cyan-400/90 mt-0.5 block">/var/www · Docker</span>
+              <div className="mt-2.5 pt-2 border-t border-zinc-800 text-[9px] text-zinc-400">
+                Native Linux Inode I/O
+              </div>
+            </div>
+          </div>
+
+          {/* IDE Architecture Legend */}
+          <div className="p-3 rounded-lg bg-zinc-900/60 border border-zinc-800 text-[11px] font-mono text-zinc-400 flex flex-wrap items-center justify-between gap-2">
+            <span className="text-zinc-300 font-bold flex items-center gap-1.5">
+              <Code2 className="w-3.5 h-3.5 text-[#00f5d4]" />
+              REMOTE-SSH VS LEGACY SFTP SYNC:
+            </span>
+            <span>Remote-SSH executes language servers, linters, and terminals natively on the Linux host. Code is not synced over high-latency SFTP; only UI diffs and terminal buffers cross the wire.</span>
+          </div>
+        </div>
+      )}
+
+      {type === "hypervisor-guest" && (
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+            {/* Hypervisor Host */}
+            <div className="p-3.5 rounded-xl bg-[#07090e] border border-cyan-500/60 text-center font-mono shadow-[0_0_15px_rgba(0,245,212,0.1)]">
+              <div className="w-8 h-8 rounded-lg bg-cyan-950/60 text-cyan-400 flex items-center justify-center mx-auto mb-2 border border-cyan-500/40">
+                <Server className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-white block">HYPERVISOR HOST</span>
+              <span className="text-[10px] text-cyan-400/90 mt-0.5 block">ESXi / Workstation / KVM</span>
+              <div className="mt-2.5 pt-2 border-t border-zinc-800 text-[9px] text-zinc-300">
+                Hardware Virtualization
+              </div>
+            </div>
+
+            {/* Communication Bus */}
+            <div className="p-3.5 rounded-xl bg-cyber-900 border border-purple-500/50 text-center font-mono shadow-[0_0_15px_rgba(189,0,255,0.1)]">
+              <div className="w-8 h-8 rounded-lg bg-purple-950/60 text-purple-400 flex items-center justify-center mx-auto mb-2 border border-purple-500/40">
+                <Network className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-zinc-100 block">VSOCK / VMCI</span>
+              <span className="text-[10px] text-purple-400/90 mt-0.5 block">Zero-Copy Hypercall</span>
+              <div className="mt-2.5 pt-2 border-t border-zinc-800 text-[9px] text-zinc-400">
+                AF_VSOCK Sockets
+              </div>
+            </div>
+
+            {/* Linux Kernel Drivers */}
+            <div className="p-3.5 rounded-xl bg-[#0d1117] border border-emerald-500/60 text-center font-mono shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+              <div className="w-8 h-8 rounded-lg bg-emerald-950/60 text-emerald-400 flex items-center justify-center mx-auto mb-2 border border-emerald-500/40">
+                <Cpu className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-white block">KERNEL DRIVERS</span>
+              <span className="text-[10px] text-emerald-400/90 mt-0.5 block">vmxnet3 & vmmemctl</span>
+              <div className="mt-2.5 pt-2 border-t border-zinc-800 text-[9px] text-zinc-300">
+                Dynamic RAM Ballooning
+              </div>
+            </div>
+
+            {/* User-space open-vm-tools */}
+            <div className="p-3.5 rounded-xl bg-cyber-900 border border-cyan-500/50 text-center font-mono">
+              <div className="w-8 h-8 rounded-lg bg-cyan-950/60 text-cyan-400 flex items-center justify-center mx-auto mb-2 border border-cyan-500/40">
+                <Terminal className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-zinc-100 block">OPEN-VM-TOOLS</span>
+              <span className="text-[10px] text-cyan-400/90 mt-0.5 block">systemd service</span>
+              <div className="mt-2.5 pt-2 border-t border-zinc-800 text-[9px] text-zinc-400">
+                Time Sync & Graceful ACPI
+              </div>
+            </div>
+          </div>
+
+          {/* Hypervisor Legend */}
+          <div className="p-3 rounded-lg bg-zinc-900/60 border border-zinc-800 text-[11px] font-mono text-zinc-400 flex flex-wrap items-center justify-between gap-2">
+            <span className="text-zinc-300 font-bold flex items-center gap-1.5">
+              <Server className="w-3.5 h-3.5 text-[#00f5d4]" />
+              MODERN OPEN-VM-TOOLS VS LEGACY TARBALL:
+            </span>
+            <span>Ubuntu LTS includes native upstream kernel drivers (vmxnet3, pvscsi). Installing 'open-vm-tools' via apt replaces obsolete perl install scripts and ensures zero-downtime kernel updates.</span>
+          </div>
+        </div>
+      )}
+
+      {type === "media-pipeline" && (
+        <div className="space-y-4">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+            {/* Storage Library */}
+            <div className="p-3.5 rounded-xl bg-[#07090e] border border-cyan-500/60 text-center font-mono shadow-[0_0_15px_rgba(0,245,212,0.1)]">
+              <div className="w-8 h-8 rounded-lg bg-cyan-950/60 text-cyan-400 flex items-center justify-center mx-auto mb-2 border border-cyan-500/40">
+                <Film className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-white block">MEDIA STORAGE</span>
+              <span className="text-[10px] text-cyan-400/90 mt-0.5 block">/data/media/movies</span>
+              <div className="mt-2.5 pt-2 border-t border-zinc-800 text-[9px] text-zinc-300">
+                ZFS Pool / Inode Cache
+              </div>
+            </div>
+
+            {/* Plex Media Server */}
+            <div className="p-3.5 rounded-xl bg-cyber-900 border border-purple-500/50 text-center font-mono shadow-[0_0_15px_rgba(189,0,255,0.1)]">
+              <div className="w-8 h-8 rounded-lg bg-purple-950/60 text-purple-400 flex items-center justify-center mx-auto mb-2 border border-purple-500/40">
+                <Server className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-zinc-100 block">PLEX CORE</span>
+              <span className="text-[10px] text-purple-400/90 mt-0.5 block">Port 32400 · systemd</span>
+              <div className="mt-2.5 pt-2 border-t border-zinc-800 text-[9px] text-zinc-400">
+                SQLite Metadata + DirectPlay
+              </div>
+            </div>
+
+            {/* GPU Transcoder */}
+            <div className="p-3.5 rounded-xl bg-[#0d1117] border border-emerald-500/60 text-center font-mono shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+              <div className="w-8 h-8 rounded-lg bg-emerald-950/60 text-emerald-400 flex items-center justify-center mx-auto mb-2 border border-emerald-500/40">
+                <Cpu className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-white block">HARDWARE TRANSCODE</span>
+              <span className="text-[10px] text-emerald-400/90 mt-0.5 block">/dev/dri/renderD128</span>
+              <div className="mt-2.5 pt-2 border-t border-zinc-800 text-[9px] text-zinc-300">
+                Intel QuickSync / NVENC
+              </div>
+            </div>
+
+            {/* Multi-Device Stream */}
+            <div className="p-3.5 rounded-xl bg-cyber-900 border border-cyan-500/50 text-center font-mono">
+              <div className="w-8 h-8 rounded-lg bg-cyan-950/60 text-cyan-400 flex items-center justify-center mx-auto mb-2 border border-cyan-500/40">
+                <MonitorPlay className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-zinc-100 block">CLIENT STREAMS</span>
+              <span className="text-[10px] text-cyan-400/90 mt-0.5 block">SmartTV · Web · iOS</span>
+              <div className="mt-2.5 pt-2 border-t border-zinc-800 text-[9px] text-zinc-400">
+                Adaptive Bitrate HLS
+              </div>
+            </div>
+          </div>
+
+          {/* Media Legend */}
+          <div className="p-3 rounded-lg bg-zinc-900/60 border border-zinc-800 text-[11px] font-mono text-zinc-400 flex flex-wrap items-center justify-between gap-2">
+            <span className="text-zinc-300 font-bold flex items-center gap-1.5">
+              <Film className="w-3.5 h-3.5 text-[#00f5d4]" />
+              HARDWARE ACCELERATION PIPELINE:
+            </span>
+            <span>Delegating 4K HEVC / H.265 transcoding to the GPU VA-API/QuickSync interface via `/dev/dri/renderD128` cuts host CPU utilization from 100% to under 5%, allowing simultaneous multi-stream playback.</span>
           </div>
         </div>
       )}

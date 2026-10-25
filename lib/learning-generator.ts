@@ -76,7 +76,7 @@ export interface LearningDrillData {
   badgeName: string;
   badgeDescription: string;
   architectureDiagram?: {
-    type: "reverse-proxy" | "cluster" | "network" | "stem" | "php-fpm" | "kernel-firewall" | "ssh-handshake" | "apache-vhost" | "system-telemetry" | "sshfs-fuse" | "ssh-file-transfer" | "tomcat-servlet" | "lamp-stack";
+    type: "reverse-proxy" | "cluster" | "network" | "stem" | "php-fpm" | "kernel-firewall" | "ssh-handshake" | "apache-vhost" | "system-telemetry" | "sshfs-fuse" | "ssh-file-transfer" | "tomcat-servlet" | "lamp-stack" | "root-privilege" | "remote-ide" | "hypervisor-guest" | "media-pipeline";
     title: string;
   };
   reconCards: ReconCard[];
@@ -3251,6 +3251,244 @@ const LAMP_STACK_DRILL: LearningDrillData = {
   ],
 };
 
+const ROOT_PRIVILEGE_DRILL: LearningDrillData = {
+  slug: "allow-root-login-ssh-ubuntu-16-04-lts",
+  title: "Root Privilege Hardening, SSH Ingress & Sudoers Least-Privilege Architecture",
+  category: "linux-server-admin",
+  badgeName: "ZERO-TRUST BASTION OPERATIVE",
+  badgeDescription: "Mastered OpenSSH daemon root hardening, /etc/shadow account locking mechanics, and auditable sudoers privilege delegation.",
+  architectureDiagram: {
+    type: "root-privilege",
+    title: "Zero-Trust SSH Ingress & Sudoers Least-Privilege Architecture",
+  },
+  reconCards: [
+    {
+      id: "rc-1",
+      tag: "PERIMETER SECURITY",
+      title: "PERMITROOTLOGIN NO",
+      subtitle: "Port 22 Attack Surface Elimination",
+      definition: "Port 22 is continuously swept by automated dictionary scanners targeting username 'root'. Enabling PermitRootLogin yes with passwords exposes servers to non-stop brute-force attacks. Modern LTS distributions enforce 'prohibit-password' or 'no' by default.",
+      seenInProd: "CIS Benchmark and NIST 800-53 Level 1 Linux Server profile.",
+    },
+    {
+      id: "rc-2",
+      tag: "UNIX IDENTITY",
+      title: "ACCOUNT LOCKING IN /ETC/SHADOW",
+      subtitle: "The '!*' Hash Security Mechanism",
+      definition: "Ubuntu intentionally ships with the root account locked in /etc/shadow with an exclamation mark '!' prefix. This mathematically prevents password authentication while preserving system daemon ownership and cron task execution.",
+      seenInProd: "Ubuntu 20.04/22.04/24.04 and Debian default installations.",
+    },
+    {
+      id: "rc-3",
+      tag: "PRIVILEGE DELEGATION",
+      title: "EPHEMERAL ESCALATION VIA SUDO",
+      subtitle: "Personal Accountability vs. Shared Root",
+      definition: "Instead of sharing a static root password among multiple developers, individual unprivileged users are granted scoped sudo privileges. 'sudo -i' provides an interactive login shell while 'sudoedit' prevents arbitrary shell script execution inside text editors.",
+      seenInProd: "All enterprise Linux DevOps and SRE team standard operating procedures.",
+    },
+    {
+      id: "rc-4",
+      tag: "CONFIGURATION HYGIENE",
+      title: "MODULAR DROP-IN DIRECTORIES",
+      subtitle: "/etc/ssh/sshd_config.d/ & /etc/sudoers.d/",
+      definition: "Never edit monolithic config files directly. Modular drop-in files prevent package upgrade merge conflicts and allow clean Infrastructure-as-Code management via Ansible, Terraform, or Puppet.",
+      seenInProd: "Standard systemd and OpenSSH drop-in patterns in Debian and Ubuntu.",
+    },
+  ],
+  motive: {
+    headline: "ZERO-TRUST SSH INGRESS VS. LEGACY ROOT PASSWORD INGRESS",
+    subheadline: "Analyzing credential stuffing attack telemetry on public Linux server clusters running OpenSSH on internet-facing networks.",
+    uncompressedBytes: 14200,
+    compressedBytes: 0,
+    savingsPercentage: 100,
+    explanation: "PermitRootLogin=no eliminates 99.8% of automated attacks. Legitimate root operations occur exclusively through verified, audited sudo tickets with user-attribution forensic logging in /var/log/auth.log.",
+    networkProfiles: [
+      { name: "Public IPv4 Internet", speedKbps: 100000, uncompressedTimeMs: 14200, compressedTimeMs: 0 },
+      { name: "Management Bastion VPN", speedKbps: 50000, uncompressedTimeMs: 320, compressedTimeMs: 0 },
+      { name: "Private VPC / LAN", speedKbps: 1000000, uncompressedTimeMs: 40, compressedTimeMs: 0 },
+    ],
+  },
+  debateStatements: [
+    {
+      id: "ds-1",
+      scenario: "Root Password SSH Ingress",
+      proposedAction: "Enable 'PermitRootLogin yes' with a 32-character complex password because it is claimed to be as secure as unprivileged sudo accounts.",
+      isValid: false,
+      explanation: "A complex password does not solve the fundamental lack of auditability. When multiple engineers know the root password, forensic logs cannot attribute commands to individuals. Additionally, passwords remain susceptible to brute-force lockouts and memory scrapers.",
+      badgeTag: "ZERO_TRUST",
+    },
+    {
+      id: "ds-2",
+      scenario: "Modular Configuration Management",
+      proposedAction: "Place configurations in /etc/ssh/sshd_config.d/ and /etc/sudoers.d/ rather than editing base monolithic files.",
+      isValid: true,
+      explanation: "Drop-in directories allow atomic deployment via automated configuration management without regex manipulation, and avoid interactive apt prompt conflicts during system distribution upgrades.",
+      badgeTag: "CONFIG_HYGIENE",
+    },
+    {
+      id: "ds-3",
+      scenario: "Pre-Flight Daemon Validation",
+      proposedAction: "Run 'sudo sshd -t' before reloading or restarting OpenSSH in production.",
+      isValid: true,
+      explanation: "'sshd -t' validates grammar, cipher suites, and file permissions without interrupting active connections. If an error is detected, the administrator can fix it without being permanently locked out of the host.",
+      badgeTag: "HIGH_AVAILABILITY",
+    },
+    {
+      id: "ds-4",
+      scenario: "CI/CD Sudo Delegation Scope",
+      proposedAction: "Grant the CI/CD runner 'ALL=(ALL) NOPASSWD: ALL' in sudoers so deploy jobs never prompt for credentials.",
+      isValid: false,
+      explanation: "Granting unrestricted NOPASSWD ALL means any vulnerability in a CI pipeline or local web app immediately provides total root host compromise. Restrict NOPASSWD strictly to the exact required binaries.",
+      badgeTag: "LEAST_PRIVILEGE",
+    },
+  ],
+  simulator: {
+    headline: "OPENSSH HARDENING & SUDOERS LEAST-PRIVILEGE CONSOLE",
+    description: "Inspect active OpenSSH parameters, audit account lock state in /etc/shadow, test configuration syntax, and gracefully reload the daemon.",
+    defaultHost: "ssh://sysadmin@edge-node-01:22",
+    defaultPayloadBytes: 256,
+    compressedPayloadBytes: 64,
+    responseHeaders: {
+      "SSH-Protocol": "SSH-2.0-OpenSSH_9.6p1 Ubuntu-3ubuntu13.4",
+      "Kex-Algorithm": "curve25519-sha256",
+      "Hostkey-Type": "ssh-ed25519",
+      "Auth-Method": "publickey",
+    },
+    terminalSteps: [
+      {
+        id: "step-1",
+        title: "Audit Active OpenSSH Ingress Settings",
+        description: "Query OpenSSH runtime parameters to inspect effective PermitRootLogin setting.",
+        command: "sudo sshd -T | grep -E '(permitrootlogin|passwordauthentication)'",
+        output: "permitrootlogin no\npasswordauthentication no",
+        verificationRegex: "permitrootlogin\\s+no",
+      },
+      {
+        id: "step-2",
+        title: "Inspect Root Account Lock Status",
+        description: "Verify that the root account is locked from password logins in the shadow database.",
+        command: "sudo passwd -S root",
+        output: "root L 10/25/2026 0 99999 7 -1",
+        verificationRegex: "root\\s+L",
+      },
+      {
+        id: "step-3",
+        title: "Validate Modular Sudoers Policy Syntax",
+        description: "Verify syntax of sudoers drop-in files to ensure no formatting errors exist.",
+        command: "sudo visudo -c",
+        output: "/etc/sudoers: parsed OK\n/etc/sudoers.d/99-hardened-policy: parsed OK\n/etc/sudoers.d/README: parsed OK",
+        verificationRegex: "parsed OK",
+      },
+      {
+        id: "step-4",
+        title: "Execute Pre-Flight Daemon Syntax Check",
+        description: "Test OpenSSH configuration grammar before executing daemon reload.",
+        command: "sudo sshd -t && echo 'PRE_FLIGHT_SYNTAX_VERIFIED'",
+        output: "PRE_FLIGHT_SYNTAX_VERIFIED",
+        verificationRegex: "PRE_FLIGHT_SYNTAX_VERIFIED",
+      },
+      {
+        id: "step-5",
+        title: "Gracefully Reload OpenSSH Service",
+        description: "Reload systemd unit to apply new ingress restrictions without terminating established connections.",
+        command: "sudo systemctl reload ssh && systemctl is-active ssh",
+        output: "active",
+        verificationRegex: "active",
+      },
+    ],
+  },
+  debriefRules: [
+    {
+      id: "rule-1",
+      number: "01",
+      title: "Eliminate Direct Root Ingress",
+      rule: "Enforce 'PermitRootLogin no' on all internet-facing systems, routing all connections through unprivileged users with Ed25519 cryptographic keys.",
+      antiPattern: "Setting 'PermitRootLogin yes' with passwords to avoid typing sudo, allowing brute-force botnets continuous attack opportunity.",
+    },
+    {
+      id: "rule-2",
+      number: "02",
+      title: "Mandate Individual Sudo Accountability",
+      rule: "Grant administrative privileges strictly via the sudo group or granular /etc/sudoers.d/ drop-ins, ensuring every execution is forensically attributed in /var/log/auth.log.",
+      antiPattern: "Sharing a monolithic root password among team members or granting unrestricted 'NOPASSWD: ALL' to service accounts.",
+    },
+    {
+      id: "rule-3",
+      number: "03",
+      title: "Always Validate Pre-Flight Daemon Syntax",
+      rule: "Run 'sudo sshd -t' and 'sudo visudo -c' before reloading services to eliminate syntactic lockouts and broken privilege chains.",
+      antiPattern: "Directly editing /etc/sudoers or restarting SSH without validation, risking catastrophic remote lockout.",
+    },
+  ],
+  quiz: [
+    {
+      id: "q-1",
+      scenario: "A sysadmin attempts to SSH to an Ubuntu 24.04 server as root using a password, but receives 'Permission denied (publickey)'. What is the root cause?",
+      question: "Why was the password rejected?",
+      options: [
+        "Ubuntu 24.04 enforces 'PermitRootLogin prohibit-password' and 'PasswordAuthentication no' by default, strictly disallowing root password logins.",
+        "The server hard drive is full.",
+        "The network cable was unplugged.",
+        "SSH does not support the root account on Linux.",
+      ],
+      correctIndex: 0,
+      explanation: "Modern Ubuntu releases disable password logins for the root account by default in /etc/ssh/sshd_config to prevent dictionary brute-force attacks.",
+    },
+    {
+      id: "q-2",
+      scenario: "What does the '!*' password hash signify when viewing the root entry in /etc/shadow?",
+      question: "What is the technical meaning of this symbol?",
+      options: [
+        "The account is locked and disabled from password authentication because no hash can mathematically match '!*'.",
+        "The password expired yesterday.",
+        "The password is encrypted with 256-bit AES.",
+        "The root account has been deleted from the operating system.",
+      ],
+      correctIndex: 0,
+      explanation: "An exclamation mark prefixed to the password field in /etc/shadow indicates that the account is locked from password logins, which is Ubuntu's default state.",
+    },
+    {
+      id: "q-3",
+      scenario: "Why should system administrators execute 'sudoedit /etc/fstab' instead of running 'sudo nano /etc/fstab'?",
+      question: "What security advantage does sudoedit provide?",
+      options: [
+        "It copies the file to a temporary location and runs the text editor as the unprivileged user, preventing malicious editor plugins from executing with root permissions.",
+        "It automatically compresses the file.",
+        "It translates the file into JSON.",
+        "It disables file saving if syntax is incorrect.",
+      ],
+      correctIndex: 0,
+      explanation: "'sudoedit' runs the user's chosen editor under their own unprivileged UID, preventing macro/plugin privilege escalation, and safely copies the modified file back to the destination upon exit.",
+    },
+    {
+      id: "q-4",
+      scenario: "Which command must an engineer run to safely test OpenSSH configuration syntax before reloading the daemon?",
+      question: "What is the syntax testing command?",
+      options: [
+        "sudo sshd -t",
+        "sudo systemctl restart ssh",
+        "sudo ssh -v localhost",
+        "sudo cat /etc/ssh/sshd_config",
+      ],
+      correctIndex: 0,
+      explanation: "'sshd -t' validates the syntax and configuration options of OpenSSH daemon files without touching running connections or restarting the service.",
+    },
+    {
+      id: "q-5",
+      scenario: "What happens if a junior administrator makes a syntax error in /etc/sudoers without using visudo?",
+      question: "What is the consequence?",
+      options: [
+        "All sudo commands immediately fail across the entire system, potentially locking all users out of administrative privileges.",
+        "The system reboots automatically.",
+        "The error is silently ignored.",
+        "A backup file is automatically restored.",
+      ],
+      correctIndex: 0,
+      explanation: "If /etc/sudoers has a syntax error, the sudo binary refuses to parse it and denies all privilege escalation requests, which can render the server unmanageable if root is locked.",
+    },
+  ],
+};
+
 // Generic Drill Generator for all other technical posts
 export function generateLearningDrill(post: Post): LearningDrillData {
   if (post.slug === "install-and-config-brotli-compression-with-apache") {
@@ -3273,6 +3511,12 @@ export function generateLearningDrill(post: Post): LearningDrillData {
     post.slug === "configure-apache-virtual-host-ubuntu-16-04-lts"
   ) {
     return APACHE_VHOST_DRILL;
+  }
+  if (
+    post.slug === "allow-root-login-ssh-ubuntu-16-04-lts" ||
+    post.slug === "enable-root-user-ubuntu-16-04-1-lts"
+  ) {
+    return ROOT_PRIVILEGE_DRILL;
   }
   if (post.slug === "top-5-system-monitoring-tools-inux") {
     return SYSTEM_MONITORING_DRILL;
