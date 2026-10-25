@@ -32,24 +32,43 @@ import {
 interface DualModeArticleViewProps {
   post: Post;
   recentPosts?: Post[];
+  initialMode?: "blog" | "learning" | "simulation";
   children: React.ReactNode;
 }
 
-export function DualModeArticleView({ post, recentPosts, children }: DualModeArticleViewProps) {
+function DualModeArticleViewInner({
+  post,
+  recentPosts,
+  initialMode: initialModeProp,
+  children,
+}: DualModeArticleViewProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
 
   // Mode: "blog" | "learning" | "simulation"
   const modeParam = searchParams.get("mode");
-  const initialMode =
-    modeParam === "learning"
+  const computedInitialMode =
+    initialModeProp ||
+    (modeParam === "learning"
       ? "learning"
       : modeParam === "simulation"
       ? "simulation"
-      : "blog";
-  const [mode, setMode] = useState<"blog" | "learning" | "simulation">(initialMode);
+      : "blog");
+  const [mode, setMode] = useState<"blog" | "learning" | "simulation">(computedInitialMode);
   const [activeStage, setActiveStage] = useState(0);
   const [scrollProgress, setScrollProgress] = useState(0);
+
+  // Sync mode whenever URL searchParams change (e.g., Back/Forward browser navigation)
+  useEffect(() => {
+    const currentParam = searchParams.get("mode");
+    if (currentParam === "learning") {
+      setMode("learning");
+    } else if (currentParam === "simulation") {
+      setMode("simulation");
+    } else {
+      setMode("blog");
+    }
+  }, [searchParams]);
 
   // Drill data
   const drillData: LearningDrillData = generateLearningDrill(post);
@@ -698,6 +717,14 @@ export function DualModeArticleView({ post, recentPosts, children }: DualModeArt
         )}
       </main>
     </div>
+  );
+}
+
+export function DualModeArticleView(props: DualModeArticleViewProps) {
+  return (
+    <React.Suspense fallback={<div className="min-h-screen bg-[#07090e]" />}>
+      <DualModeArticleViewInner {...props} />
+    </React.Suspense>
   );
 }
 

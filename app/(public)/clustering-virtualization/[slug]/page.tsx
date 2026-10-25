@@ -9,6 +9,7 @@ import type { Metadata } from "next";
 
 interface Props {
   params: Promise<{ slug: string }>;
+  searchParams?: Promise<{ mode?: string }>;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -31,8 +32,15 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export const revalidate = 60;
 
-export default async function ClusteringArticlePage({ params }: Props) {
+export default async function ClusteringArticlePage({ params, searchParams }: Props) {
   const { slug } = await params;
+  const sp = searchParams ? await searchParams : {};
+  const initialMode =
+    sp.mode === "learning"
+      ? "learning"
+      : sp.mode === "simulation"
+      ? "simulation"
+      : "blog";
   const post = getPostBySlug("clustering-virtualization", slug);
 
   if (!post) {
@@ -65,7 +73,7 @@ export default async function ClusteringArticlePage({ params }: Props) {
       )}
 
       {/* Dual Mode View: Blog Mode & Gamified 6-Stage Learning Mode */}
-      <DualModeArticleView post={post} recentPosts={recentPosts}>
+      <DualModeArticleView post={post} recentPosts={recentPosts} initialMode={initialMode}>
         <MdxRenderer content={post.content} />
       </DualModeArticleView>
     </>
