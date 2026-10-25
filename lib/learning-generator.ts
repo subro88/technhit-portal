@@ -3489,6 +3489,238 @@ const ROOT_PRIVILEGE_DRILL: LearningDrillData = {
   ],
 };
 
+const REMOTE_IDE_DRILL: LearningDrillData = {
+  slug: "how-to-install-visual-studio-code-on-ubuntu",
+  title: "Remote IDE Engineering: Remote-SSH, Headless Daemons & Reverse Tunnels",
+  category: "linux-server-admin",
+  badgeName: "REMOTE DEV ENVIRONMENT SPECIALIST",
+  badgeDescription: "Mastered headless server-side IDE daemons, de-armored GPG keyrings, reverse SSH port forwarding, and zero-sync remote editing.",
+  architectureDiagram: {
+    type: "remote-ide",
+    title: "Modern Remote IDE Client-Server Architecture (Local UI to Remote Host Daemon)",
+  },
+  reconCards: [
+    {
+      id: "rc-1",
+      tag: "SERVER DAEMON",
+      title: "HEADLESS VS CODE SERVER",
+      subtitle: "~/.vscode-server Node.js Engine",
+      definition: "Executes language servers, linters, and debuggers directly on the remote Linux host. Code is not synced over high-latency networks; only lightweight UI diffs and terminal buffers cross the wire.",
+      seenInProd: "Official Microsoft Remote - SSH extension architecture.",
+    },
+    {
+      id: "rc-2",
+      tag: "KEYRING HARDENING",
+      title: "DE-ARMORED GPG KEYRINGS",
+      subtitle: "/etc/apt/keyrings/ Scoped Security",
+      definition: "Replaces obsolete 'apt-key add' by isolating the Microsoft repository public signing key to an explicit signed-by directive in sources.list.d, preventing cross-repository package hijacking.",
+      seenInProd: "Ubuntu 22.04/24.04 and Debian 12 standard APT repositories.",
+    },
+    {
+      id: "rc-3",
+      tag: "REVERSE TUNNELING",
+      title: "RSUB / RMATE PROTOCOL",
+      subtitle: "TCP Port 52698 Reverse Forward",
+      definition: "Routes requests from remote SSH command-line sessions back to a local desktop Sublime Text editor. Enables instant remote file editing without maintaining persistent FUSE network drives.",
+      seenInProd: "Sublime Text 4 and TextMate remote development workflows.",
+    },
+    {
+      id: "rc-4",
+      tag: "NETWORK MULTIPLEX",
+      title: "AUTOMATIC PORT FORWARDING",
+      subtitle: "Zero-Firewall Development Previews",
+      definition: "Securely forwards remote listening ports (such as Node.js, Django, or Docker containers on 127.0.0.1:3000) through the existing SSH tunnel to localhost without requiring open ingress ports.",
+      seenInProd: "Remote-SSH Ports View and Kubernetes port-forward integrations.",
+    },
+  ],
+  motive: {
+    headline: "HEADLESS REMOTE-SSH DAEMON VS. LEGACY SFTP FILE SYNC",
+    subheadline: "Evaluating bandwidth utilization, language server latency, and file overwrite hazards during remote Linux development.",
+    uncompressedBytes: 8500,
+    compressedBytes: 120,
+    savingsPercentage: 98,
+    explanation: "Legacy SFTP downloads entire file trees locally and re-uploads modified files on every save, creating race conditions and breaking local language server tooling. Remote-SSH executes language servers natively on the remote host, streaming only visual diffs.",
+    networkProfiles: [
+      { name: "Broadband Fiber (100 Mbps, 15ms)", speedKbps: 100000, uncompressedTimeMs: 8500, compressedTimeMs: 120 },
+      { name: "4G LTE Mobile (15 Mbps, 45ms)", speedKbps: 15000, uncompressedTimeMs: 14200, compressedTimeMs: 350 },
+      { name: "Satellite High-Latency (10 Mbps, 600ms)", speedKbps: 10000, uncompressedTimeMs: 45000, compressedTimeMs: 900 },
+    ],
+  },
+  debateStatements: [
+    {
+      id: "ds-1",
+      scenario: "Remote File Editing Architecture",
+      proposedAction: "Use third-party SFTP plugins to download and re-upload files instead of the official Remote-SSH extension.",
+      isValid: false,
+      explanation: "OBSOLETE ANTI-PATTERN: SFTP sync causes dangerous race conditions, overwrites remote changes, and breaks language servers that depend on Linux libraries and remote virtual environments.",
+      badgeTag: "REMOTE_ARCHITECTURE",
+    },
+    {
+      id: "ds-2",
+      scenario: "APT Repository Key Security",
+      proposedAction: "Provision third-party repositories using de-armored GPG keys in /etc/apt/keyrings/ with explicit 'signed-by' directives.",
+      isValid: true,
+      explanation: "CRITICAL REPO HARDENING: 'apt-key add' is deprecated because it grants repository keys global authority over all system packages. Scoped keyrings restrict trust strictly to that specific vendor repository.",
+      badgeTag: "KEYRING_SECURITY",
+    },
+    {
+      id: "ds-3",
+      scenario: "Lightweight Remote Editing with Sublime",
+      proposedAction: "Use reverse SSH tunneling (RemoteForward 52698) with rsub to open remote files in desktop Sublime Text.",
+      isValid: true,
+      explanation: "HIGH-EFFICIENCY WORKFLOW: Reverse SSH forwarding streams file buffers on demand without the heavy CPU and network overhead of persistent virtual network file system drivers.",
+      badgeTag: "REVERSE_TUNNEL",
+    },
+    {
+      id: "ds-4",
+      scenario: "Extension Execution Point in Remote-SSH",
+      proposedAction: "Assume that all VS Code extensions must run locally on the client laptop when connected to a remote Linux host.",
+      isValid: false,
+      explanation: "FLAWED ARCHITECTURAL ASSUMPTION: VS Code splits extensions automatically: UI themes and icons run on the client, while language engines, linters, and debuggers execute directly inside ~/.vscode-server on the host.",
+      badgeTag: "EXTENSION_ISOLATION",
+    },
+  ],
+  simulator: {
+    headline: "REMOTE IDE DEPLOYMENT & OPENSSH TUNNELING CONSOLE",
+    description: "Verify isolated GPG keyrings, inspect the official Microsoft repository list, audit headless server processes, and verify reverse tunnel listening ports.",
+    defaultHost: "ssh://operative@cloud-dev-01:22",
+    defaultPayloadBytes: 512,
+    compressedPayloadBytes: 48,
+    responseHeaders: {
+      "Remote-Engine": "code-server-v1.94",
+      "Tunnel-Protocol": "SSH-2.0-OpenSSH_9.6",
+      "GPG-Keyring": "/etc/apt/keyrings/packages.microsoft.gpg",
+    },
+    terminalSteps: [
+      {
+        id: "step-1",
+        title: "Verify De-Armored GPG Keyring Security",
+        description: "Inspect the Microsoft public signing key installed in the isolated keyrings directory.",
+        command: "sudo gpg --show-keys /etc/apt/keyrings/packages.microsoft.gpg | grep -i microsoft",
+        output: "uid [ unknown] Microsoft (Release signing) <gpgsecurity@microsoft.com>",
+      },
+      {
+        id: "step-2",
+        title: "Audit Signed APT Repository Source Definition",
+        description: "Verify that the APT repository source file specifies the correct signed-by attribute.",
+        command: "cat /etc/apt/sources.list.d/vscode.list",
+        output: "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main",
+      },
+      {
+        id: "step-3",
+        title: "Verify Active Headless Server Daemon",
+        description: "Check that the remote VS Code server engine is actively running on the Linux host.",
+        command: "pgrep -fl vscode-server | head -n 1",
+        output: "18420 /home/operative/.vscode-server/bin/latest/node /home/operative/.vscode-server/bin/latest/server.js",
+      },
+      {
+        id: "step-4",
+        title: "Test Reverse SSH Tunnel Port Binding",
+        description: "Verify that reverse port forwarding for Sublime Text / rsub is actively bound to loopback.",
+        command: "ss -tulpn | grep 52698",
+        output: "tcp   LISTEN 0      128        127.0.0.1:52698            0.0.0.0:*",
+      },
+      {
+        id: "step-5",
+        title: "Launch CLI Remote Workspace",
+        description: "Verify native command-line installation of the code binary.",
+        command: "code --version | head -n 2",
+        output: "1.94.2\n384865ad1d0b6056b63d346c62d177f8ac20c2d7\nx64",
+      },
+    ],
+  },
+  debriefRules: [
+    {
+      id: "rule-1",
+      number: "01",
+      title: "Eliminate Client-Side File Sync",
+      rule: "Adopt headless Remote-SSH or reverse tunnels for remote Linux development, keeping code and language servers resident on the server.",
+      antiPattern: "Using legacy SFTP sync extensions that duplicate repositories locally, risking silent file overwrites and synchronization conflicts.",
+    },
+    {
+      id: "rule-2",
+      number: "02",
+      title: "Isolate Third-Party Package Signing Keys",
+      rule: "Store third-party GPG keys in de-armored binary format inside /etc/apt/keyrings/ and bind them strictly to their source entries using 'signed-by'.",
+      antiPattern: "Using deprecated 'apt-key add -' which grants third-party keys universal authority to sign any OS package in /etc/apt/trusted.gpg.",
+    },
+    {
+      id: "rule-3",
+      number: "03",
+      title: "Tunnel Development Ports Over SSH",
+      rule: "Use integrated port multiplexing or SSH LocalForward to preview development web services securely on localhost without exposing ports to public firewalls.",
+      antiPattern: "Opening sensitive development ports (e.g. 3000, 8080, 5432) to the public internet on cloud VMs.",
+    },
+  ],
+  quiz: [
+    {
+      id: "q-1",
+      scenario: "Why is Microsoft Remote-SSH dramatically faster and more reliable than legacy SFTP sync extensions when developing on a cloud Linux VM?",
+      question: "What is the primary architectural advantage?",
+      options: [
+        "Language servers, linters, compilers, and Git execute natively on the remote host via ~/.vscode-server; only lightweight UI diffs cross the SSH connection.",
+        "Remote-SSH automatically compresses source code into ZIP files before saving.",
+        "Remote-SSH eliminates the need for an SSH key.",
+        "It downloads the entire hard drive to your local laptop in the background.",
+      ],
+      correctIndex: 0,
+      explanation: "By executing language servers and build tools natively on the remote Linux host, Remote-SSH prevents network file transfer latency and avoids OS environment incompatibilities.",
+    },
+    {
+      id: "q-2",
+      scenario: "Why did Debian and Ubuntu deprecate 'apt-key add -' in modern releases like 22.04 and 24.04 LTS?",
+      question: "What security flaw does apt-key present?",
+      options: [
+        "It adds repository keys to a global trusted keyring (/etc/apt/trusted.gpg), meaning a compromise of that key could allow signing fraudulent updates for ANY system package.",
+        "It slows down internet connection speed.",
+        "It is incompatible with 64-bit processors.",
+        "It causes SSH keys to be deleted.",
+      ],
+      correctIndex: 0,
+      explanation: "Keys in /etc/apt/trusted.gpg are trusted for all repositories on the system. Modern practice uses isolated keyrings in /etc/apt/keyrings/ referenced explicitly by [signed-by=...].",
+    },
+    {
+      id: "q-3",
+      scenario: "When using Sublime Text to edit remote files over SSH, how does the rsub / rmate protocol open files directly on the desktop editor?",
+      question: "What underlying transport mechanism is utilized?",
+      options: [
+        "A reverse SSH tunnel forwarding remote port 52698 to 127.0.0.1:52698 on the local desktop, where Sublime Text listens for incoming file payloads.",
+        "An open FTP connection on port 21.",
+        "A public Google Cloud Storage bucket.",
+        "Direct USB cable connection.",
+      ],
+      correctIndex: 0,
+      explanation: "Reverse SSH forwarding ('RemoteForward 52698 127.0.0.1:52698') allows the remote rsub shell script to pipe file contents into the local desktop Sublime Text listener securely over the existing SSH connection.",
+    },
+    {
+      id: "q-4",
+      scenario: "When mounting a remote Linux filesystem using SSHFS for local IDE browsing, which mount option ensures the connection auto-recovers after network interruptions?",
+      question: "Which option provides fault tolerance?",
+      options: [
+        "-o reconnect,ServerAliveInterval=15,ServerAliveCountMax=3",
+        "-o force,no-check",
+        "-o debug,all",
+        "-o rw,nolock,noexec",
+      ],
+      correctIndex: 0,
+      explanation: "The 'reconnect' option combined with SSH keep-alives ('ServerAliveInterval=15') instructs FUSE to maintain the mount point and silently reconnect without freezing the local file explorer.",
+    },
+    {
+      id: "q-5",
+      scenario: "How can a developer securely preview a web server listening on '127.0.0.1:3000' on a remote Linux server inside their local browser?",
+      question: "What is the recommended approach?",
+      options: [
+        "Use VS Code's built-in Port Forwarding tab (or 'ssh -L 3000:localhost:3000') to tunnel the port directly to local workstation localhost.",
+        "Disable UFW firewall and expose port 3000 to 0.0.0.0 on the public internet.",
+        "Upload the database to a public pastebin.",
+        "Restart the server in single-user mode.",
+      ],
+      correctIndex: 0,
+      explanation: "SSH local port forwarding tunnels the remote private loopback socket directly to your local workstation, maintaining encryption and zero firewall exposure.",
+    },
+  ],
+};
+
 // Generic Drill Generator for all other technical posts
 export function generateLearningDrill(post: Post): LearningDrillData {
   if (post.slug === "install-and-config-brotli-compression-with-apache") {
@@ -3517,6 +3749,13 @@ export function generateLearningDrill(post: Post): LearningDrillData {
     post.slug === "enable-root-user-ubuntu-16-04-1-lts"
   ) {
     return ROOT_PRIVILEGE_DRILL;
+  }
+  if (
+    post.slug === "how-to-install-visual-studio-code-on-ubuntu" ||
+    post.slug === "install-sftp-extension-for-visual-studio-code" ||
+    post.slug === "solution-for-sublime-text-remote-editing"
+  ) {
+    return REMOTE_IDE_DRILL;
   }
   if (post.slug === "top-5-system-monitoring-tools-inux") {
     return SYSTEM_MONITORING_DRILL;
