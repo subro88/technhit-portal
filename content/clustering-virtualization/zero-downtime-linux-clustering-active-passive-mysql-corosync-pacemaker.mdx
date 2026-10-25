@@ -85,122 +85,155 @@ You can now experience this entire multi-agent pipeline live in your browser. Sw
 [Launch the Interactive Simulation Console (?mode=simulation)](/clustering-virtualization/zero-downtime-linux-clustering-active-passive-mysql-corosync-pacemaker?mode=simulation)
 </Callout>
 
-### Declarative Recipe Specification: TypeScript Monorepo with External MCP Servers
+### Declarative Recipe Specification: Provision Active-Passive MySQL Cluster
 
-Below is the complete, production-grade MDX workflow file (`workflow.mdx`) adapted specifically for an enterprise **TypeScript / Node.js 22 LTS Monorepo** (utilizing `pnpm` workspaces and Turborepo). It integrates external **Docker** and **MySQL Cluster** Model Context Protocol (MCP) servers to run ephemeral failover test harnesses, and enforces strict **Human-in-the-Loop review gates** (`<ApprovalGate>`) before any code is committed:
+Below is the complete, production-grade MDX workflow file (`provision-active-passive-mysql.mdx`) governing the automated setup, storage synchronization, and catastrophic failover validation for this two-node HA Linux database cluster:
 
 ```markdown
 ---
-name: "Autonomous Full-Stack Feature & Refactoring Workflow"
-description: "End-to-end task decomposition, implementation, testing, and self-healing workflow"
-repository_type: "monorepo"
-package_manager: "pnpm"
-framework: "TypeScript / Node.js 22 LTS"
+name: "Provision Active-Passive MySQL Cluster (Corosync + Pacemaker + DRBD)"
+description: "End-to-end automated setup, configuration, and failover validation for a two-node HA Linux database cluster"
 tools:
-  - "mcp:fs"
   - "mcp:terminal"
-  - "mcp:git"
-  - "mcp:docker"
-  - "mcp:mysql-cluster"
+  - "mcp:fs"
+  - "mcp:network"
 parameters:
-  target_issue:
+  node_primary_ip:
     type: string
-    description: "MySQL client pool exhaustion during Corosync VIP failover transition"
+    description: "Private heartbeat IP of Node A (e.g., 10.10.10.11)"
     required: true
-  max_healing_cycles:
-    type: number
-    default: 3
-  auto_heal:
-    type: boolean
-    default: true
+  node_secondary_ip:
+    type: string
+    description: "Private heartbeat IP of Node B (e.g., 10.10.10.12)"
+    required: true
+  virtual_ip:
+    type: string
+    description: "Cluster Virtual IP / Floating IP (e.g., 10.10.10.100)"
+    required: true
+  drbd_device:
+    type: string
+    default: "/dev/drbd0"
+  drbd_disk_partition:
+    type: string
+    default: "/dev/sdb1"
+  fencing_agent:
+    type: string
+    description: "Fencing mechanism (e.g., fence_ipmilan, fence_pve, fence_virsh)"
+    default: "fence_ipmilan"
 ---
 
-# Agent Execution Pipeline
+# High-Availability MySQL Cluster Orchestration
 
 <Context>
-You are an autonomous senior software engineer and systems architect executing within the Google Antigravity environment.
-Your task is to take the requested issue, inspect the local TypeScript monorepo, execute atomic changes, verify functionality via local containerized test harnesses, and prepare a verified Git branch ready for peer review.
+You are an autonomous Site Reliability Engineer and Linux Systems Architect inside Google Antigravity.
+Your objective is to provision, configure, and validate a resilient, zero-downtime active-passive MySQL database cluster across two Linux nodes using Corosync for cluster messaging, Pacemaker as the CRM, DRBD for block-level replication, and STONITH for split-brain prevention.
 
-Target Objective:
-{{ parameters.target_issue }}
+Target Virtual IP: {{ parameters.virtual_ip }}
+Heartbeat Nodes: {{ parameters.node_primary_ip }} (Node A), {{ parameters.node_secondary_ip }} (Node B)
+Storage Device: {{ parameters.drbd_device }} on {{ parameters.drbd_disk_partition }}
+Fencing Agent: {{ parameters.fencing_agent }}
 </Context>
 
 ---
 
-## Step 1: Workspace Reconnaissance & Monorepo Graph Analysis
+## Step 1: Pre-Flight Discovery & Network Verification
 
-<Task id="reconnaissance" agent="planner">
-1. Run structural analysis on the monorepo:
-   - Parse `pnpm-workspace.yaml` and turbo/nx dependency graph.
-   - Identify affected packages: `packages/db-pool` and downstream consumer `apps/api-gateway`.
-2. Inspect external runtime test environments via MCP:
-   - Call `mcp:docker.inspect_container` for the MySQL Corosync VIP container (`10.10.10.100`).
-   - Query replication status via `mcp:mysql-cluster` (`SELECT @@hostname, @@read_only`).
-3. Formulate atomic execution plan and log proposed diffs before file mutations.
+<Task id="recon_and_prerequisites" agent="infra_planner">
+1. Audit local network interfaces across both nodes:
+   - Verify low-latency dedicated heartbeat interfaces (Ring 0 on 10.10.10.x and Ring 1 on 10.20.20.x).
+   - Confirm hostname resolution via /etc/hosts on both nodes:
+     ```bash
+     grep -E 'db-node-01|db-node-02' /etc/hosts
+     ```
+   - Ensure TCP ports 7788 (DRBD), 2224 (pcsd), and UDP ports 5404, 5405 (Corosync) are open on firewall/ufw/iptables.
+2. Check shared-nothing storage block device availability:
+   - Run `lsblk` and verify {{ parameters.drbd_disk_partition }} exists unmounted on both nodes.
+3. Validate NTP/Chrony synchronization between nodes (clock skew must be < 10ms).
 </Task>
 
 ---
 
-## Step 2: Implementation & Branch Isolation
+## Step 2: DRBD Synchronous Storage Provisioning
 
-<Task id="implementation" agent="coder" dependsOn="reconnaissance">
-1. Create dedicated feature branch using git:
+<Task id="configure_drbd" agent="storage_engineer" dependsOn="recon_and_prerequisites">
+1. Generate the DRBD configuration file at `/etc/drbd.d/mysql-ha.res`:
+   - Protocol: C (Synchronous zero-loss replication).
+   - Configure split-brain handlers (discard-node-nodata, adjust-my-split-brain).
+   - Define endpoints for Node A ({{ parameters.node_primary_ip }}) and Node B ({{ parameters.node_secondary_ip }}).
+2. Initialize metadata and attach storage on both nodes:
    ```bash
-   git checkout -b feature/ha-mysql-proxy-reconnect
+   drbdadm create-md mysql-ha
+   drbdadm up mysql-ha
    ```
-2. Apply changes atomically using `mcp:fs`:
-   - Enhance `cluster-connector.ts` with exponential backoff and jittered reconnect loops.
-   - Implement corresponding integration test coverage in `packages/db-pool/test/failover.spec.ts`.
-   - Strictly prohibit mock shortcuts or temporary TODO blocks in production paths.
-</Task>
-
----
-
-## Step 3: Verification & Automated Self-Healing Loop
-
-<Task id="verification" agent="evaluator" dependsOn="implementation">
-1. Run integration test harness via MCP terminal:
+3. Establish initial sync on Node A:
    ```bash
-   pnpm --filter @technhit/db-pool test:integration
+   drbdadm primary --force mysql-ha
    ```
-2. Autonomous Self-Healing Evaluation:
-   - IF exit_code != 0 (e.g. timeout during 8.2s STONITH window):
-     - Capture stderr and container packet logs.
-     - Decrement `max_healing_cycles` (remaining cycles tracked in runtime context).
-     - Re-prompt Planner Agent to formulate corrective backoff adjustments.
-     - Apply patch via `mcp:fs` and re-execute test harness.
-   - IF exit_code == 0:
-     - Advance immediately to Step 4.
+4. Format the filesystem on {{ parameters.drbd_device }} with ext4 (Multi-Mount Protection enabled).
+5. Gate: Do not proceed until `dstate:UpToDate/UpToDate` is achieved.
 </Task>
 
 ---
 
-## Step 4: Human-in-the-Loop Review Gate
+## Step 3: Corosync, Pacemaker & STONITH Initialization
 
-<ApprovalGate id="human-review" dependsOn="verification">
+<Task id="corosync_pacemaker_stonith" agent="cluster_architect" dependsOn="configure_drbd">
+1. Authenticate nodes and initialize cluster:
+   ```bash
+   pcs host auth db-node-01 db-node-02 -u hacluster
+   pcs cluster setup mysql_cluster db-node-01 addr=10.10.10.11 addr=10.20.20.11 db-node-02 addr=10.10.10.12 addr=10.20.20.12
+   pcs cluster start --all && pcs cluster enable --all
+   ```
+2. Configure STONITH fencing devices (IPMI BMC or Proxmox VE API):
+   ```bash
+   pcs stonith create fence_node1 {{ parameters.fencing_agent }} ip=192.168.10.51 pcmk_host_list=db-node-01
+   pcs stonith create fence_node2 {{ parameters.fencing_agent }} ip=192.168.10.52 pcmk_host_list=db-node-02
+   ```
+3. Enforce STONITH enabled (`stonith-enabled=true`) and no-quorum-policy=stop.
+</Task>
+
+---
+
+## Step 4: Cluster Resource Configuration & Constraints
+
+<ApprovalGate id="cluster-constraint-review" dependsOn="corosync_pacemaker_stonith">
   <Condition>
-    Test suite passed with exit code 0. Awaiting human operator sign-off before committing.
+    Corosync quorum formed and STONITH active. Operator must verify colocation and ordering rules.
   </Condition>
   <Prompt>
-    Verify that client retry backoff does not exceed maximum allowable SLA window (2500ms) before committing to git.
+    Verify that MySQL and Filesystem colocate with DRBD Master and follow strict promotion order.
   </Prompt>
 </ApprovalGate>
 
+<Task id="activate_resources" agent="crm_operator" dependsOn="cluster-constraint-review">
+1. Define cluster resources:
+   - VIP (ocf:heartbeat:IPaddr2, ip=10.10.10.100)
+   - fs_mysql (ocf:heartbeat:Filesystem, device=/dev/drbd0, directory=/var/lib/mysql)
+   - mysql_svc (ocf:heartbeat:mysql, config=/etc/mysql/my.cnf)
+2. Enforce atomic colocation & ordering:
+   ```bash
+   pcs constraint colocation add VIP with fs_mysql INFINITY
+   pcs constraint colocation add fs_mysql with ms_drbd_mysql:Master INFINITY
+   pcs constraint order promote ms_drbd_mysql then start fs_mysql then start VIP
+   ```
+</Task>
+
 ---
 
-## Step 5: Final Validation & Artifact Generation
+## Step 5: Automated Failover & Self-Healing Testing
 
-<Task id="finalization" agent="release" dependsOn="human-review">
-1. Run repository-wide linters and typechecks:
+<Task id="failover_validation" agent="reliability_evaluator" dependsOn="activate_resources">
+1. Inject simulated catastrophic kernel panic on Node A:
    ```bash
-   pnpm lint && pnpm typecheck
+   ssh db-node-01 'echo c > /proc/sysrq-trigger'
    ```
-2. Commit and push branch atomically via `mcp:git`:
-   ```bash
-   git commit -m "fix(db-pool): implement exponential backoff during Corosync VIP failover transition"
-   git push origin feature/ha-mysql-proxy-reconnect
-   ```
-3. Generate verified Pull Request with test coverage and failover latency audit report.
+2. Validate automated failover execution:
+   - Corosync detects token loss in < 1000ms.
+   - Node B invokes STONITH via IPMI: Node A power cut attested.
+   - Node B promotes DRBD /dev/drbd0 to Primary.
+   - Node B mounts /var/lib/mysql and starts MySQL.
+   - Node B takes over Virtual IP (10.10.10.100) and broadcasts Gratuitous ARP.
+3. Validate total recovery time objective: RTO < 10s, RPO = 0 transactions.
 </Task>
 ```
 
