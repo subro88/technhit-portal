@@ -4,7 +4,7 @@ import React from "react";
 import { Layers, Network, Cpu, Shield, Database, Server } from "lucide-react";
 
 interface ArchitectureDiagramProps {
-  type?: "cluster" | "network" | "stem" | "reverse-proxy" | "php-fpm";
+  type?: "cluster" | "network" | "stem" | "reverse-proxy" | "php-fpm" | "kernel-firewall";
   title?: string;
 }
 
@@ -232,6 +232,69 @@ export default function ArchitectureDiagram({
               PROCESS ISOLATION GUARANTEE:
             </span>
             <span>If a PHP 7.4 legacy script crashes or exhausts memory, PHP 8.1 and 8.3 daemons remain completely unaffected.</span>
+          </div>
+        </div>
+      )}
+
+      {type === "kernel-firewall" && (
+        <div className="py-2 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-center">
+            {/* Stage 1: NIC Packet Ingress */}
+            <div className="p-3.5 rounded-xl bg-cyber-900 border border-zinc-800 text-center font-mono">
+              <div className="w-8 h-8 rounded-lg bg-zinc-800 text-amber-400 flex items-center justify-center mx-auto mb-2 border border-zinc-700">
+                <Network className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-zinc-100 block">NIC INGRESS</span>
+              <span className="text-[10px] text-zinc-400 mt-0.5 block">WAN Ethernet Frame</span>
+              <div className="mt-2.5 pt-2 border-t border-zinc-800 text-[9px] text-zinc-500">
+                RX Ring Buffer
+              </div>
+            </div>
+
+            {/* Stage 2: Netfilter / Nftables */}
+            <div className="p-3.5 rounded-xl bg-[#0d1117] border border-cyan-500/60 text-center font-mono shadow-[0_0_15px_rgba(0,245,212,0.1)]">
+              <div className="w-8 h-8 rounded-lg bg-cyan-950/60 text-[#00f5d4] flex items-center justify-center mx-auto mb-2 border border-[#00f5d4]/40">
+                <Shield className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-white block">NFTABLES HOOK</span>
+              <span className="text-[10px] text-cyan-400/90 mt-0.5 block">prerouting / input</span>
+              <div className="mt-2.5 pt-2 border-t border-zinc-800 text-[9px] text-zinc-300">
+                ct state invalid drop
+              </div>
+            </div>
+
+            {/* Stage 3: Linux TCP Stack / Sysctl */}
+            <div className="p-3.5 rounded-xl bg-[#0d1117] border border-emerald-500/60 text-center font-mono shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+              <div className="w-8 h-8 rounded-lg bg-emerald-950/60 text-emerald-400 flex items-center justify-center mx-auto mb-2 border border-emerald-500/40">
+                <Cpu className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-white block">SYSCTL ENGINE</span>
+              <span className="text-[10px] text-emerald-400/90 mt-0.5 block">Kernel Memory Layer</span>
+              <div className="mt-2.5 pt-2 border-t border-zinc-800 text-[9px] text-zinc-300">
+                tcp_syncookies = 1
+              </div>
+            </div>
+
+            {/* Stage 4: Protected User Socket */}
+            <div className="p-3.5 rounded-xl bg-cyber-900 border border-purple-500/50 text-center font-mono">
+              <div className="w-8 h-8 rounded-lg bg-purple-950/60 text-purple-400 flex items-center justify-center mx-auto mb-2 border border-purple-500/40">
+                <Server className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-zinc-100 block">LOCAL SOCKET</span>
+              <span className="text-[10px] text-purple-400/90 mt-0.5 block">Bound Service Ports</span>
+              <div className="mt-2.5 pt-2 border-t border-zinc-800 text-[9px] text-zinc-500">
+                SSH (22) / Nginx (443)
+              </div>
+            </div>
+          </div>
+
+          {/* Performance Legend */}
+          <div className="p-3 rounded-lg bg-zinc-900/60 border border-zinc-800 text-[11px] font-mono text-zinc-400 flex flex-wrap items-center justify-between gap-2">
+            <span className="text-zinc-300 font-bold flex items-center gap-1.5">
+              <Shield className="w-3.5 h-3.5 text-[#00f5d4]" />
+              ATOMIC EVALUATION ADVANTAGE:
+            </span>
+            <span>Nftables uses an internal in-kernel bytecode virtual machine, evaluating stateful rules in &lt; 0.2 microseconds per packet.</span>
           </div>
         </div>
       )}
