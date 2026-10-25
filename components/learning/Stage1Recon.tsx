@@ -5,13 +5,19 @@ import type { ReconCard } from "@/lib/learning-generator";
 import { awardOperativeXp, markStageComplete, playHapticSound } from "@/lib/operative-store";
 import { RefreshCw, CheckCircle2, ArrowRight, Zap, Eye } from "lucide-react";
 
+import ArchitectureDiagram from "@/components/mdx/ArchitectureDiagram";
+
 interface Stage1ReconProps {
   slug: string;
   cards: ReconCard[];
+  architectureDiagram?: {
+    type: "reverse-proxy" | "cluster" | "network" | "stem";
+    title: string;
+  };
   onCompleteStage: () => void;
 }
 
-export function Stage1Recon({ slug, cards, onCompleteStage }: Stage1ReconProps) {
+export function Stage1Recon({ slug, cards, architectureDiagram, onCompleteStage }: Stage1ReconProps) {
   const [flippedCards, setFlippedCards] = useState<Record<string, boolean>>({});
   const [awardedCards, setAwardedCards] = useState<Record<string, boolean>>({});
 
@@ -51,6 +57,16 @@ export function Stage1Recon({ slug, cards, onCompleteStage }: Stage1ReconProps) 
           Flip each architecture card below to reveal its production definition and live implementation context. Every new discovery awards <span className="text-[#FF5400] font-bold">+15 XP</span>.
         </p>
       </div>
+
+      {/* Visual Architectural Flow Diagram (if configured) */}
+      {architectureDiagram && (
+        <div className="space-y-2">
+          <ArchitectureDiagram
+            type={architectureDiagram.type}
+            title={architectureDiagram.title}
+          />
+        </div>
+      )}
 
       {/* Mission Status Strip */}
       <div className="border border-zinc-800 bg-[#0d1117] p-4 flex flex-col sm:flex-row items-center justify-between gap-4 font-mono text-xs">

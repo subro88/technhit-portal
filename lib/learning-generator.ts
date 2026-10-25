@@ -75,6 +75,10 @@ export interface LearningDrillData {
   category: string;
   badgeName: string;
   badgeDescription: string;
+  architectureDiagram?: {
+    type: "reverse-proxy" | "cluster" | "network" | "stem";
+    title: string;
+  };
   reconCards: ReconCard[];
   motive: MotiveBenchmark;
   debateStatements: DebateStatement[];
@@ -363,10 +367,305 @@ const BROTLI_DRILL: LearningDrillData = {
   ],
 };
 
+// Handcrafted Flagship Drill for Nginx Reverse Proxy
+const NGINX_REVERSE_PROXY_DRILL: LearningDrillData = {
+  slug: "setting-up-an-nginx-reverse-proxy",
+  title: "Setting up an Nginx Reverse Proxy",
+  category: "linux-server-admin",
+  badgeName: "Reverse Proxy & Ingress Architect",
+  badgeDescription: "Mastered Nginx reverse proxying, SSL/TLS termination, upstream keepalive pooling, and mod_remoteip header propagation.",
+  architectureDiagram: {
+    type: "reverse-proxy",
+    title: "Nginx Edge Reverse Proxy & Apache Origin Mesh",
+  },
+  reconCards: [
+    {
+      id: "rc-1",
+      tag: "CORE ARCHITECTURE",
+      title: "REVERSE PROXY (RFC 7230)",
+      subtitle: "Intermediary Ingress Gateway",
+      definition: "An edge server that intercepts client web requests, applies caching, SSL termination, and rate limits, then delegates processing to origin backends across local or VPC sockets.",
+      seenInProd: "Deployed as the public entry point (ports 80/443) on modern Kubernetes Ingress, AWS ALBs, and dedicated VPS nodes.",
+    },
+    {
+      id: "rc-2",
+      tag: "UPSTREAM ROUTING",
+      title: "UPSTREAM DIRECTIVE & POOLING",
+      subtitle: "Backend Socket Balancing",
+      definition: "Groups backend application servers into a named cluster with support for load balancing algorithms (round-robin, least_conn, ip_hash) and persistent TCP keepalive pools.",
+      seenInProd: "Configured via 'upstream backend { server 127.0.0.1:8080; keepalive 32; }' inside /etc/nginx/conf.d/.",
+    },
+    {
+      id: "rc-3",
+      tag: "CONCURRENCY SHOCK ABSORBER",
+      title: "PROXY BUFFERING",
+      subtitle: "Memory Buffer Isolation",
+      definition: "Nginx reads full backend responses at Gigabit loopback speeds into memory buffers, liberating heavy Apache worker threads before trickling payloads out to slow cellular mobile clients.",
+      seenInProd: "Tuned via 'proxy_buffering on; proxy_buffers 256 16k; proxy_buffer_size 128k;' in production proxy_params.",
+    },
+    {
+      id: "rc-4",
+      tag: "SECURITY & IDENTITY",
+      title: "TRANSPARENT CLIENT IP FORWARDING",
+      subtitle: "X-Forwarded-For & RemoteIP",
+      definition: "Nginx passes real visitor IPs in the 'X-Forwarded-For' header. Origin Apache instances use 'mod_remoteip' to log the actual visitor IP instead of the 127.0.0.1 loopback address.",
+      seenInProd: "Activated in Apache via 'a2enmod remoteip' and 'RemoteIPHeader X-Forwarded-For'.",
+    },
+    {
+      id: "rc-5",
+      tag: "ZERO-COPY I/O",
+      title: "SENDFILE STATIC CACHE",
+      subtitle: "Kernel-Level Direct Streaming",
+      definition: "Nginx serves static HTML, CSS, JavaScript, and images directly from NVMe storage using the Linux kernel 'sendfile()' syscall, bypassing user space completely in <1ms without touching Apache.",
+      seenInProd: "Mapped inside 'location ~* \\.(css|js|png|jpg|svg)$ { root /var/www/html; expires 30d; }'.",
+    },
+    {
+      id: "rc-6",
+      tag: "PROTOCOL EVOLUTION",
+      title: "WEBSOCKET & HTTP/2 UPGRADE",
+      subtitle: "Duplex Connection Tunneling",
+      definition: "Enables bidirectional, full-duplex communication pipelines by dynamically passing HTTP 'Upgrade' and 'Connection: upgrade' headers to real-time microservices and Node.js daemons.",
+      seenInProd: "Required for live terminal consoles, chat engines, and Socket.io instances.",
+    },
+  ],
+  motive: {
+    headline: "THREAD EXHAUSTION VS. 100K ASYNC EPOLL WORKERS",
+    subheadline: "Apache MPM prefork allocates 1 dedicated OS process (~25MB RAM) per connection. 1,000 slow mobile clients consume 25GB RAM and freeze the server. Nginx handles 100,000 clients in 50MB.",
+    uncompressedBytes: 540000,
+    compressedBytes: 86000,
+    savingsPercentage: 84.1,
+    explanation: "By decoupling fast backend application execution (1.2ms) from slow client network drains (500ms-4000ms), Nginx prevents thread starvation and multiplies server request capacity by 12x.",
+    networkProfiles: [
+      { name: "3G Mobile (750 Kbps, 150ms RTT)", speedKbps: 750, uncompressedTimeMs: 4800, compressedTimeMs: 420 },
+      { name: "4G LTE (15 Mbps, 45ms RTT)", speedKbps: 15000, uncompressedTimeMs: 450, compressedTimeMs: 85 },
+      { name: "Fiber Gigabit (1 Gbps, 8ms RTT)", speedKbps: 1000000, uncompressedTimeMs: 35, compressedTimeMs: 4 },
+    ],
+  },
+  debateStatements: [
+    {
+      id: "ds-1",
+      scenario: "Origin Server Network Binding",
+      proposedAction: "Configure Apache to listen on 0.0.0.0:8080 so developers can query backend scripts directly over the public internet.",
+      isValid: false,
+      explanation: "FLAWED ARCHITECTURE: Binding backend Apache to 0.0.0.0 exposes origin ports directly to automated scanners and DDoS attacks, bypassing Nginx security filters and SSL termination. Apache MUST listen strictly on 127.0.0.1:8080 or a private VPC subnet.",
+      badgeTag: "SECURITY_PERIMETER",
+    },
+    {
+      id: "ds-2",
+      scenario: "Preserving Client Identity in Logs",
+      proposedAction: "Include 'proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;' and 'proxy_set_header Host $http_host;' in proxy configuration.",
+      isValid: true,
+      explanation: "VALID ARCHITECTURE: Passing the original Host header preserves name-based VirtualHost resolution on Apache, while $proxy_add_x_forwarded_for chains client IPs so the backend can record true visitor origins.",
+      badgeTag: "HEADER_PROPAGATION",
+    },
+    {
+      id: "ds-3",
+      scenario: "Client IP Translation on Modern Ubuntu LTS",
+      proposedAction: "Compile and install the third-party libapache2-mod-rpaf package on Ubuntu 22.04 or 24.04 LTS.",
+      isValid: false,
+      explanation: "FLAWED: mod_rpaf is obsolete and unmaintained. Apache 2.4+ includes native 'mod_remoteip' (sudo a2enmod remoteip), configured cleanly with 'RemoteIPHeader X-Forwarded-For' and 'RemoteIPInternalProxy 127.0.0.1'.",
+      badgeTag: "LTS_MODERNIZATION",
+    },
+    {
+      id: "ds-4",
+      scenario: "Static File Delivery Strategy",
+      proposedAction: "Configure Nginx to serve images, CSS, and JavaScript directly from /var/www/html while passing only dynamic / requests to Apache.",
+      isValid: true,
+      explanation: "VALID OPTIMIZATION: Nginx uses the Linux kernel 'sendfile()' zero-copy mechanism to serve static assets in microsecond timeframes without allocating memory or CPU in Apache worker processes.",
+      badgeTag: "SENDFILE_OFFLOAD",
+    },
+    {
+      id: "ds-5",
+      scenario: "Proxy Buffer Management",
+      proposedAction: "Disable proxy buffering globally ('proxy_buffering off;') on general web applications to ensure raw byte-for-byte streaming.",
+      isValid: false,
+      explanation: "FLAWED: Disabling buffering forces Apache backend workers to stay alive and blocked while slow mobile clients trickle download bytes over poor cellular connections. Keep buffering enabled except for SSE and LLM token streams.",
+      badgeTag: "BUFFER_DISCIPLINE",
+    },
+    {
+      id: "ds-6",
+      scenario: "Applying Configuration Updates",
+      proposedAction: "Run 'sudo nginx -t' followed by 'sudo systemctl reload nginx' to activate new reverse proxy VirtualHosts.",
+      isValid: true,
+      explanation: "VALID: 'nginx -t' validates syntax integrity, and 'reload' instructs the master process to spawn new workers while allowing existing workers to drain active TCP connections gracefully without dropping client traffic.",
+      badgeTag: "ZERO_DOWNTIME",
+    },
+  ],
+  simulator: {
+    headline: "PRODUCTION NGINX REVERSE PROXY & APACHE INTEGRATION TERMINAL",
+    description: "Re-bind Apache to localhost:8080, enable mod_remoteip, install Nginx with proxy_params, test configuration syntax, and verify transparent header passthrough via cURL.",
+    defaultHost: "http://10.0.50.57",
+    terminalSteps: [
+      {
+        id: "step-1",
+        title: "Re-bind Apache to Localhost:8080",
+        description: "Restrict Apache to loopback port 8080 so port 80 is freed for Nginx ingress.",
+        command: "sudo sed -i 's/Listen 80/Listen 127.0.0.1:8080/' /etc/apache2/ports.conf && sudo apache2ctl configtest",
+        output: "Syntax OK",
+      },
+      {
+        id: "step-2",
+        title: "Activate Apache mod_remoteip",
+        description: "Enable the modern Apache remote IP translation module to log true client IPs.",
+        command: "sudo a2enmod remoteip && sudo systemctl restart apache2",
+        output: "Enabling module remoteip.\nTo activate the new configuration, you need to run:\n  systemctl restart apache2\n[OK] Restarted apache2.service.",
+      },
+      {
+        id: "step-3",
+        title: "Install & Start Nginx Ingress Daemon",
+        description: "Deploy Nginx web server and reverse proxy package from Ubuntu repositories.",
+        command: "sudo apt update && sudo apt install -y nginx && sudo systemctl enable --now nginx",
+        output: "Reading package lists... Done\nSetting up nginx (1.24.0-2ubuntu7) ...\nSynchronizing state of nginx.service with SysV service script...\n[OK] Started nginx.service.",
+      },
+      {
+        id: "step-4",
+        title: "Verify Nginx Syntax Validity",
+        description: "Parse /etc/nginx/sites-available/default to verify proxy_pass directives before applying.",
+        command: "sudo nginx -t",
+        output: "nginx: the configuration file /etc/nginx/nginx.conf syntax is ok\nnginx: configuration file /etc/nginx/nginx.conf test is successful",
+      },
+      {
+        id: "step-5",
+        title: "Zero-Downtime Daemon Reload",
+        description: "Instruct Nginx master process to hot-reload worker configuration without dropping sockets.",
+        command: "sudo systemctl reload nginx",
+        output: "[OK] Reloaded nginx.service.",
+      },
+      {
+        id: "step-6",
+        title: "cURL Ingress Handshake Verification",
+        description: "Query the public server IP to confirm Nginx edge proxy responds with Apache backend content.",
+        command: "curl -I -H \"X-Test-Probe: technhit\" http://10.0.50.57",
+        output: "HTTP/1.1 200 OK\nServer: nginx/1.24.0 (Ubuntu)\nDate: Sun, 25 Oct 2026 09:30:00 GMT\nContent-Type: text/html; charset=UTF-8\nConnection: keep-alive\nVary: Accept-Encoding\nX-Powered-By: Apache/2.4.58 (Ubuntu) Backend\nX-Real-IP-Propagated: 10.0.50.57",
+      },
+    ],
+    defaultPayloadBytes: 420000,
+    compressedPayloadBytes: 74000,
+    responseHeaders: {
+      "HTTP/1.1": "200 OK",
+      "Server": "nginx/1.24.0 (Ubuntu)",
+      "Date": "Sun, 25 Oct 2026 09:30:00 GMT",
+      "Content-Type": "text/html; charset=UTF-8",
+      "Connection": "keep-alive",
+      "Vary": "Accept-Encoding",
+      "X-Powered-By": "Apache/2.4.58 (Ubuntu) Backend",
+      "X-Real-IP-Propagated": "10.0.50.57",
+      "Cache-Control": "public, max-age=86400",
+    },
+  },
+  debriefRules: [
+    {
+      id: "rule-1",
+      number: "01",
+      title: "BIND ORIGIN SERVERS STRICTLY TO LOCALHOST OR PRIVATE VPC",
+      rule: "Never allow backend application ports (Apache 8080, Node 3000, Python 8000) to listen on 0.0.0.0. Force all WAN traffic through Nginx ingress.",
+      antiPattern: "Leaving origin ports exposed directly to public internet probing.",
+    },
+    {
+      id: "rule-2",
+      number: "02",
+      title: "USE NATIVE MOD_REMOTEIP OVER DEPRECATED MOD_RPAF",
+      rule: "Configure 'RemoteIPHeader X-Forwarded-For' and 'RemoteIPInternalProxy 127.0.0.1' in Apache to record genuine client IPs across all access logs.",
+      antiPattern: "Allowing access logs to show 127.0.0.1 for every single visitor request.",
+    },
+    {
+      id: "rule-3",
+      number: "03",
+      title: "OFFLOAD STATIC ASSETS DIRECTLY WITH SENDFILE",
+      rule: "Configure location blocks in Nginx to serve images, CSS, and JS directly from disk with long cache headers, bypassing backend processes completely.",
+      antiPattern: "Routing static file requests through heavy dynamic application workers.",
+    },
+    {
+      id: "rule-4",
+      number: "04",
+      title: "PRESERVE PROXY BUFFERING FOR MOBILE CONCURRENCY PROTECTION",
+      rule: "Keep 'proxy_buffering on;' enabled so Nginx can absorb backend responses in 1ms and trickle bytes to slow mobile networks without tying up backend threads.",
+      antiPattern: "Disabling proxy buffering globally on web and API endpoints.",
+    },
+    {
+      id: "rule-5",
+      number: "05",
+      title: "ALWAYS VERIFY CONFIGTEST BEFORE RELOAD",
+      rule: "Execute 'sudo nginx -t' followed by 'sudo systemctl reload nginx' to achieve zero-downtime configuration rollouts with continuous connection draining.",
+      antiPattern: "Blindly running systemctl restart nginx during high production traffic.",
+    },
+  ],
+  quiz: [
+    {
+      id: "q-1",
+      scenario: "During a security audit, you discover that the backend Apache server is listening on 0.0.0.0:8080 while Nginx is listening on 0.0.0.0:80.",
+      question: "What is the primary security hazard of this configuration?",
+      options: [
+        "Apache will reject all requests forwarded by Nginx due to IP conflicts.",
+        "Attackers can bypass Nginx WAF, rate limits, and SSL termination by connecting directly to port 8080.",
+        "The Linux kernel will drop TCP SYN packets due to socket duplication.",
+        "Nginx will be unable to generate X-Forwarded-For headers.",
+      ],
+      correctIndex: 1,
+      explanation: "When origin services bind to 0.0.0.0, external attackers can bypass Nginx ingress controls (rate limiting, SSL policies, WAF rules, and DDoS buffers) by querying port 8080 directly.",
+    },
+    {
+      id: "q-2",
+      scenario: "On an Ubuntu 24.04 LTS server running Apache behind an Nginx reverse proxy, all entries in Apache's /var/log/apache2/access.log show the client IP as 127.0.0.1.",
+      question: "What is the recommended modern solution to restore genuine client IP logging in Apache 2.4+?",
+      options: [
+        "Install the legacy third-party libapache2-mod-rpaf package.",
+        "Enable native 'mod_remoteip' and configure 'RemoteIPHeader X-Forwarded-For' with 'RemoteIPInternalProxy 127.0.0.1'.",
+        "Disable Nginx proxy buffering and run Apache in host network mode.",
+        "Configure Apache to use raw TCP socket sniffing via libpcap.",
+      ],
+      correctIndex: 1,
+      explanation: "Apache 2.4+ provides native 'mod_remoteip'. When enabled with 'RemoteIPHeader X-Forwarded-For' and 'RemoteIPInternalProxy 127.0.0.1', Apache automatically replaces the loopback IP with the true client IP in all access logs.",
+    },
+    {
+      id: "q-3",
+      scenario: "Your web server experiences severe response latency whenever hundreds of mobile users on poor 3G connections download reports from your application.",
+      question: "How does Nginx 'proxy_buffering on;' mitigate this thread exhaustion problem?",
+      options: [
+        "It forces the mobile clients to switch to HTTP/3 UDP packets.",
+        "It reads the full response from Apache in milliseconds at local bus speed, freeing the backend worker while Nginx trickles bytes to the slow client.",
+        "It compresses all response payloads using Brotli quality 11.",
+        "It temporarily halts incoming GET requests until existing sockets close.",
+      ],
+      correctIndex: 1,
+      explanation: "Proxy buffering allows Nginx to consume the backend response at gigabit loopback speed in 1-2ms, releasing the backend thread back to the pool while Nginx handles the slow transfer to the client.",
+    },
+    {
+      id: "q-4",
+      scenario: "You need to update proxy parameters inside /etc/nginx/sites-available/default on a high-traffic production server.",
+      question: "Which command sequence applies the updates with ZERO dropped user connections?",
+      options: [
+        "sudo systemctl restart nginx",
+        "sudo killall -9 nginx && sudo nginx",
+        "sudo nginx -t && sudo systemctl reload nginx",
+        "sudo a2enmod proxy && sudo service nginx restart",
+      ],
+      correctIndex: 2,
+      explanation: "'sudo nginx -t' verifies configuration syntax first, and 'systemctl reload nginx' gracefully spawns new workers while letting existing workers finish servicing ongoing client requests without dropping a single packet.",
+    },
+    {
+      id: "q-5",
+      scenario: "A real-time dashboard microservice using WebSockets fails to connect through Nginx with an HTTP 400 Bad Request error.",
+      question: "Which two headers MUST be configured in Nginx location block to enable WebSocket reverse proxying?",
+      options: [
+        "proxy_set_header Upgrade $http_upgrade; and proxy_set_header Connection \"upgrade\";",
+        "proxy_set_header X-WebSocket-Mode auto; and proxy_set_header Accept-Encoding br;",
+        "proxy_buffering off; and proxy_ssl_server_name on;",
+        "proxy_set_header Transfer-Encoding chunked; and proxy_pass_header Set-Cookie;",
+      ],
+      correctIndex: 0,
+      explanation: "WebSockets begin with an HTTP handshake requesting a protocol upgrade. Nginx requires 'proxy_set_header Upgrade $http_upgrade;' and 'proxy_set_header Connection \"upgrade\";' to pass this handshake to the upstream backend.",
+    },
+  ],
+};
+
 // Generic Drill Generator for all other technical posts
 export function generateLearningDrill(post: Post): LearningDrillData {
   if (post.slug === "install-and-config-brotli-compression-with-apache") {
     return BROTLI_DRILL;
+  }
+  if (post.slug === "setting-up-an-nginx-reverse-proxy") {
+    return NGINX_REVERSE_PROXY_DRILL;
   }
 
   const cleanTitle = post.title.replace(/^\[.*?\]/, "").trim();

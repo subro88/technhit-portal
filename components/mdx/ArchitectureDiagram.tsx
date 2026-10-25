@@ -4,7 +4,7 @@ import React from "react";
 import { Layers, Network, Cpu, Shield, Database, Server } from "lucide-react";
 
 interface ArchitectureDiagramProps {
-  type?: "cluster" | "network" | "stem";
+  type?: "cluster" | "network" | "stem" | "reverse-proxy";
   title?: string;
 }
 
@@ -75,6 +75,85 @@ export default function ArchitectureDiagram({
           <p className="text-center text-zinc-400 max-w-md">
             Trajectories in state space $(x(t), \dot{"{"}x{"}"}(t))$ showing convergence to equilibrium limit cycles.
           </p>
+        </div>
+      )}
+
+      {type === "reverse-proxy" && (
+        <div className="py-2 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+            {/* Node 1: Client Tier */}
+            <div className="p-4 rounded-xl bg-cyber-900 border border-zinc-800 text-center font-mono relative group hover:border-zinc-700 transition-colors">
+              <div className="w-8 h-8 rounded-lg bg-zinc-800 text-cyan-400 flex items-center justify-center mx-auto mb-2 border border-zinc-700">
+                <Network className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-zinc-100 block">CLIENT BROWSER</span>
+              <span className="text-[10px] text-zinc-400 mt-1 block">Public Internet · TCP Socket</span>
+              <div className="mt-3 pt-2.5 border-t border-zinc-800/80 text-[10px] text-zinc-500 flex items-center justify-center gap-1.5">
+                <Shield className="w-3 h-3 text-emerald-400" />
+                <span>TLS 1.3 / Port 443</span>
+              </div>
+            </div>
+
+            {/* Node 2: Nginx Edge Reverse Proxy */}
+            <div className="p-4 rounded-xl bg-[#0d1117] border border-[#00f5d4]/60 text-center font-mono relative shadow-[0_0_20px_rgba(0,245,212,0.12)]">
+              <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-[#00f5d4] text-black font-bold text-[9px] tracking-wider uppercase">
+                EDGE TERMINATION
+              </div>
+              <div className="w-8 h-8 rounded-lg bg-cyan-950/60 text-[#00f5d4] flex items-center justify-center mx-auto mb-2 border border-[#00f5d4]/50">
+                <Server className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-white block">NGINX REVERSE PROXY</span>
+              <span className="text-[10px] text-cyan-400/90 mt-1 block">10.0.50.57 : 80 / 443</span>
+              <div className="mt-3 pt-2.5 border-t border-zinc-800 text-[10px] text-zinc-400 space-y-1 text-left bg-zinc-950/60 p-2 rounded">
+                <div className="text-[9px] text-[#00f5d4] font-bold">INJECTED PROXY HEADERS:</div>
+                <div className="truncate text-zinc-300">X-Forwarded-For: $proxy_add...</div>
+                <div className="truncate text-zinc-300">X-Real-IP: $remote_addr</div>
+                <div className="truncate text-zinc-300">X-Forwarded-Proto: $scheme</div>
+              </div>
+            </div>
+
+            {/* Node 3: Upstream Backends */}
+            <div className="space-y-3">
+              <div className="p-3 rounded-lg bg-cyber-900 border border-amber-500/50 font-mono text-left group hover:border-amber-400 transition-colors">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-amber-400 flex items-center gap-1.5">
+                    <Database className="w-3.5 h-3.5" />
+                    DYNAMIC BACKEND
+                  </span>
+                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/30">
+                    Apache :8080
+                  </span>
+                </div>
+                <p className="text-[10px] text-zinc-400 mt-1">
+                  Processes PHP / Python / MySQL logic via loopback socket.
+                </p>
+              </div>
+
+              <div className="p-3 rounded-lg bg-cyber-900 border border-emerald-500/50 font-mono text-left group hover:border-emerald-400 transition-colors">
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-bold text-emerald-400 flex items-center gap-1.5">
+                    <Layers className="w-3.5 h-3.5" />
+                    STATIC CACHE
+                  </span>
+                  <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-500/10 text-emerald-300 border border-emerald-500/30">
+                    /var/www/html
+                  </span>
+                </div>
+                <p className="text-[10px] text-zinc-400 mt-1">
+                  Zero-copy direct sendfile() delivery (0.8ms TTFB).
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* Traffic Legend Banner */}
+          <div className="p-3 rounded-lg bg-zinc-900/60 border border-zinc-800 text-[11px] font-mono text-zinc-400 flex flex-wrap items-center justify-between gap-2">
+            <span className="text-zinc-300 font-bold flex items-center gap-1.5">
+              <Shield className="w-3.5 h-3.5 text-[#00f5d4]" />
+              SECURITY ADVANTAGE:
+            </span>
+            <span>Origin Apache port 8080 is blocked from external WAN; only localhost socket accepted.</span>
+          </div>
         </div>
       )}
     </div>

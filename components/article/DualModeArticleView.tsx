@@ -598,6 +598,7 @@ export function DualModeArticleView({ post, recentPosts, children }: DualModeArt
                 <Stage1Recon
                   slug={post.slug}
                   cards={drillData.reconCards}
+                  architectureDiagram={drillData.architectureDiagram}
                   onCompleteStage={() => setActiveStage(1)}
                 />
               )}
