@@ -13,6 +13,7 @@ import { Stage3Debate } from "@/components/learning/Stage3Debate";
 import { Stage4Simulator } from "@/components/learning/Stage4Simulator";
 import { Stage5Debrief } from "@/components/learning/Stage5Debrief";
 import { Stage6FinalExam } from "@/components/learning/Stage6FinalExam";
+import { AgenticWorkflowSimulator } from "@/components/simulation/AgenticWorkflowSimulator";
 import {
   ArrowLeft,
   Calendar,
@@ -25,6 +26,7 @@ import {
   ChevronRight,
   Shield,
   Zap,
+  Cpu,
 } from "lucide-react";
 
 interface DualModeArticleViewProps {
@@ -37,9 +39,15 @@ export function DualModeArticleView({ post, recentPosts, children }: DualModeArt
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  // Mode: "blog" | "learning"
-  const initialMode = searchParams.get("mode") === "learning" ? "learning" : "blog";
-  const [mode, setMode] = useState<"blog" | "learning">(initialMode);
+  // Mode: "blog" | "learning" | "simulation"
+  const modeParam = searchParams.get("mode");
+  const initialMode =
+    modeParam === "learning"
+      ? "learning"
+      : modeParam === "simulation"
+      ? "simulation"
+      : "blog";
+  const [mode, setMode] = useState<"blog" | "learning" | "simulation">(initialMode);
   const [activeStage, setActiveStage] = useState(0);
   const [scrollProgress, setScrollProgress] = useState(0);
 
@@ -149,12 +157,14 @@ export function DualModeArticleView({ post, recentPosts, children }: DualModeArt
     return () => observer.disconnect();
   }, [mode, tocItems]);
 
-  const handleSwitchMode = (targetMode: "blog" | "learning") => {
+  const handleSwitchMode = (targetMode: "blog" | "learning" | "simulation") => {
     playHapticSound("click");
     setMode(targetMode);
     const url = new URL(window.location.href);
     if (targetMode === "learning") {
       url.searchParams.set("mode", "learning");
+    } else if (targetMode === "simulation") {
+      url.searchParams.set("mode", "simulation");
     } else {
       url.searchParams.delete("mode");
     }
@@ -195,7 +205,7 @@ export function DualModeArticleView({ post, recentPosts, children }: DualModeArt
               onClick={() => handleSwitchMode("blog")}
               role="tab"
               aria-selected={mode === "blog"}
-              className={`font-display tracking-[0.14em] text-xs sm:text-sm px-4 sm:px-6 py-1.5 transition-all flex items-center gap-2 leading-none pt-1 ${
+              className={`font-display tracking-[0.14em] text-xs sm:text-sm px-3 sm:px-5 py-1.5 transition-all flex items-center gap-2 leading-none pt-1 ${
                 mode === "blog"
                   ? "bg-[#FF5400] text-black font-bold shadow-[0_0_12px_rgba(255,84,0,0.3)]"
                   : "text-zinc-400 hover:text-zinc-200"
@@ -209,7 +219,7 @@ export function DualModeArticleView({ post, recentPosts, children }: DualModeArt
               onClick={() => handleSwitchMode("learning")}
               role="tab"
               aria-selected={mode === "learning"}
-              className={`font-display tracking-[0.14em] text-xs sm:text-sm px-4 sm:px-6 py-1.5 transition-all flex items-center gap-2 leading-none pt-1 ${
+              className={`font-display tracking-[0.14em] text-xs sm:text-sm px-3 sm:px-5 py-1.5 transition-all flex items-center gap-2 leading-none pt-1 ${
                 mode === "learning"
                   ? "bg-[#FF5400] text-black font-bold shadow-[0_0_12px_rgba(255,84,0,0.3)]"
                   : "text-zinc-400 hover:text-zinc-200"
@@ -217,6 +227,20 @@ export function DualModeArticleView({ post, recentPosts, children }: DualModeArt
             >
               <Gamepad2 className="w-3.5 h-3.5" />
               <span>LEARNING MODE</span>
+            </button>
+
+            <button
+              onClick={() => handleSwitchMode("simulation")}
+              role="tab"
+              aria-selected={mode === "simulation"}
+              className={`font-display tracking-[0.14em] text-xs sm:text-sm px-3 sm:px-5 py-1.5 transition-all flex items-center gap-2 leading-none pt-1 ${
+                mode === "simulation"
+                  ? "bg-[#FF5400] text-black font-bold shadow-[0_0_12px_rgba(255,84,0,0.3)]"
+                  : "text-zinc-400 hover:text-zinc-200"
+              }`}
+            >
+              <Cpu className="w-3.5 h-3.5" />
+              <span>SIMULATION MODE</span>
             </button>
           </div>
 
@@ -226,10 +250,15 @@ export function DualModeArticleView({ post, recentPosts, children }: DualModeArt
               <span className="text-[11px] text-zinc-500">
                 READING: <strong className="text-amber-400">{Math.round(scrollProgress)}%</strong>
               </span>
-            ) : (
+            ) : mode === "learning" ? (
               <span className="text-[11px] text-zinc-400 flex items-center gap-1.5">
                 <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
                 <span>DRILL: <strong className="text-emerald-400">{clearedCount}/6 CLEAR</strong></span>
+              </span>
+            ) : (
+              <span className="text-[11px] text-cyan-400 flex items-center gap-1.5">
+                <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+                <span>MCP RUNTIME: <strong className="text-cyan-300">ACTIVE</strong></span>
               </span>
             )}
           </div>
@@ -289,6 +318,12 @@ export function DualModeArticleView({ post, recentPosts, children }: DualModeArt
                     className="pulse-cta bg-[#FF5400] text-black font-display text-xl tracking-[0.14em] px-8 py-3.5 hover:bg-amber-400 transition-colors"
                   >
                     ENTER LEARNING MODE →
+                  </button>
+                  <button
+                    onClick={() => handleSwitchMode("simulation")}
+                    className="bg-cyan-950/60 border border-cyan-500/80 text-cyan-300 font-display text-xl tracking-[0.14em] px-8 py-3.5 hover:bg-cyan-500 hover:text-black transition-all shadow-[0_0_15px_rgba(6,182,212,0.2)]"
+                  >
+                    ENTER SIMULATION MODE →
                   </button>
                   <a
                     href="#manual-content"
@@ -497,12 +532,19 @@ export function DualModeArticleView({ post, recentPosts, children }: DualModeArt
                     <p className="text-zinc-400 text-sm sm:text-base font-body leading-relaxed max-w-2xl">
                       Internalize the exact mechanisms in this guide through our 6-stage drill. Flip cards, calibrate bandwidth sliders, judge architectural proposals, test commands in the terminal, and certify your knowledge with official XP and badges.
                     </p>
-                    <div className="pt-2">
+                    <div className="pt-2 flex flex-wrap items-center gap-4">
                       <button
                         onClick={() => handleSwitchMode("learning")}
                         className="pulse-cta bg-[#FF5400] hover:bg-amber-500 text-black font-display text-xl tracking-wider px-9 py-4 transition-colors"
                       >
                         START THE 6-STAGE DRILL →
+                      </button>
+                      <button
+                        onClick={() => handleSwitchMode("simulation")}
+                        className="bg-cyan-950/60 border border-cyan-500/80 text-cyan-300 font-display text-xl tracking-wider px-9 py-4 hover:bg-cyan-500 hover:text-black transition-all shadow-[0_0_15px_rgba(6,182,212,0.2)] flex items-center gap-2"
+                      >
+                        <Cpu className="w-5 h-5" />
+                        <span>LAUNCH AGENTIC SIMULATOR →</span>
                       </button>
                     </div>
                   </div>
@@ -510,7 +552,7 @@ export function DualModeArticleView({ post, recentPosts, children }: DualModeArt
               </div>
             </div>
           </div>
-        ) : (
+        ) : mode === "learning" ? (
           /* ================= LEARNING MODE ================= */
           <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 pt-8 sm:pt-12 space-y-10 animate-fadeIn">
             {/* Operative Gamification HUD */}
@@ -650,6 +692,9 @@ export function DualModeArticleView({ post, recentPosts, children }: DualModeArt
               )}
             </div>
           </div>
+        ) : (
+          /* ================= SIMULATION MODE ================= */
+          <AgenticWorkflowSimulator post={post} />
         )}
       </main>
     </div>

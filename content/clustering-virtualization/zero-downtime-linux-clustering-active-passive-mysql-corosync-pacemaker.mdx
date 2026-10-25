@@ -70,18 +70,139 @@ In a standalone database topology, a physical hardware failure triggers an avera
 
 ## Agentic Infrastructure Automation & Verification
 
-Engineering enterprise clustering configurations requires flawless precision. A single misplaced constraint or typo in a cluster resource manager script can result in split-brain data corruption. 
+Engineering enterprise clustering configurations and database client connectors requires flawless precision. A single misplaced constraint or unhandled socket disconnect during a 10-second STONITH failover window can exhaust client connection pools and cause total service outages.
 
-At TechNHIT, clustering blueprints and multi-node validation drills are designed, scaffolded, and continuously validated using the **Google Antigravity MDX Agentic Workflow Engine**. Below is the complete interactive infographic detailing how declarative recipe files translate into automated, verified infrastructure artifacts:
+At TechNHIT, clustering blueprints, client failover connectors, and multi-node validation drills are designed, scaffolded, and continuously validated using the **Google Antigravity MDX Agentic Workflow Engine**. Below is the complete interactive infographic detailing how declarative recipe files translate into automated, verified infrastructure artifacts:
 
 <ArchitectureDiagram
   type="antigravity-workflow"
   title="Google Antigravity MDX Agentic Workflow: Automated Infrastructure Clustering Recipe"
 />
 
-<Callout type="tip" title="Why MDX Scaffolding Outperforms Ad-Hoc Bash Scripts">
-By structuring infrastructure blueprints within declarative MDX recipes, the Antigravity Orchestration Engine isolates task decomposition between **Planner**, **Executor**, and **Reviewer** agents. When automated pre-flight checks fail (such as `crm configure verify` returning syntax errors), the closed verification loop auto-corrects the configuration before any production state changes occur.
+<Callout type="tip" title="Interactive Agentic Workflow Simulator Available">
+You can now experience this entire multi-agent pipeline live in your browser. Switch to **Simulation Mode** using the top tab bar or launch the console to watch the **Planner**, **Coder**, and **Evaluator** agents run tests, trigger self-healing loops upon cluster failover regressions, and pause at human approval gates.
+
+[Launch the Interactive Simulation Console (?mode=simulation)](/clustering-virtualization/zero-downtime-linux-clustering-active-passive-mysql-corosync-pacemaker?mode=simulation)
 </Callout>
+
+### Declarative Recipe Specification: TypeScript Monorepo with External MCP Servers
+
+Below is the complete, production-grade MDX workflow file (`workflow.mdx`) adapted specifically for an enterprise **TypeScript / Node.js 22 LTS Monorepo** (utilizing `pnpm` workspaces and Turborepo). It integrates external **Docker** and **MySQL Cluster** Model Context Protocol (MCP) servers to run ephemeral failover test harnesses, and enforces strict **Human-in-the-Loop review gates** (`<ApprovalGate>`) before any code is committed:
+
+```markdown
+---
+name: "Autonomous Full-Stack Feature & Refactoring Workflow"
+description: "End-to-end task decomposition, implementation, testing, and self-healing workflow"
+repository_type: "monorepo"
+package_manager: "pnpm"
+framework: "TypeScript / Node.js 22 LTS"
+tools:
+  - "mcp:fs"
+  - "mcp:terminal"
+  - "mcp:git"
+  - "mcp:docker"
+  - "mcp:mysql-cluster"
+parameters:
+  target_issue:
+    type: string
+    description: "MySQL client pool exhaustion during Corosync VIP failover transition"
+    required: true
+  max_healing_cycles:
+    type: number
+    default: 3
+  auto_heal:
+    type: boolean
+    default: true
+---
+
+# Agent Execution Pipeline
+
+<Context>
+You are an autonomous senior software engineer and systems architect executing within the Google Antigravity environment.
+Your task is to take the requested issue, inspect the local TypeScript monorepo, execute atomic changes, verify functionality via local containerized test harnesses, and prepare a verified Git branch ready for peer review.
+
+Target Objective:
+{{ parameters.target_issue }}
+</Context>
+
+---
+
+## Step 1: Workspace Reconnaissance & Monorepo Graph Analysis
+
+<Task id="reconnaissance" agent="planner">
+1. Run structural analysis on the monorepo:
+   - Parse `pnpm-workspace.yaml` and turbo/nx dependency graph.
+   - Identify affected packages: `packages/db-pool` and downstream consumer `apps/api-gateway`.
+2. Inspect external runtime test environments via MCP:
+   - Call `mcp:docker.inspect_container` for the MySQL Corosync VIP container (`10.10.10.100`).
+   - Query replication status via `mcp:mysql-cluster` (`SELECT @@hostname, @@read_only`).
+3. Formulate atomic execution plan and log proposed diffs before file mutations.
+</Task>
+
+---
+
+## Step 2: Implementation & Branch Isolation
+
+<Task id="implementation" agent="coder" dependsOn="reconnaissance">
+1. Create dedicated feature branch using git:
+   ```bash
+   git checkout -b feature/ha-mysql-proxy-reconnect
+   ```
+2. Apply changes atomically using `mcp:fs`:
+   - Enhance `cluster-connector.ts` with exponential backoff and jittered reconnect loops.
+   - Implement corresponding integration test coverage in `packages/db-pool/test/failover.spec.ts`.
+   - Strictly prohibit mock shortcuts or temporary TODO blocks in production paths.
+</Task>
+
+---
+
+## Step 3: Verification & Automated Self-Healing Loop
+
+<Task id="verification" agent="evaluator" dependsOn="implementation">
+1. Run integration test harness via MCP terminal:
+   ```bash
+   pnpm --filter @technhit/db-pool test:integration
+   ```
+2. Autonomous Self-Healing Evaluation:
+   - IF exit_code != 0 (e.g. timeout during 8.2s STONITH window):
+     - Capture stderr and container packet logs.
+     - Decrement `max_healing_cycles` (remaining cycles tracked in runtime context).
+     - Re-prompt Planner Agent to formulate corrective backoff adjustments.
+     - Apply patch via `mcp:fs` and re-execute test harness.
+   - IF exit_code == 0:
+     - Advance immediately to Step 4.
+</Task>
+
+---
+
+## Step 4: Human-in-the-Loop Review Gate
+
+<ApprovalGate id="human-review" dependsOn="verification">
+  <Condition>
+    Test suite passed with exit code 0. Awaiting human operator sign-off before committing.
+  </Condition>
+  <Prompt>
+    Verify that client retry backoff does not exceed maximum allowable SLA window (2500ms) before committing to git.
+  </Prompt>
+</ApprovalGate>
+
+---
+
+## Step 5: Final Validation & Artifact Generation
+
+<Task id="finalization" agent="release" dependsOn="human-review">
+1. Run repository-wide linters and typechecks:
+   ```bash
+   pnpm lint && pnpm typecheck
+   ```
+2. Commit and push branch atomically via `mcp:git`:
+   ```bash
+   git commit -m "fix(db-pool): implement exponential backoff during Corosync VIP failover transition"
+   git push origin feature/ha-mysql-proxy-reconnect
+   ```
+3. Generate verified Pull Request with test coverage and failover latency audit report.
+</Task>
+```
 
 ---
 
