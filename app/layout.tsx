@@ -5,7 +5,6 @@ import { Server, Terminal, Cpu, BookOpen, Compass, Youtube, Shield, Code2 } from
 import { TuxGearLogo } from "@/components/brand/TuxGearLogo";
 import { ThemeProvider } from "@/components/theme/ThemeContext";
 import { ThemeSwitcher } from "@/components/theme/ThemeSwitcher";
-import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 
 export const viewport: Viewport = {
@@ -66,11 +65,24 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const gaId = process.env.NEXT_PUBLIC_GA_ID;
+  const gaId = process.env.NEXT_PUBLIC_GA_ID || "G-G57HF31NMF";
 
   return (
     <html lang="en" className="dark scroll-smooth">
       <head>
+        {/* Google tag (gtag.js) */}
+        <script async src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} />
+        <script
+          id="google-tag-gtag"
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('js', new Date());
+              gtag('config', '${gaId}');
+            `,
+          }}
+        />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
@@ -255,7 +267,6 @@ export default function RootLayout({
         </footer>
         </ThemeProvider>
       </body>
-      {gaId ? <GoogleAnalytics gaId={gaId} /> : null}
     </html>
   );
 }

@@ -3,12 +3,12 @@
 import { sendGAEvent } from "@next/third-parties/google";
 
 /**
- * GA4 Measurement ID resolved from environment variables
+ * GA4 Measurement ID resolved from environment variables with fallback
  */
-export const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GA_ID || "";
+export const GA_TRACKING_ID = process.env.NEXT_PUBLIC_GA_ID || "G-G57HF31NMF";
 
 /**
- * Generic event tracker wrapper around @next/third-parties/google sendGAEvent
+ * Generic event tracker wrapper around gtag and @next/third-parties/google sendGAEvent
  */
 export function trackEvent(
   action: string,
@@ -17,7 +17,11 @@ export function trackEvent(
   if (typeof window === "undefined" || !GA_TRACKING_ID) return;
 
   try {
-    sendGAEvent("event", action, params || {});
+    if (typeof (window as any).gtag === "function") {
+      (window as any).gtag("event", action, params || {});
+    } else {
+      sendGAEvent("event", action, params || {});
+    }
   } catch (err) {
     // Fail silently in development or if ad-blocker blocks analytics
     if (process.env.NODE_ENV === "development") {
