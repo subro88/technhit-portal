@@ -4,7 +4,7 @@ import React from "react";
 import { Layers, Network, Cpu, Shield, Database, Server } from "lucide-react";
 
 interface ArchitectureDiagramProps {
-  type?: "cluster" | "network" | "stem" | "reverse-proxy" | "php-fpm" | "kernel-firewall" | "ssh-handshake" | "apache-vhost" | "system-telemetry" | "sshfs-fuse";
+  type?: "cluster" | "network" | "stem" | "reverse-proxy" | "php-fpm" | "kernel-firewall" | "ssh-handshake" | "apache-vhost" | "system-telemetry" | "sshfs-fuse" | "ssh-file-transfer";
   title?: string;
 }
 
@@ -551,6 +551,66 @@ export default function ArchitectureDiagram({
               NETWORK FILESYSTEM RESILIENCE:
             </span>
             <span>Always mount with '_netdev,reconnect,ServerAliveInterval=15' to ensure transient network drops automatically reconnect without hanging local IDE processes.</span>
+          </div>
+        </div>
+      )}
+
+      {type === "ssh-file-transfer" && (
+        <div className="py-2 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
+            {/* Mechanism 1: Modern SCP */}
+            <div className="p-4 rounded-xl bg-cyber-900 border border-zinc-800 text-center font-mono relative">
+              <div className="w-8 h-8 rounded-lg bg-zinc-800 text-amber-400 flex items-center justify-center mx-auto mb-2 border border-zinc-700">
+                <Network className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-zinc-100 block">MODERN SCP (SFTP MODE)</span>
+              <span className="text-[10px] text-zinc-400 mt-1 block">One-Off Quick Transfers</span>
+              <div className="mt-3 pt-2.5 border-t border-zinc-800/80 text-[10px] text-zinc-400 space-y-1 text-left bg-zinc-950/60 p-2 rounded">
+                <div className="text-[9px] text-amber-400 font-bold">PROTOCOL: SFTP Subsystem</div>
+                <div className="truncate text-zinc-300">scp -p -C app.tar.gz host:/tmp/</div>
+                <div className="truncate text-zinc-500">Legacy RCP deprecated (CVE-2019-6111)</div>
+              </div>
+            </div>
+
+            {/* Mechanism 2: Interactive & Sandboxed SFTP */}
+            <div className="p-4 rounded-xl bg-[#0d1117] border border-cyan-500/60 text-center font-mono relative shadow-[0_0_20px_rgba(0,245,212,0.12)]">
+              <div className="absolute -top-2.5 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-full bg-[#00f5d4] text-black font-bold text-[9px] tracking-wider uppercase">
+                ENTERPRISE CHROOT
+              </div>
+              <div className="w-8 h-8 rounded-lg bg-cyan-950/60 text-[#00f5d4] flex items-center justify-center mx-auto mb-2 border border-[#00f5d4]/40">
+                <Shield className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-white block">INTERACTIVE / BATCH SFTP</span>
+              <span className="text-[10px] text-cyan-400/90 mt-1 block">Subsystem &amp; Chroot Jails</span>
+              <div className="mt-3 pt-2.5 border-t border-zinc-800 text-[10px] text-zinc-400 space-y-1 text-left bg-zinc-950/60 p-2 rounded">
+                <div className="text-[9px] text-[#00f5d4] font-bold">SECURITY JAIL: internal-sftp</div>
+                <div className="truncate text-zinc-300">ForceCommand internal-sftp</div>
+                <div className="truncate text-zinc-300">ChrootDirectory /data/sftp/%u</div>
+              </div>
+            </div>
+
+            {/* Mechanism 3: Rsync over SSH */}
+            <div className="p-4 rounded-xl bg-cyber-900 border border-emerald-500/50 text-center font-mono">
+              <div className="w-8 h-8 rounded-lg bg-emerald-950/60 text-emerald-400 flex items-center justify-center mx-auto mb-2 border border-emerald-500/40">
+                <Database className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-zinc-100 block">RSYNC OVER SSH</span>
+              <span className="text-[10px] text-emerald-400/90 mt-1 block">Rolling Delta Checksums</span>
+              <div className="mt-3 pt-2.5 border-t border-zinc-800/80 text-[10px] text-zinc-400 space-y-1 text-left bg-zinc-950/60 p-2 rounded">
+                <div className="text-[9px] text-emerald-400 font-bold">DELTA TRANSFERS:</div>
+                <div className="truncate text-zinc-300">rsync -avzP --partial -e ssh</div>
+                <div className="truncate text-zinc-300">Transfers only modified chunks</div>
+              </div>
+            </div>
+          </div>
+
+          {/* Protocol Integrity Banner */}
+          <div className="p-3 rounded-lg bg-zinc-900/60 border border-zinc-800 text-[11px] font-mono text-zinc-400 flex flex-wrap items-center justify-between gap-2">
+            <span className="text-zinc-300 font-bold flex items-center gap-1.5">
+              <Shield className="w-3.5 h-3.5 text-[#00f5d4]" />
+              MODERN PROTOCOL STANDARD:
+            </span>
+            <span>OpenSSH 9.0+ replaces the vulnerable 1980s RCP protocol in scp with SFTP by default, preventing malicious remote directory spoofing while rsync delivers production delta synchronization.</span>
           </div>
         </div>
       )}
