@@ -1,8 +1,9 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import type { Post } from "@/lib/posts";
 import { playHapticSound, awardOperativeXp } from "@/lib/operative-store";
+import { ClusterFailoverVisualizer } from "@/components/simulation/ClusterFailoverVisualizer";
 import {
   Terminal,
   Play,
@@ -87,6 +88,27 @@ export function AgenticWorkflowSimulator({ post }: AgenticWorkflowSimulatorProps
     const timeStr = `${now.toTimeString().split(" ")[0]}.${String(now.getMilliseconds()).padStart(3, "0")}`;
     setLogs((prev) => [...prev, { id: Math.random().toString(), timestamp: timeStr, type, text }]);
   };
+
+  // Two-way interactive sync from 3D motion-graphics timeline scrubber
+  const handleTimelineSync = useCallback((time: number, sceneIndex: number) => {
+    if (sceneIndex === 0) {
+      setActiveNode("db-node-01");
+      setDrbdSyncState("UpToDate/UpToDate");
+      setCurrentStep(1);
+    } else if (sceneIndex === 1) {
+      setActiveNode("db-node-01");
+      setDrbdSyncState("Secondary/Primary");
+      setCurrentStep(2);
+    } else if (sceneIndex === 2) {
+      setSimState("fencing");
+      setCurrentStep(3);
+    } else if (sceneIndex === 3) {
+      setActiveNode("db-node-02");
+      setDrbdSyncState("UpToDate/UpToDate");
+      setSimState("completed");
+      setCurrentStep(5);
+    }
+  }, []);
 
   // Step 1: Pre-Flight Discovery & Network Verification
   const runStep1 = () => {
@@ -462,6 +484,9 @@ Fencing Agent: {{ parameters.fencing_agent }}
           </button>
         </div>
       </div>
+
+      {/* Cinematic 3D Technical Motion-Graphics Theater */}
+      <ClusterFailoverVisualizer onTimelineSync={handleTimelineSync} />
 
       {/* Cluster Status Quick Bar */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 font-mono text-xs">
