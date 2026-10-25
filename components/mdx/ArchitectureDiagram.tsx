@@ -4,7 +4,7 @@ import React from "react";
 import { Layers, Network, Cpu, Shield, Database, Server } from "lucide-react";
 
 interface ArchitectureDiagramProps {
-  type?: "cluster" | "network" | "stem" | "reverse-proxy" | "php-fpm" | "kernel-firewall" | "ssh-handshake" | "apache-vhost" | "system-telemetry" | "sshfs-fuse" | "ssh-file-transfer";
+  type?: "cluster" | "network" | "stem" | "reverse-proxy" | "php-fpm" | "kernel-firewall" | "ssh-handshake" | "apache-vhost" | "system-telemetry" | "sshfs-fuse" | "ssh-file-transfer" | "tomcat-servlet";
   title?: string;
 }
 
@@ -611,6 +611,69 @@ export default function ArchitectureDiagram({
               MODERN PROTOCOL STANDARD:
             </span>
             <span>OpenSSH 9.0+ replaces the vulnerable 1980s RCP protocol in scp with SFTP by default, preventing malicious remote directory spoofing while rsync delivers production delta synchronization.</span>
+          </div>
+        </div>
+      )}
+
+      {type === "tomcat-servlet" && (
+        <div className="py-2 space-y-6">
+          <div className="grid grid-cols-1 md:grid-cols-4 gap-3 items-center">
+            {/* Stage 1: Edge TLS Reverse Proxy */}
+            <div className="p-3.5 rounded-xl bg-cyber-900 border border-zinc-800 text-center font-mono">
+              <div className="w-8 h-8 rounded-lg bg-zinc-800 text-cyan-400 flex items-center justify-center mx-auto mb-2 border border-zinc-700">
+                <Network className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-zinc-100 block">EDGE INGRESS</span>
+              <span className="text-[10px] text-zinc-400 mt-0.5 block">Nginx / Port 443</span>
+              <div className="mt-2.5 pt-2 border-t border-zinc-800 text-[9px] text-zinc-500">
+                TLS 1.3 Termination
+              </div>
+            </div>
+
+            {/* Stage 2: Coyote NIO Connector */}
+            <div className="p-3.5 rounded-xl bg-[#0d1117] border border-cyan-500/60 text-center font-mono shadow-[0_0_15px_rgba(0,245,212,0.1)]">
+              <div className="w-8 h-8 rounded-lg bg-cyan-950/60 text-[#00f5d4] flex items-center justify-center mx-auto mb-2 border border-[#00f5d4]/40">
+                <Server className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-white block">COYOTE NIO</span>
+              <span className="text-[10px] text-cyan-400/90 mt-0.5 block">Loopback Port 8080</span>
+              <div className="mt-2.5 pt-2 border-t border-zinc-800 text-[9px] text-zinc-300">
+                RemoteIpValve Filter
+              </div>
+            </div>
+
+            {/* Stage 3: Catalina Servlet Container */}
+            <div className="p-3.5 rounded-xl bg-[#0d1117] border border-emerald-500/60 text-center font-mono shadow-[0_0_15px_rgba(16,185,129,0.1)]">
+              <div className="w-8 h-8 rounded-lg bg-emerald-950/60 text-emerald-400 flex items-center justify-center mx-auto mb-2 border border-emerald-500/40">
+                <Layers className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-white block">CATALINA ENGINE</span>
+              <span className="text-[10px] text-emerald-400/90 mt-0.5 block">Jakarta EE 10</span>
+              <div className="mt-2.5 pt-2 border-t border-zinc-800 text-[9px] text-zinc-300">
+                Servlet 6.0 Pipeline
+              </div>
+            </div>
+
+            {/* Stage 4: OpenJDK HotSpot JVM */}
+            <div className="p-3.5 rounded-xl bg-cyber-900 border border-purple-500/50 text-center font-mono">
+              <div className="w-8 h-8 rounded-lg bg-purple-950/60 text-purple-400 flex items-center justify-center mx-auto mb-2 border border-purple-500/40">
+                <Cpu className="w-4 h-4" />
+              </div>
+              <span className="text-xs font-bold text-zinc-100 block">JVM RUNTIME</span>
+              <span className="text-[10px] text-purple-400/90 mt-0.5 block">OpenJDK 21 LTS</span>
+              <div className="mt-2.5 pt-2 border-t border-zinc-800 text-[9px] text-zinc-500">
+                G1GC / Heap -Xmx2G
+              </div>
+            </div>
+          </div>
+
+          {/* JVM Sandboxing Legend */}
+          <div className="p-3 rounded-lg bg-zinc-900/60 border border-zinc-800 text-[11px] font-mono text-zinc-400 flex flex-wrap items-center justify-between gap-2">
+            <span className="text-zinc-300 font-bold flex items-center gap-1.5">
+              <Shield className="w-3.5 h-3.5 text-emerald-400" />
+              PRODUCTION SANDBOXING:
+            </span>
+            <span>Tomcat runs as unprivileged user 'tomcat' supervised by systemd with 'ProtectSystem=strict', while G1GC eliminates stop-the-world JVM GC pauses under high request rates.</span>
           </div>
         </div>
       )}

@@ -76,7 +76,7 @@ export interface LearningDrillData {
   badgeName: string;
   badgeDescription: string;
   architectureDiagram?: {
-    type: "reverse-proxy" | "cluster" | "network" | "stem" | "php-fpm" | "kernel-firewall" | "ssh-handshake" | "apache-vhost" | "system-telemetry" | "sshfs-fuse" | "ssh-file-transfer";
+    type: "reverse-proxy" | "cluster" | "network" | "stem" | "php-fpm" | "kernel-firewall" | "ssh-handshake" | "apache-vhost" | "system-telemetry" | "sshfs-fuse" | "ssh-file-transfer" | "tomcat-servlet";
     title: string;
   };
   reconCards: ReconCard[];
@@ -2673,6 +2673,295 @@ const SFTP_SCP_DRILL: LearningDrillData = {
   ],
 };
 
+// Handcrafted Flagship Drill for Apache Tomcat 10 / Jakarta EE 10
+const TOMCAT_DRILL: LearningDrillData = {
+  slug: "how-to-install-tomcat-10-on-ubuntu-20-04",
+  title: "How to Install Apache Tomcat 10 on Ubuntu: Enterprise Production Guide",
+  category: "linux-server-admin",
+  badgeName: "Enterprise Java Servlet Engineer",
+  badgeDescription: "Mastered Apache Tomcat 10.1 deployment, Jakarta EE 10 specifications, JVM heap calibration with G1GC, and systemd security sandboxing.",
+  architectureDiagram: {
+    type: "tomcat-servlet",
+    title: "Enterprise Jakarta EE 10 Architecture: Nginx Edge & Tomcat JVM",
+  },
+  reconCards: [
+    {
+      id: "rc-1",
+      tag: "SPECIFICATION",
+      title: "JAKARTA EE 10 (SERVLET 6.0)",
+      subtitle: "jakarta.servlet Namespace",
+      definition: "Apache Tomcat 10.x implements the Jakarta EE 10 specification. Unlike Tomcat 9 and earlier, all enterprise servlets and filters MUST import 'jakarta.servlet.*' instead of legacy 'javax.servlet.*'.",
+      seenInProd: "Spring Boot 3.x, Quarkus, Jakarta RESTful web services.",
+    },
+    {
+      id: "rc-2",
+      tag: "ENGINE ARCHITECTURE",
+      title: "CATALINA & COYOTE",
+      subtitle: "NIO Connector & Pipeline",
+      definition: "Coyote handles non-blocking TCP socket I/O on port 8080, while Catalina executes the servlet container request pipeline, context dispatching, and security valves.",
+      seenInProd: "Core runtime of Apache Tomcat 10.1 LTS on OpenJDK 21.",
+    },
+    {
+      id: "rc-3",
+      tag: "JVM MEMORY TUNING",
+      title: "G1 GARBAGE COLLECTOR",
+      subtitle: "-XX:+UseG1GC -XX:MaxGCPauseMillis=200",
+      definition: "Modern generational garbage collector that divides the Java heap into regional chunks, concurrently cleaning areas with high garbage density to bound stop-the-world GC pauses under 100ms.",
+      seenInProd: "Standard high-throughput JVM option in CATALINA_OPTS.",
+    },
+    {
+      id: "rc-4",
+      tag: "EDGE REVERSE PROXY",
+      title: "REMOTE IP VALVE",
+      subtitle: "org.apache.catalina.valves.RemoteIpValve",
+      definition: "Translates X-Forwarded-For and X-Forwarded-Proto headers received from Nginx/HAProxy so Tomcat correctly identifies real client IPs and terminates TLS securely without mixed-content errors.",
+      seenInProd: "Configured inside conf/server.xml underneath <Host>.",
+    },
+    {
+      id: "rc-5",
+      tag: "SYSTEMD SANDBOXING",
+      title: "PROTECTSYSTEM=STRICT",
+      subtitle: "Kernel Mount Namespace Isolation",
+      definition: "Mounts /usr, /boot, and /etc as read-only for the Tomcat systemd process, only granting write permissions to /opt/tomcat/logs, temp, webapps, and work.",
+      seenInProd: "SOC 2 and CIS Linux benchmark compliance.",
+    },
+    {
+      id: "rc-6",
+      tag: "RBAC & ACCESS CONTROLS",
+      title: "TOMCAT-USERS.XML",
+      subtitle: "POSIX 0640 Permissions",
+      definition: "Stores roles (manager-gui, admin-gui) and credentials. Because passwords can be stored as plaintext or salted SHA-512 hashes, file permissions must be restricted to 0640 (root:tomcat).",
+      seenInProd: "Secures /manager and /host-manager administrative web consoles.",
+    },
+  ],
+  motive: {
+    headline: "JVM GC PAUSE LATENCY: PARALLELGC VS. G1GC UNDER 5,000 CONCURRENT USERS",
+    subheadline: "Simulating an enterprise e-commerce checkout storm on Tomcat with 4GB heap allocation.",
+    uncompressedBytes: 4500,
+    compressedBytes: 85,
+    savingsPercentage: 98,
+    explanation: "Legacy ParallelGC pauses all worker application threads for 4.5 seconds during full heap garbage collection, causing HTTP 504 gateway timeouts at the Nginx edge proxy. G1GC bounds pause times to under 100ms via incremental concurrent collection.",
+    networkProfiles: [
+      { name: "3G Mobile (750 Kbps, 150ms)", speedKbps: 750, uncompressedTimeMs: 4500, compressedTimeMs: 85 },
+      { name: "4G LTE (15 Mbps, 45ms)", speedKbps: 15000, uncompressedTimeMs: 4500, compressedTimeMs: 85 },
+      { name: "Broadband WAN (100 Mbps, 15ms)", speedKbps: 100000, uncompressedTimeMs: 4500, compressedTimeMs: 85 },
+      { name: "Fiber 1GbE (1 Gbps, 4ms)", speedKbps: 1000000, uncompressedTimeMs: 4500, compressedTimeMs: 85 },
+    ],
+  },
+  debateStatements: [
+    {
+      id: "ds-1",
+      scenario: "Public Network Exposure of Tomcat Port 8080",
+      proposedAction: "Bind Tomcat's Coyote connector directly to 0.0.0.0:8080 and expose it directly to the public internet.",
+      isValid: false,
+      explanation: "CRITICAL ANTI-PATTERN: Direct public exposure lacks HTTP/2 edge caching, rate limiting, and DDoS buffering. Always bind Tomcat to 127.0.0.1:8080 behind an Nginx or HAProxy reverse proxy terminating TLS 1.3.",
+      badgeTag: "INGRESS_SECURITY",
+    },
+    {
+      id: "ds-2",
+      scenario: "Remote Manager Console Security",
+      proposedAction: "Comment out the RemoteAddrValve entirely inside manager/META-INF/context.xml to allow remote management from anywhere without restriction.",
+      isValid: false,
+      explanation: "SEVERE VULNERABILITY: Disabling RemoteAddrValve allows public internet brute-force attacks against /manager/html. Keep RemoteAddrValve restricted to internal subnets or authenticate through a VPN and reverse proxy.",
+      badgeTag: "CONSOLE_PROTECTION",
+    },
+    {
+      id: "ds-3",
+      scenario: "Least-Privilege Execution Model",
+      proposedAction: "Run the Tomcat systemd service under a dedicated unprivileged user 'tomcat' with shell '/usr/sbin/nologin'.",
+      isValid: true,
+      explanation: "RECOMMENDED ARCHITECTURE: Executing Java web services as unprivileged system accounts prevents remote code execution vulnerabilities in servlets from gaining root OS privileges.",
+      badgeTag: "LEAST_PRIVILEGE",
+    },
+    {
+      id: "ds-4",
+      scenario: "Jakarta EE 10 Application Migration",
+      proposedAction: "Deploy a legacy WAR file importing 'javax.servlet.*' directly into Tomcat 10 without modification.",
+      isValid: false,
+      explanation: "SPECIFICATION INCOMPATIBILITY: Tomcat 10 requires 'jakarta.servlet.*'. Deploying legacy javax servlets will trigger ClassNotFoundException. Use the Apache Tomcat Migration Tool for Jakarta EE or refactor imports.",
+      badgeTag: "JAKARTA_COMPAT",
+    },
+    {
+      id: "ds-5",
+      scenario: "JVM Garbage Collection Tuning",
+      proposedAction: "Configure CATALINA_OPTS with '-XX:+UseG1GC -XX:MaxGCPauseMillis=200 -Xms2g -Xmx2g'.",
+      isValid: true,
+      explanation: "BEST PRACTICE: G1GC ensures predictable low-latency garbage collection cycles, and setting equal initial and max heap (-Xms = -Xmx) prevents expensive runtime heap expansion allocations.",
+      badgeTag: "JVM_TUNING",
+    },
+    {
+      id: "ds-6",
+      scenario: "Systemd Supervision Architecture",
+      proposedAction: "Use startup.sh and shutdown.sh scripts manually in tmux sessions instead of a systemd unit.",
+      isValid: false,
+      explanation: "POOR ARCHITECTURE: Manual scripts lack auto-restart on OOM crashes, log rotation via journalctl, and process sandboxing (ProtectSystem=strict, PrivateTmp=yes).",
+      badgeTag: "SYSTEMD_SUPERVISION",
+    },
+  ],
+  simulator: {
+    headline: "APACHE TOMCAT 10 / JAKARTA EE DEPLOYMENT SIMULATOR",
+    description: "Install OpenJDK 21, provision dedicated user, configure JVM heap with G1GC, and verify active Catalina engine status.",
+    defaultHost: "http://127.0.0.1:8080",
+    terminalSteps: [
+      {
+        id: "step-1",
+        title: "Install OpenJDK 21 Headless Runtime",
+        description: "Provision the modern LTS Java Development Kit required for Tomcat 10.1.",
+        command: "sudo apt update && sudo apt install -y openjdk-21-jdk-headless",
+        output: "openjdk-21-jdk-headless is already the newest version (21.0.4+7-1ubuntu2).\nopenjdk version \"21.0.4\" 2024-07-16 LTS\nOpenJDK 64-Bit Server VM (build 21.0.4+7-1ubuntu2, mixed mode, sharing)",
+      },
+      {
+        id: "step-2",
+        title: "Create Dedicated Unprivileged Tomcat System User",
+        description: "Provision restricted service account with /opt/tomcat home and nologin shell.",
+        command: "sudo useradd -m -U -d /opt/tomcat -s /usr/sbin/nologin tomcat",
+        output: "User 'tomcat' created with primary group 'tomcat', home /opt/tomcat.",
+      },
+      {
+        id: "step-3",
+        title: "Extract Tomcat 10.1 & Set Strict POSIX Permissions",
+        description: "Extract binaries, assign ownership, and protect conf directory with 0750 permissions.",
+        command: "sudo tar xzf apache-tomcat-10.1.28.tar.gz -C /opt/tomcat --strip-components=1 && sudo chown -R tomcat:tomcat /opt/tomcat && sudo chmod -R u+x /opt/tomcat/bin && sudo chmod 0750 /opt/tomcat/conf && sudo chmod 0640 /opt/tomcat/conf/tomcat-users.xml",
+        output: "[Extraction complete: Tomcat 10.1.28]\nconf/ permissions: drwxr-x--- root:tomcat\ntomcat-users.xml: -rw-r----- root:tomcat",
+      },
+      {
+        id: "step-4",
+        title: "Deploy Hardened Systemd Service Unit with G1GC Heap Options",
+        description: "Configure systemd unit with resource limits, G1GC tuning, and process sandboxing.",
+        command: "sudo systemctl daemon-reload && sudo systemctl enable --now tomcat",
+        output: "Created symlink /etc/systemd/system/multi-user.target.wants/tomcat.service → /etc/systemd/system/tomcat.service.\nTomcat service started.",
+      },
+      {
+        id: "step-5",
+        title: "Audit Active Catalina Engine Status & JVM Thread State",
+        description: "Verify that the service is running, ports are bound, and JVM initialized.",
+        command: "sudo systemctl status tomcat --no-pager",
+        output: "● tomcat.service - Apache Tomcat 10 Web Application Server\n     Loaded: loaded (/etc/systemd/system/tomcat.service; enabled; preset: enabled)\n     Active: active (running) since Sun 2026-10-25 10:30:12 UTC; 8s ago\n   Main PID: 49210 (java)\n      Tasks: 42 (limit: 4684)\n     Memory: 248.4M (peak: 310.2M)\n        CPU: 1.842s\n     CGroup: /system.slice/tomcat.service\n             └─49210 /usr/lib/jvm/java-21-openjdk-amd64/bin/java -Djava.util.logging.config.file=/opt/tomcat/conf/logging.properties ...",
+      },
+      {
+        id: "step-6",
+        title: "Test Coyote NIO Connector via HTTP Loopback Probe",
+        description: "Send HTTP GET request to verify Catalina engine banner and HTTP 200 OK.",
+        command: "curl -I http://127.0.0.1:8080/",
+        output: "HTTP/1.1 200 OK\nContent-Type: text/html;charset=UTF-8\nTransfer-Encoding: chunked\nDate: Sun, 25 Oct 2026 10:30:20 GMT\nServer: Apache-Coyote/1.1\n\n[Tomcat 10 / Jakarta EE 10 Engine Online]",
+      },
+    ],
+    defaultPayloadBytes: 4500,
+    compressedPayloadBytes: 85,
+    responseHeaders: {
+      "HTTP/1.1": "200 OK",
+      "Server": "Apache-Coyote/1.1",
+      "X-Servlet-Version": "Jakarta EE 10 / Servlet 6.0",
+      "JVM": "OpenJDK 21 LTS 64-Bit Server VM",
+      "GC-Engine": "Garbage-First (G1) Collector",
+    },
+  },
+  debriefRules: [
+    {
+      id: "rule-1",
+      number: "01",
+      title: "ALWAYS PROXY TOMCAT BEHIND EDGE NGINX",
+      rule: "Bind Coyote to 127.0.0.1:8080 and proxy traffic through Nginx with TLS 1.3 termination and RemoteIpValve header translation.",
+      antiPattern: "Exposing raw Tomcat port 8080 to the public internet.",
+    },
+    {
+      id: "rule-2",
+      number: "02",
+      title: "ADOPT JAKARTA EE 10 NAMESPACES",
+      rule: "Verify all dependencies and servlet classes import 'jakarta.servlet.*' instead of 'javax.servlet.*' when deploying on Tomcat 10.",
+      antiPattern: "Deploying legacy Tomcat 8/9 WAR files without byte-code translation.",
+    },
+    {
+      id: "rule-3",
+      number: "03",
+      title: "CALIBRATE HEAP SIZES & G1GC IN CATALINA_OPTS",
+      rule: "Configure '-XX:+UseG1GC -Xms[size] -Xmx[size]' in the systemd unit to guarantee bounded sub-100ms GC pause times.",
+      antiPattern: "Leaving default dynamic heap sizing, causing aggressive stop-the-world pauses during memory expansion.",
+    },
+    {
+      id: "rule-4",
+      number: "04",
+      title: "PROTECT SENSITIVE XML CREDENTIALS",
+      rule: "Set POSIX 0750 permissions on /opt/tomcat/conf and 0640 on tomcat-users.xml owned by root:tomcat.",
+      antiPattern: "Leaving 0777 or world-readable permissions on password-bearing XML configurations.",
+    },
+    {
+      id: "rule-5",
+      number: "05",
+      title: "ENFORCE SYSTEMD SANDBOXING",
+      rule: "Utilize 'ProtectSystem=strict', 'PrivateTmp=yes', and 'LimitNOFILE=65536' in the systemd unit file.",
+      antiPattern: "Running Tomcat as the root superuser via startup.sh.",
+    },
+  ],
+  quiz: [
+    {
+      id: "q-1",
+      scenario: "You deploy a Java WAR application created for Tomcat 9 onto a newly provisioned Tomcat 10 server. When initiating requests, the server returns HTTP 500 with 'java.lang.ClassNotFoundException: javax.servlet.Filter'.",
+      question: "What is the root cause of this failure?",
+      options: [
+        "Tomcat 10 implements Jakarta EE 10, which migrated package namespaces from 'javax.servlet' to 'jakarta.servlet'.",
+        "The server is missing a graphics card for AWT rendering.",
+        "Port 8080 is blocked by the UFW firewall.",
+        "The MySQL database driver is corrupt.",
+      ],
+      correctIndex: 0,
+      explanation: "Tomcat 10 represents the major transition to Jakarta EE 10. All servlets, filters, and listeners must be compiled against 'jakarta.servlet' rather than legacy 'javax.servlet'.",
+    },
+    {
+      id: "q-2",
+      scenario: "Under high load, your Java web application on Tomcat freezes for 4 seconds at random intervals, causing Nginx to return 504 Gateway Timeout.",
+      question: "Which JVM flag configuration resolves these stop-the-world garbage collection spikes?",
+      options: [
+        "-XX:+UseG1GC -XX:MaxGCPauseMillis=200",
+        "-XX:+UseSerialGC",
+        "-Xmx64M",
+        "-Djava.compiler=NONE",
+      ],
+      correctIndex: 0,
+      explanation: "The Garbage-First (G1) collector is designed for multi-gigabyte heaps, bounding pause times to a user-defined target (e.g., 200ms) by concurrently cleaning memory regions.",
+    },
+    {
+      id: "q-3",
+      scenario: "You place Tomcat behind an Nginx reverse proxy terminating HTTPS. Inside Tomcat, request.getRemoteAddr() returns '127.0.0.1' and request.isSecure() returns 'false'.",
+      question: "Which Tomcat component must be enabled in conf/server.xml to resolve client IPs and protocol schemes?",
+      options: [
+        "org.apache.catalina.valves.RemoteIpValve",
+        "org.apache.catalina.authenticator.BasicAuthenticator",
+        "org.apache.catalina.core.StandardHostValve",
+        "org.apache.catalina.realm.MemoryRealm",
+      ],
+      correctIndex: 0,
+      explanation: "The 'RemoteIpValve' integrates X-Forwarded-For and X-Forwarded-Proto headers sent by Nginx, allowing Tomcat to see the real remote client IP and recognize secure HTTPS connections.",
+    },
+    {
+      id: "q-4",
+      scenario: "For strict security hardening, which file permission model should be applied to /opt/tomcat/conf and /opt/tomcat/conf/tomcat-users.xml?",
+      question: "What is the recommended ownership and mode?",
+      options: [
+        "Owned by root:tomcat with 0750 on conf/ and 0640 on tomcat-users.xml.",
+        "Owned by tomcat:tomcat with 0777 across all files.",
+        "Owned by www-data:www-data with 0666.",
+        "Owned by nobody:nogroup with 0700.",
+      ],
+      correctIndex: 0,
+      explanation: "Restricting /opt/tomcat/conf to root:tomcat 0750 and tomcat-users.xml to 0640 allows only the root user and the tomcat process to read sensitive credentials, preventing unprivileged system users from reading database and admin passwords.",
+    },
+    {
+      id: "q-5",
+      scenario: "Why should a production Tomcat server be supervised as a systemd unit rather than started with /opt/tomcat/bin/startup.sh?",
+      question: "What critical operational advantages does systemd provide?",
+      options: [
+        "Automated restart on unexpected JVM crashes, centralized journalctl logging, resource limits (LimitNOFILE), and kernel sandboxing (ProtectSystem=strict).",
+        "It compiles Java code faster.",
+        "It bypasses the need for OpenJDK.",
+        "It automatically writes servlet code.",
+      ],
+      correctIndex: 0,
+      explanation: "Systemd provides enterprise process lifecycle supervision: automatic recovery upon OOM kills, centralized system logging, file descriptor limits, and filesystem sandboxing.",
+    },
+  ],
+};
+
 // Generic Drill Generator for all other technical posts
 export function generateLearningDrill(post: Post): LearningDrillData {
   if (post.slug === "install-and-config-brotli-compression-with-apache") {
@@ -2704,6 +2993,9 @@ export function generateLearningDrill(post: Post): LearningDrillData {
   }
   if (post.slug === "how-remotely-copy-files-over-ssh-ubuntu-client-sftp-scp") {
     return SFTP_SCP_DRILL;
+  }
+  if (post.slug === "how-to-install-tomcat-10-on-ubuntu-20-04") {
+    return TOMCAT_DRILL;
   }
 
   const cleanTitle = post.title.replace(/^\[.*?\]/, "").trim();
