@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import type { Post } from "@/lib/posts";
 import { playHapticSound, awardOperativeXp } from "@/lib/operative-store";
+import { trackSimulatorAction } from "@/lib/analytics";
 import { ClusterFailoverVisualizer } from "@/components/simulation/ClusterFailoverVisualizer";
 import { K3sWorkflowSimulator } from "@/components/simulation/K3sWorkflowSimulator";
 import {
@@ -117,6 +118,7 @@ export function AgenticWorkflowSimulator({ post }: AgenticWorkflowSimulatorProps
 
   // Step 1: Pre-Flight Discovery & Network Verification
   const runStep1 = () => {
+    trackSimulatorAction("mysql_cluster", "step_1_discovery", 1);
     setSimState("running");
     setCurrentStep(1);
     playHapticSound("click");
@@ -137,6 +139,7 @@ export function AgenticWorkflowSimulator({ post }: AgenticWorkflowSimulatorProps
 
   // Step 2: DRBD Synchronous Storage Provisioning
   const runStep2 = () => {
+    trackSimulatorAction("mysql_cluster", "step_2_drbd", 2);
     setSimState("running");
     setCurrentStep(2);
     playHapticSound("click");
@@ -161,6 +164,7 @@ export function AgenticWorkflowSimulator({ post }: AgenticWorkflowSimulatorProps
 
   // Step 3: Corosync, Pacemaker & STONITH Initialization
   const runStep3 = () => {
+    trackSimulatorAction("mysql_cluster", "step_3_corosync_stonith", 3);
     setSimState("running");
     setCurrentStep(3);
     playHapticSound("click");
@@ -181,6 +185,7 @@ export function AgenticWorkflowSimulator({ post }: AgenticWorkflowSimulatorProps
 
   // Step 4: Cluster Resource Configuration & Constraints (Approval Gate)
   const runStep4 = () => {
+    trackSimulatorAction("mysql_cluster", "step_4_constraints", 4);
     setCurrentStep(4);
     setSimState("approval");
     playHapticSound("flip");
@@ -189,6 +194,7 @@ export function AgenticWorkflowSimulator({ post }: AgenticWorkflowSimulatorProps
   };
 
   const handleApproveGate = () => {
+    trackSimulatorAction("mysql_cluster", "approve_gate", 4);
     setApprovalDecision("approved");
     setSimState("running");
     playHapticSound("success");
@@ -208,6 +214,7 @@ export function AgenticWorkflowSimulator({ post }: AgenticWorkflowSimulatorProps
   };
 
   const handleRejectGate = () => {
+    trackSimulatorAction("mysql_cluster", "reject_gate", 4);
     setApprovalDecision("rejected");
     setSimState("idle");
     playHapticSound("error");
@@ -216,6 +223,7 @@ export function AgenticWorkflowSimulator({ post }: AgenticWorkflowSimulatorProps
 
   // Step 5: Automated Failover & Self-Healing Testing
   const runStep5 = () => {
+    trackSimulatorAction("mysql_cluster", "step_5_failover", 5);
     setSimState("fencing");
     setCurrentStep(5);
     playHapticSound("click");
@@ -250,6 +258,7 @@ export function AgenticWorkflowSimulator({ post }: AgenticWorkflowSimulatorProps
 
   // Auto-Pilot execution
   const runAutoPilot = () => {
+    trackSimulatorAction("mysql_cluster", "auto_pilot", 0);
     resetSimulation();
     setTimeout(() => {
       runStep1();
@@ -266,6 +275,7 @@ export function AgenticWorkflowSimulator({ post }: AgenticWorkflowSimulatorProps
   };
 
   const resetSimulation = () => {
+    trackSimulatorAction("mysql_cluster", "reset", 0);
     playHapticSound("click");
     setCurrentStep(0);
     setSimState("idle");

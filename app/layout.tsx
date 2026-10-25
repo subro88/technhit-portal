@@ -5,6 +5,7 @@ import { Server, Terminal, Cpu, BookOpen, Compass, Youtube, Shield, Code2 } from
 import { TuxGearLogo } from "@/components/brand/TuxGearLogo";
 import { ThemeProvider } from "@/components/theme/ThemeContext";
 import { ThemeSwitcher } from "@/components/theme/ThemeSwitcher";
+import { GoogleAnalytics } from "@next/third-parties/google";
 import "./globals.css";
 
 export const viewport: Viewport = {
@@ -65,6 +66,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const gaId = process.env.NEXT_PUBLIC_GA_ID;
+
   return (
     <html lang="en" className="dark scroll-smooth">
       <head>
@@ -252,6 +255,7 @@ export default function RootLayout({
         </footer>
         </ThemeProvider>
       </body>
+      {gaId ? <GoogleAnalytics gaId={gaId} /> : null}
     </html>
   );
 }

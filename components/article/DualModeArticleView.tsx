@@ -14,6 +14,7 @@ import { Stage4Simulator } from "@/components/learning/Stage4Simulator";
 import { Stage5Debrief } from "@/components/learning/Stage5Debrief";
 import { Stage6FinalExam } from "@/components/learning/Stage6FinalExam";
 import { AgenticWorkflowSimulator } from "@/components/simulation/AgenticWorkflowSimulator";
+import { trackModeSwitch } from "@/lib/analytics";
 import {
   ArrowLeft,
   Calendar,
@@ -178,6 +179,7 @@ function DualModeArticleViewInner({
 
   const handleSwitchMode = (targetMode: "blog" | "learning" | "simulation") => {
     playHapticSound("click");
+    trackModeSwitch(targetMode, post.slug);
     setMode(targetMode);
     const url = new URL(window.location.href);
     if (targetMode === "learning") {

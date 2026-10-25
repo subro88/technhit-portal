@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef, useCallback } from "react";
 import type { Post } from "@/lib/posts";
 import { playHapticSound, awardOperativeXp } from "@/lib/operative-store";
 import { K3sEdgeClusterVisualizer } from "@/components/simulation/K3sEdgeClusterVisualizer";
+import { trackSimulatorAction } from "@/lib/analytics";
 import {
   Terminal,
   Play,
@@ -114,6 +115,7 @@ export function K3sWorkflowSimulator({ post }: K3sWorkflowSimulatorProps) {
 
   // Step 1: Pre-Flight ARM Kernel Audit
   const runStep1 = () => {
+    trackSimulatorAction("k3s_edge", "step_1_arm_kernel", 1);
     setSimState("running");
     setCurrentStep(1);
     playHapticSound("click");
@@ -132,6 +134,7 @@ export function K3sWorkflowSimulator({ post }: K3sWorkflowSimulatorProps) {
 
   // Step 2: Kine/SQLite K3s Server Bootstrap
   const runStep2 = () => {
+    trackSimulatorAction("k3s_edge", "step_2_bootstrap", 2);
     setSimState("running");
     setCurrentStep(2);
     playHapticSound("click");
@@ -153,6 +156,7 @@ export function K3sWorkflowSimulator({ post }: K3sWorkflowSimulatorProps) {
 
   // Step 3: WireGuard Edge Worker Onboarding
   const runStep3 = () => {
+    trackSimulatorAction("k3s_edge", "step_3_mesh_join", 3);
     setSimState("running");
     setCurrentStep(3);
     playHapticSound("click");
@@ -176,6 +180,7 @@ export function K3sWorkflowSimulator({ post }: K3sWorkflowSimulatorProps) {
 
   // Step 4: Approval Gate - Partition Tolerance & Disk Spool Policy
   const runStep4 = () => {
+    trackSimulatorAction("k3s_edge", "step_4_approval_gate", 4);
     setCurrentStep(4);
     setSimState("approval");
     playHapticSound("flip");
@@ -184,6 +189,7 @@ export function K3sWorkflowSimulator({ post }: K3sWorkflowSimulatorProps) {
   };
 
   const handleApproveGate = () => {
+    trackSimulatorAction("k3s_edge", "gate_approved", 4);
     setApprovalDecision("approved");
     setSimState("running");
     playHapticSound("success");
@@ -201,6 +207,7 @@ export function K3sWorkflowSimulator({ post }: K3sWorkflowSimulatorProps) {
   };
 
   const handleRejectGate = () => {
+    trackSimulatorAction("k3s_edge", "gate_rejected", 4);
     setApprovalDecision("rejected");
     setSimState("idle");
     playHapticSound("error");
@@ -209,6 +216,7 @@ export function K3sWorkflowSimulator({ post }: K3sWorkflowSimulatorProps) {
 
   // Step 5: Severance & Autonomous Survivability Drill
   const runStep5 = () => {
+    trackSimulatorAction("k3s_edge", "step_5_severance_drill", 5);
     setSimState("partitioned");
     setCurrentStep(5);
     playHapticSound("click");
@@ -241,6 +249,7 @@ export function K3sWorkflowSimulator({ post }: K3sWorkflowSimulatorProps) {
 
   // Auto-Pilot execution
   const runAutoPilot = () => {
+    trackSimulatorAction("k3s_edge", "auto_pilot");
     resetSimulation();
     setTimeout(() => {
       runStep1();
@@ -257,6 +266,7 @@ export function K3sWorkflowSimulator({ post }: K3sWorkflowSimulatorProps) {
   };
 
   const resetSimulation = () => {
+    trackSimulatorAction("k3s_edge", "reset");
     playHapticSound("click");
     setCurrentStep(0);
     setSimState("idle");
