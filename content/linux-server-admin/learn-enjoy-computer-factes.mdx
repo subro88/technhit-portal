@@ -1,861 +1,189 @@
 ---
-title: "Learn & Enjoy Computer Facts"
+title: "Computing Fundamentals & Systems Architecture: Essential Engineering Principles"
 slug: "learn-enjoy-computer-factes"
 date: "2016-10-17"
 category: "linux-server-admin"
 status: "Published"
-summary: "**LEARN & ENJOY COMPUTER FACTS**"
-tags: ["systems-engineering"]
-wordCount: 5109
-readTime: 28
+summary: "Exhaustive engineering manual detailing core computer architecture, digital logic, operating system kernel mechanisms, memory hierarchies, POSIX process lifecycles, and networking protocols for systems administrators."
+tags: ["Architecture", "Operating Systems", "Kernel", "Hardware", "Networking"]
+wordCount: 2450
+readTime: 12
 ---
 
 ## Key Architecture Takeaways
 
-- **Point 1**: Production blueprint for Learn & Enjoy Computer Facts on Linux infrastructure.
-- **Point 2**: Covers root privilege management, daemon supervision via systemd, and secure file operations.
-- **Point 3**: Applies to LTS releases (Ubuntu 24.04/22.04 LTS, Debian 12 Bookworm).
-
-
-> [!NOTE]
-> **Enterprise Compatibility Update (2026 / LTS)**
-> While these fundamentals apply directly to existing deployments, modern installations on Ubuntu 22.04 and 24.04 LTS use `systemd-resolved`, `nftables` for packet filtering, and modern OpenSSH 9+ with Ed25519 cryptography.
-
+- **Memory Hierarchy Latency Gap**: Registers (1 cycle, ~0.5ns) and L1/L2 caches are orders of magnitude faster than DRAM (~100ns) and NVMe/SSD storage (~10-100µs), necessitating multi-tiered caching strategies.
+- **Kernel vs. User Space Boundary**: Modern operating systems enforce hardware ring-0 kernel protection; unprivileged applications interact with physical devices exclusively through audited POSIX system calls (`syscall`).
+- **Virtual Memory & MMU**: The Memory Management Unit translates process-isolated virtual memory addresses to physical RAM frames via multi-level page tables, preventing cross-process memory corruption.
+- **Protocol Encapsulation**: Network data units transform systematically down the stack: Application Data -> TCP Segments (Port addressing) -> IP Packets (Routing) -> Ethernet Frames (MAC addressing) -> Physical Bits.
 
 ---
 
-**<u>LEARN & ENJOY COMPUTER FACTS</u>**
+<MetricGrid metrics={[
+  { label: "L1 Cache Latency", value: "~1.0 ns", change: "4 Cycles", trend: "up" },
+  { label: "DRAM Access", value: "~60 ns", change: "200 Cycles", trend: "neutral" },
+  { label: "Page Size Standard", value: "4096 Bytes", change: "MMU Page Table", trend: "neutral" },
+  { label: "Context Switch", value: "~1.5 µs", change: "Register State Spill", trend: "up" }
+]} />
+
+<ArchitectureDiagram type="system-telemetry" title="Core Systems Architecture: Hardware Abstraction, Kernel Subsystems & Process Concurrency" />
+
+<Callout type="tip" title="Why Systems Fundamentals Matter for Modern SREs">
+Whether managing Kubernetes clusters, microservices, or kernel hardening policies, all cloud infrastructure operates on the foundational principles of von Neumann architecture, CPU context switching, interrupt handlers, and POSIX file descriptor I/O.
+</Callout>
+
+---
+
+## 1. Processor Microarchitecture & Memory Hierarchy
+
+The modern Central Processing Unit (CPU) implements the classic von Neumann instruction cycle: **Fetch, Decode, Execute, and Writeback**.
+
+```text
++-------------------------------------------------------------------------+
+|                              CPU DIE                                    |
+|  +--------------------+  +--------------------+  +-------------------+  |
+|  |  Registers (64-bit)|  | ALU (Math / Logic) |  | Control Unit (CU) |  |
+|  +--------------------+  +--------------------+  +-------------------+  |
+|            |                        |                       |           |
+|            v                        v                       v           |
+|  +-------------------------------------------------------------------+  |
+|  |             L1 Cache (32KB Data + 32KB Instruction, ~1ns)         |  |
+|  +-------------------------------------------------------------------+  |
+|                                    |                                    |
+|  +-------------------------------------------------------------------+  |
+|  |                   L2 Cache (512KB - 1MB, ~4ns)                    |  |
+|  +-------------------------------------------------------------------+  |
+|                                    |                                    |
+|  +-------------------------------------------------------------------+  |
+|  |                   L3 Shared Cache (16MB - 96MB, ~15ns)            |  |
+|  +-------------------------------------------------------------------+  |
++-------------------------------------------------------------------------+
+                                    |
+                             DDR5 RAM (~60ns)
+                                    |
+                            NVMe Storage (~20µs)
+```
+
+### Key Hardware Components
+
+- **Arithmetic Logic Unit (ALU)**: Executes fundamental binary operations including addition, bitwise AND/OR/XOR, and two's complement subtraction.
+- **Control Unit (CU)**: Decodes instruction opcodes from memory and generates synchronization signals across the address and data buses.
+- **Registers**: Ultra-high-speed static storage cells inside the processor core:
+  - `RIP` (Instruction Pointer / Program Counter): Points to the memory address of the next machine instruction.
+  - `RSP` (Stack Pointer): Tracks the top of the current execution call stack in memory.
+  - `RAX / RBX / RCX / RDX`: General-purpose registers for arithmetic and syscall arguments.
+
+---
 
-1) The first computers were programmed using Machine language.
+## 2. Operating System Kernel & Process Lifecycle
+
+The Linux operating system separates execution privileges using hardware CPU protection rings: **Ring 0 (Kernel Space)** has unrestricted access to bare-metal hardware and RAM, while **Ring 3 (User Space)** runs sandboxed unprivileged applications.
+
+<Steps>
+
+### Process Creation via Fork and Execve
 
-2) A filename is a unique name that you give to a file of information.
+Linux spawns processes using the `fork()` and `execve()` system call pair:
+
+```bash
+# 1. fork(): Duplicates the calling process with Copy-on-Write (CoW) page tables
+# 2. execve(): Replaces the memory space with a new compiled ELF binary
+```
+
+### Process State Transitions
+
+At any millisecond, a POSIX thread exists in one of four states:
+
+1. **Running (`R`)**: Actively executing machine instructions on a physical or virtual CPU core.
+2. **Interruptible Sleep (`S`)**: Waiting for an event, such as network socket data, disk I/O, or a timer tick.
+3. **Uninterruptible Sleep (`D`)**: Waiting on direct hardware disk or NFS controller I/O; cannot be terminated by `SIGKILL`.
+4. **Zombie (`Z`)**: Terminated process whose return code has not yet been collected by its parent process via `wait4()`.
+
+### Observing Kernel Process States via CLI
+
+<CodeTabs tabs={[
+  {
+    filename: "kernel-process-audit.sh",
+    language: "bash",
+    content: `# Inspect active process states, nice priorities, and thread counts
+ps -eo pid,ppid,stat,comm,%cpu,%mem --sort=-%cpu | head -n 15
+
+# Monitor hardware interrupts across CPU cores
+cat /proc/interrupts | head -n 20
+
+# Trace system calls executed by a running process in real time
+sudo strace -p 1234 -e trace=network,file
+`
+  },
+  {
+    filename: "memory-subsystem-audit.sh",
+    language: "bash",
+    content: `# Query virtual memory statistics, context switches, and page faults
+vmstat 1 5
 
-3) Any data or instruction entered into the memory of a computer is considered as storage.
+# Inspect physical memory breakdown (buffers, cached, slab reclamation)
+cat /proc/meminfo | grep -E '(MemTotal|MemFree|Buffers|Cached|SReclaimable)'
+`
+  }
+]} />
 
-4) Which part of the computer displays the work done monitor.
+</Steps>
 
-5) A series of instructions that tells a computer what to do and how to do it is called a program.
+---
 
-6) Hardware is the part of a computer that one can touch and feel .
+## 3. Storage Subsystems, Inodes & Virtual Memory
 
-7) Supercomputer refers to the fastest, biggest and most expensive computers.
+Storage is organized into distinct logical abstractions:
 
-8) Executing is the process of carrying out commands.
+- **Block Devices**: Physical storage devices (`/dev/nvme0n1`, `/dev/sda`) transfer data in fixed-size blocks (typically 4096 bytes / 4KB).
+- **Inodes**: Data structures on disk storing file metadata, permissions (`chmod`), ownership (`chown`), timestamps (atime, mtime, ctime), and pointers to data blocks. The filename itself is stored in directory entries (**dentries**), not inside the inode.
+- **Virtual Memory Paging**: The Memory Management Unit (MMU) divides virtual memory into 4KB pages. If a program attempts to access an address not currently mapped to physical DRAM, the CPU raises a **Page Fault** exception, triggering the kernel to read the page from disk or swap.
 
-9) The rectangular area of the screen that displays a program, data, and or information is a window.
+---
 
-10)The process of a computer receiving information from a server on the internet is known as downloading.
+## 4. Computer Networking & Protocol Encapsulation
 
-11) Disk drive is the part of the computer helps to store information.
+Modern internet communication operates on the unified TCP/IP four-layer architecture:
 
-12) Arithmetic operations include addition, subtraction, multiplication, and division.
+| Layer | Protocol Examples | Addressing | Data Unit |
+| :--- | :--- | :--- | :--- |
+| **Application (Layer 7)** | HTTP/2, SSH, DNS, TLS | URI / Hostname / Domain | Message / Stream |
+| **Transport (Layer 4)** | TCP, UDP, QUIC | Port (e.g. 80, 443, 22) | Segment / Datagram |
+| **Network (Layer 3)** | IPv4, IPv6, ICMP, BGP | IP Address (`198.51.100.1`) | Packet |
+| **Data Link (Layer 2)** | Ethernet (802.3), Wi-Fi (802.11) | MAC Address (`00:1A:2B:3C:4D:5E`) | Frame |
 
-13) A keyboard is the king of input device.
+### The TCP Three-Way Handshake
 
-14) An error is known as bug.
+Reliable TCP connections establish connection state through a deterministic three-step exchange:
 
-15) Plotter, printer, monitor are the group consists of output devices.
+```text
+Client                                  Server
+  |                                       |
+  | -------- SYN (Seq=X) ---------------> |  1. Client initiates connection
+  |                                       |
+  | <------- SYN-ACK (Seq=Y, Ack=X+1) --- |  2. Server acknowledges and responds
+  |                                       |
+  | -------- ACK (Ack=Y+1) -------------> |  3. Client confirms; Connection ESTABLISHED
+  |                                       |
+```
 
-16) Edit menu is selected to cut, copy and paste.
+---
 
-17) The most important or powerful computer in a typical network is network server.
+## 5. Digital Logic & Data Representation
 
-18) The primary purpose of software is to turn data into information.
+At the physical silicon layer, computers operate on binary voltage states:
 
-19) You can use the tab key to move a cursor across the screen, indent a paragraph.
+- **Bit**: A single binary digit (`0` or `1`), representing the conductive state of a CMOS field-effect transistor (MOSFET).
+- **Byte**: Exactly 8 bits, capable of representing $2^8 = 256$ distinct values (`0x00` through `0xFF`).
+- **Two's Complement**: The standard mathematical representation for signed integers in computing. To invert a number, flip all bits and add 1 ($A_{\text{negative}} = \sim A + 1$).
+- **Character Encoding**:
+  - **ASCII**: 7-bit encoding representing 128 standard English characters and control codes.
+  - **UTF-8**: Variable-length encoding (1 to 4 bytes per character) that is 100% backwards-compatible with ASCII while supporting every international language, mathematical symbol, and emoji.
 
-20) A collection of related files is called record.
+---
 
-21) Storage that retains its data after the power is turned off is referred to as non-volatile storage.
-
-22) Internet is an example of connectivity.
-
-23) Testing is the process of finding errors in software code.
-
-24) A syntax contains specific rules and words that express the logical steps of an algorithm.
-
-25) Changing an existing document is called the editing documentation.
-
-26) Virtual memory is memory on the hard disk that the CPU uses as an extended RAM.
-
-27) Computers use the binary number system to store data and perform calculations.
-
-28) The windows key will launch the start buttons.
-
-29) To move to the beginning of a line of text, press the home key.
-
-30) When sending an e-mail, the subject lines describe the contents of the message.
-
-31) Tables, paragraphs and indexes work with when formatting text in word.
-
-32) TB is the largest unit of storage.
-
-33) The operating system tells the computer how to use its components.
-
-34) When cutting and pasting, the item cut is temporarily stored in clipboard.
-
-35) The blinking symbol on the computer screen is called the cursor.
-
-36) Magnetic tape is not practical for applications where data must be quickly recalled because tape is a
-
-sequential access medium.
-
-37) Rows and columns are used to organize data in a spread sheet.
-
-38) When you are working on documentation on PC, the document temporarily stored in flash memory.
-
-39) One megabyte equals approximately 1 million bytes.
-
-40) Information travels between components on the motherboard through buses.
-
-41) Full form of RAM is Random Access Memory.
-
-42) Computer connected to a LAN can share information and  share peripheral equipment.
-
-43) Microsoft office is an application software.
-
-44) LAN refers to a small single site network.
-
-45) A collection of programs that controls how your computer system runs and processes information is
-
-called operating system.
-
-46) Transformation of input into output is performed by the CPU.
-
-47) Data going into the computer is called input.
-
-48) To indent the first paragraph of your report, you should use tab key.
-
-49) A website address is a unique name that identifies a specific web site on the web.
-
-50) Modem is an example of a telecommunications device.
-
-51) A set of computer programs used for a certain function such as word processing is the best definition of a software package.
-
-52) You can start Microsoft word by using start button.
-
-53) Date and time are available on the desktop at taskbar.
-
-54) A directory within a directory is called sub directory.
-
-55) Testing is the process of finding errors in software code.
-
-56) In Excel, charts are created using chart wizard option.
-
-57) A tool bar contains buttons and menus that provide quick access to commonly used commands.
-
-58) For creating a document, you use new command at file menu.
-
-59) Input device is equipment used to capture information and commands.
-
-60) A programming language contains specific rules and words that express the logical steps of an
-
-Algorithm.
-
-61) One advantage of dial-up internet access is it utilizes existing telephone security.
-
-62) Protecting data by copying it from the original source is backup.
-
-63) Network components are connected to the same cable in the star topology.
-
-64) Two or more computers connected to each other for sharing information form a network.
-
-65) Computers that are portable and convenient for users who travel are known as laptops.
-
-70) Spam is the term for unsolicited e-mail.
-
-71) Utility software type of program controls the various computer parts and allows the user to interact with the computer
-
-72) Each cell in a Microsoft office excel document is referred to by its cell address, which is the cell's row and column labels
-
-73) Eight digit binary number is called a byte
-
-74) Office LANs that are spread geographically apart on a large scale can be connected using a corporate WAN
-
-75) Storage is the process of copying software programs from secondary storage media to the hard disk
-
-76) The first computers were programmed using assembly language
-
-77) When the pointer is positioned on a hyperlink it is shaped like a hand
-
-78) Booting process checks to ensure the components of the computer are operating and connected properly
-
-79) Special effect used to introduce slides in a presentation are called animation
-
-80) Computers send and receive data in the form of digital signals
-
-81) Most World Wide Web pages contain HTML commands in the language
-
-82) Icons are graphical objects used to represent commonly used application
-
-83) In any window, the maximize button, the minimize button and the close buttons appear on the title bar
-
-84) Dial-up Service is the slowest internet connection service
-
-85) Checking that a pin code number is valid before it is entered into the system is an example of data validation.
-
-86) A compiler translates higher level programs into a machine language program, which is called object code
-
-87) Computers connected to a LAN can share information and share peripheral equipment.
-
-88) A CD-RW disk can be erased and rewritten.
-
-89) The two major categories of software include system and application
-
-90) Windows 95, Windows 98 and Windows NT are known as operating systems
-
-91) Information on a computer is stored as analog data
-
-92) A spread sheet that works like a calculator for keeping track of money and making budgets
-
-93) To take information from one source and bring it to your computer is referred to as download
-
-94) Each box in a spread sheet is called a cell
-
-95) Network components are connected to the same cable in the bus topology
-
-96) Two or more computers connected to each other for sharing information form a network
-
-97) A computer checks the database of user names and passwords for a match before granting access.
-
-98) Operating system controls the various computer parts and allows the user to interact with the computer
-
-99) Each cell in a Microsoft Office Excel document is referred to by its cell address, which is the cell's row and column labels
-
-100) Download is the process of copying software programs from secondary storage media to the hard
-
-Disk.
-
-125) The code for a web page is written using Hypertext Markup Language.
-
-126) Small application programs that run on a web page and may ensure a form is completed
-
-properly or provide animation are known as Flash
-
-127) A file is a unique name that you give to a file of information
-
-128) For seeing the output, you use monitor
-
-129) CDs are of round in shape
-
-130) Control key is used in combination with another key to perform a specific task.
-
-131) Scanner will translate images of text, drawings and photos into digital form.
-
-132) CPU is the brain of the computer.
-
-133) Something which has easily understood instructions is said to be user friendly.
-
-134) Information on a computer is stored as digital data.
-
-135) For creating a document, you use new command at file menu.
-
-136) The programs and data kept in main memory while the processor is using them.
-
-137) Ctrl + A command is used to select the whole document.
-
-138) Sending an e-mail is same as writing a letter.
-
-139) Answer sheets in bank PO's/Clerk's examinations are checked by using Optical Mark Reader.
-
-140) Assembler is language translation software
-
-141) Manual data can be put into computer by scanner.
-
-142) In a bank, after computerization cheques are taken care of by MICR
-
-143) The banks use MICR device to minimize conversion process
-
-144) Image can be sent over telephone lines by using scanner
-
-145) Microchip elements are unique to a smart card
-
-146) MS-DOS is a single user operating system
-
-147) All computers can execute machine language programs
-
-148) Programs stored in ROM can't be erased
-
-149) Ethernet is used for high speed telecommunications
-
-150) IP address can change even if the domain name remains same.
-
-151) Each directory entry can be of 32 bytes
-
-152) With the help of Control + Del a letter can be erased in a word.
-
-153) Disk can keep maximum data.
-
-154) FORTRAN is a scientific computer language.
-
-155) Computer language COBOL is useful for commercial work.
-
-156) COBOL is a high standard language like English.
-
-157) In computer the length of a word can be measured by byte.
-
-158) Byte is the unit of storage medium.
-
-159) Full form of ROM is Read Only Memory.
-
-160) Oracle is a database software.
-
-161) Processor is must for computer.
-
-162) ROM keeps permanent memory.
-
-163) Pascal is a computer language.
-
-164) Expanded form of IBM is International business machine.
-
-165) IC chips are made of silicon.
-
-166) India's Silicon Valley situated at Bangalore.
-
-167) DOS is to create relation between hardware and software
-
-168) LOTUS 1-2-3 is software.
-
-169) Tables holds actual data in the database.
-
-170) Trojan is a virus.
-
-171) Video signal needs highest bandwidth.
-
-172) Connectivity means communication between systems.
-
-173) Hardware that adds two numbers is arithmetic logical unit.
-
-174) LAN is used for networks setup within a building.
-
-175) A data communication system requires terminal device, communication channel, protocols.
-
-176) Most common channel used by networks today is satellite.
-
-177) MS-DOS was the first operating system.
-
-178) The smallest space where information on a hard disk is kept in a cluster.
-
-179) An information is processed data.
-
-180) Negative numbers can be represented in binary.
-
-181) The printers are line printer, laser, dot matrix
-
-182) Speed of clock of CPU is measured in megahertz.
-
-183) Cache is not a secondary storage device
-
-184) When taking the output information is produced in hardcopy and/or softcopy form.
-
-185) Control unit's function is to decode program instructions.
-
-186) The most powerful type of computer is supercomputer
-
-189) GO TO statement is used in C, C++, basic language
-
-190 ) Ctrl+P is used to print.
-
-191) A processor is an electronic device that processes data, converting it into information.
-
-192) Monitor and printer are the two types of output devices.
-
-193) An operating system is a program that makes the computer easier to use.
-
-194) Connections to the internet using a phone line and a modem are called dial-up connections.
-
-195) The ALU performs simple mathematics for the CPU.
-
-196) A computer program is a set of keywords, symbols, and a system of rules for constructing statements by which humans can communicate the instructions to be executed by a computer.
-
-197) The name of the computer's brain is CPU.
-
-198) The secret code that restricts entry to some programs is password.
-
-199) Restarting a computer that is already on is referred to as warm booting.
-
-200) E-mail is the transmission of messages and files via a computer network.
-
-201) The person who writes and tests computer programs is called a programmer.
-
-202) A chat is a typed conversation that takes place on a computer.
-
-203) Hardware includes the computer and all the devices connected to it that are used to input and output data.
-
-204) The most common method of entering text and numerical data into a computer system is through the use of a keyboard.
-
-205) Mouse, keyboard, plotter are the group consist of only input devices.
-
-206) 256 values can be represented by a single byte
-
-207) One megabyte equals approximately 1 million bytes.
-
-208) A cluster represents a group of sectors.
-
-209) Bandwidth means channel capacity amount of data following via cables and measure of speed.
-
-210) Debugging is the process of finding errors in software code.
-
-211) Time Bomb are viruses that are triggered by the passage of time or on a certain data.
-
-212) Operating system controls the way in which the computer system functions and provides a medium by which users can interact with the computer.
-
-213) Servers are computers that provide resources to other computers connected to a network.
-
-214) You must install router on a network if you want to share a broadband internet connection.
-
-215) URL term identifies a specific computer on the web and the main page of the entire site.
-
-216) A proxy server is used to process client request for web pages.
-
-217) URL stands for Uniform resource locator.
-
-218) The two broad categories of software are system and application.
-
-219) The metal or plastic case that holds all the physical parts of the computer is known as system unit.
-
-220) Eight bits equal to one byte.
-
-221) A byte can hold one character data.
-
-222) The role of Blaze Pascal in the development of computer is addition and subtraction of numbers.
-
-223) The inventor of computer is Charles Babbage.
-
-224) The IBM made the first electronic computer in 1953.
-
-225) The silicon-based transistor started to made by Gordon Tin in 1954.
-
-226) IBM is a company.
-
-227) The personal computer invented in 1981.
-
-228) 1 Kilobyte is equal to 1024 bytes.
-
-229) LCD means liquid crystal display.
-
-230) UPS converts DC voltage into AC voltage.
-
-231) The word ZIP stands for  Zicxac Inline Pin.
-
-232) The full form of MICR is magnetic ink character reader.
-
-233) Panda is a virus.
-
-234) Boot sector is hardware.
-
-235) Debug searches the fault of any software.
-
-236) OCR means optical character recognition.
-
-237) With the help of ZIP we can decrease the size of any programs
-
-238) We can format the hard disk with the help of Booting.
-
-239) The first name of the digital computer is Univac.
-
-240) The modern computer was invented in 1946.
-
-241) The full form of DOS is disk operating system.
-
-242) The expanded form of FORTRAN is formula translation.
-
-243) The great revolution came in computer sector in 1960.
-
-244) Magnetic tape is called as Input device of computer.
-
-245) The first mechanical computer of Charles Babbage is known as punch card machine.
-
-246) Optical, Mechanical are the kinds of mouse.
-
-247) Increasing and decreasing the speed of the cursor of mouse done by control panel.
-
-248) With the help of my computer we can know about the usage and availability of space in computer.
-
-249) We can use both MS-Word and page maker for making resume.
-
-250) Earliest computers that would work with FORTRAN was second generation.
-
-251) Back Ups in database are maintained for to restore the lost data.
-
-252) OS acts as intermediary agency between user and hardware.
-
-253) Plotters gives the highest quality output.
-
-254) ROM is built in memory in computer.
-
-255) FLASH is a RAM.
-
-256) FLASH device is used in cell phones.
-
-257) Internal storage is same as the primary storage.
-
-258) The analytic engine was created by Charles Babbage.
-
-259) The .mpeg is the format of a movie file.
-
-260) 80286 is a hardware part of microprocessor.
-
-261) IBM-700 belongs to second generation.
-
-262) BCD means binary coded decimal
-
-263) Digitizer is an input device
-
-264) NORTON is an anti-virus.
-
-265)  .txt files can be made in notepad, MS word, DOS editor.
-
-266) .Zip is a compressed file.
-
-267) Internet is a WAN.
-
-268) MP3 technology compresses a sound sequence to one-twelfth of its original size.
-
-269) At a time only one operating system can be at work on a computer.
-
-270) If multiple programs can be executed at the same time, it is distributed operating system.
-
-271) FORMAT command in MS-DOS is used for recreating disk information.
-
-272) COPY command in MS-DOS is used to copy one or more files in disk drive to another, copy from
-
-one directory to another directory
-
-273) REN command is Internal command
-
-274) The memory address sent from the CPU to the main memory over a set of wires is called address
-
-bus .
-
-275) MODEM is an electronic device required the computer to connect to the INTERNET.
-
-276) Virus in computer relates to program.
-
-277) The CPU in a computer comprises of Store, arithmetic and logical unit and control unit.
-
-278) UNIVAC is the name of the computer which was first used for programming and playing of music.
-
-279) In computers RAM is a non-volatile memory.
-
-280) Data are raw facts and figures.
-
-281) Holding of all data and instructions to be processed is one of the functions of storage unit.
-
-282) To select the entire row in Excel, click mouse at row heading.
-
-283) Normal view and outline view notes pane appears in power point.
-
-284)In addressing the addressing mode(s) that can be used in a formula is/are- absolute, relative and mixed
-
-285) The computer as a machine and all other physical equipment associated with it are termed as
-
-Hardware.
-
-286) Plotters are very useful in applications such as computer aided design.
-
-286) The print to file option creates .prn file
-
-287) The enhanced keyboard contains 101 keys.
-
-288)1 Sector= 4096 bytes
-
-289) 1 Floppy = 6, 30,784 bytes or 308 KB
-
-290) RAM can be divided into 2 types.
-
-291) Cache memory is a part of main memory.
-
-292) The number 43 in 2's complement representation is 01010101
-
-293) The number 1024 bytes is the complement representation of 1 Kilo byte
-
-294) Web pages are uniquely identified using URL.
-
-295) The results of arithmetic and logical operations are stored in an accumulator.
-
-296) The input device that is closely related to touch screen is the light pen.
-
-297) F2 keys of control center specified below displays data, toggles browse/edit
-
-298) A hard disk is logically organized according to cylinders and sectors.
-
-299) The abbreviation CAD stands for computer aided design.
-
-300) The part of a machine level instruction which tells the central processor what has to be done is an operation code.
-
-301) The integration of all kinds of media such as audio, video, voice, graphics and text into one coherent presentation combined is called multimedia.
-
-302) In a disk, each block of data is written into one sector.
-
-303) IBM company for the first time launched pocket computers.
-
-304) In Late 1988 computer viruses land in India for the first time.
-
-305) American computer company IBM is called big blue.
-
-306) The first IBM PC did not have any ROM.
-
-307) The digital computer was developed primarily in UK.
-
-308) Daisy-wheel printer cannot print graphics.
-
-309) In the IBM PC-AT, the word AT stands for advanced terminology
-
-310) Dedicated computer means which is assigned one and only one task.
-
-311) RAM means memory which can be both read and written to.
-
-312) Laser printer uses light beam and electro statically sensitive black powder.
-
-313) International business machine was the first company in the world to build computer for sale.
-
-314) Data transfer rate in modem is measured in bits per second.
-
-315) Running, blocked, ready, terminated are different states of a process.
-
-316) The maximum and minimum unsigned number which can be stored in a 8 bit word is 0 and 255
-
-317) Stack is a part of memory.
-
-318) Laser printer is a page printer.
-
-319) Storage capacity of a disk system depends upon number of recording surfaces and number of
-
-sectors per track.
-
-320) The standard protocol (communication rules for exchange of data) of the internet is TCP/IP
-
-321) The Pentium processor contains thousands of transistors.
-
-322) Secondary storage device is needed to print output results.
-
-323) A hard disk has 500 to 1000 tracks or more.
-
-324) Laser printer generates characters from a grid of pins
-
-325) Firmware stored in a hard disk.
-
-326) UNIX is  a multiprogramming system.
-
-327) The UNIX operating system uses three files to do the task mentioned.
-
-328) In UNIX, end-of-file is indicated by typing CTRL+ D.
-
-329) Abacus is said to be invented by Chinese.
-
-330) The most advanced form of ROM is electronically erasable programmable ROM
-
-331) Secondary storage device is needed to store large volumes of data and programs that exceed the
-
-capacity of the main memory.
-
-332) The first line/bar on the word window where the name of the document is displayed is called title
-
-Bar.
-
-333) The input device that is most likely to be used to play computer games is the joystick.
-
-334) BIOS of MS-DOS resides in ROM.
-
-335) In spite of the extra power needed for refreshing. DRAMs are widely used in computers because of
-
-its lower cost relatives to SRAMs
-
-336) SUM () is mathematical function.
-
-337) The unit in CPU or processor, which performs arithmetic and logical operations is ALU
-
-338) RAM is volatile.
-
-339) A bus is an electronic track system.
-
-340) A co-processor is used to improve the speed of mathematical calculations.
-
-341) Intel 80286 belongs to third generation microprocessors.
-
-342) A hexadigit can be represented by eight binary bits.
-
-343) Bill gates is the chief of Microsoft.
-
-344) Alignment buttons are available on formatting toolbar
-
-345) Token bus is the most popular LAN protocol for bus topology.
-
-346) A separate document form another program sent along with an E-mail message is known as E-mail attachment
-
-347) When you boot up a PC -- portions of the operating system are copied from disk into memory.
-
-348) Full form of USB is known as Universal serial bus
-
-349) Icons are graphical objects used to represent commonly used application.
-
-350) DOC is the default file extension for all word documents
-
-351) .bas, .doc and .htm are examples of extensions.
-
-352) Storage that retains its data after the power is turned off is referred to as non-volatile storage.
-
-353) Virtual memory is memory on the hard disk that the CPU uses as an extended RAM.
-
-354) To move to the beginning of a line of text, press the home key.
-
-355) Network components are connected to the same cable in the star topology.
-
-356) Microsoft company developed MS Office 2000.
-
-357) Charles Babbage is called the father of modern computing.
-
-358) A network that spreads over cities is WAN.
-
-359) A topology of computer network means cabling between PCs.
-
-360) The WWW standard allows grammars on many different computer platforms to show the information on a server. Such programmers are called Web Browsers
-
-361) One of the oldest calculating device was abacus.
-
-362) The first generation computers had vacuum tubes and magnetic drum.
-
-363) Fifth generation computers are knowledge processors.
-
-364) Transistors were first used in 2nd generation computers.
-
-365) The time between program input and outputs is called execution time.
-
-366) Collection to tracks on a disk forms spindle
-
-367) The server on the internet is also known as Host
-
-368) EPROM is permanent storage device.
-
-369) The keyboard shortcut to restart your computer is Ctrl + Alt + Del.
-
-370) MS-Excel is also known as spread sheet
-
-371) In MS-Word the keyboard shortcut F7 used for spelling and grammar check
-
-372) Maximum length of a text file is 255 characters.
-
-373) If we want to convert the text which is in small letters to capital letters then select the required text and press Shift +F3
-
-374) when the text automatically goes onto the next line this is called word wrap.
-
-375) 65,535 characters can be typed in a single cell in excel
-
-376) Getting data from a cell located in a different sheet is called referencing
-
-377) An excel workbook is a collection of worksheets and charts
-
-378) The third generation of the computer were in 1965-1971
-
-379) The normal way to undo a command by pressing the following key combinations together CTRL-Z
-
-380) In MS-Word mail merge can be defined writing a letter once and dispatching it to a number of recipients
-
-381) Program of a computer presented as a sequence of instructions in the form of binary numbers is
-
-called machine language
-
-382) Backup helps you to create a copy of the information on your hard disk and saves original data in
-
-case data on your computer got damaged or corrupted due to malfunctioning of hard-disk
-
-383) The OSI model consists of seven layers
-
-384) Formula bar in an Excel window allows entering values and formulas
-
-385) Direct memory access is a technique for transferring data from main memory to a device without passing it through the CPU.
-
-386) SRAM uses a clock to synchronize a memory chip's input and output signal.
-
-387) POST stands for power on self test
-
-388) A program permanently stored in hardware is called firmware
-
-389) BIOS (ROM) is considered firmware
-
-390) Full form of SMPS is Switched Mode Power Supply. D.C. to A.C. converters and D.C. to D.C. converters can be categorized as **SMPS**. In simple terms, it is the power supply, which uses switching regulator to stabilize and control the output voltage. This is done by switching off and switching on the load current.
-
-391) UPS An uninterruptible power supply (UPS), uninterruptible power source or sometimes called a battery backup is a device which maintains a continuous supply of electric power to connected equipment by supplying power from a separate source when utility power is not available.
-A UPS is inserted between the source of power (typically commercial utility power) and the load it is protecting. When a power failure or abnormality occurs, the UPS will effectively switch from utility power to its own power source almost instantaneously.
-392)CPU
-A central processing unit (CPU), or sometimes simply processor, is the component in a digital computer that interprets instructions and processes data contained in computer programs.
-393)DVD
-DVD (also known as "Digital Versatile Disc" or "Digital Video Disc") is an optical disc storage media format that can be used for data storage, including movies with high video and sound quality. DVDs resemble compact discs as their physical dimensions are the same (120 mm (4.72 inches) or occasionally 80 mm (3.15 inches) in diameter) but they are encoded in a different format and at a much higher density. The official DVD specification is maintained by the DVD Forum.
-394)WYSIWYG (IPA Pronunciation [wɪziwɪg] or [wiziwɪg]), is an acronym for What You See Is What You Get, used in computing to describe a system in which content during editing appears very similar to the final product.[1] It is commonly used for word processors, but has other applications, such as Web (HTML) authoring.
-395)DTP
-Desktop publishing (also known as DTP) combines a personal computer and page layout software to create publication documents on a computer for either large scale publishing or small scale local economical multifunction peripheral output and distribution.
-
-396)  An input device conceptually similar to mouse is joystick
-
-397) A 8 bit microprocessor must have 8 data lines
-
-398) Mouse and joystick are graphic input devices
-
-399) Device drivers controls the interaction between the hardware devices and operating systems
-
-400) An ordinary pen which is used to indicate locations on the computer screen by sensing the ray of
-
-light being emitted by the screen, is called light pen.
-
-401) UNIVAC is a computer belonging to third generation
-
-402) Mother board holds the ROM, CPU, RAM and expansion cards
-
-403) CD-ROM is as a magnetic memory
-
-404) The binary number system has a base 2
-
-405) GUI is used as an interface between software and user
-
-406) Binary numbers are positional numbers
-
-407) The base of the hexadecimal system is sixteen
-
-408) Display capabilities of monitor are determined by adapter card
-
-409) Drum plotter, flat bed plotter, graphic display device is an output device .
-
-410) 1 MB is equivalent to 2 (to the power of 20 bytes)
-
-411) Magnetic surface recoding devices used in computers such as hard disks, floppy disks, CD- ROMs are called secondary / auxiliary storage devices
-
-412) Assembler is a translator which translates assembly language program into a machine language program
-
-413) Interpreter is a translator which translates high level language program into a machine language program
-
-414) Machine language programs are machine dependent
-
-415) The programs written in assembly language are machine independent
-
-416) High level languages are developed to allow application programs, which are machine  independent.
-
-417) The Vacuum tubes are related to first generation computers.
-
-418) Mark I was the first computer that used mechanical switches.
-
-419) First generation computers relied on machine language to perform operations, and they only solve one problem at a time.
-
-420) In first generation computers input was based on punched cards.
-
-421) Vacuum tube generates more energy and consumes more electricity
-
-422)Second generation computers moved from cryptic binary machine language to symbolic, or assembly languages which allowed programmers to specify instructions in words.
-
-423) Most electronic devices today use some form of integrated circuits placed on printed circuit boards thin pieces of bakelite or fiberglass that have electrical connections etched onto them is called mother board.
-
-424) The operating system, which allowed the device to run many different applications at one time with a central program that monitored the memory was introduced in third generation computers
-
-425) The fourth generation computers saw the development of GUIs, the mouse and handheld devices
-
-426) The micro processor was introduced in fourth generation computer
-
-427) Integrated Circuits (IC) are introduced and the replacement of transistors started in third generation computers
-
-428) Fifth generation computing is based on artificial intelligence
-
-429) A single zero bit is called starting bit
-
-430) PnP stands for plug and play
-
-431) The data in 8 bit bus is sent along 8 wires simultaneously in parallel
+<Bookmark 
+  title="Computer Systems: A Programmer's Perspective (CS:APP)"
+  description="Authoritative reference by Randal E. Bryant and David R. O'Hallaron covering processor microarchitecture, virtual memory, and system-level I/O."
+  url="https://csapp.cs.cmu.edu/"
+/>
