@@ -3,7 +3,7 @@
 #  TechNHIT Engineering Portal & Studio — aaPanel Installer
 #  Repository   : https://github.com/subro88/technhit-portal.git
 #  Target Domain: https://technhit.in (and www.technhit.in)
-#  Host Port    : 127.0.0.1:3000 (Protected from public direct access)
+#  Host Port    : 127.0.0.1:3015 (Protected from public direct access)
 #  Container    : technhit_app
 #
 #  Usage:
@@ -37,7 +37,7 @@ run() {
 # ── Constants ─────────────────────────────────────────────────────────────────
 DEFAULT_INSTALL_DIR="/www/wwwroot/technhit.in"
 REPO_URL="https://github.com/subro88/technhit-portal.git"
-APP_PORT=3000
+APP_PORT="${APP_PORT:-3015}"
 APP_CONTAINER="technhit_app"
 
 # ── Resolve install directory ─────────────────────────────────────────────────
@@ -203,7 +203,7 @@ echo ""
 echo "  3. Configure Reverse Proxy in aaPanel:"
 echo "     - In website settings, go to the 'Reverse Proxy' tab -> click 'Add reverse proxy'"
 echo "     - Proxy Name : technhit_proxy"
-echo "     - Target URL : http://127.0.0.1:3000"
+echo "     - Target URL : http://127.0.0.1:${APP_PORT}"
 echo "     - Sent Domain: \$host"
 echo "     - Enable 'Advanced' / WebSocket support"
 echo ""

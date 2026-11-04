@@ -106,7 +106,12 @@ fi
 
 # 6. Automated Health Check Verification
 echo "[6/6] Verifying cluster health status..."
-HEALTH_URL="http://127.0.0.1:3000/api/health"
+APP_PORT="3015"
+if [[ -f "$INSTALL_DIR/.env" ]]; then
+    ENV_PORT=$(grep -E '^APP_PORT=' "$INSTALL_DIR/.env" | cut -d '=' -f2- | tr -d '"' | tr -d "'" | tr -d ' ' || true)
+    [[ -n "$ENV_PORT" ]] && APP_PORT="$ENV_PORT"
+fi
+HEALTH_URL="http://127.0.0.1:${APP_PORT}/api/health"
 MAX_ATTEMPTS=12
 ATTEMPT=1
 HEALTHY=0

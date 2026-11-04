@@ -10,7 +10,7 @@ services:
     restart: unless-stopped
     ports:
       # Bind to localhost to enforce traffic routing through Nginx SSL reverse proxy
-      - "127.0.0.1:3000:3000"
+      - "127.0.0.1:${APP_PORT:-3015}:3000"
     environment:
       - NODE_ENV=production
       - AUTH_SECRET=${AUTH_SECRET}

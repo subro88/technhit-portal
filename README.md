@@ -67,8 +67,8 @@ npm run dev
 # Build and run production standalone container
 docker compose up -d --build
 
-# Verify container health
-curl -I http://127.0.0.1:3000/api/health
+# Verify container health (Production port 3015)
+curl -I http://127.0.0.1:3015/api/health
 ```
 
 ### Zero-Downtime Hot Deployment Script

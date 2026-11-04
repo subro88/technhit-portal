@@ -1,7 +1,7 @@
 # aaPanel Production Reverse Proxy Setup Guide for TechNHIT
 
 **Domain**: `https://technhit.in` & `https://www.technhit.in`  
-**Internal Port**: `127.0.0.1:3000`  
+**Internal Port**: `127.0.0.1:3015` (Container Port 3000)  
 **Container**: `technhit_app`  
 **Install Directory**: `/www/wwwroot/technhit.in`
 
@@ -18,7 +18,7 @@
    ├── /uploads/        ───> Cached for 30 Days
    ├── /images/         ───> Cached for 7 Days
    ├── /admin & /api    ───> Direct Pass (No Cache + Rate Limiting)
-   └── /                ───> Reverse Proxy (http://127.0.0.1:3000)
+   └── /                ───> Reverse Proxy (http://127.0.0.1:3015)
                               │
                               ▼
                      [ Docker Container: technhit_app ]
@@ -43,8 +43,8 @@ The script will automatically:
 - Clone or pull `https://github.com/subro88/technhit-portal.git` into `/www/wwwroot/technhit.in`.
 - Generate a cryptographic 32-byte `AUTH_SECRET` and secure `ADMIN_FALLBACK_PASSWORD`.
 - Set directory permissions (`775`) on `content/` and `public/uploads/`.
-- Build and launch Docker container `technhit_app` bound strictly to `127.0.0.1:3000`.
-- Verify the internal health check (`http://127.0.0.1:3000/api/health`).
+- Build and launch Docker container `technhit_app` bound strictly to `127.0.0.1:3015`.
+- Verify the internal health check (`http://127.0.0.1:3015/api/health`).
 
 ---
 
@@ -85,7 +85,7 @@ The script will automatically:
 2. Click **Add reverse proxy**.
 3. Configure the proxy parameters:
    - **Proxy Name**: `technhit_proxy`
-   - **Target URL**: `http://127.0.0.1:3000`
+   - **Target URL**: `http://127.0.0.1:3015`
    - **Sent Domain**: `$host`
    - **Proxy dir**: `/`
 4. Toggle **Advanced** settings:
@@ -107,7 +107,7 @@ To ensure maximum performance and offload Next.js from serving static files repe
    ```nginx
    # Next.js Static Chunks (1-Year Immutable Caching)
    location /_next/static/ {
-       proxy_pass http://127.0.0.1:3000;
+       proxy_pass http://127.0.0.1:3015;
        proxy_http_version 1.1;
        proxy_set_header Connection "";
        expires 365d;
@@ -117,7 +117,7 @@ To ensure maximum performance and offload Next.js from serving static files repe
 
    # Media Uploads (30-Day Cache)
    location /uploads/ {
-       proxy_pass http://127.0.0.1:3000;
+       proxy_pass http://127.0.0.1:3015;
        proxy_http_version 1.1;
        proxy_set_header Connection "";
        expires 30d;
