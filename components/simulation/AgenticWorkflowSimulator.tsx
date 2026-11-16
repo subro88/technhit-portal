@@ -6,6 +6,7 @@ import { playHapticSound, awardOperativeXp } from "@/lib/operative-store";
 import { trackSimulatorAction } from "@/lib/analytics";
 import { ClusterFailoverVisualizer } from "@/components/simulation/ClusterFailoverVisualizer";
 import { K3sWorkflowSimulator } from "@/components/simulation/K3sWorkflowSimulator";
+import { LinuxAdminSimulator } from "@/components/simulation/linux-admin/LinuxAdminSimulator";
 import {
   Terminal,
   Play,
@@ -50,6 +51,10 @@ interface LogEntry {
 export function AgenticWorkflowSimulator({ post }: AgenticWorkflowSimulatorProps) {
   if (post.slug === "running-micro-clusters-at-the-edge-k3s-arm-nodes") {
     return <K3sWorkflowSimulator post={post} />;
+  }
+
+  if (post.category === "linux-server-admin") {
+    return <LinuxAdminSimulator post={post} />;
   }
 
   const [activeTab, setActiveTab] = useState<"pipeline" | "mdx">("pipeline");

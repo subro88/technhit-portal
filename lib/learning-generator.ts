@@ -5634,74 +5634,1409 @@ const K3S_EDGE_CLUSTER_DRILL: LearningDrillData = {
   ],
 };
 
-// Generic Drill Generator for all other technical posts
+
+const APACHE_VHOST_MULTI_TENANT_DRILL: LearningDrillData = {
+  slug: "configure-apache-virtual-host-ubuntu-16-04-lts",
+  title: "Configure Multi-Tenant Apache Virtual Hosts (Ubuntu 16.04 / Modern Linux)",
+  category: "linux-server-admin",
+  badgeName: "MULTI-TENANT VHOST SPECIALIST",
+  badgeDescription: "Mastered NameVirtualHost single-IP multiplexing, cross-tenant POSIX isolation, AllowOverride containment, and multi-domain Let's Encrypt TLS.",
+  architectureDiagram: {
+    type: "apache-vhost",
+    title: "Multi-Tenant NameVirtualHost Single-IP Multiplexing & Cross-Tenant Directory Isolation",
+  },
+  reconCards: [
+    {
+      id: "rc-1",
+      tag: "NAMEVIRTUALHOST",
+      title: "SINGLE-IP MULTIPLEXING",
+      subtitle: "RFC 7230 Host Header Dispatch",
+      definition: "Enables hosting hundreds of distinct domains on a single public IP address by matching the HTTP 'Host:' request header against compiled ServerName and ServerAlias directives.",
+      seenInProd: "Shared hosting clusters and multi-tenant SaaS frontend edge tiers.",
+    },
+    {
+      id: "rc-2",
+      tag: "CONTAINMENT",
+      title: "CROSS-TENANT ISOLATION",
+      subtitle: "Directory Mode 0750 & Dedicated UIDs",
+      definition: "Each tenant document root is owned by dedicated tenant users (e.g. tenant1:www-data) with 0750 permissions. This prevents compromised PHP scripts in Tenant A from inspecting databases or credentials in Tenant B.",
+      seenInProd: "Hardened cPanel, DirectAdmin, and high-density enterprise hosting clusters.",
+    },
+    {
+      id: "rc-3",
+      tag: "SECURITY DIRECTIVE",
+      title: "ALLOWOVERRIDE CONTAINMENT",
+      subtitle: "Preventing .htaccess Escalation",
+      definition: "Restricting 'AllowOverride None' or 'AllowOverride Limit FileInfo' prevents rogue developers or compromised CMS plugins from overriding core security headers, SymLinksIfOwnerMatch, or authentication gates.",
+      seenInProd: "Enterprise Apache configuration standards and PCI-DSS compliance profiles.",
+    },
+    {
+      id: "rc-4",
+      tag: "CERTIFICATE DISPATCH",
+      title: "SNI DUAL TLS ISSUANCE",
+      subtitle: "Server Name Indication Extension",
+      definition: "TLS SNI allows the server to present unique SSL certificates for client-a.com and client-b.com on the same IP and port 443 before the encrypted HTTP payload is decrypted.",
+      seenInProd: "Let's Encrypt Certbot automated multi-domain deployments.",
+    },
+    {
+      id: "rc-5",
+      tag: "TELEMETRY AUDIT",
+      title: "DEDICATED LOG PARTITIONING",
+      subtitle: "CustomLog per VirtualHost",
+      definition: "Each virtual host must output to dedicated access and error logs (/var/log/apache2/tenant_a_access.log). Aggregating into a single common log corrupts tenant billing and obscures breach attribution.",
+      seenInProd: "SIEM log shippers (Vector, FluentBit) routing per-tenant audit events.",
+    },
+    {
+      id: "rc-6",
+      tag: "PRE-FLIGHT COMPILATION",
+      title: "APACHE2CTL -S DISPATCH TABLE",
+      subtitle: "VHost Binding Verification",
+      definition: "Running 'apache2ctl -S' compiles and dumps the internal virtual host hierarchy in memory, exposing overlapping ServerNames, default vhost fallbacks, and port binding conflicts before traffic reaches them.",
+      seenInProd: "CI/CD deployment pipelines prior to issuing 'systemctl reload apache2'.",
+    },
+  ],
+  motive: {
+    headline: "SHARED HOSTING DRIFT VS. HARDENED MULTI-TENANCY",
+    subheadline: "Default permissive Apache virtual hosts allow cross-tenant directory traversals and configuration hijacking. Hardened multi-tenancy guarantees cryptographically isolated web properties on a single server.",
+    baselineLabel: "PERMISSIVE SHARED ROOT",
+    baselineTag: "VULNERABLE BASELINE",
+    baselineValueDisplay: "92",
+    baselineUnit: "RISK EXPOSURE INDEX",
+    baselineSubtext: "World-readable 0777 document roots, AllowOverride All, and shared common log file",
+    baselineStat1Label: "Inter-Tenant Isolation",
+    baselineStat1Value: "None (Symlink Traversals Possible)",
+    baselineStat2Label: "Configuration Drift",
+    baselineStat2Value: "High (.htaccess Overrides Core Security)",
+    optimizedLabel: "HARDENED MULTI-TENANT BLUEPRINT",
+    savingsLabel: "-85% VULNERABILITY SURFACE",
+    optimizedValueDisplay: "13.8",
+    optimizedUnit: "RISK EXPOSURE INDEX",
+    optimizedSubtext: "0750 directory masks, AllowOverride Limit, SNI TLS per-tenant, and isolated CustomLog pipes",
+    optimizedStat1Label: "Inter-Tenant Isolation",
+    optimizedStat1Value: "POSIX 0750 UID Strict Separation",
+    optimizedStat2Label: "Configuration Drift",
+    optimizedStat2Value: "Deterministic (apache2ctl -S Validated)",
+    uncompressedBytes: 92,
+    compressedBytes: 14,
+    savingsPercentage: 85,
+    spectrumTitle: "CONCURRENT MULTI-TENANT WORKLOAD",
+    spectrumSubtitle: "Evaluate how multi-tenant Apache handles concurrent tenant traffic under baseline vs hardened isolation.",
+    explanation: "POSIX directory permissions paired with strict AllowOverride directives guarantee that a vulnerability in one tenant application cannot cascade into neighboring virtual hosts.",
+    networkProfiles: [
+      {
+        name: "Two-Tenant Production Ingress",
+        speedKbps: 50000,
+        uncompressedTimeMs: 45,
+        compressedTimeMs: 12,
+        subtitle: "Concurrent ingress to client-a.com and client-b.com",
+        baselineStatValue: "Cross-reading risk in /var/www",
+        optimizedStatValue: "Cryptographically isolated",
+      },
+      {
+        name: "Compromised CMS Plugin Attack",
+        speedKbps: 10000,
+        uncompressedTimeMs: 650,
+        compressedTimeMs: 18,
+        subtitle: "Malicious shell script attempting ../ traversal into neighbor directory",
+        baselineStatValue: "Breached sibling tenant .env files",
+        optimizedStatValue: "POSIX Permission Denied (0750)",
+      },
+    ],
+  },
+  debateStatements: [
+    {
+      id: "ds-1",
+      scenario: "A junior sysadmin grants 'chmod -R 777 /var/www' so both tenants can upload files via FTP without permission errors.",
+      proposedAction: "Approve 777 permissions to eliminate recurring permission support tickets.",
+      isValid: false,
+      explanation: "777 permissions allow any system user or compromised web script on the server to read, overwrite, and delete all other tenant files, completely destroying multi-tenancy security.",
+      badgeTag: "PERMISSIONS COMPROMISE",
+    },
+    {
+      id: "ds-2",
+      scenario: "Configuring VirtualHosts on a single IP address without TLS SNI support on legacy clients.",
+      proposedAction: "Enforce SNI-based TLS on Apache 2.4+ and reject pre-SNI legacy clients that cannot negotiate distinct certificates.",
+      isValid: true,
+      explanation: "SNI is universally supported across modern web browsers and APIs, allowing distinct cryptographic identities per domain without requiring dedicated public IPv4 addresses for each host.",
+      badgeTag: "TLS ARCHITECTURE",
+    },
+    {
+      id: "ds-3",
+      scenario: "Setting 'AllowOverride All' in the main /var/www directory block for all tenants.",
+      proposedAction: "Leave AllowOverride All enabled so customers can configure anything they want via .htaccess.",
+      isValid: false,
+      explanation: "AllowOverride All imposes high I/O filesystem overhead on every HTTP request (walking the directory tree for .htaccess) and enables unvetted tenants to override global server security policies.",
+      badgeTag: "SECURITY POSTURE",
+    },
+    {
+      id: "ds-4",
+      scenario: "Before reloading Apache in production, executing 'apache2ctl -S' to inspect the compiled vhost hierarchy.",
+      proposedAction: "Always run 'apache2ctl -S' in automation scripts before triggering systemctl reload.",
+      isValid: true,
+      explanation: "apache2ctl -S verifies syntax and prints the exact port-to-server name mappings, immediately catching syntax typos, missing DocumentRoots, and duplicate default vhosts before production traffic is impacted.",
+      badgeTag: "PRE-FLIGHT AUDIT",
+    },
+    {
+      id: "ds-5",
+      scenario: "Directing all VirtualHost logs to /var/log/apache2/access.log to conserve disk space.",
+      proposedAction: "Merge all tenant logs into a single shared log file.",
+      isValid: false,
+      explanation: "Merged logs prevent isolated tenant billing, make forensic investigation of security incidents nearly impossible, and violate compliance frameworks such as HIPAA and PCI-DSS.",
+      badgeTag: "LOG AUDITING",
+    },
+  ],
+  simulator: {
+    headline: "MULTI-TENANT VIRTUALHOST PROVISIONING CONSOLE",
+    description: "Provision isolated name-based VirtualHosts, configure POSIX permissions, and verify zero-downtime reload via apache2ctl.",
+    defaultHost: "app-shared-01",
+    defaultPayloadBytes: 92000,
+    compressedPayloadBytes: 13800,
+    responseHeaders: {
+      "Server": "Apache/2.4.58 (Ubuntu)",
+      "Vary": "Host",
+      "X-Tenant-Isolation": "POSIX-0750-Enforced",
+    },
+    terminalSteps: [
+      {
+        id: "step-1",
+        title: "Scaffold Multi-Tenant DocumentRoots",
+        description: "Create isolated directory trees for client-a.com and client-b.com with 750 permissions.",
+        command: "mkdir -p /var/www/client-a.com/public_html /var/www/client-b.com/public_html && chmod 750 /var/www/client-*",
+        output: "[OK] Document roots initialized with 0750 POSIX permissions.",
+      },
+      {
+        id: "step-2",
+        title: "Deploy NameVirtualHost Configurations",
+        description: "Deploy sites-available configs with distinct ServerNames, CustomLogs, and ErrorLogs.",
+        command: "cat /etc/apache2/sites-available/client-a.com.conf | grep -E 'ServerName|DocumentRoot'",
+        output: "  ServerName client-a.com\\n  ServerAlias www.client-a.com\\n  DocumentRoot /var/www/client-a.com/public_html",
+      },
+      {
+        id: "step-3",
+        title: "Validate Compiled VirtualHost Dispatch Table",
+        description: "Execute apache2ctl -S to verify clean port 80/443 bindings without overlapping defaults.",
+        command: "apache2ctl -S | grep 'namevhost'",
+        output: "port 80 namevhost client-a.com (/etc/apache2/sites-enabled/client-a.com.conf:1)\\nport 80 namevhost client-b.com (/etc/apache2/sites-enabled/client-b.com.conf:1)",
+      },
+      {
+        id: "step-4",
+        title: "Zero-Downtime Daemon Graceful Reload",
+        description: "Reload Apache master process to activate new virtual hosts without dropping active connections.",
+        command: "systemctl reload apache2 && curl -sI -H 'Host: client-a.com' http://localhost/ | head -n 1",
+        output: "HTTP/1.1 200 OK\\n[SUCCESS] Multi-tenant VirtualHosts online.",
+      },
+    ],
+  },
+  debriefRules: [
+    {
+      id: "rule-1",
+      number: "01",
+      title: "POSIX ISOLATION PER TENANT",
+      rule: "Never share a common Linux user across multiple VirtualHost document roots; enforce 0750 permissions with group www-data.",
+      antiPattern: "Running all sites under 0777 or shared root ownership.",
+    },
+    {
+      id: "rule-2",
+      number: "02",
+      title: "RESTRICT ALLOWOVERRIDE",
+      rule: "Set 'AllowOverride None' by default in <Directory /var/www>; only allow specific overrides where explicitly required.",
+      antiPattern: "Global 'AllowOverride All' allowing unvetted .htaccess security bypasses.",
+    },
+    {
+      id: "rule-3",
+      number: "03",
+      title: "PRE-FLIGHT COMPILATION AUDIT",
+      rule: "Always run 'apache2ctl -S' in CI/CD pipelines before executing 'systemctl reload apache2'.",
+      antiPattern: "Reloading Apache blindly, causing port-binding conflicts or default vhost hijacking.",
+    },
+    {
+      id: "rule-4",
+      number: "04",
+      title: "DEDICATED LOG STREAMS",
+      rule: "Assign unique CustomLog and ErrorLog paths to every VirtualHost to enable precise security auditing and tenant billing.",
+      antiPattern: "Directing all traffic to a single monolithic access.log.",
+    },
+  ],
+  quiz: [
+    {
+      id: "q-1",
+      scenario: "You are hosting two client domains on the same server IP. An attacker uploads a malicious PHP script to Domain A.",
+      question: "Which configuration prevents the attacker from reading Domain B's wp-config.php file?",
+      options: [
+        "Setting Domain B's document root to 0750 owned by tenant2:www-data with PHP open_basedir restricted to Domain B's path.",
+        "Renaming Domain B's domain name in DNS.",
+        "Restarting Apache every 10 minutes.",
+        "Enabling directory indexing on Domain B.",
+      ],
+      correctIndex: 0,
+      explanation: "POSIX permissions (0750) combined with PHP open_basedir containment prevent compromised scripts running in one tenant pool from traversing into sibling tenant directories.",
+    },
+    {
+      id: "q-2",
+      scenario: "You want to verify how Apache will route incoming HTTP requests across all configured VirtualHosts.",
+      question: "Which command prints the complete compiled in-memory virtual host table?",
+      options: [
+        "apache2ctl -S",
+        "systemctl restart apache2",
+        "netstat -anp",
+        "cat /etc/hosts",
+      ],
+      correctIndex: 0,
+      explanation: "'apache2ctl -S' parses all enabled configuration files and prints the exact port and name-based virtual host hierarchy.",
+    },
+    {
+      id: "q-3",
+      scenario: "You are configuring multi-domain SSL certificates on a single Apache IP.",
+      question: "Why is TLS Server Name Indication (SNI) essential for modern multi-tenant HTTPS hosting?",
+      options: [
+        "It compresses video files during SSL handshake.",
+        "It allows the client to send the requested hostname during the TLS handshake so the server can present the correct certificate on a shared IP.",
+        "It encrypts DNS queries automatically.",
+        "It disables the need for SSL certificates.",
+      ],
+      correctIndex: 1,
+      explanation: "SNI passes the target hostname inside the initial TLS ClientHello message, enabling the server to choose and serve the correct SSL certificate before HTTP communication starts.",
+    },
+  ],
+};
+
+
+const ROOT_USER_DELEGATION_DRILL: LearningDrillData = {
+  slug: "enable-root-user-ubuntu-16-04-1-lts",
+  title: "Ubuntu Privilege Delegation: Root Password Locking vs Sudo RBAC Architecture",
+  category: "linux-server-admin",
+  badgeName: "PRIVILEGE DELEGATION ARCHITECT",
+  badgeDescription: "Mastered Ubuntu's locked root shadow architecture, sudo command scoping, visudo syntax safety, and immutable PAM audit trails.",
+  architectureDiagram: {
+    type: "root-privilege",
+    title: "Ubuntu Privilege Delegation: Root Password Locking vs Sudo RBAC Architecture",
+  },
+  reconCards: [
+    {
+      id: "rc-1",
+      tag: "UNIX ARCHITECTURE",
+      title: "LOCKED ROOT IN /ETC/SHADOW",
+      subtitle: "The '!*' Shadow Field Standard",
+      definition: "Ubuntu by default does not set a root password, placing '!*' in /etc/shadow. This disables password authentication for UID 0 while allowing kernel daemons, cron tasks, and sudo to execute as root seamlessly.",
+      seenInProd: "Default architecture across all official Ubuntu Server cloud images.",
+    },
+    {
+      id: "rc-2",
+      tag: "RBAC MODEL",
+      title: "COMMAND-LEVEL SUDO SCOPING",
+      subtitle: "Least-Privilege Binary Execution",
+      definition: "Instead of granting full unrestricted root access (ALL=(ALL:ALL) ALL), production sudoers files grant execution rights only to specific binaries (e.g. /usr/bin/systemctl restart nginx).",
+      seenInProd: "SOC-2 and ISO 27001 compliant infrastructure engineering teams.",
+    },
+    {
+      id: "rc-3",
+      tag: "CONFIGURATION INTEGRITY",
+      title: "VISUDO LOCK & SYNTAX VALIDATION",
+      subtitle: "Zero Lockout File Modification",
+      definition: "'visudo' acquires a lock on /etc/sudoers and validates syntax against the sudoers grammar before writing changes to disk. Editing sudoers with standard nano or vim risks corrupting the file and permanently locking out administrators.",
+      seenInProd: "Mandatory standard operating procedure for any sudoers change.",
+    },
+    {
+      id: "rc-4",
+      tag: "AUDIT LOGGING",
+      title: "IMMUTABLE AUDIT TRAILS",
+      subtitle: "Attribution via PAM & Journald",
+      definition: "Every sudo command is recorded with the calling operator's original unprivileged UID, TTY, working directory, and exact command arguments. Direct root logins completely destroy this attribution trail.",
+      seenInProd: "Linux auditd rules monitoring /var/log/auth.log and journalctl -u sudo.",
+    },
+    {
+      id: "rc-5",
+      tag: "EPHEMERAL ELEVATION",
+      title: "ATOMIC ELEVATION VS PERMANENT ROOT",
+      subtitle: "Limiting the Blast Radius",
+      definition: "Executing single commands via 'sudo cmd' restricts elevated privileges strictly to that process lifetime. Permanent root shells ('sudo -i' or su) leave operators vulnerable to accidental catastrophic deletions like 'rm -rf /'.",
+      seenInProd: "Defensive operational practices across enterprise infrastructure.",
+    },
+    {
+      id: "rc-6",
+      tag: "SECURITY REVERSAL",
+      title: "PASSWD -L LOCKING MECHANISM",
+      subtitle: "Neutralizing Stale Passwords",
+      definition: "If a root password was accidentally enabled, executing 'sudo passwd -l root' prepends an exclamation mark to the password hash, instantly neutralizing password login while leaving sudo functional.",
+      seenInProd: "Incident remediation runbooks after unauthorized privilege changes.",
+    },
+  ],
+  motive: {
+    headline: "SHARED ROOT CHAOS VS. AUDITABLE SUDO DELEGATION",
+    subheadline: "Enabling a shared root password creates an un-auditable single point of catastrophic failure. Scoped sudo delegation provides atomic privilege elevation with 100% operator accountability.",
+    baselineLabel: "UNLOCKED SHARED ROOT PASSWORD",
+    baselineTag: "DANGEROUS BASELINE",
+    baselineValueDisplay: "95",
+    baselineUnit: "SECURITY BREACH RISK",
+    baselineSubtext: "Shared static root password, zero command accountability, and vulnerable to dictionary brute-force",
+    baselineStat1Label: "Operator Accountability",
+    baselineStat1Value: "0% (Anonymous UID 0 Execution)",
+    baselineStat2Label: "Blast Radius",
+    baselineStat2Value: "Total Host Compromise",
+    optimizedLabel: "SCOPED SUDO DELEGATION",
+    savingsLabel: "-90% COMPROMISE RISK",
+    optimizedValueDisplay: "9.5",
+    optimizedUnit: "SECURITY BREACH RISK",
+    optimizedSubtext: "Locked root in /etc/shadow, granular binary sudoers rules, and immutable PAM audit logging",
+    optimizedStat1Label: "Operator Accountability",
+    optimizedStat1Value: "100% Attribution (Original UID)",
+    optimizedStat2Label: "Blast Radius",
+    optimizedStat2Value: "Scoped to Authorized Binaries",
+    uncompressedBytes: 95,
+    compressedBytes: 10,
+    savingsPercentage: 90,
+    spectrumTitle: "PRIVILEGE ESCALATION SCENARIOS",
+    spectrumSubtitle: "Compare incident investigation under shared root versus scoped sudo delegation.",
+    explanation: "Locking the root password and enforcing scoped sudo privilege delegation ensures that every privileged command is traceable to a specific human operative and restricted to authorized binaries.",
+    networkProfiles: [
+      {
+        name: "Routine SRE Maintenance",
+        speedKbps: 100000,
+        uncompressedTimeMs: 120,
+        compressedTimeMs: 15,
+        subtitle: "Restarting Nginx and updating kernel packages",
+        baselineStatValue: "Uncontrolled root shell active",
+        optimizedStatValue: "Scoped sudo command execution",
+      },
+      {
+        name: "Security Forensic Investigation",
+        speedKbps: 25000,
+        uncompressedTimeMs: 1800,
+        compressedTimeMs: 40,
+        subtitle: "Determining who terminated the primary database daemon",
+        baselineStatValue: "auth.log shows only 'root' (Unknown actor)",
+        optimizedStatValue: "auth.log shows 'sudo by user jsmith'",
+      },
+    ],
+  },
+  debateStatements: [
+    {
+      id: "ds-1",
+      scenario: "A junior developer wants to run 'sudo passwd root' and set a simple password so they can log in directly as root without typing sudo.",
+      proposedAction: "Approve unlocking the root account with a password for developer convenience.",
+      isValid: false,
+      explanation: "Unlocking root bypasses Ubuntu's secure architecture, destroys audit trails, and opens the system to brute-force attacks if root login is permitted.",
+      badgeTag: "SECURITY REVERSAL",
+    },
+    {
+      id: "ds-2",
+      scenario: "Editing /etc/sudoers using 'nano /etc/sudoers' instead of 'visudo'.",
+      proposedAction: "Use standard text editors to update sudoers directly.",
+      isValid: false,
+      explanation: "A single syntax typo or stray character in /etc/sudoers can invalidate the entire file, instantly locking all users out of sudo privileges with no way to recover without a reboot into rescue mode.",
+      badgeTag: "SYNTAX SAFETY",
+    },
+    {
+      id: "ds-3",
+      scenario: "Creating modular drop-in files in /etc/sudoers.d/ instead of editing the monolithic /etc/sudoers.",
+      proposedAction: "Deploy individual application rules to /etc/sudoers.d/app-name with 0440 permissions.",
+      isValid: true,
+      explanation: "Modular drop-in files prevent package upgrade merge conflicts and allow clean infrastructure-as-code management via Ansible or Puppet.",
+      badgeTag: "CONFIG HYGIENE",
+    },
+    {
+      id: "ds-4",
+      scenario: "Granting a developer unrestricted 'ALL=(ALL) ALL' sudo permissions instead of scoping to specific binaries.",
+      proposedAction: "Grant full ALL access to avoid creating multiple granular sudoers rules.",
+      isValid: false,
+      explanation: "Unrestricted sudo access violates the principle of least privilege and allows the developer to spawn subshells or alter security controls beyond their operational mandate.",
+      badgeTag: "LEAST PRIVILEGE",
+    },
+    {
+      id: "ds-5",
+      scenario: "Re-locking an accidentally set root password using 'sudo passwd -l root'.",
+      proposedAction: "Run 'passwd -l root' to lock the root account while preserving sudo access.",
+      isValid: true,
+      explanation: "'passwd -l' prepends '!' to the root password hash in /etc/shadow, disabling password logins while keeping all sudo privileges and cron jobs intact.",
+      badgeTag: "ACCOUNT REMEDIATION",
+    },
+  ],
+  simulator: {
+    headline: "UBUNTU PRIVILEGE DELEGATION & SUDO AUDITING CONSOLE",
+    description: "Audit /etc/shadow root account lock status, deploy scoped sudoers policies with visudo validation, and inspect immutable PAM audit logs.",
+    defaultHost: "mgmt-node-01",
+    defaultPayloadBytes: 95000,
+    compressedPayloadBytes: 9500,
+    responseHeaders: {
+      "Security-Model": "Ubuntu-Locked-Root-Sudo-RBAC",
+      "Audit-Subsystem": "PAM-Journald",
+      "Shadow-Status": "Locked (!*)",
+    },
+    terminalSteps: [
+      {
+        id: "step-1",
+        title: "Audit /etc/shadow Root Password State",
+        description: "Inspect root account password hash to confirm default locked status (!*).",
+        command: "sudo passwd -S root",
+        output: "root L 01/15/2024 0 99999 7 -1 (Password locked.)\\n[OK] Root account has no active password hash.",
+      },
+      {
+        id: "step-2",
+        title: "Deploy Scoped Sudoers Rule with Visudo",
+        description: "Deploy granular command permissions to /etc/sudoers.d/devops and validate syntax.",
+        command: "echo '%devops ALL=(ALL) NOPASSWD: /usr/bin/systemctl restart nginx' | sudo tee /etc/sudoers.d/devops && sudo visudo -c -f /etc/sudoers.d/devops",
+        output: "/etc/sudoers.d/devops: parsed OK\\n[OK] Sudoers rule validated with 0440 mode.",
+      },
+      {
+        id: "step-3",
+        title: "Verify Ephemeral Elevation vs Identity",
+        description: "Execute privileged binary via sudo and verify immediate return to unprivileged UID.",
+        command: "sudo whoami && whoami",
+        output: "root\\noperative_user\\n[OK] Ephemeral elevation confined strictly to child process.",
+      },
+      {
+        id: "step-4",
+        title: "Inspect Immutable Audit Trail",
+        description: "Query systemd journal to verify complete attribution of calling user and executed command.",
+        command: "sudo journalctl -u sudo -n 1 --no-pager",
+        output: "sudo[4912]: operative_user : TTY=pts/0 ; PWD=/home/operative ; USER=root ; COMMAND=/usr/bin/systemctl restart nginx\\n[PASS] 100% Operator accountability confirmed.",
+      },
+    ],
+  },
+  debriefRules: [
+    {
+      id: "rule-1",
+      number: "01",
+      title: "PRESERVE LOCKED ROOT IN SHADOW",
+      rule: "Never set an interactive password on the root account in Ubuntu; keep it locked with 'passwd -l root'.",
+      antiPattern: "Setting a shared root password for team convenience.",
+    },
+    {
+      id: "rule-2",
+      number: "02",
+      title: "ALWAYS VALIDATE WITH VISUDO",
+      rule: "Never edit /etc/sudoers or files in /etc/sudoers.d/ without visudo syntax verification.",
+      antiPattern: "Using nano or vim directly, risking catastrophic sudo lockouts.",
+    },
+    {
+      id: "rule-3",
+      number: "03",
+      title: "SCOPE SUDOERS TO SPECIFIC BINARIES",
+      rule: "Grant execution rights only to specific absolute binary paths, avoiding blanket ALL=(ALL) ALL.",
+      antiPattern: "Treating sudo as an on/off switch for full root rights.",
+    },
+    {
+      id: "rule-4",
+      number: "04",
+      title: "MAINTAIN IMMUTABLE AUDIT LOGS",
+      rule: "Ship auth.log and sudo journal events to a centralized write-once SIEM to maintain accountability.",
+      antiPattern: "Disabling sudo logging or logging into raw root shells where history can be cleared.",
+    },
+  ],
+  quiz: [
+    {
+      id: "q-1",
+      scenario: "An administrator runs 'passwd -S root' on a fresh Ubuntu Server installation and sees 'root L ...'.",
+      question: "What does the 'L' flag indicate in this output?",
+      options: [
+        "The root account has an active password that is Long.",
+        "The root account is Locked, meaning password authentication is disabled while daemon ownership and sudo remain fully functional.",
+        "The root account is Local-only and cannot be used over network sockets.",
+        "The root account has Limited disk quota.",
+      ],
+      correctIndex: 1,
+      explanation: "The 'L' flag indicates the account is locked in /etc/shadow (prefixed with '!'), preventing password-based authentication while preserving internal system functions.",
+    },
+    {
+      id: "q-2",
+      scenario: "You need to update sudo permissions for the web development team to restart Apache.",
+      question: "What is the safest way to deploy this rule without risking administrative lockout?",
+      options: [
+        "Edit /etc/sudoers with nano and save directly.",
+        "Create a file in /etc/sudoers.d/webdev with 0440 permissions and validate it with 'visudo -c -f /etc/sudoers.d/webdev'.",
+        "Delete /etc/sudoers and recreate it from memory.",
+        "Add the developers to the shadow group.",
+      ],
+      correctIndex: 1,
+      explanation: "Using modular drop-in files in /etc/sudoers.d/ validated with 'visudo -c' prevents syntax errors and ensures file permissions are strictly enforced (0440).",
+    },
+    {
+      id: "q-3",
+      scenario: "During a security audit, you need to prove which specific employee executed a dangerous system command.",
+      question: "Why does sudo delegation provide superior auditability compared to sharing the root password?",
+      options: [
+        "Sudo encrypts all executed commands.",
+        "Sudo records the original calling user's UID, TTY, working directory, and command arguments in the system logs, whereas direct root login only records UID 0.",
+        "Sudo speeds up network packet delivery.",
+        "Sudo deletes command history after 24 hours.",
+      ],
+      correctIndex: 1,
+      explanation: "Sudo preserves the identity of the invoking unprivileged user in PAM/systemd logs, establishing undeniable accountability for every privileged action.",
+    },
+  ],
+};
+
+
+const VSCODE_REMOTE_SSH_DRILL: LearningDrillData = {
+  slug: "install-sftp-extension-for-visual-studio-code",
+  title: "VS Code Remote-SSH vs Legacy SFTP: Headless IPC Architecture Masterclass",
+  category: "linux-server-admin",
+  badgeName: "REMOTE-SSH RUNTIME ENGINEER",
+  badgeDescription: "Mastered headless server daemons (~/.vscode-server), zero-copy remote development, remote LSP execution, and dynamic socket port forwarding.",
+  architectureDiagram: {
+    type: "remote-ide",
+    title: "VS Code Remote-SSH Headless IPC Architecture vs Legacy SFTP Sync",
+  },
+  reconCards: [
+    {
+      id: "rc-1",
+      tag: "DAEMON ARCHITECTURE",
+      title: "HEADLESS VSCODE-SERVER",
+      subtitle: "~/.vscode-server Node.js Runtime",
+      definition: "VS Code Remote-SSH installs a lightweight Node.js daemon directly on the remote Linux VM. All extensions, linters, and language servers execute server-side natively inside Linux RAM.",
+      seenInProd: "Enterprise cloud development environments (AWS EC2, GCP Compute, bare-metal).",
+    },
+    {
+      id: "rc-2",
+      tag: "ZERO LOCAL COPY",
+      title: "ZERO FILE TRANSFERS",
+      subtitle: "Eliminating Local Disk Clones",
+      definition: "Unlike legacy SFTP which downloads the entire remote repository to your local laptop, Remote-SSH streams only UI state, cursor positions, and terminal buffers over an encrypted SSH pipe.",
+      seenInProd: "Large multi-gigabyte codebases and monorepos.",
+    },
+    {
+      id: "rc-3",
+      tag: "LANGUAGE SERVER",
+      title: "SERVER-SIDE LSP INDEXING",
+      subtitle: "pyright, gopls, rust-analyzer",
+      definition: "Language Server Protocol engines run directly against the remote Linux kernel, reading header files, native C libraries, and virtual environments without transferring gigabytes of dependencies.",
+      seenInProd: "Production Python/C++/Rust development against Linux glibc.",
+    },
+    {
+      id: "rc-4",
+      tag: "PORT TUNNELING",
+      title: "DYNAMIC REVERSE SOCKET TUNNEL",
+      subtitle: "Automatic Port Forwarding",
+      definition: "When a service on the remote server listens on port 3000 or 8080, Remote-SSH automatically creates a secure reverse tunnel, mapping it to http://localhost:3000 in your local workstation browser.",
+      seenInProd: "Local browser testing of headless backend microservices.",
+    },
+    {
+      id: "rc-5",
+      tag: "PTY DAEMON",
+      title: "INTEGRATED REMOTE TERMINAL",
+      subtitle: "Multiplexed SSH Shell Sessions",
+      definition: "Spawn multiple interactive bash/zsh shells directly on the remote machine with full pseudo-terminal (PTY) emulation, tmux persistence, and low-latency keystroke rendering.",
+      seenInProd: "Interactive dev shell workflows on cloud development instances.",
+    },
+    {
+      id: "rc-6",
+      tag: "LEGACY SFTP PITFALLS",
+      title: "SFTP SYNC DRIFT HAZARDS",
+      subtitle: "Race Conditions & Conflict Overwrites",
+      definition: "Legacy SFTP extensions (sftp.json) rely on saving files locally and uploading them over SFTP. If another developer or a git pull updates the remote file, local uploads overwrite remote changes blindly.",
+      seenInProd: "Frequent source code regression bugs in legacy web teams.",
+    },
+  ],
+  motive: {
+    headline: "LEGACY SFTP POLLING DRIFT VS. HEADLESS REMOTE-SSH",
+    subheadline: "Legacy SFTP extensions download massive dependencies locally and cause save-on-upload race conditions. VS Code Remote-SSH runs headless on the server with zero local file downloads and native language tooling.",
+    baselineLabel: "LEGACY SFTP EXTENSION (sftp.json)",
+    baselineTag: "OBSOLETE SYNC MODEL",
+    baselineValueDisplay: "88",
+    baselineUnit: "LATENCY & DRIFT INDEX",
+    baselineSubtext: "Full local repository download, high battery/network drain, and dangerous upload-on-save overwrites",
+    baselineStat1Label: "Local Disk Footprint",
+    baselineStat1Value: "Huge (Full Repo + node_modules)",
+    baselineStat2Label: "Conflict Resolution",
+    baselineStat2Value: "Blind Overwrites (Silent Data Loss)",
+    optimizedLabel: "HEADLESS REMOTE-SSH DAEMON",
+    savingsLabel: "-92% NETWORK & SYNC OVERHEAD",
+    optimizedValueDisplay: "7.0",
+    optimizedUnit: "LATENCY & DRIFT INDEX",
+    optimizedSubtext: "Thin UI client, headless Node.js daemon on Linux host, and native remote LSP indexing",
+    optimizedStat1Label: "Local Disk Footprint",
+    optimizedStat1Value: "0 Bytes (Remote Disk Native)",
+    optimizedStat2Label: "Conflict Resolution",
+    optimizedStat2Value: "Real-time Atomic Buffer Synchronization",
+    uncompressedBytes: 88,
+    compressedBytes: 7,
+    savingsPercentage: 92,
+    spectrumTitle: "DEVELOPMENT WORKLOAD PROFILE",
+    spectrumSubtitle: "Compare performance across massive multi-gigabyte repositories and high-latency mobile networks.",
+    explanation: "Executing the language engine natively on the remote Linux VM eliminates file synchronization overhead and allows developers to leverage server-grade CPUs and RAM.",
+    networkProfiles: [
+      {
+        name: "5GB Monorepo Indexing",
+        speedKbps: 20000,
+        uncompressedTimeMs: 145000,
+        compressedTimeMs: 120,
+        subtitle: "Opening large repository with 100,000 files",
+        baselineStatValue: "15-minute file download sync",
+        optimizedStatValue: "Instant open (Server-side LSP)",
+      },
+      {
+        name: "Remote Web Service Debugging",
+        speedKbps: 10000,
+        uncompressedTimeMs: 1800,
+        compressedTimeMs: 14,
+        subtitle: "Testing Express.js server on port 3000",
+        baselineStatValue: "Manual SSH port forwarding command",
+        optimizedStatValue: "Auto-forwarded to local browser",
+      },
+    ],
+  },
+  debateStatements: [
+    {
+      id: "ds-1",
+      scenario: "A developer uses a legacy SFTP extension that automatically uploads files on save to production.",
+      proposedAction: "Continue using upload-on-save directly to live production servers.",
+      isValid: false,
+      explanation: "Uploading on save creates race conditions, overwrites concurrent commits, and bypasses automated CI/CD testing pipelines, leading to production outages.",
+      badgeTag: "SYNC DRIFT",
+    },
+    {
+      id: "ds-2",
+      scenario: "Connecting to a remote Linux instance via VS Code Remote-SSH to edit code directly on the server.",
+      proposedAction: "Use Remote-SSH so that language servers and extensions run natively in the server's Linux environment.",
+      isValid: true,
+      explanation: "Remote-SSH runs extensions on the remote host, enabling true zero-copy development with native Linux glibc and container access.",
+      badgeTag: "REMOTE RUNTIME",
+    },
+    {
+      id: "ds-3",
+      scenario: "A remote Linux host has only 512MB of RAM and no swap space.",
+      proposedAction: "Run VS Code Remote-SSH with heavy TypeScript, ESLint, and Python language servers on this 512MB VM.",
+      isValid: false,
+      explanation: "The headless ~/.vscode-server daemon and multiple language servers require at least 1GB to 2GB of RAM. On a 512MB VM, the Linux OOM killer will terminate the node process.",
+      badgeTag: "CAPACITY PLANNING",
+    },
+    {
+      id: "ds-4",
+      scenario: "A developer needs to access an internal microservice running on the remote VM at port 8080.",
+      proposedAction: "Leverage VS Code Remote-SSH automatic port forwarding to tunnel port 8080 to localhost:8080.",
+      isValid: true,
+      explanation: "Remote-SSH automatically detects listening ports and creates an encrypted reverse tunnel over the existing SSH connection.",
+      badgeTag: "PORT TUNNELING",
+    },
+    {
+      id: "ds-5",
+      scenario: "Storing private SSH keys inside an unencrypted world-readable file to configure Remote-SSH.",
+      proposedAction: "Store raw SSH private keys with 0777 permissions in /tmp.",
+      isValid: false,
+      explanation: "SSH private keys must be stored in ~/.ssh/ with strict 0600 permissions, protected by passphrases and loaded via ssh-agent.",
+      badgeTag: "KEY HYGIENE",
+    },
+  ],
+  simulator: {
+    headline: "VS CODE REMOTE-SSH HEADLESS DAEMON CONSOLE",
+    description: "Inspect remote ~/.vscode-server process tree, verify zero-copy file operations, and monitor dynamic socket port forwarding.",
+    defaultHost: "cloud-vps-01",
+    defaultPayloadBytes: 88000,
+    compressedPayloadBytes: 7040,
+    responseHeaders: {
+      "Protocol": "VSCode-Remote-SSH-RPC",
+      "Headless-Daemon": "active (~/.vscode-server)",
+      "Port-Forward": "127.0.0.1:8080 -> remote:8080",
+    },
+    terminalSteps: [
+      {
+        id: "step-1",
+        title: "Verify SSH Authentication & Host Fingerprint",
+        description: "Establish SSH connection with Ed25519 keypair and verify remote glibc compatibility.",
+        command: "ssh user@cloud-vps-01 'ldd --version | head -n 1 && uname -m'",
+        output: "ldd (Ubuntu GLIBC 2.35-0ubuntu3.6) 2.35\\nx86_64\\n[OK] Remote environment glibc 2.35 compatible.",
+      },
+      {
+        id: "step-2",
+        title: "Inspect Headless Server Daemon Process",
+        description: "Verify ~/.vscode-server Node.js runtime execution and memory consumption.",
+        command: "ssh user@cloud-vps-01 'ps aux | grep vscode-server | head -n 2'",
+        output: "user 14209 1.2 2.4 842000 138000 ? Sl 14:15 0:04 node .../server.sh\\n[OK] Headless server daemon running in user space (138MB RSS).",
+      },
+      {
+        id: "step-3",
+        title: "Verify Remote Language Server Indexing",
+        description: "Confirm language servers index remote files directly with zero local downloads.",
+        command: "ssh user@cloud-vps-01 'lsof -c pyright | grep -i \".py\" | head -n 2'",
+        output: "node 14209 user 42r REG 259,1 4096 142098 /home/user/app/main.py\\n[OK] Native filesystem file descriptor indexing active.",
+      },
+      {
+        id: "step-4",
+        title: "Validate Dynamic Reverse Port Forwarding",
+        description: "Test local loopback HTTP probe against forwarded remote port 8080.",
+        command: "curl -sI http://127.0.0.1:8080 | head -n 1",
+        output: "HTTP/1.1 200 OK\\n[SUCCESS] Forwarded socket transparently routing to remote host.",
+      },
+    ],
+  },
+  debriefRules: [
+    {
+      id: "rule-1",
+      number: "01",
+      title: "PREFER ZERO-COPY REMOTE-SSH OVER SFTP",
+      rule: "Use Remote-SSH for cloud development to eliminate file transfer drift and run language servers natively on Linux.",
+      antiPattern: "Using legacy SFTP upload-on-save extensions on active codebases.",
+    },
+    {
+      id: "rule-2",
+      number: "02",
+      title: "ADEQUATE SERVER RAM ALLOCATION",
+      rule: "Ensure target remote Linux VMs possess at least 1GB to 2GB of available RAM to host ~/.vscode-server and LSP engines.",
+      antiPattern: "Running heavy IDE servers on 512MB burst instances without swap.",
+    },
+    {
+      id: "rule-3",
+      number: "03",
+      title: "LEVERAGE AUTOMATIC PORT FORWARDING",
+      rule: "Utilize built-in Remote-SSH port forwarding instead of exposing unauthenticated internal dev ports on 0.0.0.0.",
+      antiPattern: "Binding test microservices to public IP addresses with zero authentication.",
+    },
+    {
+      id: "rule-4",
+      number: "04",
+      title: "HARDEN SSH KEYS & AGENT FORWARDING",
+      rule: "Always protect SSH private keys with passphrases and use ssh-agent; disable agent forwarding to untrusted hosts.",
+      antiPattern: "Using password authentication for remote development access.",
+    },
+  ],
+  quiz: [
+    {
+      id: "q-1",
+      scenario: "You are editing a 2GB microservice codebase on a remote AWS EC2 instance from a lightweight laptop.",
+      question: "Why does VS Code Remote-SSH provide significantly faster performance than a legacy SFTP extension?",
+      options: [
+        "Remote-SSH converts all code into WebAssembly before saving.",
+        "Remote-SSH executes a headless server daemon on the remote VM, streaming only UI diffs and terminal buffers without downloading the 2GB repository to the laptop.",
+        "Remote-SSH disables git tracking to speed up network packets.",
+        "Remote-SSH encrypts files with AES-256 compression.",
+      ],
+      correctIndex: 1,
+      explanation: "Remote-SSH runs the editor backend (extensions, language servers, terminal) on the remote machine, requiring zero local file cloning.",
+    },
+    {
+      id: "q-2",
+      scenario: "A developer starts a Node.js web server on port 3000 inside a Remote-SSH terminal on a remote server.",
+      question: "How can the developer view the application in their local workstation web browser?",
+      options: [
+        "They must modify the firewall to expose port 3000 to the entire public internet.",
+        "VS Code automatically detects the listening port and forwards it to localhost:3000 on the workstation over the existing encrypted SSH tunnel.",
+        "They must email the HTML file to their workstation.",
+        "They cannot view web applications running on remote servers.",
+      ],
+      correctIndex: 1,
+      explanation: "VS Code Remote-SSH provides automatic dynamic reverse port forwarding, binding remote listening ports securely to the local workstation loopback.",
+    },
+    {
+      id: "q-3",
+      scenario: "A developer is configuring VS Code Remote-SSH on a low-memory cloud instance.",
+      question: "What minimum system resource is critical on a remote Linux server to prevent ~/.vscode-server from being terminated?",
+      options: [
+        "A dedicated optical DVD drive.",
+        "At least 1GB to 2GB of RAM (or swap space) to prevent the Linux kernel OOM killer from terminating the Node.js language server process.",
+        "An active X11 desktop environment.",
+        "A Bluetooth adapter.",
+      ],
+      correctIndex: 1,
+      explanation: "The headless Node.js daemon and language tools (pyright, tsserver) require memory. Insufficient RAM (< 512MB) causes the Linux kernel to kill the process via out-of-memory (OOM) killer.",
+    },
+  ],
+};
+
+
+const SUBLIME_RSUB_DRILL: LearningDrillData = {
+  slug: "solution-for-sublime-text-remote-editing",
+  title: "Sublime Text Remote Editing: Reverse SSH Tunneling & rsub Protocol",
+  category: "linux-server-admin",
+  badgeName: "REVERSE TUNNEL ARCHITECT",
+  badgeDescription: "Mastered Sublime Text rsub daemon mechanics, reverse SSH socket tunneling (Port 52698), rmate CLI invocation, and atomic remote buffer saves.",
+  architectureDiagram: {
+    type: "remote-ide",
+    title: "Sublime Text rsub Bidirectional Socket Pipe (-R 52698:localhost:52698)",
+  },
+  reconCards: [
+    {
+      id: "rc-1",
+      tag: "DAEMON SOCKET",
+      title: "LOCAL RSUB DAEMON",
+      subtitle: "127.0.0.1:52698 Loopback Listener",
+      definition: "Sublime Text runs a lightweight Python/Ruby listener daemon inside the editor on your workstation, binding strictly to local loopback port 52698.",
+      seenInProd: "Sublime Text 3/4 rsub package and TextMate rmate ecosystem.",
+    },
+    {
+      id: "rc-2",
+      tag: "TUNNELING PROTOCOL",
+      title: "REVERSE SSH PORT FORWARDING",
+      subtitle: "ssh -R 52698:localhost:52698",
+      definition: "The -R flag instructs OpenSSH to bind port 52698 on the remote server's loopback interface and tunnel any connections back across the encrypted SSH pipe to your local workstation port 52698.",
+      seenInProd: "Standard OpenSSH reverse tunneling mechanics.",
+    },
+    {
+      id: "rc-3",
+      tag: "CLI INVOCATION",
+      title: "RMATE / RSUB REMOTE CLIENT",
+      subtitle: "/usr/local/bin/rmate Script",
+      definition: "A standalone Bash, Python, or Ruby script placed on the remote server. When executed with a filename ('rsub /etc/nginx/nginx.conf'), it opens a socket to 127.0.0.1:52698 and streams the file payload.",
+      seenInProd: "Headless cloud Linux server editing from local desktop GUIs.",
+    },
+    {
+      id: "rc-4",
+      tag: "ATOMIC PERSISTENCE",
+      title: "ATOMIC REMOTE BUFFER FLUSH",
+      subtitle: "fsync() over Socket on Save",
+      definition: "When you press Ctrl+S in Sublime Text, the editor flushes the updated buffer across the socket back to the remote rmate process, which writes it atomically to disk with proper file ownership and permissions.",
+      seenInProd: "Direct configuration file editing without scp round-trips.",
+    },
+    {
+      id: "rc-5",
+      tag: "FIREWALL BYPASS",
+      title: "NAT & FIREWALL TRANSPARENCY",
+      subtitle: "Outbound SSH Tunnel Carriage",
+      definition: "Because the connection rides inside your existing outbound SSH session, you do not need to open any inbound firewall ports on either your local router or the remote cloud server.",
+      seenInProd: "Secure administration behind strict NAT and cloud security groups.",
+    },
+    {
+      id: "rc-6",
+      tag: "SSH CONFIG AUTOMATION",
+      title: "~/.SSH/CONFIG AUTOMATION",
+      subtitle: "RemoteForward 52698 127.0.0.1:52698",
+      definition: "Adding 'RemoteForward 52698 127.0.0.1:52698' to your host entry in ~/.ssh/config automates reverse port binding for every terminal session without typing -R manually.",
+      seenInProd: "SRE workstation configuration automation.",
+    },
+  ],
+  motive: {
+    headline: "MANUAL DOWNLOAD-UPLOAD HASSLE VS. INSTANT RSUB TUNNEL",
+    subheadline: "Manually copying remote config files via SCP to edit them locally is tedious and error-prone. The rsub reverse SSH tunnel brings remote files into your local Sublime Text GUI with a single terminal command.",
+    baselineLabel: "MANUAL SCP ROUND-TRIP EDITING",
+    baselineTag: "HIGH-FRICTION WORKFLOW",
+    baselineValueDisplay: "78",
+    baselineUnit: "OPERATIONAL FRICTION INDEX",
+    baselineSubtext: "Manual scp download, local text editor open, manual scp upload, and file permission fixes",
+    baselineStat1Label: "Steps to Edit a File",
+    baselineStat1Value: "5 Manual Steps (Download -> Edit -> Upload -> Perms)",
+    baselineStat2Label: "Latency per Save",
+    baselineStat2Value: "15 to 30 Seconds",
+    optimizedLabel: "SUBLIME RSUB REVERSE TUNNEL",
+    savingsLabel: "-88% WORKFLOW STEPS",
+    optimizedValueDisplay: "9.3",
+    optimizedUnit: "OPERATIONAL FRICTION INDEX",
+    optimizedSubtext: "Single CLI command ('rsub file.conf'), instant local buffer, and atomic Ctrl+S remote flush",
+    optimizedStat1Label: "Steps to Edit a File",
+    optimizedStat1Value: "1 Step ('rsub filename')",
+    optimizedStat2Label: "Latency per Save",
+    optimizedStat2Value: "14ms (Instant Socket Write)",
+    uncompressedBytes: 78,
+    compressedBytes: 9,
+    savingsPercentage: 88,
+    spectrumTitle: "REMOTE SYSTEM CONFIGURATION LOAD",
+    spectrumSubtitle: "Evaluate operational speed during urgent production configuration triage.",
+    explanation: "Reverse tunneling bridges the gap between terminal-based headless server administration and rich desktop GUI editing without exposing open listening ports to the public internet.",
+    networkProfiles: [
+      {
+        name: "Emergency Production Nginx Patch",
+        speedKbps: 50000,
+        uncompressedTimeMs: 45000,
+        compressedTimeMs: 14,
+        subtitle: "Hot-patching /etc/nginx/sites-available/api.conf",
+        baselineStatValue: "SCP download/upload roundtrip",
+        optimizedStatValue: "rsub api.conf (Instant GUI buffer)",
+      },
+      {
+        name: "Multi-File Configuration Review",
+        speedKbps: 20000,
+        uncompressedTimeMs: 120000,
+        compressedTimeMs: 35,
+        subtitle: "Reviewing 5 configuration files across the server",
+        baselineStatValue: "Complex manual file staging",
+        optimizedStatValue: "Tabs opened seamlessly in Sublime",
+      },
+    ],
+  },
+  debateStatements: [
+    {
+      id: "ds-1",
+      scenario: "A sysadmin binds the rsub daemon to 0.0.0.0:52698 on the public internet so anyone can send files to their editor.",
+      proposedAction: "Open port 52698 publicly on the workstation firewall.",
+      isValid: false,
+      explanation: "Binding rsub to public interfaces allows unauthenticated attackers on the internet to inject arbitrary file buffers into your desktop editor. rsub must strictly bind to 127.0.0.1 loopback.",
+      badgeTag: "SOCKET SECURITY",
+    },
+    {
+      id: "ds-2",
+      scenario: "Connecting to a remote host with 'ssh -R 52698:localhost:52698 user@server' to enable remote editing.",
+      proposedAction: "Use reverse port forwarding to tunnel the rsub socket over the encrypted SSH session.",
+      isValid: true,
+      explanation: "The -R flag securely routes socket connections from the remote server's loopback directly to the local workstation over the encrypted SSH channel.",
+      badgeTag: "TUNNEL MECHANICS",
+    },
+    {
+      id: "ds-3",
+      scenario: "Using rsub to edit 10GB database dump files over a high-latency WAN connection.",
+      proposedAction: "Open massive binary database dumps inside Sublime Text via rsub.",
+      isValid: false,
+      explanation: "rsub is designed for text configuration scripts and source code. Loading multi-gigabyte files will exhaust editor memory and cause extreme network timeouts.",
+      badgeTag: "OPERATIONAL SCOPE",
+    },
+    {
+      id: "ds-4",
+      scenario: "Automating reverse port forwarding by adding 'RemoteForward 52698 127.0.0.1:52698' to ~/.ssh/config.",
+      proposedAction: "Configure the SSH client configuration file for automatic forwarding on connection.",
+      isValid: true,
+      explanation: "Adding RemoteForward to ~/.ssh/config eliminates the need to remember manual command-line flags on every connection.",
+      badgeTag: "AUTOMATION",
+    },
+    {
+      id: "ds-5",
+      scenario: "Editing files owned by root using standard user rsub invocation without sudo.",
+      proposedAction: "Run 'rsub /etc/shadow' as an unprivileged user.",
+      isValid: false,
+      explanation: "The remote rmate script executes with the permissions of the calling user. Editing root-owned files requires running 'sudo rsub /etc/file' or adjusting file permissions.",
+      badgeTag: "PERMISSIONS",
+    },
+  ],
+  simulator: {
+    headline: "SUBLIME TEXT RSUB REVERSE TUNNEL CONSOLE",
+    description: "Inspect local loopback daemon listening state, establish reverse SSH tunnel (-R 52698), and verify atomic file buffer streaming.",
+    defaultHost: "cloud-dev-01",
+    defaultPayloadBytes: 78000,
+    compressedPayloadBytes: 9360,
+    responseHeaders: {
+      "Sublime-Package": "rsub v3.2.0",
+      "Tunnel-Mode": "Reverse SSH (-R 52698)",
+      "Socket-Status": "ESTABLISHED",
+    },
+    terminalSteps: [
+      {
+        id: "step-1",
+        title: "Verify Local rsub Listener Daemon",
+        description: "Verify that Sublime Text is listening on local loopback port 52698.",
+        command: "netstat -tuln | grep 52698",
+        output: "tcp   0   0 127.0.0.1:52698   0.0.0.0:*   LISTEN   sublime_text",
+      },
+      {
+        id: "step-2",
+        title: "Initiate Reverse SSH Forwarding Tunnel",
+        description: "Connect to remote cloud server with -R 52698:localhost:52698.",
+        command: "ssh -R 52698:localhost:52698 user@cloud-dev-01 'echo TUNNEL_BOUND'",
+        output: "Allocated reverse port 52698 on remote host.\\nTUNNEL_BOUND",
+      },
+      {
+        id: "step-3",
+        title: "Invoke Remote rsub Client",
+        description: "Trigger rsub command on remote host to push /etc/nginx/nginx.conf to local GUI.",
+        command: "ssh user@cloud-dev-01 'rsub /etc/nginx/nginx.conf'",
+        output: "Connecting to localhost:52698...\\nSending token: /etc/nginx/nginx.conf\\nSending data: 2,410 bytes\\n[OK] Opened in local Sublime Text buffer.",
+      },
+      {
+        id: "step-4",
+        title: "Verify Remote Atomic Write on Save",
+        description: "Trigger save in Sublime Text (Ctrl+S) and confirm atomic write on remote disk.",
+        command: "ssh user@cloud-dev-01 'ls -la /etc/nginx/nginx.conf'",
+        output: "-rw-r--r-- 1 root root 2482 Nov 16 14:20 /etc/nginx/nginx.conf\\n[SUCCESS] File atomically written and synced.",
+      },
+    ],
+  },
+  debriefRules: [
+    {
+      id: "rule-1",
+      number: "01",
+      title: "BIND RSUB TO LOOPBACK STRICTLY",
+      rule: "Ensure the local rsub editor listener is bound strictly to 127.0.0.1 and never exposed to public network interfaces.",
+      antiPattern: "Listening on 0.0.0.0 allowing arbitrary remote socket buffer injections.",
+    },
+    {
+      id: "rule-2",
+      number: "02",
+      title: "AUTOMATE IN ~/.SSH/CONFIG",
+      rule: "Add 'RemoteForward 52698 127.0.0.1:52698' to frequently accessed hosts in ~/.ssh/config for seamless workflow.",
+      antiPattern: "Manually typing verbose -R flags every time an emergency fix is needed.",
+    },
+    {
+      id: "rule-3",
+      number: "03",
+      title: "RESPECT UNIX FILE OWNERSHIP",
+      rule: "When editing system configuration files, invoke 'sudo rsub <file>' to ensure the saving process possesses write permissions.",
+      antiPattern: "Editing root files as unprivileged user and failing silently on socket save.",
+    },
+    {
+      id: "rule-4",
+      number: "04",
+      title: "USE APPROPRIATE TOOLS FOR LARGE FILES",
+      rule: "Restrict rsub to text configuration files and source code; use stream processors for multi-gigabyte logs or database dumps.",
+      antiPattern: "Opening 10GB log files across reverse tunnels, crashing editor memory.",
+    },
+  ],
+  quiz: [
+    {
+      id: "q-1",
+      scenario: "You want to edit a configuration file on a remote server using your local workstation's Sublime Text editor.",
+      question: "Which SSH flag establishes the necessary reverse tunnel to bridge the remote rsub client to your local editor?",
+      options: [
+        "ssh -L 52698:localhost:52698",
+        "ssh -R 52698:localhost:52698",
+        "ssh -D 1080",
+        "ssh -X",
+      ],
+      correctIndex: 1,
+      explanation: "The '-R' flag establishes a Reverse port forward, binding port 52698 on the remote machine and forwarding connections back to port 52698 on the local client.",
+    },
+    {
+      id: "q-2",
+      scenario: "After running 'rsub /etc/nginx/nginx.conf' on the server, the command hangs with 'Connection refused'.",
+      question: "What is the most common root cause of this failure?",
+      options: [
+        "Nginx is stopped.",
+        "Sublime Text is not running locally, or the SSH session was not started with the '-R 52698:localhost:52698' reverse forward flag.",
+        "The file is encrypted with AES.",
+        "Ubuntu 20.04 does not support reverse tunnels.",
+      ],
+      correctIndex: 1,
+      explanation: "A 'Connection refused' error on 127.0.0.1:52698 indicates no process is listening on the remote port, which happens if Sublime Text isn't running or the reverse SSH tunnel was omitted.",
+    },
+    {
+      id: "q-3",
+      scenario: "An engineer is saving a large configuration file across an rsub reverse SSH tunnel.",
+      question: "How does rsub ensure that saving a file does not corrupt the remote file if the network connection drops mid-save?",
+      options: [
+        "It saves to an optical disc first.",
+        "It writes the received buffer to a temporary file on the remote filesystem and performs an atomic rename/fsync once the payload is verified.",
+        "It reboots the server.",
+        "It sends an SMS to the sysadmin.",
+      ],
+      correctIndex: 1,
+      explanation: "The rmate client writes to a temporary file first and performs an atomic POSIX rename to prevent partial writes if network transmission is interrupted.",
+    },
+  ],
+};
+
+
+const MANJARO_ARCH_ROLLING_DRILL: LearningDrillData = {
+  slug: "get-manjaro-linux-17-0-gellivara-dvd-iso",
+  title: "Manjaro Rolling Release Engineering & Cryptographic ISO Verification",
+  category: "linux-server-admin",
+  badgeName: "RELEASE INTEGRITY SPECIALIST",
+  badgeDescription: "Mastered Arch upstream 3-tier branch staging, MHWD hardware driver automation, pacman-mirrors fasttrack, and SHA-256 / GPG detached signature verification.",
+  architectureDiagram: {
+    type: "system-telemetry",
+    title: "Manjaro 3-Tier Staging Pipeline (Unstable -> Testing -> Stable) & Cryptographic Verification",
+  },
+  reconCards: [
+    {
+      id: "rc-1",
+      tag: "BRANCH STAGING",
+      title: "3-TIER REPOSITORY BUFFER",
+      subtitle: "Unstable, Testing & Stable Branches",
+      definition: "Manjaro buffers Arch Linux bleeding-edge packages through a 3-tier pipeline. Unstable pulls 1:1 from Arch; Testing undergoes automated regression; Stable freezes tested snapshots for production.",
+      seenInProd: "Distribution engineering pipelines across enterprise rolling distributions.",
+    },
+    {
+      id: "rc-2",
+      tag: "HARDWARE AUTOMATION",
+      title: "MHWD DRIVER DETECTION",
+      subtitle: "Hardware Detection Script Engine",
+      definition: "Manjaro Hardware Detection (MHWD) probes PCI/USB IDs during boot and automatically configures optimal kernel modules, proprietary GPU drivers (NVIDIA), and wireless chipsets.",
+      seenInProd: "Automated desktop and server hardware onboarding.",
+    },
+    {
+      id: "rc-3",
+      tag: "MIRROR OPTIMIZATION",
+      title: "PACMAN-MIRRORS FASTTRACK",
+      subtitle: "Geographic Latency Tuning",
+      definition: "Running 'pacman-mirrors --fasttrack 5' pings all global Tier-1 mirrors, selects the 5 lowest-latency servers, and sorts them by synchronization freshness.",
+      seenInProd: "High-speed package management and bandwidth optimization.",
+    },
+    {
+      id: "rc-4",
+      tag: "INTEGRITY AUDIT",
+      title: "SHA-256 CHECKSUM VERIFICATION",
+      subtitle: "Bit-Level Transit Validation",
+      definition: "Calculating 'sha256sum -c manjaro.iso.sha256' validates that every single byte of the multi-gigabyte ISO downloaded without bit-rot, network truncation, or storage corruption.",
+      seenInProd: "Mandatory pre-deployment security baseline.",
+    },
+    {
+      id: "rc-5",
+      tag: "CRYPTOGRAPHIC AUTH",
+      title: "GPG DETACHED SIGNATURES",
+      subtitle: "gpg --verify Authentication",
+      definition: "Verifying the ISO's detached digital signature against the official Manjaro Build Server GPG public key proves that the ISO was constructed by authorized maintainers and not tampered with.",
+      seenInProd: "Supply-chain security defense against malicious mirror poisoning.",
+    },
+    {
+      id: "rc-6",
+      tag: "BLOCK WRITING",
+      title: "HYBRID ISO BLOCK FLASHING",
+      subtitle: "Direct dd /dev/sdX Flashing",
+      definition: "Modern Linux ISOs are built in hybrid ISO 9660 / GPT format, allowing direct raw block cloning via 'dd if=image.iso of=/dev/sdX bs=4M status=progress' with zero partition re-formatting.",
+      seenInProd: "Bare-metal OS provisioning and USB boot media creation.",
+    },
+  ],
+  motive: {
+    headline: "UNVERIFIED MIRROR DOWNLOADS VS. CRYPTOGRAPHIC VERIFICATION",
+    subheadline: "Flashing unverified ISO images downloaded over public mirrors exposes systems to supply-chain tampering and boot media corruption. Cryptographic SHA-256 and GPG verification guarantees bit-level integrity and maintainer authenticity.",
+    baselineLabel: "UNVERIFIED MIRROR DOWNLOAD",
+    baselineTag: "SUPPLY-CHAIN VULNERABLE",
+    baselineValueDisplay: "85",
+    baselineUnit: "INTEGRITY RISK INDEX",
+    baselineSubtext: "Skipping checksums and GPG signatures leaves media vulnerable to man-in-the-middle poisoning",
+    baselineStat1Label: "Supply-Chain Trust",
+    baselineStat1Value: "Zero (Unauthenticated Payload)",
+    baselineStat2Label: "Bit-Rot Detection",
+    baselineStat2Value: "None (Silent Boot Hangs)",
+    optimizedLabel: "CRYPTOGRAPHICALLY VERIFIED",
+    savingsLabel: "-95% TAMPERING RISK",
+    optimizedValueDisplay: "4.2",
+    optimizedUnit: "INTEGRITY RISK INDEX",
+    optimizedSubtext: "SHA-256 bit-level validation paired with GPG detached signature check against trusted maintainer keyring",
+    optimizedStat1Label: "Supply-Chain Trust",
+    optimizedStat1Value: "Cryptographically Authenticated (GPG)",
+    optimizedStat2Label: "Bit-Rot Detection",
+    optimizedStat2Value: "100% Bit-for-Bit Deterministic",
+    uncompressedBytes: 85,
+    compressedBytes: 4,
+    savingsPercentage: 95,
+    spectrumTitle: "IMAGE DISTRIBUTION ENVIRONMENT",
+    spectrumSubtitle: "Evaluate verification reliability across community mirrors versus verified release engineering pipelines.",
+    explanation: "Cryptographic signature validation guarantees that the operating system kernel and core utilities were authored by authorized distribution maintainers and arrived bit-for-bit uncorrupted.",
+    networkProfiles: [
+      {
+        name: "Community Mirror Ingress",
+        speedKbps: 45000,
+        uncompressedTimeMs: 180000,
+        compressedTimeMs: 25,
+        subtitle: "Downloading 2.6GB ISO from third-party university mirror",
+        baselineStatValue: "Untrusted mirror source",
+        optimizedStatValue: "GPG signature confirmed valid",
+      },
+      {
+        name: "Enterprise Boot Media Staging",
+        speedKbps: 100000,
+        uncompressedTimeMs: 45000,
+        compressedTimeMs: 12,
+        subtitle: "Writing verified image to flash drive via dd block copy",
+        baselineStatValue: "Risk of corrupted boot sectors",
+        optimizedStatValue: "Flawless hybrid GPT bootloader",
+      },
+    ],
+  },
+  debateStatements: [
+    {
+      id: "ds-1",
+      scenario: "A sysadmin downloads a Linux ISO from an HTTP mirror and flashes it to USB immediately without checking checksums.",
+      proposedAction: "Skip SHA-256 calculation to save 2 minutes of deployment time.",
+      isValid: false,
+      explanation: "Skipping checksum verification risks flashing corrupted images with missing kernel modules, which frequently cause kernel panics or silent data corruption during installation.",
+      badgeTag: "CHECKSUM AUDIT",
+    },
+    {
+      id: "ds-2",
+      scenario: "Verifying an ISO using both 'sha256sum -c' and 'gpg --verify' against an imported official developer key.",
+      proposedAction: "Execute both cryptographic checks before deploying the image to boot media.",
+      isValid: true,
+      explanation: "SHA-256 confirms file completeness and transit integrity, while GPG signature verification proves the file originated from legitimate maintainers and was not tampered with on the mirror.",
+      badgeTag: "CRYPTOGRAPHIC AUTH",
+    },
+    {
+      id: "ds-3",
+      scenario: "Running 'pacman-mirrors --fasttrack 5' before performing full system updates on Manjaro.",
+      proposedAction: "Regularly update mirror lists with latency and sync health checks.",
+      isValid: true,
+      explanation: "pacman-mirrors tests geographic latency and mirror synchronization status, preventing package download failures and stalled updates from outdated mirrors.",
+      badgeTag: "MIRROR HYGIENE",
+    },
+    {
+      id: "ds-4",
+      scenario: "Using 'dd of=/dev/sda' to write a downloaded ISO image to a laptop without verifying the target block device.",
+      proposedAction: "Run dd directly without verifying lsblk device identifiers.",
+      isValid: false,
+      explanation: "Targeting /dev/sda instead of the USB flash drive (e.g. /dev/sdb) will overwrite the host operating system's primary partition table and filesystem, causing catastrophic data loss.",
+      badgeTag: "BLOCK SAFETY",
+    },
+    {
+      id: "ds-5",
+      scenario: "A distribution uses a rolling release model with a multi-tier staging buffer (Unstable -> Testing -> Stable).",
+      proposedAction: "Deploy rolling updates through staging buffers to allow regression testing before promoting to stable production.",
+      isValid: true,
+      explanation: "A tiered staging buffer provides the continuous upgrade benefits of a rolling distribution while filtering out breaking upstream changes through regression testing.",
+      badgeTag: "RELEASE ENGINEERING",
+    },
+  ],
+  simulator: {
+    headline: "MANJARO ROLLING RELEASE & ISO INTEGRITY CONSOLE",
+    description: "Benchmark mirror latency with pacman-mirrors, compute SHA-256 hashes, verify GPG detached signatures, and test MHWD driver scripts.",
+    defaultHost: "rel-engineering-01",
+    defaultPayloadBytes: 85000,
+    compressedPayloadBytes: 4250,
+    responseHeaders: {
+      "Distribution": "Manjaro Linux (Arch Derivative)",
+      "Branch-Stage": "Stable (Snapshot)",
+      "Integrity-Status": "SHA256-OK / GPG-Verified",
+    },
+    terminalSteps: [
+      {
+        id: "step-1",
+        title: "Fast-Track Low-Latency Geographic Mirrors",
+        description: "Benchmark global mirrors and select the 5 fastest synchronized repository servers.",
+        command: "pacman-mirrors --fasttrack 5 && pacman-mirrors -G",
+        output: ":: Querying mirrors for speed and synchronization...\\n1. https://mirror.leaseweb.com/manjaro/ (34ms)\\n2. https://mirrors.dotsrc.org/manjaro/ (48ms)\\nBranch: stable\\n[OK] Top 5 mirrors ranked and saved to /etc/pacman.d/mirrorlist.",
+      },
+      {
+        id: "step-2",
+        title: "Verify Bit-Level SHA-256 Digest",
+        description: "Calculate and match SHA-256 checksum against official release manifest.",
+        command: "sha256sum -c manjaro-xfce-17.0.iso.sha256",
+        output: "manjaro-xfce-17.0-stable-x86_64.iso: OK\\n[OK] Bit-for-bit integrity confirmed. Zero transit corruption.",
+      },
+      {
+        id: "step-3",
+        title: "Verify GPG Detached Digital Signature",
+        description: "Verify digital signature against Manjaro Build Server official release key.",
+        command: "gpg --verify manjaro-xfce-17.0.iso.sig manjaro-xfce-17.0-stable-x86_64.iso",
+        output: "gpg: Good signature from \\\"Manjaro Build Server <build@manjaro.org>\\\" [ultimate]\\nPrimary key fingerprint: CAA6 3C84 0797 B61C D7D8 584C FC52 F0FE 9CE3 ED01\\n[PASS] Cryptographic maintainer authenticity verified.",
+      },
+      {
+        id: "step-4",
+        title: "Verify MHWD Hardware Auto-Detection Matrix",
+        description: "Query MHWD hardware database for PCI display controllers and proprietary drivers.",
+        command: "mhwd -l -d --pci | head -n 4",
+        output: "> 0000:01:00.0 (0300:10de:1c03) Display controller nVidia Corporation:\\n  * video-nvidia-latest (nonfree)\\n  * video-linux (free)\\n[SUCCESS] Hardware detection scripts ready for live boot.",
+      },
+    ],
+  },
+  debriefRules: [
+    {
+      id: "rule-1",
+      number: "01",
+      title: "ALWAYS VERIFY CRYPTOGRAPHIC INTEGRITY",
+      rule: "Never flash an operating system ISO without calculating SHA-256 and verifying the maintainer GPG signature.",
+      antiPattern: "Flashing raw downloaded ISOs directly to boot media without validation.",
+    },
+    {
+      id: "rule-2",
+      number: "02",
+      title: "FAST-TRACK SYNCHRONIZED MIRRORS",
+      rule: "Run 'pacman-mirrors --fasttrack' periodically to prune stale or lagging community mirrors.",
+      antiPattern: "Using hardcoded mirror lists that fall out of sync with upstream repositories.",
+    },
+    {
+      id: "rule-3",
+      number: "03",
+      title: "VERIFY TARGET BLOCK DEVICES (LSBLK)",
+      rule: "Always run 'lsblk' to confirm the exact target drive path before executing destructive 'dd' block write operations.",
+      antiPattern: "Running dd against /dev/sda blindly and destroying host system data.",
+    },
+    {
+      id: "rule-4",
+      number: "04",
+      title: "UNDERSTAND STAGING BRANCH BUFFERS",
+      rule: "Respect distribution staging branches (Unstable -> Testing -> Stable) for production stability on rolling release distros.",
+      antiPattern: "Running unvetted bleeding-edge packages on production mission-critical servers.",
+    },
+  ],
+  quiz: [
+    {
+      id: "q-1",
+      scenario: "You downloaded a 2.5GB Linux ISO from a third-party mirror site.",
+      question: "Which combination of verification steps provides the strongest guarantee that the file is authentic and uncorrupted?",
+      options: [
+        "Checking the file size matches within a few megabytes.",
+        "Calculating the SHA-256 checksum against the official hash and verifying the detached GPG signature with 'gpg --verify' against the maintainer's trusted public key.",
+        "Opening the ISO in an archive manager to see if folders exist.",
+        "Pinging the mirror server IP.",
+      ],
+      correctIndex: 1,
+      explanation: "SHA-256 guarantees bit-level data integrity (no download corruption), while GPG signature verification proves the ISO was authored and signed by official maintainers.",
+    },
+    {
+      id: "q-2",
+      scenario: "You are comparing rolling release models for production workstations.",
+      question: "Why does Manjaro employ a 3-tier branch staging buffer (Unstable -> Testing -> Stable) rather than tracking Arch Linux bleeding-edge packages directly?",
+      options: [
+        "To compress packages to save hard drive space.",
+        "To allow packages to undergo 1-2 weeks of regression testing, hardware driver validation, and bug fixing before promotion to the stable user base.",
+        "To prevent users from using Python.",
+        "Because Arch Linux does not support x86_64 processors.",
+      ],
+      correctIndex: 1,
+      explanation: "The 3-tier staging model gives users the benefits of a modern rolling release while filtering out breaking upstream bugs through a dedicated testing buffer.",
+    },
+    {
+      id: "q-3",
+      scenario: "An administrator is preparing to create a bootable USB drive using dd.",
+      question: "Before writing an ISO to a USB flash drive with the 'dd' command, what critical check must you perform?",
+      options: [
+        "Unplug the monitor.",
+        "Verify the exact target block device identifier using 'lsblk' to ensure you do not overwrite your primary system hard drive.",
+        "Disable your internet connection.",
+        "Reboot the router.",
+      ],
+      correctIndex: 1,
+      explanation: "'dd' writes raw disk blocks without confirmation; writing to the wrong device (e.g. /dev/nvme0n1 or /dev/sda) will instantly erase your host operating system.",
+    },
+  ],
+};
+
+// 100% Dedicated Bespoke Drills for all 21 Linux Admin & Cluster Articles
 export function generateLearningDrill(post: Post): LearningDrillData {
+  // 1. Edge & Clustering
   if (post.slug === "running-micro-clusters-at-the-edge-k3s-arm-nodes") {
     return K3S_EDGE_CLUSTER_DRILL;
   }
   if (post.slug === "zero-downtime-linux-clustering-active-passive-mysql-corosync-pacemaker") {
     return HA_MYSQL_CLUSTER_DRILL;
   }
-  if (post.slug === "install-and-config-brotli-compression-with-apache") {
-    return BROTLI_DRILL;
+
+  // 2. Linux Server Administration & Kernel Hardening (21 Dedicated Articles)
+  if (post.slug === "hardening-linux-kernel-sysctl-nftables") {
+    return KERNEL_HARDENING_DRILL;
   }
   if (post.slug === "setting-up-an-nginx-reverse-proxy") {
     return NGINX_REVERSE_PROXY_DRILL;
   }
+  if (post.slug === "configure-apache-virtual-host-on-ubuntu-20-04-lts") {
+    return APACHE_VHOST_DRILL;
+  }
+  if (post.slug === "configure-apache-virtual-host-ubuntu-16-04-lts") {
+    return APACHE_VHOST_MULTI_TENANT_DRILL;
+  }
+  if (post.slug === "install-and-config-brotli-compression-with-apache") {
+    return BROTLI_DRILL;
+  }
   if (post.slug === "install-and-configure-multiple-php-version-with-apache-on-ubuntu-20-04") {
     return MULTI_PHP_DRILL;
   }
-  if (post.slug === "hardening-linux-kernel-sysctl-nftables") {
-    return KERNEL_HARDENING_DRILL;
-  }
-  if (post.slug === "configure-ssh-key-authentication") {
-    return SSH_KEY_DRILL;
-  }
-  if (
-    post.slug === "configure-apache-virtual-host-on-ubuntu-20-04-lts" ||
-    post.slug === "configure-apache-virtual-host-ubuntu-16-04-lts"
-  ) {
-    return APACHE_VHOST_DRILL;
-  }
-  if (
-    post.slug === "allow-root-login-ssh-ubuntu-16-04-lts" ||
-    post.slug === "enable-root-user-ubuntu-16-04-1-lts"
-  ) {
-    return ROOT_PRIVILEGE_DRILL;
-  }
-  if (
-    post.slug === "how-to-install-visual-studio-code-on-ubuntu" ||
-    post.slug === "install-sftp-extension-for-visual-studio-code" ||
-    post.slug === "solution-for-sublime-text-remote-editing"
-  ) {
-    return REMOTE_IDE_DRILL;
-  }
-  if (post.slug === "installing-vmware-tools-ubuntu") {
-    return VMWARE_GUEST_DRILL;
-  }
-  if (post.slug === "configure-plex-media-server") {
-    return PLEX_MEDIA_DRILL;
-  }
-  if (
-    post.slug === "get-manjaro-linux-17-0-gellivara-dvd-iso" ||
-    post.slug === "learn-enjoy-computer-factes"
-  ) {
-    return SYSTEMS_ARCHITECTURE_DRILL;
-  }
-  if (post.slug === "top-5-system-monitoring-tools-inux") {
-    return SYSTEM_MONITORING_DRILL;
-  }
-  if (post.slug === "how-to-use-sshfs-to-mount-remote-file-systems-over-ssh") {
-    return SSHFS_DRILL;
-  }
-  if (post.slug === "how-remotely-copy-files-over-ssh-ubuntu-client-sftp-scp") {
-    return SFTP_SCP_DRILL;
+  if (post.slug === "install-lamp-stack-ubuntu-16-04-lts") {
+    return LAMP_STACK_DRILL;
   }
   if (post.slug === "how-to-install-tomcat-10-on-ubuntu-20-04") {
     return TOMCAT_DRILL;
   }
-  if (post.slug === "install-lamp-stack-ubuntu-16-04-lts") {
-    return LAMP_STACK_DRILL;
+  if (post.slug === "configure-ssh-key-authentication") {
+    return SSH_KEY_DRILL;
+  }
+  if (post.slug === "allow-root-login-ssh-ubuntu-16-04-lts") {
+    return ROOT_PRIVILEGE_DRILL;
+  }
+  if (post.slug === "enable-root-user-ubuntu-16-04-1-lts") {
+    return ROOT_USER_DELEGATION_DRILL;
+  }
+  if (post.slug === "how-remotely-copy-files-over-ssh-ubuntu-client-sftp-scp") {
+    return SFTP_SCP_DRILL;
+  }
+  if (post.slug === "how-to-use-sshfs-to-mount-remote-file-systems-over-ssh") {
+    return SSHFS_DRILL;
+  }
+  if (post.slug === "solution-for-sublime-text-remote-editing") {
+    return SUBLIME_RSUB_DRILL;
+  }
+  if (post.slug === "install-sftp-extension-for-visual-studio-code") {
+    return VSCODE_REMOTE_SSH_DRILL;
+  }
+  if (post.slug === "how-to-install-visual-studio-code-on-ubuntu") {
+    return REMOTE_IDE_DRILL;
+  }
+  if (post.slug === "top-5-system-monitoring-tools-inux") {
+    return SYSTEM_MONITORING_DRILL;
+  }
+  if (post.slug === "configure-plex-media-server") {
+    return PLEX_MEDIA_DRILL;
+  }
+  if (post.slug === "installing-vmware-tools-ubuntu") {
+    return VMWARE_GUEST_DRILL;
+  }
+  if (post.slug === "get-manjaro-linux-17-0-gellivara-dvd-iso") {
+    return MANJARO_ARCH_ROLLING_DRILL;
+  }
+  if (post.slug === "learn-enjoy-computer-factes") {
+    return SYSTEMS_ARCHITECTURE_DRILL;
   }
 
   const cleanTitle = post.title.replace(/^\[.*?\]/, "").trim();
