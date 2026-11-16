@@ -7,6 +7,7 @@ import { trackSimulatorAction } from "@/lib/analytics";
 import { ClusterFailoverVisualizer } from "@/components/simulation/ClusterFailoverVisualizer";
 import { K3sWorkflowSimulator } from "@/components/simulation/K3sWorkflowSimulator";
 import { LinuxAdminSimulator } from "@/components/simulation/linux-admin/LinuxAdminSimulator";
+import { ScalabilityWorkflowSimulator } from "@/components/simulation/clustering/ScalabilityWorkflowSimulator";
 import {
   Terminal,
   Play,
@@ -49,6 +50,10 @@ interface LogEntry {
 }
 
 export function AgenticWorkflowSimulator({ post }: AgenticWorkflowSimulatorProps) {
+  if (post.slug === "what-is-scalability-vertical-vs-horizontal-system-design") {
+    return <ScalabilityWorkflowSimulator post={post} />;
+  }
+
   if (post.slug === "running-micro-clusters-at-the-edge-k3s-arm-nodes") {
     return <K3sWorkflowSimulator post={post} />;
   }
