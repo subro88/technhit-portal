@@ -73,7 +73,7 @@ export function HeroReelWithRack() {
       <div className="scan-line" />
 
       {/* Hero Content Container */}
-      <div className="relative z-10 h-full max-w-[1600px] mx-auto px-6 lg:px-10 flex flex-col justify-between pt-24 pb-16">
+      <div className="relative z-10 h-full max-w-[1600px] mx-auto px-6 lg:px-10 flex flex-col justify-between pt-24 pb-10 sm:pb-12 flex-1">
         {/* Top Control Bar: Reel Live Status & Sound Toggle */}
         <div className="flex items-center justify-between w-full">
           <div className="flex items-center gap-4">
@@ -253,8 +253,8 @@ export function HeroReelWithRack() {
         </div>
       </div>
 
-      {/* Marquee Ticker Tape Strip */}
-      <div className="absolute bottom-0 left-0 right-0 border-t border-white/10 bg-black/80 backdrop-blur-md py-2.5 overflow-hidden z-20">
+      {/* Marquee Ticker Tape Strip - In-flow positioning */}
+      <div className="relative z-20 w-full mt-auto border-t border-white/10 bg-black/90 backdrop-blur-md py-2.5 overflow-hidden">
         <div className="marquee-track font-display text-sm tracking-[0.25em] text-zinc-400">
           <span className="px-8 text-zinc-200">BUILT BY DISCIPLINE</span><span className="text-amber-500">/</span>
           <span className="px-8 text-zinc-200">POWERED BY KERNEL</span><span className="text-cyber-cyan">/</span>

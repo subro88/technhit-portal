@@ -317,7 +317,7 @@ function DualModeArticleViewInner({
               <div className="absolute inset-0 bg-gradient-to-r from-[#07090e]/90 via-[#07090e]/40 to-transparent" />
 
               {/* Hero Center Display Content with Top Header Clearance */}
-              <div className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-8 flex flex-col justify-center pt-16 sm:pt-20 pb-28 min-h-[520px] flex-1">
+              <div className="relative z-10 w-full max-w-7xl mx-auto px-5 sm:px-8 flex flex-col justify-center pt-16 sm:pt-20 pb-10 sm:pb-14 flex-1">
                 <div className="flex items-center gap-3 mb-4 sm:mb-5">
                   <span className="w-2.5 h-2.5 rotate-45 bg-[#FF5400]" />
                   <span className="text-[11px] md:text-xs font-mono font-bold tracking-[0.32em] text-zinc-400 uppercase">
@@ -333,16 +333,16 @@ function DualModeArticleViewInner({
                   {post.summary}
                 </p>
 
-                <div className="mt-8 sm:mt-9 flex flex-wrap items-center gap-4">
+                <div className="mt-8 sm:mt-9 flex flex-wrap items-center gap-4 relative z-20">
                   <button
                     onClick={() => handleSwitchMode("learning")}
-                    className="pulse-cta bg-[#FF5400] text-black font-display text-xl tracking-[0.14em] px-8 py-3.5 hover:bg-amber-400 transition-colors"
+                    className="pulse-cta bg-[#FF5400] text-black font-display text-xl tracking-[0.14em] px-8 py-3.5 hover:bg-amber-400 transition-colors cursor-pointer"
                   >
                     ENTER LEARNING MODE →
                   </button>
                   <button
                     onClick={() => handleSwitchMode("simulation")}
-                    className="bg-cyan-950/60 border border-cyan-500/80 text-cyan-300 font-display text-xl tracking-[0.14em] px-8 py-3.5 hover:bg-cyan-500 hover:text-black transition-all shadow-[0_0_15px_rgba(6,182,212,0.2)]"
+                    className="bg-cyan-950/60 border border-cyan-500/80 text-cyan-300 font-display text-xl tracking-[0.14em] px-8 py-3.5 hover:bg-cyan-500 hover:text-black transition-all shadow-[0_0_15px_rgba(6,182,212,0.2)] cursor-pointer"
                   >
                     ENTER SIMULATION MODE →
                   </button>
@@ -352,7 +352,7 @@ function DualModeArticleViewInner({
                       e.preventDefault();
                       document.getElementById("manual-content")?.scrollIntoView({ behavior: "smooth" });
                     }}
-                    className="border border-zinc-700 text-zinc-300 font-display text-xl tracking-[0.14em] px-8 py-3.5 hover:border-[#FF5400] hover:text-[#FF5400] transition-colors"
+                    className="border border-zinc-700 text-zinc-300 font-display text-xl tracking-[0.14em] px-8 py-3.5 hover:border-[#FF5400] hover:text-[#FF5400] transition-colors cursor-pointer"
                   >
                     READ THE MANUAL ↓
                   </a>
@@ -369,8 +369,8 @@ function DualModeArticleViewInner({
                 </div>
               </div>
 
-              {/* Marquee Ticker at bottom of hero with recent 5 section posts */}
-              <div className="absolute bottom-0 inset-x-0 z-10 border-t border-zinc-800 bg-[#07090e]/90 backdrop-blur-sm marquee-parent">
+              {/* Marquee Ticker at bottom of hero with recent 5 section posts - In-flow positioning to prevent overlap */}
+              <div className="relative z-20 w-full mt-auto border-t border-zinc-800 bg-[#07090e]/95 backdrop-blur-sm marquee-parent">
                 <div className="py-2.5 sm:py-3 text-zinc-400 overflow-hidden font-mono text-xs uppercase tracking-widest">
                   <div className="flex whitespace-nowrap">
                     {/* Primary Interactive Track */}
