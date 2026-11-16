@@ -212,56 +212,62 @@ function DualModeArticleViewInner({
           {/* Brand & Track link */}
           <Link
             href={`/${post.category}`}
-            className="flex items-center gap-2 group font-mono text-xs text-zinc-400 hover:text-amber-400 transition-colors"
+            className="flex items-center gap-2 group font-mono text-xs text-zinc-400 hover:text-amber-400 transition-colors shrink-0"
           >
             <ArrowLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-1" />
             <span className="font-display text-lg tracking-wider text-zinc-200 group-hover:text-amber-400 pt-0.5">
-              TECHNHIT<span className="text-[#FF5400]">//</span>BLUEPRINT
+              TECHNHIT<span className="text-[#FF5400]">//</span><span className="hidden sm:inline">BLUEPRINT</span>
             </span>
           </Link>
 
-          {/* Central Segmented Toggle */}
-          <div className="flex border border-zinc-800 bg-zinc-950 p-0.5 rounded-sm" role="tablist">
+          {/* Central Segmented Toggle with Distinct Color Themes */}
+          <div className="flex border border-zinc-800 bg-zinc-950 p-0.5 sm:p-1 rounded-sm gap-0.5 sm:gap-1" role="tablist">
+            {/* BLOG MODE (Amber) */}
             <button
               onClick={() => handleSwitchMode("blog")}
               role="tab"
               aria-selected={mode === "blog"}
-              className={`font-display tracking-[0.14em] text-xs sm:text-sm px-3 sm:px-5 py-1.5 transition-all flex items-center gap-2 leading-none pt-1 ${
+              className={`font-display tracking-[0.14em] text-xs sm:text-sm px-2.5 sm:px-4 py-1.5 transition-all flex items-center gap-1.5 sm:gap-2 leading-none pt-1 rounded-xs border ${
                 mode === "blog"
-                  ? "bg-[#FF5400] text-black font-bold shadow-[0_0_12px_rgba(255,84,0,0.3)]"
-                  : "text-zinc-400 hover:text-zinc-200"
+                  ? "bg-amber-500 text-black font-bold shadow-[0_0_12px_rgba(245,158,11,0.35)] border-amber-500"
+                  : "text-zinc-400 border-transparent hover:text-amber-400 hover:border-amber-500/50 hover:bg-amber-500/10"
               }`}
             >
-              <BookOpen className="w-3.5 h-3.5" />
-              <span>BLOG MODE</span>
+              <BookOpen className="w-3.5 h-3.5 shrink-0" />
+              <span className="hidden md:inline">BLOG MODE</span>
+              <span className="md:hidden">BLOG</span>
             </button>
 
+            {/* LEARNING MODE (Cyber-Orange) */}
             <button
               onClick={() => handleSwitchMode("learning")}
               role="tab"
               aria-selected={mode === "learning"}
-              className={`font-display tracking-[0.14em] text-xs sm:text-sm px-3 sm:px-5 py-1.5 transition-all flex items-center gap-2 leading-none pt-1 ${
+              className={`font-display tracking-[0.14em] text-xs sm:text-sm px-2.5 sm:px-4 py-1.5 transition-all flex items-center gap-1.5 sm:gap-2 leading-none pt-1 rounded-xs border ${
                 mode === "learning"
-                  ? "bg-[#FF5400] text-black font-bold shadow-[0_0_12px_rgba(255,84,0,0.3)]"
-                  : "text-zinc-400 hover:text-zinc-200"
+                  ? "bg-[#FF5400] text-black font-bold shadow-[0_0_12px_rgba(255,84,0,0.35)] border-[#FF5400]"
+                  : "text-zinc-400 border-transparent hover:text-[#FF5400] hover:border-[#FF5400]/50 hover:bg-[#FF5400]/10"
               }`}
             >
-              <Gamepad2 className="w-3.5 h-3.5" />
-              <span>LEARNING MODE</span>
+              <Gamepad2 className="w-3.5 h-3.5 shrink-0" />
+              <span className="hidden md:inline">LEARNING MODE</span>
+              <span className="md:hidden">DRILL</span>
             </button>
 
+            {/* SIMULATION MODE (Neon-Cyan) */}
             <button
               onClick={() => handleSwitchMode("simulation")}
               role="tab"
               aria-selected={mode === "simulation"}
-              className={`font-display tracking-[0.14em] text-xs sm:text-sm px-3 sm:px-5 py-1.5 transition-all flex items-center gap-2 leading-none pt-1 ${
+              className={`font-display tracking-[0.14em] text-xs sm:text-sm px-2.5 sm:px-4 py-1.5 transition-all flex items-center gap-1.5 sm:gap-2 leading-none pt-1 rounded-xs border ${
                 mode === "simulation"
-                  ? "bg-[#FF5400] text-black font-bold shadow-[0_0_12px_rgba(255,84,0,0.3)]"
-                  : "text-zinc-400 hover:text-zinc-200"
+                  ? "bg-cyan-400 text-black font-bold shadow-[0_0_12px_rgba(6,182,212,0.4)] border-cyan-400"
+                  : "text-zinc-400 border-transparent hover:text-cyan-400 hover:border-cyan-500/50 hover:bg-cyan-400/10"
               }`}
             >
-              <Cpu className="w-3.5 h-3.5" />
-              <span>SIMULATION MODE</span>
+              <Cpu className="w-3.5 h-3.5 shrink-0" />
+              <span className="hidden md:inline">SIMULATION MODE</span>
+              <span className="md:hidden">SIM</span>
             </button>
           </div>
 
